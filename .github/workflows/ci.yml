@@ -129,7 +129,7 @@ jobs:
           # /up peut répondre alors que l'upload (tusd) ou les e-mails (worker) sont morts.
           sleep 10
           check "storage inscriptible par l'utilisateur applicatif" docker exec -u erugo ot test -w /var/www/html/storage/logs
-          check "tusd en cours d'exécution" docker exec ot pgrep -x tusd
+          check "tusd en cours d'exécution" docker exec ot pgrep -f /usr/local/bin/tusd
           check "worker de file d'attente en cours d'exécution" docker exec ot pgrep -f 'artisan queue:work'
           check "aucun processus abandonné par supervisord" sh -c "! docker logs ot 2>&1 | grep -qE 'gave up|FATAL|exited: .*not expected'"
           [ "$fails" -eq 0 ]
