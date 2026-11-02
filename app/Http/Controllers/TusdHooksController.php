@@ -408,6 +408,29 @@ class TusdHooksController extends Controller
                 return response()->json(['ok' => true]);
             }
 
+            // A few KB of highly compressed data can expand to tens of GB and fill
+            // the disk: check the declared sizes (libzip refuses entries that
+            // decompress beyond them) before extracting anything.
+            $expandedSize = 0;
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $expandedSize += $zip->statIndex($i)['size'] ?? 0;
+            }
+            $maxUploadSize = app(SettingsService::class)->getMaxUploadSize();
+            $freeSpace = @disk_free_space($extractDir);
+            if (($maxUploadSize && $expandedSize > $maxUploadSize)
+                || ($freeSpace !== false && $expandedSize > $freeSpace * 0.9)) {
+                Log::warning('tusd post-finish: Bundle expands beyond the allowed size', [
+                    'upload_id' => $uploadId,
+                    'user_id' => $session->user_id,
+                    'expanded_size' => $expandedSize,
+                    'max_size' => $maxUploadSize,
+                ]);
+                $zip->close();
+                $session->status = 'failed';
+                $session->save();
+                return response()->json(['ok' => true]);
+            }
+
             // Extract all files
             $zip->extractTo($extractDir);
             $zip->close();
