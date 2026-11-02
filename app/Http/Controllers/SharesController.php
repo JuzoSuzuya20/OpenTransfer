@@ -663,9 +663,20 @@ class SharesController extends Controller
     };
   }
 
+  /**
+   * Two adjective-noun pairs alone are ~26 bits: with no limit on share lookups,
+   * active shares could be enumerated in minutes. The random suffix adds 40 bits
+   * (32-letter alphabet without the ambiguous 0/o/1/l) while keeping the URL readable.
+   */
   private function generateHaikuId(): string
   {
-    return Haikunator::haikunate() . '-' . Haikunator::haikunate();
+    $alphabet = 'abcdefghijkmnpqrstuvwxyz23456789';
+    $suffix = '';
+    for ($i = 0; $i < 8; $i++) {
+      $suffix .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+    }
+
+    return Haikunator::haikunate() . '-' . Haikunator::haikunate() . '-' . $suffix;
   }
 
   private function generatePatternId(SettingsService $settingsService): string

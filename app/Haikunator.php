@@ -32,13 +32,10 @@ class Haikunator {
         "violet", "voice", "water", "waterfall", "wave", "wildflower", "wind", "wood"
     ];
 
-    public static function setSeed(int $seed): void {
-        mt_srand($seed);
-    }
-
     public static function haikunate(): string {
-        $adjective = self::$adjectives[mt_rand(0, count(self::$adjectives) - 1)];
-        $noun = self::$nouns[mt_rand(0, count(self::$nouns) - 1)];
+        // random_int (CSPRNG): share URLs are the only secret of a share without a password
+        $adjective = self::$adjectives[random_int(0, count(self::$adjectives) - 1)];
+        $noun = self::$nouns[random_int(0, count(self::$nouns) - 1)];
         return sprintf("%s-%s", $adjective, $noun);
     }
 
