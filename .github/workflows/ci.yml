@@ -101,19 +101,33 @@ jobs:
       - name: Test de fumée du conteneur
         run: |
           docker run -d --name ot -p 8080:80 opentransfer:smoke
+          up=000
           for i in $(seq 1 60); do
-            if curl -fsS http://localhost:8080/up >/dev/null 2>&1; then break; fi
+            up=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/up || true)
+            [ "$up" = "200" ] && break
             sleep 2
           done
-          curl -fsS http://localhost:8080/up
-          curl -fsS -o /dev/null -w 'Accueil : HTTP %{http_code}\n' http://localhost:8080/
+          home=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/ || true)
+          echo "/up : HTTP $up — / : HTTP $home"
+          [ "$up" = "200" ] && [ "$home" = "200" ]
           docker exec ot php -v | head -1
           docker exec ot tusd -version | head -1
           docker exec ot sh -c 'test ! -d /var/www/html/vendor/phpunit' && echo "Pas de dépendances de dev dans l'image"
 
-      - name: Journaux du conteneur
+      # Les journaux bruts d'Actions exigent une authentification, pas les annotations :
+      # on y remonte le diagnostic pour qu'il soit lisible par tous (et par l'automatisation).
+      - name: Diagnostic du conteneur
         if: failure()
-        run: docker logs ot
+        run: |
+          {
+            echo "== docker logs =="
+            docker logs ot 2>&1 | tail -n 60
+            echo "== laravel.log =="
+            docker exec ot sh -c 'tail -n 40 /var/www/html/storage/logs/laravel.log' 2>&1 || true
+          } > diagnostic.txt
+          cat diagnostic.txt
+          msg=$(sed -e 's/%/%25/g; s/\r//g' diagnostic.txt | sed -e ':a;N;$!ba;s/\n/%0A/g' | cut -c1-60000)
+          echo "::error title=Diagnostic du conteneur::${msg}"
 
       - name: Connexion à ghcr.io
         if: github.event_name != 'pull_request'
