@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+# Moindre privilège par défaut ; seul le job de publication peut écrire dans le registre.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests et audits
+    runs-on: ubuntu-latest
+    steps:
+      # Les actions sont épinglées par SHA : un tag déplacé ne peut pas injecter de code.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.5'
+          extensions: mbstring, intl, gd, zip, pdo_sqlite, bcmath, sodium
+          coverage: none
+          tools: composer:v2
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Dépendances PHP
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Dépendances JS et build du front
+        run: |
+          npm ci --no-audit --no-fund
+          npx vite build
+
+      - name: Environnement Laravel
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Tests
+        run: php artisan test
+
+      - name: Audit des dépendances PHP
+        run: composer audit --no-interaction
+
+      - name: Audit des dépendances JS
+        run: npm audit --audit-level=high
+
+  image:
+    name: Image Docker
+    needs: tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Nom de l'image (ghcr impose des minuscules)
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Tags et version
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-
+            type=ref,event=pr
+
+      - name: Build de l'image de test (amd64)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: docker/alpine/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: opentransfer:smoke
+          build-args: VERSION=${{ steps.meta.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # On ne publie jamais une image qui ne démarre pas.
+      - name: Test de fumée du conteneur
+        run: |
+          docker run -d --name ot -p 8080:80 opentransfer:smoke
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/up >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          curl -fsS http://localhost:8080/up
+          curl -fsS -o /dev/null -w 'Accueil : HTTP %{http_code}\n' http://localhost:8080/
+          docker exec ot php -v | head -1
+          docker exec ot tusd -version | head -1
+          docker exec ot sh -c 'test ! -d /var/www/html/vendor/phpunit' && echo "Pas de dépendances de dev dans l'image"
+
+      - name: Journaux du conteneur
+        if: failure()
+        run: docker logs ot
+
+      - name: Connexion à ghcr.io
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publication multi-architecture
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: docker/alpine/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: VERSION=${{ steps.meta.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+          sbom: true

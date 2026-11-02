@@ -1,8 +1,8 @@
 services:
   app:
-    image: wardy784/erugo:latest
+    image: ghcr.io/juzosuzuya20/opentransfer:latest
     restart: unless-stopped
     volumes:
-      - /Users/dean/erugo-storage/storage:/var/www/html/storage
+      - ./opentransfer-storage:/var/www/html/storage
     ports:
       - "9998:80"

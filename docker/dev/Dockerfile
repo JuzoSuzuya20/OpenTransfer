@@ -1,7 +1,7 @@
 # Development image based on Alpine - matches production architecture
-FROM alpine:3.19
+FROM alpine:3.24
 
-LABEL maintainer="Dean Ward"
+LABEL org.opencontainers.image.source="https://github.com/JuzoSuzuya20/OpenTransfer"
 
 # Multi-arch support - TARGETARCH is automatically set by Docker buildx
 ARG TARGETARCH
@@ -9,87 +9,80 @@ ARG TARGETARCH
 WORKDIR /var/www/html
 
 ENV TZ=UTC
-ENV SUPERVISOR_PHP_FPM_COMMAND="/usr/sbin/php-fpm83 -F"
+ENV SUPERVISOR_PHP_FPM_COMMAND="/usr/sbin/php-fpm85 -F"
 ENV SUPERVISOR_CADDY_COMMAND="/usr/sbin/caddy run --config /etc/caddy/Caddyfile"
 ENV SUPERVISOR_PHP_USER="erugo"
 
-# Enable community repository for PHP packages
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories
 
 # Install production requirements + development tools
 RUN apk add --no-cache \
     curl \
     su-exec \
-    sudo \
     supervisor \
     cronie \
     ffmpeg \
-    php83 \
-    php83-pdo_pgsql \
-    php83-pdo_sqlite \
-    php83-gd \
-    php83-curl \
-    php83-pecl-mongodb \
-    php83-imap \
-    php83-pdo_mysql \
-    php83-mbstring \
-    php83-xml \
-    php83-zip \
-    php83-bcmath \
-    php83-soap \
-    php83-intl \
-    php83-ldap \
-    php83-pecl-redis \
-    php83-pecl-memcached \
-    php83-phar \
-    php83-openssl \
-    php83-json \
-    php83-dom \
-    php83-tokenizer \
-    php83-fileinfo \
-    php83-ctype \
-    php83-session \
-    php83-simplexml \
-    php83-xmlwriter \
-    php83-sodium \
+    php85 \
+    php85-pdo_pgsql \
+    php85-pdo_sqlite \
+    php85-gd \
+    php85-curl \
+    php85-pdo_mysql \
+    php85-mbstring \
+    php85-xml \
+    php85-zip \
+    php85-bcmath \
+    php85-intl \
+    php85-pecl-redis \
+    php85-pecl-memcached \
+    php85-phar \
+    php85-openssl \
+    php85-dom \
+    php85-tokenizer \
+    php85-fileinfo \
+    php85-ctype \
+    php85-session \
+    php85-simplexml \
+    php85-xmlwriter \
+    php85-sodium \
     tzdata \
     libcap \
     zip \
     unzip \
     git \
-    php83-fpm \
+    php85-fpm \
     caddy \
     nodejs \
     npm \
-    && ln -s /usr/bin/php83 /usr/bin/php \
+    && ln -sf /usr/bin/php85 /usr/bin/php \
     && rm -rf /var/cache/apk/*
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
 
-# Download and install tusd for the correct architecture
-ENV TUSD_VERSION=2.6.0
-RUN TUSD_ARCH="${TARGETARCH}" && \
-    if [ "$TUSD_ARCH" = "amd64" ]; then TUSD_ARCH="amd64"; \
-    elif [ "$TUSD_ARCH" = "arm64" ]; then TUSD_ARCH="arm64"; \
+# Download and install tusd for the correct architecture.
+# Les empreintes sont épinglées ici : une archive altérée fait échouer le build.
+ENV TUSD_VERSION=2.10.1
+ARG TUSD_SHA256_AMD64=e8c8d7738275d2d9377db953aecbc242262d3620e77fbd3c1491361d9cea6ac8
+ARG TUSD_SHA256_ARM64=134e575a6524698b54d989958c680f0a4ec243d9622c1926e30e27c2a86e4752
+RUN if [ "$TARGETARCH" = "amd64" ]; then TUSD_SHA256="$TUSD_SHA256_AMD64"; \
+    elif [ "$TARGETARCH" = "arm64" ]; then TUSD_SHA256="$TUSD_SHA256_ARM64"; \
     else echo "Unsupported architecture: $TARGETARCH" && exit 1; fi && \
-    curl -L -o /tmp/tusd.tar.gz "https://github.com/tus/tusd/releases/download/v${TUSD_VERSION}/tusd_linux_${TUSD_ARCH}.tar.gz" && \
+    curl -fsSL -o /tmp/tusd.tar.gz "https://github.com/tus/tusd/releases/download/v${TUSD_VERSION}/tusd_linux_${TARGETARCH}.tar.gz" && \
+    echo "${TUSD_SHA256}  /tmp/tusd.tar.gz" | sha256sum -c - && \
     tar -xzf /tmp/tusd.tar.gz -C /tmp && \
-    mv /tmp/tusd_linux_${TUSD_ARCH}/tusd /usr/local/bin/tusd && \
+    mv /tmp/tusd_linux_${TARGETARCH}/tusd /usr/local/bin/tusd && \
     chmod +x /usr/local/bin/tusd && \
-    rm -rf /tmp/tusd.tar.gz /tmp/tusd_linux_${TUSD_ARCH}
+    rm -rf /tmp/tusd.tar.gz /tmp/tusd_linux_${TARGETARCH}
 
 # Create necessary directories
-RUN mkdir -p /run/php /var/www/html/public /etc/php83/php-fpm.d /etc/caddy
+RUN mkdir -p /run/php /var/www/html/public /etc/php85/php-fpm.d /etc/caddy
 
-COPY ./www.conf /etc/php83/php-fpm.d/www.conf
+COPY ./www.conf /etc/php85/php-fpm.d/www.conf
 COPY ./Caddyfile /etc/caddy/Caddyfile
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Configure PHP capabilities
-RUN setcap "cap_net_bind_service=+ep" /usr/bin/php83
 
 # Create erugo user and group
 RUN addgroup erugo && \
@@ -101,7 +94,7 @@ RUN chown -R erugo:erugo /run/php
 # Copy configuration files
 COPY ./start-container /usr/local/bin/start-container
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY ./php.ini /etc/php83/conf.d/99-erugo.ini
+COPY ./php.ini /etc/php85/conf.d/99-erugo.ini
 RUN chmod +x /usr/local/bin/start-container
 
 # Create supervisor log directory
