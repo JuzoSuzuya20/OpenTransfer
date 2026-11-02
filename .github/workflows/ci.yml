@@ -120,6 +120,14 @@ jobs:
           int=$(docker exec ot curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost/api/tusd-hooks)
           echo "Hooks tusd — depuis l'extérieur : HTTP $ext, depuis le conteneur : HTTP $int"
           [ "$ext" = "403" ] && [ "$int" = "200" ]
+          # /up peut répondre alors que l'upload (tusd) ou les e-mails (worker) sont morts.
+          sleep 10
+          docker exec -u erugo ot test -w /var/www/html/storage/logs
+          docker exec ot pgrep -x tusd >/dev/null
+          docker exec ot pgrep -f 'artisan queue:work' >/dev/null
+          # (un « ! cmd » ne déclenche pas set -e : test explicite)
+          if docker logs ot 2>&1 | grep -E 'gave up|FATAL|exited: .*not expected'; then exit 1; fi
+          echo "Stockage inscriptible, tusd et worker actifs"
 
       # Les journaux bruts d'Actions exigent une authentification, pas les annotations :
       # on y remonte le diagnostic pour qu'il soit lisible par tous (et par l'automatisation).

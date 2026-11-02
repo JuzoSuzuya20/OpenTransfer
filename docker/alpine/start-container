@@ -28,6 +28,10 @@ export APP_URL=/
 export ASSET_URL=/
 
 
+# Without a mounted volume the image has no storage directory at all: the
+# skeleton copy below would fail silently and tusd / the queue worker crash.
+mkdir -p /var/www/html/storage
+
 # First time setup check
 if [ ! -f /var/www/html/storage/.setup-lock ]; then
     echo "[First time setup] Copying storage skeleton contents..."

@@ -125,6 +125,9 @@ RUN chmod +x /usr/local/bin/start-container
 # Create supervisor log directory
 RUN mkdir -p /var/log/supervisor
 
+# Shares, database, keys and logs live here: mount it to keep them across upgrades
+VOLUME ["/var/www/html/storage"]
+
 EXPOSE 80/tcp
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
