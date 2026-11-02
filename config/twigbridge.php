@@ -122,6 +122,8 @@ return [
             'TwigBridge\Extension\Laravel\Translator',
             'TwigBridge\Extension\Laravel\Url',
             'TwigBridge\Extension\Laravel\Model',
+            // Twig ne sert qu'aux e-mails, modifiables par les admins : rendu toujours sandboxé.
+            'Twig\Extension\SandboxExtension', // voir App\Twig\EmailSandbox
             // 'TwigBridge\Extension\Laravel\Gate',
 
             // 'TwigBridge\Extension\Laravel\Form',

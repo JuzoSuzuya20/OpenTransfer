@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use App\Services\SettingsService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
+use App\Twig\EmailSandbox;
+use Twig\Extension\SandboxExtension;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +16,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Loaded by TwigBridge (config/twigbridge.php): every email template is rendered sandboxed
+        $this->app->bind(SandboxExtension::class, fn () => EmailSandbox::extension());
     }
 
     /**
