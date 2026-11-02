@@ -111,7 +111,7 @@ class SettingsController extends Controller
     public function writeLogo(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'logo' => 'required|image|mimes:png,svg|max:2048',
+            'logo' => 'required|image:allow_svg|mimes:png,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -288,17 +288,27 @@ class SettingsController extends Controller
         
         if (Storage::disk('public')->exists('favicon.svg')) {
             $path = Storage::disk('public')->path('favicon.svg');
-            return response()->file($path, ['Content-Type' => 'image/svg+xml']);
+            return response()->file($path, self::SVG_HEADERS);
         }
-        
+
         // Fall back to default icon.svg
         $defaultPath = public_path('icon.svg');
         if (file_exists($defaultPath)) {
-            return response()->file($defaultPath, ['Content-Type' => 'image/svg+xml']);
+            return response()->file($defaultPath, self::SVG_HEADERS);
         }
-        
+
         abort(404);
     }
+
+    /**
+     * An uploaded SVG can embed scripts: opened directly from our origin it
+     * would run as stored XSS. This CSP keeps it a pure image.
+     */
+    private const SVG_HEADERS = [
+        'Content-Type' => 'image/svg+xml',
+        'Content-Security-Policy' => "default-src 'none'; style-src 'unsafe-inline'; img-src data:",
+        'X-Content-Type-Options' => 'nosniff',
+    ];
 
     public function hasFavicon()
     {

@@ -665,7 +665,7 @@ class SharesController extends Controller
     $indexedSettings['setup_needed'] = $userCount > 0 ? 'false' : 'true';
 
     //grab the app url from env
-    $appURL = env('APP_URL');
+    $appURL = config('app.url');
     $indexedSettings['api_url'] = $appURL;
 
     return $indexedSettings;

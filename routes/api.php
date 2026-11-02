@@ -95,7 +95,7 @@ Route::group([], function ($router) {
         Route::delete('/favicon', [SettingsController::class, 'deleteFavicon'])->name('settings.deleteFavicon');
         Route::get('/favicon/status', [SettingsController::class, 'hasFavicon'])->name('settings.hasFavicon');
         //list background images
-        Route::get('/backgrounds', [BackgroundsController::class, 'list'])->name('backgrounds.list');
+        Route::get('/backgrounds', [BackgroundsController::class, 'list'])->name('settings.backgrounds.list');
         //upload a background image
         Route::post('/backgrounds', [BackgroundsController::class, 'upload'])->name('backgrounds.upload');
         //delete a background image

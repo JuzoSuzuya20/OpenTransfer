@@ -105,4 +105,17 @@ return [
 
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Serializable Classes
+    |--------------------------------------------------------------------------
+    |
+    | Le cache ne stocke que des tableaux et des scalaires : refuser toute
+    | désérialisation d'objet bloque les chaînes de gadgets PHP si APP_KEY
+    | venait à fuiter.
+    |
+    */
+
+    'serializable_classes' => false,
+
 ];
