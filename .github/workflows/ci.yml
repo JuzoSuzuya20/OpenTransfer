@@ -109,25 +109,30 @@ jobs:
             [ "$up" = "200" ] && [ "$home" = "200" ] && break
             sleep 2
           done
-          echo "/up : HTTP $up — / : HTTP $home (après $i essai(s))"
-          [ "$up" = "200" ] && [ "$home" = "200" ]
-          docker exec ot php -v | head -1
-          docker exec ot tusd -version | head -1
-          docker exec ot sh -c 'test ! -d /var/www/html/vendor/phpunit' && echo "Pas de dépendances de dev dans l'image"
+          # Chaque vérification ratée devient sa propre annotation (lisible sans authentification).
+          fails=0
+          check() {
+            label=$1; shift
+            if "$@" >/dev/null 2>&1; then echo "OK   $label"; else echo "::error title=Test de fumée::$label"; fails=$((fails + 1)); fi
+          }
+          check "/up répond 200 (reçu $up)" test "$up" = 200
+          check "/ répond 200 (reçu $home)" test "$home" = 200
+          check "PHP 8.5 dans l'image" sh -c 'docker exec ot php -v | grep -q "^PHP 8\.5"'
+          check "tusd installé" docker exec ot tusd -version
+          check "pas de dépendances de dev dans l'image" docker exec ot test ! -d /var/www/html/vendor/phpunit
           # Vu du conteneur, l'hôte arrive depuis une IP privée, comme un reverse proxy.
           hook='{"Type":"post-receive"}'
-          ext=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost:8080/api/tusd-hooks)
-          int=$(docker exec ot curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost/api/tusd-hooks)
-          echo "Hooks tusd — depuis l'extérieur : HTTP $ext, depuis le conteneur : HTTP $int"
-          [ "$ext" = "403" ] && [ "$int" = "200" ]
+          ext=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost:8080/api/tusd-hooks || true)
+          int=$(docker exec ot curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost/api/tusd-hooks || true)
+          check "hooks tusd refusés depuis l'extérieur (reçu $ext)" test "$ext" = 403
+          check "hooks tusd acceptés depuis le conteneur (reçu $int)" test "$int" = 200
           # /up peut répondre alors que l'upload (tusd) ou les e-mails (worker) sont morts.
           sleep 10
-          docker exec -u erugo ot test -w /var/www/html/storage/logs
-          docker exec ot pgrep -x tusd >/dev/null
-          docker exec ot pgrep -f 'artisan queue:work' >/dev/null
-          # (un « ! cmd » ne déclenche pas set -e : test explicite)
-          if docker logs ot 2>&1 | grep -E 'gave up|FATAL|exited: .*not expected'; then exit 1; fi
-          echo "Stockage inscriptible, tusd et worker actifs"
+          check "storage inscriptible par l'utilisateur applicatif" docker exec -u erugo ot test -w /var/www/html/storage/logs
+          check "tusd en cours d'exécution" docker exec ot pgrep -x tusd
+          check "worker de file d'attente en cours d'exécution" docker exec ot pgrep -f 'artisan queue:work'
+          check "aucun processus abandonné par supervisord" sh -c "! docker logs ot 2>&1 | grep -qE 'gave up|FATAL|exited: .*not expected'"
+          [ "$fails" -eq 0 ]
 
       # Les journaux bruts d'Actions exigent une authentification, pas les annotations :
       # on y remonte le diagnostic pour qu'il soit lisible par tous (et par l'automatisation).
@@ -135,10 +140,12 @@ jobs:
         if: failure()
         run: |
           {
-            echo "== docker logs =="
-            docker logs ot 2>&1 | tail -n 60
-            echo "== laravel.log =="
-            docker exec ot sh -c 'tail -n 40 /var/www/html/storage/logs/laravel.log' 2>&1 || true
+            echo "== laravel.log (erreurs) =="
+            docker exec ot sh -c 'grep -E "\.(ERROR|CRITICAL|ALERT|EMERGENCY):" /var/www/html/storage/logs/laravel.log | tail -n 5' 2>&1 || true
+            echo "== supervisord =="
+            docker logs ot 2>&1 | grep -E 'WARN|ERROR|exited|gave up' | tail -n 15
+            echo "== fin des journaux =="
+            docker logs ot 2>&1 | tail -n 15
           } > diagnostic.txt
           cat diagnostic.txt
           msg=$(sed -e 's/%/%25/g; s/\r//g' diagnostic.txt | sed -e ':a;N;$!ba;s/\n/%0A/g' | cut -c1-60000)
