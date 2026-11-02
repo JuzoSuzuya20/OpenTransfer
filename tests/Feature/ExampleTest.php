@@ -2,11 +2,16 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+
+    /** Le conteneur exécute db:seed au démarrage : les tests reproduisent cet état. */
+    protected $seed = true;
+
     /**
      * A basic test example.
      */

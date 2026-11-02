@@ -1,0 +1,31 @@
+# Contrôle de version et outillage local
+.git
+.github
+.idea
+.vscode
+.env
+.env.*
+!.env.example
+
+# Dépendances et artefacts reconstruits dans l'image
+node_modules
+vendor
+public/build
+public/hot
+
+# Données locales : ne doivent jamais finir dans une image
+storage/app/*
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+database/*.sqlite*
+
+# Inutile en production
+tests
+phpunit.xml
+.phpunit.cache
+core
+core.[0-9]*
+docker-compose*.yml
+publish-docker-image.sh
