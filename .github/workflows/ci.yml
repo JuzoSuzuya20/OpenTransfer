@@ -101,14 +101,15 @@ jobs:
       - name: Test de fumée du conteneur
         run: |
           docker run -d --name ot -p 8080:80 opentransfer:smoke
-          up=000
+          # On attend que /up ET / répondent : un échec persistant échoue quand même au bout de 2 min.
+          up=000; home=000
           for i in $(seq 1 60); do
             up=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/up || true)
-            [ "$up" = "200" ] && break
+            home=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/ || true)
+            [ "$up" = "200" ] && [ "$home" = "200" ] && break
             sleep 2
           done
-          home=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/ || true)
-          echo "/up : HTTP $up — / : HTTP $home"
+          echo "/up : HTTP $up — / : HTTP $home (après $i essai(s))"
           [ "$up" = "200" ] && [ "$home" = "200" ]
           docker exec ot php -v | head -1
           docker exec ot tusd -version | head -1
