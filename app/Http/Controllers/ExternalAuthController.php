@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\URL;
 use App\Models\User;
 use App\AuthProviders\AuthProviderUser;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Services\SettingsService;
 use App\Models\AuthProvider;
 use App\Models\UserAuthProvider;
@@ -107,13 +108,22 @@ class ExternalAuthController extends Controller
     public function providerCallback($providerUuid)
     {
         // Retrieve the authentication provider by UUID
-        $provider = AuthProvider::where('uuid', $providerUuid)->first();
+        $provider = AuthProvider::where('uuid', $providerUuid)->where('enabled', true)->first();
         if (!$provider) {
             return redirect('/')->with('error', 'Provider not found');
         }
 
-        // Get user information from the provider
-        $authProviderUser = $this->getAuthProviderUser($provider);
+        // Get user information from the provider. A denied consent, an expired
+        // state or an invalid token must send the user back, not crash with a 500.
+        try {
+            $authProviderUser = $this->getAuthProviderUser($provider);
+        } catch (\Throwable $e) {
+            Log::warning('External authentication failed', [
+                'provider' => $provider->uuid,
+                'error' => $e->getMessage(),
+            ]);
+            return redirect('/')->with('error', 'Authentication with the identity provider failed. Please try again.');
+        }
 
         // Check if we're linking an account
         $isLinking = session('linkingAccount', false);
@@ -135,7 +145,8 @@ class ExternalAuthController extends Controller
      */
     private function getProviderById($providerId)
     {
-        return AuthProvider::where('id', $providerId)->first();
+        // A provider disabled by an admin must stop working, not just disappear from the login page
+        return AuthProvider::where('id', $providerId)->where('enabled', true)->first();
     }
 
     /**
@@ -255,6 +266,10 @@ class ExternalAuthController extends Controller
             return redirect('/')->with('error', 'User not found');
         }
 
+        if (!$user->active) {
+            return redirect('/')->with('error', 'This account is disabled');
+        }
+
         return $this->authenticateAndRedirect($user);
     }
 
@@ -287,6 +302,10 @@ class ExternalAuthController extends Controller
         // If still no user, return error
         if (!$user) {
             return redirect('/')->with('error', 'Account not found. Please check that you have linked your account to this provider.');
+        }
+
+        if (!$user->active) {
+            return redirect('/')->with('error', 'This account is disabled');
         }
 
         // Create JWT token
