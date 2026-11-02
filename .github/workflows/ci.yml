@@ -113,6 +113,12 @@ jobs:
           docker exec ot php -v | head -1
           docker exec ot tusd -version | head -1
           docker exec ot sh -c 'test ! -d /var/www/html/vendor/phpunit' && echo "Pas de dépendances de dev dans l'image"
+          # Vu du conteneur, l'hôte arrive depuis une IP privée, comme un reverse proxy.
+          hook='{"Type":"post-receive"}'
+          ext=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost:8080/api/tusd-hooks)
+          int=$(docker exec ot curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost/api/tusd-hooks)
+          echo "Hooks tusd — depuis l'extérieur : HTTP $ext, depuis le conteneur : HTTP $int"
+          [ "$ext" = "403" ] && [ "$int" = "200" ]
 
       # Les journaux bruts d'Actions exigent une authentification, pas les annotations :
       # on y remonte le diagnostic pour qu'il soit lisible par tous (et par l'automatisation).

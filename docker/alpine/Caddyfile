@@ -51,6 +51,17 @@
     }
     header @user_assets Cache-Control "public, max-age=300, must-revalidate"
 
+    # tusd runs in this container and calls http://localhost/api/tusd-hooks.
+    # Behind a reverse proxy every external request comes from a private IP,
+    # which the app-level allowlist accepts: only loopback may reach the hooks.
+    @tusd_hooks_external {
+        path /api/tusd-hooks
+        not remote_ip 127.0.0.1/8 ::1
+    }
+    handle @tusd_hooks_external {
+        respond 403
+    }
+
     # Proxy tusd uploads - must be handled before Laravel catches it
     handle /files/* {
         reverse_proxy localhost:8080 {
