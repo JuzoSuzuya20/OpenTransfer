@@ -39,11 +39,34 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        Auth::attempt($credentials);
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid email or password'
+            ], 401);
+        }
         $user = Auth::user();
 
+        if (!$user->active) {
+            return $this->inactiveAccountResponse($user);
+        }
 
         return $this->respondWithToken($user);
+    }
+
+    /**
+     * Inactive accounts include self-registered users who have not verified
+     * their email yet: without this check, registering with an address you
+     * do not own was enough to get in.
+     */
+    private function inactiveAccountResponse(User $user)
+    {
+        return response()->json([
+            'status' => 'error',
+            'message' => $user->email_verification_code
+                ? 'Please verify your email address before signing in'
+                : 'This account is disabled'
+        ], 403);
     }
 
     //refresh the token
@@ -66,6 +89,10 @@ class AuthController extends Controller
                 'status' => 'error',
                 'message' => 'Unauthorized'
             ], 401);
+        }
+
+        if (!$user->active) {
+            return $this->inactiveAccountResponse($user);
         }
 
         return $this->respondWithToken($user);
