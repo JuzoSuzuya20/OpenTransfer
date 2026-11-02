@@ -946,6 +946,7 @@
     "deletes": "Eliminação",
     "download": {
       "invalid_password": "A palavra-passe de partilha é inválida",
+      "too_many_attempts": "Demasiadas palavras-passe incorretas. Aguarde alguns minutos e tente novamente.",
       "password_required": "É necessário introduzir a palavra-passe para descarregar esta partilha.",
       "password_required_short": "Introduzir a palavra-passe"
     },

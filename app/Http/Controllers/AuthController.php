@@ -15,6 +15,7 @@ use App\Jobs\sendEmail;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\ReverseShareInvite;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\RateLimiter;
 
 
 class AuthController extends Controller
@@ -39,12 +40,24 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        // Behind a reverse proxy every client shares the proxy IP, so the email
+        // is what really scopes the lock: an attacker can delay one account, not all.
+        $throttleKey = 'login:' . Str::lower($request->input('email')) . '|' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Too many login attempts. Please try again in ' . RateLimiter::availableIn($throttleKey) . ' seconds.'
+            ], 429);
+        }
+
         if (!Auth::attempt($credentials)) {
+            RateLimiter::hit($throttleKey, 60);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid email or password'
             ], 401);
         }
+        RateLimiter::clear($throttleKey);
         $user = Auth::user();
 
         if (!$user->active) {

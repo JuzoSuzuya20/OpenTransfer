@@ -975,6 +975,7 @@
     "deletes": "Löscht",
     "download": {
       "invalid_password": "Freigabepasswort ist ungültig",
+      "too_many_attempts": "Zu viele falsche Passwörter. Bitte warten Sie einige Minuten und versuchen Sie es erneut.",
       "password_required": "Sie müssen das Passwort eingeben, um diese Freigabe herunterzuladen.",
       "password_required_short": "Passwort eingeben"
     },

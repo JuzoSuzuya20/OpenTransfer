@@ -996,6 +996,7 @@
     "deletes": "Deletes",
     "download": {
       "invalid_password": "Share password is invalid",
+      "too_many_attempts": "Too many incorrect passwords. Please wait a few minutes and try again.",
       "password_required": "You must enter the password to download this share.",
       "password_required_short": "Enter password"
     },

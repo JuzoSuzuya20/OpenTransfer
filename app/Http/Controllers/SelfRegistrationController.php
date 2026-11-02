@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User;
 use App\Models\Setting;
@@ -139,9 +141,20 @@ class SelfRegistrationController extends Controller
             ], 422);
         }
 
+        // A 6-digit code is brute-forceable without a limit, which would let anyone
+        // verify an address they do not own. 5 tries per code lifetime (15 min).
+        $throttleKey = 'verify-email:' . Str::lower($request->email);
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Too many attempts. Please try again in ' . RateLimiter::availableIn($throttleKey) . ' seconds.'
+            ], 429);
+        }
+
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
+            RateLimiter::hit($throttleKey, 900);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid email or verification code'
@@ -158,6 +171,7 @@ class SelfRegistrationController extends Controller
 
         // Check if code matches
         if ($user->email_verification_code !== $request->code) {
+            RateLimiter::hit($throttleKey, 900);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid email or verification code'
@@ -171,6 +185,8 @@ class SelfRegistrationController extends Controller
                 'message' => 'Verification code has expired. Please request a new one.'
             ], 400);
         }
+
+        RateLimiter::clear($throttleKey);
 
         // Activate the account
         $user->active = true;

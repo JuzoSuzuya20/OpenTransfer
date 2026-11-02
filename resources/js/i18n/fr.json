@@ -975,6 +975,7 @@
     "deletes": "Suppression",
     "download": {
       "invalid_password": "Le mot de passe du partage est invalide",
+      "too_many_attempts": "Trop de mots de passe incorrects. Patientez quelques minutes avant de réessayer.",
       "password_required": "Vous devez saisir le mot de passe pour télécharger ce partage.",
       "password_required_short": "Entrez le mot de passe"
     },

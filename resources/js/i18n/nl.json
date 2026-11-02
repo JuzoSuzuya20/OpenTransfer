@@ -975,6 +975,7 @@
     "deletes": "Verwijderd",
     "download": {
       "invalid_password": "Wachtwoord delen is ongeldig",
+      "too_many_attempts": "Te veel onjuiste wachtwoorden. Wacht een paar minuten en probeer het opnieuw.",
       "password_required": "Je moet het wachtwoord invoeren om deze share te downloaden.",
       "password_required_short": "Wachtwoord invoeren"
     },

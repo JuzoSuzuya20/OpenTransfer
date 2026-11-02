@@ -16,6 +16,7 @@ use App\Services\SettingsService;
 use App\Services\PatternGenerator;
 use App\Jobs\cleanSpecificShares;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 
 class SharesController extends Controller
 {
@@ -30,6 +31,30 @@ class SharesController extends Controller
     $sanitized = trim($sanitized);
 
     return $sanitized !== '' ? $sanitized : $fallback;
+  }
+
+  /**
+   * Share passwords are otherwise brute-forceable. Behind a reverse proxy the IP
+   * is the proxy's, so a flood can briefly block a share: a short window keeps
+   * that cost low while making guessing impractical.
+   */
+  private function sharePasswordThrottleKey(Share $share): string
+  {
+    return 'share-password:' . $share->id . '|' . request()->ip();
+  }
+
+  private function tooManyPasswordAttempts(Share $share): bool
+  {
+    return RateLimiter::tooManyAttempts($this->sharePasswordThrottleKey($share), 10);
+  }
+
+  private function checkSharePassword(Share $share, string $password): bool
+  {
+    if (!Hash::check($password, $share->password)) {
+      RateLimiter::hit($this->sharePasswordThrottleKey($share), 300);
+      return false;
+    }
+    return true;
   }
 
   public function read($shareId)
@@ -168,10 +193,13 @@ class SharesController extends Controller
 
     if ($share->password) {
       $password = request()->input('password');
-      if (!$password) {
+      if (!$password || !is_string($password)) {
         return redirect()->to('/shares/' . $shareId . '?error=password_required');
       }
-      if (!Hash::check($password, $share->password)) {
+      if ($this->tooManyPasswordAttempts($share)) {
+        return redirect()->to('/shares/' . $shareId . '?error=too_many_attempts');
+      }
+      if (!$this->checkSharePassword($share, $password)) {
         return redirect()->to('/shares/' . $shareId . '?error=invalid_password');
       }
     }
@@ -262,10 +290,13 @@ class SharesController extends Controller
 
     if ($share->password) {
       $password = request()->input('password');
-      if (!$password) {
+      if (!$password || !is_string($password)) {
         return response()->json(['error' => 'Password required'], 401);
       }
-      if (!Hash::check($password, $share->password)) {
+      if ($this->tooManyPasswordAttempts($share)) {
+        return response()->json(['error' => 'Too many attempts'], 429);
+      }
+      if (!$this->checkSharePassword($share, $password)) {
         return response()->json(['error' => 'Invalid password'], 401);
       }
     }

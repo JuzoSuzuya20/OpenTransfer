@@ -975,6 +975,7 @@
     "deletes": "Cancella",
     "download": {
       "invalid_password": "La password di condivisione non è valida",
+      "too_many_attempts": "Troppe password errate. Attendi qualche minuto e riprova.",
       "password_required": "Per scaricare questa condivisione è necessario inserire la password.",
       "password_required_short": "Inserire la password"
     },
