@@ -64,9 +64,26 @@ class SettingsController extends Controller
         ]);
     }
 
+    /**
+     * Settings only admins may read. These read routes are open to every
+     * signed-in account, reverse-share guests included, and the SMTP group
+     * holds the mail server credentials.
+     */
+    private const ADMIN_ONLY_GROUPS = ['system.smtp'];
+
+    private function withoutAdminOnlySettings($query, Request $request)
+    {
+        if ($request->user()->admin) {
+            return $query;
+        }
+
+        return $query->whereNotIn('group', self::ADMIN_ONLY_GROUPS)
+            ->where('key', 'not like', 'smtp%');
+    }
+
     public function read(Request $request, $key)
     {
-        $setting = Setting::where('key', $key)->first();
+        $setting = $this->withoutAdminOnlySettings(Setting::where('key', $key), $request)->first();
         if (!$setting) {
             return response()->json([
                 'status' => 'error',
@@ -98,7 +115,7 @@ class SettingsController extends Controller
             $query->where('group', $group);
         }
 
-        $settings = $query->get();
+        $settings = $this->withoutAdminOnlySettings($query, $request)->get();
 
         return response()->json([
             'status' => 'success',
