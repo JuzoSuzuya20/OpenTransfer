@@ -95,6 +95,10 @@ fi
 
 echo "Starting services..."
 if [ "$(id -u)" = "0" ]; then
+    # supervisord reopens /dev/stdout and /dev/stderr to relay each service's
+    # logs: the container's stdio belongs to root, so hand it to erugo first
+    # (started with --user, the runtime already does this itself).
+    chown erugo:erugo /proc/self/fd/1 /proc/self/fd/2 2>/dev/null || true
     exec su-exec erugo /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
