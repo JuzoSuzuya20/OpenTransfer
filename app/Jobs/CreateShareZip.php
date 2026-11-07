@@ -68,28 +68,36 @@ class CreateShareZip implements ShouldQueue
       mkdir($zipDir, 0755, true);
     }
 
-    // Build the zip command to zip the entire directory
-    $zipCommand = sprintf(
-      'zip -r %s %s',
-      escapeshellarg($zipPath),
-      escapeshellarg('.')  // '.' represents current directory after we chdir
+    // Built in PHP rather than by running `zip -r`, which follows symbolic
+    // links and would archive whatever a link inside the share points to.
+    $zip = new \ZipArchive();
+    if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+      throw new \Exception('Failed to create zip file');
+    }
+
+    $root = realpath($sourcePath);
+    if ($root === false) {
+      throw new \Exception('Share directory not found');
+    }
+
+    $entries = new \RecursiveIteratorIterator(
+      new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS),
+      \RecursiveIteratorIterator::SELF_FIRST
     );
+    foreach ($entries as $entry) {
+      if ($entry->isLink()) {
+        continue;
+      }
+      $relativePath = substr($entry->getPathname(), strlen($root) + 1);
+      if ($entry->isDir()) {
+        $zip->addEmptyDir($relativePath);
+      } else {
+        $zip->addFile($entry->getPathname(), $relativePath);
+      }
+    }
 
-    // Change to the source directory
-    $currentDir = getcwd();
-    chdir($sourcePath);
-
-    // Execute the command
-    $output = [];
-    $returnCode = 0;
-    exec($zipCommand . ' 2>&1', $output, $returnCode);
-
-    // Change back to original directory
-    chdir($currentDir);
-
-    //did it work?
-    if ($returnCode !== 0) {
-      throw new \Exception('Failed to create zip file: ' . implode("\n", $output));
+    if (!$zip->close()) {
+      throw new \Exception('Failed to write zip file');
     }
 
     //check the zip file is valid
@@ -107,11 +115,12 @@ class CreateShareZip implements ShouldQueue
 
   private function removeDirectory($dir)
   {
-    if (!file_exists($dir)) {
+    if (!file_exists($dir) && !is_link($dir)) {
       return true;
     }
 
-    if (!is_dir($dir)) {
+    // A link is removed itself, never followed into its target
+    if (is_link($dir) || !is_dir($dir)) {
       return unlink($dir);
     }
 

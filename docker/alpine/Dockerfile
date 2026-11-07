@@ -70,7 +70,6 @@ RUN apk add --no-cache \
     php85-xmlwriter \
     php85-sodium \
     tzdata \
-    zip \
     php85-fpm \
     caddy \
     && ln -sf /usr/bin/php85 /usr/bin/php \

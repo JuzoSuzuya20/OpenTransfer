@@ -1,3 +1,14 @@
+{
+    servers {
+        # Slow clients may not hold a connection open by trickling headers (slowloris).
+        # No read/write limit on bodies: uploads go through tusd, large downloads can take long.
+        timeouts {
+            read_header 15s
+            idle 2m
+        }
+    }
+}
+
 # Basic Caddyfile for Laravel
 :80 {
     root * /var/www/html/public
