@@ -74,7 +74,7 @@ class SelfRegistrationController extends Controller
         $expiresAt = Carbon::now()->addMinutes(15);
 
         try {
-            $user = User::create([
+            $user = (new User())->forceFill([
                 'email' => $request->email,
                 'name' => $request->name,
                 'password' => Hash::make($request->password),
@@ -84,6 +84,7 @@ class SelfRegistrationController extends Controller
                 'email_verification_code' => $code,
                 'email_verification_code_expires_at' => $expiresAt,
             ]);
+            $user->save();
 
             // Migrate any existing reverse share invites to the new user
             // This is in its own try-catch so it doesn't prevent the verification email from being sent

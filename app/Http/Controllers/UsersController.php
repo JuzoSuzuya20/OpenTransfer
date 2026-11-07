@@ -192,14 +192,15 @@ class UsersController extends Controller
     }
 
     try {
-      $user = User::create([
+      $user = (new User())->forceFill([
         'email' => $request->email,
         'name' => $request->name,
-        'admin' => $request->admin,
+        'admin' => (bool) $request->admin,
         'password' => Hash::make(Str::random(20)),
         'active' => true,
         'must_change_password' => false,
       ]);
+      $user->save();
 
       // Migrate any existing reverse share invites to the new user
       // This is in its own try-catch so it doesn't prevent the password email from being sent
@@ -272,7 +273,8 @@ class UsersController extends Controller
     }
 
     try {
-      $user->update($validator->validated());
+      // Admin-only route: the validated keys include the admin and must_change_password flags
+      $user->forceFill($validator->validated())->save();
 
       return response()->json([
         'status' => 'success',
@@ -440,7 +442,7 @@ class UsersController extends Controller
     }
 
     try {
-      $user = User::create([
+      $user = (new User())->forceFill([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
@@ -448,6 +450,7 @@ class UsersController extends Controller
         'active' => true,
         'must_change_password' => false,
       ]);
+      $user->save();
 
       return response()->json([
         'status' => 'success',

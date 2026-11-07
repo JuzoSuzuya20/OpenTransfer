@@ -86,7 +86,7 @@ class AuthenticationTest extends TestCase
         // Chaque requête réelle repart d'un garde vierge.
         $this->app['auth']->forgetGuards();
 
-        $user->update(['active' => false]);
+        $user->forceFill(['active' => false])->save();
 
         $this->withCredentials()
             ->withUnencryptedCookie('refresh_token', $refreshToken)

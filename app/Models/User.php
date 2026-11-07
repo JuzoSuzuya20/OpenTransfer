@@ -19,14 +19,15 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var list<string>
      */
+    /**
+     * admin, active, must_change_password and is_guest are deliberately not
+     * fillable: they are set with forceFill() where an account is created or
+     * edited by an admin, so no request payload can ever grant them.
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'admin',
-        'active',
-        'must_change_password',
-        'is_guest',
         'email_verification_code',
         'email_verification_code_expires_at',
     ];
