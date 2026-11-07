@@ -219,4 +219,23 @@ jobs:
         if: steps.push.outcome == 'success'
         env:
           DIGEST: ${{ steps.push.outputs.digest }}
-        run: cosign sign --yes "${IMAGE}@${DIGEST}"
+        run: |
+          identity="^https://github.com/${GITHUB_REPOSITORY}/\.github/workflows/ci\.yml@"
+          verify() {
+            cosign verify "${IMAGE}@${DIGEST}" --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+              --certificate-identity-regexp "$identity" > /dev/null
+          }
+          if ! cosign sign --yes "${IMAGE}@${DIGEST}" 2> sign.err; then
+            # Une image identique garde son digest : Rekor répond alors 409, ce qui va
+            # si une signature valide de ce workflow est déjà attachée (cf. fork moutonnoireu).
+            if grep -q "createLogEntryConflict" sign.err && verify; then
+              echo "::notice::${DIGEST} est déjà signé par ce workflow"
+            else
+              cat sign.err
+              msg=$(tail -n 20 sign.err | sed -e 's/%/%25/g; s/\r//g' | sed -e ':a;N;$!ba;s/\n/%0A/g')
+              echo "::error title=Signature cosign::${msg}"
+              exit 1
+            fi
+          fi
+          verify
+          echo "Image signée : ${IMAGE}@${DIGEST}" >> "$GITHUB_STEP_SUMMARY"
