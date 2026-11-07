@@ -50,7 +50,7 @@ class ThemesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'file' => ['required', 'file'],
+            'file' => ['required', 'file', 'max:512'],
         ]);
 
         if ($validator->fails()) {
@@ -66,6 +66,15 @@ class ThemesController extends Controller
         $themeName = $request->input('name');
         $themeFile = $request->file('file');
 
+        // A theme is a JSON object of CSS values with at least links and buttons
+        $themeData = json_decode(file_get_contents($themeFile), true);
+        if (!is_array($themeData) || !isset($themeData['links'], $themeData['buttons']) || !is_array($themeData['buttons'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid theme file',
+            ], 422);
+        }
+
         $theme = Theme::where('name', $themeName)->first();
         if ($theme) {
             $themeName = $themeName . ' (custom)';
@@ -74,7 +83,7 @@ class ThemesController extends Controller
         $theme = Theme::create([
             'name' => $themeName,
             'category' => 'custom',
-            'theme' => json_decode(file_get_contents($themeFile), true),
+            'theme' => $themeData,
         ]);
 
         return response()->json([
