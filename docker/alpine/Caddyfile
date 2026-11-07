@@ -19,14 +19,15 @@
     # Provide security headers
     header {
         # Security headers
-        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Only this host: includeSubDomains/preload would force HTTPS on every host of the domain
+        Strict-Transport-Security "max-age=31536000"
         X-Content-Type-Options "nosniff"
         X-Frame-Options "SAMEORIGIN"
-        Referrer-Policy "strict-origin-when-cross-origin"
-        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "no-referrer"
         
         # Remove server header
         -Server
+        -X-Powered-By
     }
 
     # Cache static build assets (Vite-generated with hashes in filenames)

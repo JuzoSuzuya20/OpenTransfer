@@ -4,19 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet"
-    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <title>{{ $settings['application_name'] }}</title>
   @vite('resources/js/app.js')
 
-  <script>
-    function reload() {
-      window.location.reload();
-    }
-  </script>
+  <script src="/js/share-pending.js" defer></script>
 
 </head>
 
@@ -44,7 +35,7 @@
           <path d="M6.391 20.279a10 10 0 0 1-2.69-2.7" />
         </svg>Share is being processed</h1>
       <p>Try again in a few moments.</p>
-      <button onclick="reload()">Try again now</button>
+      <button type="button" data-reload>Try again now</button>
     </div>
   </div>
 </body>

@@ -8,7 +8,6 @@
 @use "./styles/downloader";
 @use "./styles/footer";
 
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
 :root {
   /* link colors */
@@ -156,7 +155,7 @@
 }
 
 body {
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit Variable", "Outfit", sans-serif;
   background: var(--panel-background-color);
   color: var(--panel-text-color);
 

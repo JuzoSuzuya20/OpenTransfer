@@ -2,6 +2,9 @@ import { createApp } from 'vue'
 import { Tolgee, DevTools, VueTolgee } from '@tolgee/vue'
 import { FormatIcu } from '@tolgee/format-icu'
 
+// Served by the app itself: no visitor request goes to Google Fonts or a CDN
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '@fontsource-variable/outfit'
 import './style.scss'
 import 'vue-color-kit/dist/vue-color-kit.css'
 import App from './App.vue'
