@@ -42,7 +42,13 @@ class sendDeletionWarningEmails implements ShouldQueue
       ->get();
 
     foreach ($shares as $share) {
-      sendEmail::dispatch($share->user->email, shareDeletionWarningMail::class, ['share' => $share]);
+      // Reverse-share uploads have no owner (user_id is null) and an owner can be
+      // deleted: warn whoever invited the upload, else just mark the share processed.
+      // Crashing here stopped the job before every later share, every hour.
+      $recipient = $share->user ?? $share->invite?->user;
+      if ($recipient) {
+        sendEmail::dispatch($recipient->email, shareDeletionWarningMail::class, ['share' => $share]);
+      }
       $share->sent_deletion_warning = true;
       $share->save();
     }
