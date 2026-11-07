@@ -18,7 +18,9 @@ support (OpenID Connect, Microsoft Entra ID, Google, Authentik).
 - Production image on Alpine 3.24, without development dependencies or unused PHP extensions
 - Third-party binaries (tusd) verified against pinned checksums
 - Container health check on `/up`
-- Images published to `ghcr.io` for `amd64` and `arm64`
+- No root at runtime: Caddy, PHP, tusd, the queue worker and the scheduler run as `erugo` (uid 1000)
+- No third-party requests (fonts and CSS are served by the app), Content-Security-Policy and strict security headers
+- Images published to `ghcr.io` for `amd64` and `arm64`, scanned with Trivy and signed with cosign
 
 ## Quick Start
 
@@ -48,6 +50,39 @@ database migrations run automatically on startup. Back up the storage folder fir
 
 Active sessions are invalidated once after upgrading (session data is now stored as JSON), so users
 will need to sign in again.
+
+### Hardened deployment
+
+Root is only used at startup, to fix the ownership of the storage volume. To avoid it entirely and lock
+the container down:
+
+```yaml
+services:
+  app:
+    image: ghcr.io/juzosuzuya20/opentransfer:latest
+    restart: unless-stopped
+    user: "1000:1000"          # the storage folder must belong to uid 1000
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./opentransfer-storage:/var/www/html/storage
+    ports:
+      - "9998:80"
+```
+
+### Verifying the image
+
+Every published image is signed by this repository's CI (keyless, Sigstore):
+
+```sh
+cosign verify ghcr.io/juzosuzuya20/opentransfer:latest \
+  --certificate-identity-regexp '^https://github.com/JuzoSuzuya20/OpenTransfer/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 
 ## Key Features
 

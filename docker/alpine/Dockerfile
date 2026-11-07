@@ -34,9 +34,10 @@ ENV APP_VERSION=${VERSION}
 WORKDIR /var/www/html
 
 ENV TZ=UTC
-ENV SUPERVISOR_PHP_FPM_COMMAND="/usr/sbin/php-fpm85 -F"
-ENV SUPERVISOR_CADDY_COMMAND="/usr/sbin/caddy run --config /etc/caddy/Caddyfile"
-ENV SUPERVISOR_PHP_USER="erugo"
+# Port Caddy listens on inside the container (non-root: Docker allows binding 80)
+ENV ERUGO_PORT=80
+# Caddy keeps its state in /tmp: nothing outside storage and /tmp is written at runtime
+ENV XDG_CONFIG_HOME=/tmp/caddy/config XDG_DATA_HOME=/tmp/caddy/data
 
 # Install production requirements
 # (imap, mongodb, soap et ldap retirés : aucune utilisation dans le code)
@@ -44,7 +45,6 @@ RUN apk add --no-cache \
     curl \
     su-exec \
     supervisor \
-    cronie \
     ffmpeg \
     php85 \
     php85-pdo_pgsql \
@@ -91,29 +91,34 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then TUSD_SHA256="$TUSD_SHA256_AMD64"; \
     rm -rf /tmp/tusd.tar.gz /tmp/tusd_linux_${TARGETARCH}
 
 # Create necessary directories
-RUN mkdir -p /run/php /var/www/html/public /etc/php85/php-fpm.d /etc/caddy
+RUN mkdir -p /var/www/html/public /etc/php85/php-fpm.d /etc/caddy
 
 COPY ./docker/alpine/www.conf /etc/php85/php-fpm.d/www.conf
+COPY ./docker/alpine/php-fpm-erugo.conf /etc/php85/php-fpm-erugo.conf
 COPY ./docker/alpine/Caddyfile /etc/caddy/Caddyfile
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Create erugo user and group
-RUN addgroup erugo && \
-    adduser -D -G erugo erugo
+# Create erugo user and group (uid/gid 1000, as in Erugo: existing volumes keep their owner)
+RUN addgroup -g 1000 erugo && \
+    adduser -D -u 1000 -G erugo erugo
 
-# Set permissions
-RUN chown -R erugo:erugo /run/php
-
-# Copy necessary files from build stages and local context
-COPY --chown=erugo:erugo . /var/www/html/
+# Copy necessary files from build stages and local context.
+# The code stays owned by root: the erugo user can read it, not change it.
+COPY . /var/www/html/
 COPY --from=composer /app/vendor /var/www/html/vendor
 COPY --from=node /app/public/build /var/www/html/public/build
-RUN rm -rf /var/www/html/.env /var/www/html/.git /var/www/html/node_modules /var/www/html/storage
-
-# Set up Laravel scheduler cron job
-RUN echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" | crontab -u erugo -
+RUN rm -rf /var/www/html/.env /var/www/html/.git /var/www/html/node_modules /var/www/html/storage \
+    # Owned by erugo before VOLUME, so a new named volume starts writable for uid 1000
+    && mkdir -p /var/www/html/storage && chown erugo:erugo /var/www/html/storage \
+    # Public links into storage, made here because public/ is read-only at runtime
+    && cd /var/www/html/public && rm -rf storage backgrounds images \
+    && ln -s ../storage/app/public storage \
+    && ln -s ../storage/app/backgrounds backgrounds \
+    && ln -s ../storage/app/public/images images \
+    # Package manifests pre-built: bootstrap/cache is not writable at runtime
+    && cd /var/www/html && php artisan package:discover --no-ansi > /dev/null
 
 # Copy configuration files
 COPY ./docker/alpine/start-container /usr/local/bin/start-container
@@ -121,15 +126,12 @@ COPY ./docker/alpine/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./docker/alpine/php.ini /etc/php85/conf.d/99-erugo.ini
 RUN chmod +x /usr/local/bin/start-container
 
-# Create supervisor log directory
-RUN mkdir -p /var/log/supervisor
-
 # Shares, database, keys and logs live here: mount it to keep them across upgrades
 VOLUME ["/var/www/html/storage"]
 
 EXPOSE 80/tcp
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -fsS http://localhost/up || exit 1
+    CMD curl -fsS "http://localhost:${ERUGO_PORT}/up" || exit 1
 
 ENTRYPOINT ["start-container"]

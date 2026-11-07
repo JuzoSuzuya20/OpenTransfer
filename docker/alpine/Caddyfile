@@ -1,4 +1,6 @@
 {
+    # No admin API: nothing needs to reconfigure Caddy at runtime
+    admin off
     servers {
         # Slow clients may not hold a connection open by trickling headers (slowloris).
         # No read/write limit on bodies: uploads go through tusd, large downloads can take long.
@@ -10,7 +12,7 @@
 }
 
 # Basic Caddyfile for Laravel
-:80 {
+:{$ERUGO_PORT:80} {
     root * /var/www/html/public
 
     # Allow large file uploads (500MB)
@@ -76,7 +78,7 @@
 
     # Proxy tusd uploads - must be handled before Laravel catches it
     handle /files/* {
-        reverse_proxy localhost:8080 {
+        reverse_proxy 127.0.0.1:8080 {
             header_up X-Forwarded-Proto {header.X-Forwarded-Proto}
             header_up X-Forwarded-Host {header.X-Forwarded-Host}
         }
@@ -93,6 +95,6 @@
         try_files {path} {path}/ /index.php?{query}
         
         # Enable PHP processing
-        php_fastcgi unix//run/php/php-fpm.sock
+        php_fastcgi unix//tmp/php-fpm.sock
     }
 }

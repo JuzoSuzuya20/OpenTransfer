@@ -1,179 +1,100 @@
 #!/bin/sh
 
-echo "Erugo is starting..."
+echo "OpenTransfer is starting..."
 echo "================================================"
-
-cat << 'EOF'
-██████████████    ████████  █████████████    █████ █████████████  █████████  
-   ███        ████ █████████████████████████    ████████████████████████████████
-    ████      █████████    ██████████  █████    █████████     █████████     ████
-     ████     ██████████████████████   █████    █████████     ████████      ████
-   ████   ██  █████████        █████   █████    █████████     █████████     ████
- ████   ██████████ █████████████████    ████████████████████████████████████████
-███   ████  █████   ██████████ █████    █████████████ █████████████ ██████████  
-████████                                                       ████              
- ██████                                              █████████████              
-                                                      ██████████                
-
-█████████████████████████████████████████████████████████████████████████████████
-EOF
-
-echo "https://erugo.app"
-echo "================================================"
-
-
-
 
 export APP_URL=/
 export ASSET_URL=/
 
+STORAGE=/var/www/html/storage
+
+# Root is only used to fix the ownership of the storage volume, then dropped.
+# Started as erugo (user: "1000:1000"), root is never used at all.
+if [ "$(id -u)" = "0" ]; then
+    as_erugo() { su-exec erugo "$@"; }
+else
+    as_erugo() { "$@"; }
+fi
 
 # Without a mounted volume the image has no storage directory at all: the
 # skeleton copy below would fail silently and tusd / the queue worker crash.
-mkdir -p /var/www/html/storage
+mkdir -p "$STORAGE"
+
+if [ "$(id -u)" = "0" ]; then
+    # Only what is not already ours: a full chown -R is slow on large volumes
+    echo "Checking storage ownership..."
+    find "$STORAGE" \( ! -user erugo -o ! -group erugo \) -exec chown erugo:erugo {} +
+fi
 
 # First time setup check
-if [ ! -f /var/www/html/storage/.setup-lock ]; then
+if [ ! -f "$STORAGE/.setup-lock" ]; then
     echo "[First time setup] Copying storage skeleton contents..."
-    rm -rf /var/www/html/storage/*
-    cp -r /var/www/html/storage_skell/* /var/www/html/storage/
-    touch /var/www/html/storage/.setup-lock
+    as_erugo sh -c "rm -rf '$STORAGE'/* && cp -r /var/www/html/storage_skell/* '$STORAGE'/ && touch '$STORAGE/.setup-lock'"
 else
     echo "Setup already completed, skipping..."
-    
-    # Ensure new directories exist for upgrades from older versions
-    mkdir -p /var/www/html/storage/app/backgrounds/cache/thumbs
-    mkdir -p /var/www/html/storage/app/public/images
-    
-    # Copy default logo files if they don't exist (for upgrades)
-    if [ ! -f /var/www/html/storage/app/public/images/_default-logo.png ]; then
-        cp /var/www/html/storage_skell/app/public/images/_default-logo.png /var/www/html/storage/app/public/images/
-    fi
-    if [ ! -f /var/www/html/storage/app/public/images/logo.png ]; then
-        cp /var/www/html/storage_skell/app/public/images/logo.png /var/www/html/storage/app/public/images/
-    fi
-    
-    # Copy default background files if they don't exist (for upgrades)
-    if [ ! -f /var/www/html/storage/app/public/images/_default-background.jpg ]; then
-        cp /var/www/html/storage_skell/app/public/images/_default-background.jpg /var/www/html/storage/app/public/images/
-    fi
-    if [ ! -f /var/www/html/storage/app/public/images/default-background.jpg ]; then
-        cp /var/www/html/storage_skell/app/public/images/default-background.jpg /var/www/html/storage/app/public/images/
-    fi
+
+    # Ensure new directories and default images exist for upgrades from older versions
+    as_erugo sh -c "
+        mkdir -p '$STORAGE/app/backgrounds/cache/thumbs' '$STORAGE/app/public/images'
+        for f in _default-logo.png logo.png _default-background.jpg default-background.jpg; do
+            [ -f '$STORAGE/app/public/images/'\$f ] || cp /var/www/html/storage_skell/app/public/images/\$f '$STORAGE/app/public/images/'
+        done
+    "
 fi
 
-# Always ensure correct permissions on storage directory
-echo "Setting storage permissions..."
-chown -R erugo:erugo /var/www/html/storage
-
-# Make sure php-fpm run directory exists and has correct permissions
-mkdir -p /run/php
-chown -R erugo:erugo /run/php
-
-# Make sure public directory has correct permissions
-chown -R erugo:erugo /var/www/html/public
-
-# if the app.key file exists, load its contents into the environment as APP_KEY, otherwise generate a new one
-if [ -f /var/www/html/storage/app.key ]; then
-    echo "App key already exists, loading..."
-    export APP_KEY=$(cat /var/www/html/storage/app.key)
-else
-    # generate app key
+# Load the app key and JWT secret, generating them on first start
+if [ ! -f "$STORAGE/app.key" ]; then
     echo "Generating app key..."
-    su-exec erugo php artisan key:generate --force --show >/var/www/html/storage/app.key
-    echo "App key generated, loading..."
-    export APP_KEY=$(cat /var/www/html/storage/app.key)
+    as_erugo sh -c "php artisan key:generate --force --show > '$STORAGE/app.key'"
 fi
+export APP_KEY=$(cat "$STORAGE/app.key")
 
-# if the jwt.secret file exists, load its contents into the environment as JWT_SECRET, otherwise generate a new one
-if [ -f /var/www/html/storage/jwt.secret ]; then
-    echo "JWT secret already exists, loading..."
-    export JWT_SECRET=$(cat /var/www/html/storage/jwt.secret)
-else
+if [ ! -f "$STORAGE/jwt.secret" ]; then
     echo "Generating JWT secret..."
-    su-exec erugo php -r "echo base64_encode(random_bytes(32));" >/var/www/html/storage/jwt.secret
-    echo "JWT secret generated, loading..."
-    export JWT_SECRET=$(cat /var/www/html/storage/jwt.secret)
+    as_erugo sh -c "php -r 'echo base64_encode(random_bytes(32));' > '$STORAGE/jwt.secret'"
 fi
+export JWT_SECRET=$(cat "$STORAGE/jwt.secret")
 
-# does and environment variable DB_CONNECTION exist?
 if [ -z "$DB_CONNECTION" ]; then
     echo "DB_CONNECTION environment variable not set, setting to sqlite..."
     export DB_CONNECTION=sqlite
     export DB_DATABASE=./storage/app/private/database.sqlite
 fi
 
-# Create an environment file for cron jobs
-echo "Creating environment file for cron jobs..."
-env | grep -E "^(APP_|DB_|REDIS_|MAIL_|QUEUE_|JWT_|ASSET_)" | sed 's/=\(.*\)/="\1"/' > /var/www/html/.env
+# The scheduler runs under supervisord (schedule:work) and inherits this
+# environment: no cron, no .env file written into the application code.
 
-# Create a temporary crontab file
-echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" > /tmp/erugo-crontab
-
-# Prevent crontab from complaining about the cache directory
-mkdir -p /root/.cache/crontab
-
-# Install the crontab for the erugo user
-crontab -u erugo /tmp/erugo-crontab
-
-# Clean up
-rm /tmp/erugo-crontab
-
-# Always run migrations
 echo "Running migrations..."
-su-exec erugo php artisan migrate --force
+as_erugo php artisan migrate --force
 
 echo "Running seeds..."
-su-exec erugo php artisan db:seed --force
+as_erugo php artisan db:seed --force
 
 echo "Clearing settings cache..."
-su-exec erugo php artisan clear-settings-cache
+as_erugo php artisan clear-settings-cache
 
 echo "Clearing templates cache..."
-su-exec erugo php artisan view:clear
-
-echo "Clearing config cache..."
-su-exec erugo php artisan config:clear
-
-echo "Clearing route cache..."
-su-exec erugo php artisan route:clear
-
-echo "Clearing compiled classes..."
-su-exec erugo php artisan clear-compiled
+as_erugo php artisan view:clear
 
 echo "Updating legacy share paths..."
-su-exec erugo php artisan update-legacy-share-paths
+as_erugo php artisan update-legacy-share-paths
 
 # Migrate backgrounds from old storage location (storage/app/public/backgrounds) to new location (storage/app/backgrounds)
-if [ -d /var/www/html/storage/app/public/backgrounds ] && [ "$(ls -A /var/www/html/storage/app/public/backgrounds 2>/dev/null)" ]; then
+if [ -d "$STORAGE/app/public/backgrounds" ] && [ "$(ls -A "$STORAGE/app/public/backgrounds" 2>/dev/null)" ]; then
     echo "Migrating backgrounds from old storage location..."
-    mkdir -p /var/www/html/storage/app/backgrounds/cache/thumbs
-    # Copy files (not recursively overwriting existing)
-    cp -rn /var/www/html/storage/app/public/backgrounds/* /var/www/html/storage/app/backgrounds/ 2>/dev/null || true
-    # Remove old location after successful migration
-    rm -rf /var/www/html/storage/app/public/backgrounds
+    as_erugo sh -c "
+        mkdir -p '$STORAGE/app/backgrounds/cache/thumbs'
+        cp -rn '$STORAGE/app/public/backgrounds/'* '$STORAGE/app/backgrounds/' 2>/dev/null || true
+        rm -rf '$STORAGE/app/public/backgrounds'
+    "
     echo "Backgrounds migration complete."
 fi
 
-# Create symlinks for public assets (images, backgrounds) pointing to storage
-echo "Creating storage symlinks..."
-# Remove any existing symlinks or directories that conflict
-rm -rf /var/www/html/public/storage 2>/dev/null || true
-rm -rf /var/www/html/public/backgrounds 2>/dev/null || true
-rm -rf /var/www/html/public/images 2>/dev/null || true
-
-# Create relative symlinks (works consistently in Docker and development)
-cd /var/www/html/public
-ln -s ../storage/app/public storage
-ln -s ../storage/app/backgrounds backgrounds
-ln -s ../storage/app/public/images images
-cd /var/www/html
-
-# Ensure correct ownership of symlinked directories
-chown -R erugo:erugo /var/www/html/storage/app/public
-chown -R erugo:erugo /var/www/html/storage/app/backgrounds
+# The public/ symlinks into storage are created at build time: the
+# application code is owned by root and read-only for erugo.
 
 echo "Starting services..."
+if [ "$(id -u)" = "0" ]; then
+    exec su-exec erugo /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+fi
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
-
-echo "================================================"

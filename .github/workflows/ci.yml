@@ -66,6 +66,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write # signature cosign sans clé
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -134,7 +135,36 @@ jobs:
           check "tusd en cours d'exécution" docker exec ot pgrep -f /usr/local/bin/tusd
           check "worker de file d'attente en cours d'exécution" docker exec ot pgrep -f 'artisan queue:work'
           check "aucun processus abandonné par supervisord" sh -c "! docker logs ot 2>&1 | grep -qE 'gave up|FATAL|exited: .*not expected'"
+          # Root ne sert qu'au démarrage (propriété du volume) : plus aucun service ne doit tourner en root
+          rootprocs=$(docker exec ot ps -o user,comm | tail -n +2 | awk '$1 != "erugo" && $1 != "1000" && $2 != "ps"' | tr '\n' ' ')
+          check "aucun service ne tourne en root (trouvé : ${rootprocs:-aucun})" test -z "$rootprocs"
+          check "le code est en lecture seule pour l'application" sh -c "! docker exec -u erugo ot sh -c 'touch /var/www/html/public/x' 2>/dev/null"
+
+          # Déploiement durci : sans root, sans capacités, système de fichiers en lecture seule
+          docker run -d --name ot-hard --user 1000:1000 --read-only --tmpfs /tmp \
+            --cap-drop ALL --security-opt no-new-privileges \
+            -v ot-hard-storage:/var/www/html/storage -p 8081:80 opentransfer:smoke
+          hard=000
+          for i in $(seq 1 60); do
+            hard=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/ || true)
+            [ "$hard" = "200" ] && break
+            sleep 2
+          done
+          check "mode durci : l'accueil répond 200 (reçu $hard)" test "$hard" = 200
+          sleep 5
+          check "mode durci : tusd et le worker tournent" sh -c "docker exec ot-hard pgrep -f /usr/local/bin/tusd && docker exec ot-hard pgrep -f 'artisan queue:work'"
+          check "mode durci : aucun processus abandonné" sh -c "! docker logs ot-hard 2>&1 | grep -qE 'gave up|FATAL|exited: .*not expected'"
           [ "$fails" -eq 0 ]
+
+      # Bloque la publication si l'image contient une vulnérabilité critique corrigeable
+      - name: Scan de vulnérabilités (Trivy)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: opentransfer:smoke
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
 
       # Les journaux bruts d'Actions exigent une authentification, pas les annotations :
       # on y remonte le diagnostic pour qu'il soit lisible par tous (et par l'automatisation).
@@ -148,6 +178,8 @@ jobs:
             docker logs ot 2>&1 | grep -E 'WARN|ERROR|exited|gave up' | tail -n 15
             echo "== fin des journaux =="
             docker logs ot 2>&1 | tail -n 15
+            echo "== mode durci =="
+            docker logs ot-hard 2>&1 | grep -E 'WARN|ERROR|rror|denied|exited|gave up' | tail -n 15 || true
           } > diagnostic.txt
           cat diagnostic.txt
           msg=$(sed -e 's/%/%25/g; s/\r//g' diagnostic.txt | sed -e ':a;N;$!ba;s/\n/%0A/g' | cut -c1-60000)
@@ -162,6 +194,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publication multi-architecture
+        id: push
         if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -176,3 +209,14 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: mode=max
           sbom: true
+
+      - uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
+        if: steps.push.outcome == 'success'
+
+      # Signature sans clé (Sigstore) liée à ce workflow : le serveur peut vérifier
+      # que l'image vient bien de cette CI avant de la déployer.
+      - name: Signature de l'image (cosign)
+        if: steps.push.outcome == 'success'
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+        run: cosign sign --yes "${IMAGE}@${DIGEST}"
