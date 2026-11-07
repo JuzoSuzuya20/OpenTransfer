@@ -37,9 +37,10 @@ class SettingsController extends Controller
 
                 $savedSettings[] = $setting;
             } catch (\Exception $e) {
+                Log::error('Failed to save setting', ['key' => $settingData['key'], 'error' => $e->getMessage()]);
                 $errors[] = [
                     'key' => $settingData['key'],
-                    'error' => $e->getMessage()
+                    'error' => 'Could not save this setting'
                 ];
             }
         }
@@ -176,7 +177,7 @@ class SettingsController extends Controller
             Log::error('Logo upload error: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to save logo: ' . $e->getMessage(),
+                'message' => 'Failed to save logo',
             ], 500);
         }
     }
@@ -216,7 +217,7 @@ class SettingsController extends Controller
             Log::error('Logo reset error: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to reset logo: ' . $e->getMessage(),
+                'message' => 'Failed to reset logo',
             ], 500);
         }
     }
