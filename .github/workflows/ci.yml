@@ -225,17 +225,28 @@ jobs:
             cosign verify "${IMAGE}@${DIGEST}" --certificate-oidc-issuer https://token.actions.githubusercontent.com \
               --certificate-identity-regexp "$identity" > /dev/null
           }
-          if ! cosign sign --yes "${IMAGE}@${DIGEST}" 2> sign.err; then
-            # Une image identique garde son digest : Rekor répond alors 409, ce qui va
-            # si une signature valide de ce workflow est déjà attachée (cf. fork moutonnoireu).
-            if grep -q "createLogEntryConflict" sign.err && verify; then
-              echo "::notice::${DIGEST} est déjà signé par ce workflow"
-            else
-              cat sign.err
-              msg=$(tail -n 20 sign.err | sed -e 's/%/%25/g; s/\r//g' | sed -e ':a;N;$!ba;s/\n/%0A/g')
-              echo "::error title=Signature cosign::${msg}"
-              exit 1
-            fi
+          # Une image reconstruite à l'identique garde son digest : déjà signée, rien à faire
+          if verify 2> /dev/null; then
+            echo "::notice::${DIGEST} est déjà signé par ce workflow"
+            exit 0
           fi
-          verify
-          echo "Image signée : ${IMAGE}@${DIGEST}" >> "$GITHUB_STEP_SUMMARY"
+          # Rekor peut accepter une entrée sans que la réponse revienne : cosign la rejoue
+          # alors avec la même clé et échoue en conflit (409 puis 404). Chaque nouvel essai
+          # repart d'une clé éphémère neuve, donc d'une entrée sans conflit possible.
+          for attempt in 1 2 3; do
+            if cosign sign --yes "${IMAGE}@${DIGEST}" 2> sign.err; then
+              verify
+              echo "Image signée : ${IMAGE}@${DIGEST}" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            if verify 2> /dev/null; then
+              echo "::notice::signature attachée malgré l'erreur de l'essai ${attempt}"
+              exit 0
+            fi
+            echo "::warning::essai ${attempt} de signature en échec, nouvel essai"
+            sleep $((attempt * 20))
+          done
+          cat sign.err
+          msg=$(tail -n 20 sign.err | sed -e 's/%/%25/g; s/\r//g' | sed -e ':a;N;$!ba;s/\n/%0A/g')
+          echo "::error title=Signature cosign::${msg}"
+          exit 1
