@@ -816,6 +816,11 @@
       "reverse_shares": "Azioni inverse",
       "security": {
         "add_your_ip": "Aggiungilo alla lista",
+        "encryption": "Crittografia dei file archiviati",
+        "encryption_enabled": "Cripta le nuove condivisioni",
+        "encryption_help": "Una copia del volume di archiviazione o di un backup è illeggibile senza la chiave, conservata fuori dal volume nella variabile STORAGE_ENCRYPTION_KEY. Perdere la chiave significa perdere definitivamente i file criptati: conservane una copia lontano da questo server. Per le condivisioni esistenti vedi la documentazione.",
+        "encryption_key_absent": "Ancora nessuna chiave. Generane una con: docker exec NOME_DEL_CONTAINER ot-artisan generate-storage-key, conservane una copia lontano da questo server, poi impostala in STORAGE_ENCRYPTION_KEY.",
+        "encryption_misconfigured": "La chiave è assente o non valida: i file criptati non possono essere scaricati e le nuove condivisioni sono archiviate in chiaro. Imposta di nuovo STORAGE_ENCRYPTION_KEY.",
         "invalid_entries": "Voci non valide nella lista: {entries}",
         "ip_allowlist": "Limitare l'accesso per rete",
         "ip_allowlist_description": "I membri possono accedere, e continuare a usare la loro sessione, solo da queste reti. Vale anche per il SSO. I link di condivisione e gli ospiti delle condivisioni inverse restano raggiungibili ovunque.",

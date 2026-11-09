@@ -11,6 +11,9 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\Download;
 use App\Services\IpAllowlist;
+use App\Services\StorageEncryption;
+use App\Services\StoredFileResponse;
+use App\Services\ZipEntryReader;
 use App\Mail\shareDownloadedMail;
 use App\Jobs\sendEmail;
 use App\Services\SettingsService;
@@ -227,12 +230,11 @@ class SharesController extends Controller
     //if there is only one file, download it directly
     if ($share->file_count == 1) {
       if (file_exists($sharePath . '/' . $share->files[0]->name)) {
-
-        $this->createDownloadRecord($share);
-
-        return response()->download(
+        return $this->sendStoredFile(
+          $share,
           $sharePath . '/' . $share->files[0]->name,
-          $this->sanitizeDownloadFilename($share->files[0]->display_name)
+          $this->sanitizeDownloadFilename($share->files[0]->display_name),
+          $share->files[0]->type
         );
       } else {
         return redirect()->to('/shares/' . $shareId);
@@ -253,11 +255,11 @@ class SharesController extends Controller
       \Log::info('looking for: ' . $filename);
       //does the file exist?
       if (file_exists($filename)) {
-        $this->createDownloadRecord($share);
-
-        return response()->download(
+        return $this->sendStoredFile(
+          $share,
           $filename,
-          $this->sanitizeDownloadFilename($share->name ?? '', 'share') . '.zip'
+          $this->sanitizeDownloadFilename($share->name ?? '', 'share') . '.zip',
+          'application/zip'
         );
       } else {
         //something went wrong, show the failed view
@@ -332,11 +334,7 @@ class SharesController extends Controller
         $filePath = $sharePath . '/' . $file->name;
         
         if (file_exists($filePath)) {
-          $this->createDownloadRecord($share);
-          return response()->download(
-            $filePath,
-            $this->sanitizeDownloadFilename($file->display_name)
-          );
+          return $this->sendStoredFile($share, $filePath, $this->sanitizeDownloadFilename($file->display_name), $file->type);
         }
       }
       return response()->json(['error' => 'File not found'], 404);
@@ -370,6 +368,10 @@ class SharesController extends Controller
 
     // Build the path as it exists in the zip (using sanitized name)
     $zipFilePath = $foundFile->full_path ? $foundFile->full_path . '/' . $foundFile->name : $foundFile->name;
+
+    if (StorageEncryption::isEncrypted($zipPath)) {
+      return $this->sendEncryptedArchiveEntry($share, $zipPath, $zipFilePath, $foundFile);
+    }
 
     // Open the zip and stream the file
     $zip = new \ZipArchive();
@@ -717,6 +719,53 @@ class SharesController extends Controller
     $indexedSettings['api_url'] = $appURL;
 
     return $indexedSettings;
+  }
+
+  /**
+   * Counted as a download only once the file can really be served: with the
+   * wrong encryption key, a limited share must not be spent for nothing.
+   */
+  private function sendStoredFile(Share $share, string $path, string $name, ?string $type)
+  {
+    try {
+      $response = app(StoredFileResponse::class)->download(request(), $path, $name, $type);
+    } catch (\RuntimeException $e) {
+      \Log::critical('Cannot read a stored share file: ' . $e->getMessage());
+
+      return view('shares.failed', [
+        'share' => $share,
+        'settings' => $this->getSettings()
+      ]);
+    }
+
+    $this->createDownloadRecord($share);
+
+    return $response;
+  }
+
+  private function sendEncryptedArchiveEntry(Share $share, string $zipPath, string $entryPath, $file)
+  {
+    try {
+      $zip = new ZipEntryReader(app(StorageEncryption::class)->open($zipPath));
+      $entry = $zip->find($entryPath) ?? $zip->find($file->name);
+    } catch (\RuntimeException $e) {
+      \Log::critical('Cannot read an encrypted share archive: ' . $e->getMessage());
+
+      return response()->json(['error' => 'Failed to open archive'], 500);
+    }
+
+    if (!$entry) {
+      return response()->json(['error' => 'File not found in archive'], 404);
+    }
+
+    $this->createDownloadRecord($share);
+
+    return app(StoredFileResponse::class)->zipEntry(
+      $zip,
+      $entry,
+      $this->sanitizeDownloadFilename($file->display_name),
+      $file->type ?? 'application/octet-stream'
+    );
   }
 
   private function createDownloadRecord(Share $share)

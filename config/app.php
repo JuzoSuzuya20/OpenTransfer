@@ -111,6 +111,9 @@ return [
 
     'key' => env('APP_KEY'),
 
+    // Encryption at rest of shared files: never stored by the application
+    'storage_encryption_key' => env('STORAGE_ENCRYPTION_KEY'),
+
     'previous_keys' => [
         ...array_filter(
             explode(',', env('APP_PREVIOUS_KEYS', ''))

@@ -793,6 +793,20 @@ export const getClientIp = async () => {
   return data.data.ip
 }
 
+export const getStorageEncryptionStatus = async () => {
+  const response = await fetchWithAuth(`${apiUrl}/api/settings/storage-encryption`, {
+    method: 'GET',
+    headers: {
+      ...addJsonHeader()
+    }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
+  }
+  return data.data
+}
+
 export const saveLogo = async (logoFile) => {
   const formData = new FormData()
   formData.append('logo', logoFile)

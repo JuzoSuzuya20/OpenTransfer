@@ -31,7 +31,8 @@ import {
   createBackup,
   downloadBackup,
   deleteBackup,
-  getClientIp
+  getClientIp,
+  getStorageEncryptionStatus
 } from '../../api'
 import HelpTip from '../helpTip.vue'
 
@@ -53,12 +54,14 @@ const confirmDialog = useConfirmDialog()
 const onLocalhost = ref(false)
 
 const clientIp = ref(null)
+const storageEncryption = ref({ key_configured: false, misconfigured: false })
 
 const settings = ref({
   login_ip_allowlist_enabled: false,
   login_ip_allowlist: '',
   mfa_required_for: 'none',
   passkey_login_enabled: false,
+  storage_encryption_enabled: false,
   application_name: '',
   application_url: '',
   login_message: '',
@@ -257,6 +260,7 @@ onMounted(async () => {
   onLocalhost.value = window.location.hostname === 'localhost'
   try {
     clientIp.value = await getClientIp()
+    storageEncryption.value = await getStorageEncryptionStatus()
   } catch (error) {
     console.error(error)
   }
@@ -270,6 +274,9 @@ const addClientIpToAllowlist = () => {
 const saveFailureMessage = (error) => {
   if (error.code === 'ip_allowlist_lockout') {
     return t.value('settings.system.security.lockout_error', { ip: error.data?.ip })
+  }
+  if (error.code === 'storage_key_missing') {
+    return t.value('settings.system.security.encryption_key_absent')
   }
   if (error.code === 'ip_allowlist_invalid') {
     return t.value('settings.system.security.invalid_entries', { entries: error.data?.invalid?.join(', ') })
@@ -1262,6 +1269,24 @@ const handleDeleteAuthProvider = async (id) => {
                     <label for="passkey_login_enabled">{{ $t('settings.system.security.passkey_login') }}</label>
                   </div>
                 </div>
+
+                <div class="setting-group-body-item">
+                  <div class="checkbox-container">
+                    <input
+                      type="checkbox"
+                      id="storage_encryption_enabled"
+                      v-model="settings.storage_encryption_enabled"
+                      :disabled="!storageEncryption.key_configured && !settings.storage_encryption_enabled"
+                    />
+                    <label for="storage_encryption_enabled">{{ $t('settings.system.security.encryption_enabled') }}</label>
+                  </div>
+                  <p class="help-text" v-if="storageEncryption.misconfigured">
+                    <strong>{{ $t('settings.system.security.encryption_misconfigured') }}</strong>
+                  </p>
+                  <p class="help-text" v-else-if="!storageEncryption.key_configured">
+                    {{ $t('settings.system.security.encryption_key_absent') }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -1281,6 +1306,9 @@ const handleDeleteAuthProvider = async (id) => {
 
               <h6>{{ $t('settings.system.security.passkey_login') }}</h6>
               <p>{{ $t('settings.system.security.passkey_login_help') }}</p>
+
+              <h6>{{ $t('settings.system.security.encryption') }}</h6>
+              <p>{{ $t('settings.system.security.encryption_help') }}</p>
             </div>
           </div>
         </div>

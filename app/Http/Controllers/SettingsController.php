@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Services\IpAllowlist;
+use App\Services\StorageEncryption;
 use App\Services\TwoFactor;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +24,7 @@ class SettingsController extends Controller
         ]);
 
         // Before anything is saved: a refused request must not be half applied
-        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request);
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request);
         if ($refusal) {
             return $refusal;
         }
@@ -130,6 +131,37 @@ class SettingsController extends Controller
             'code' => 'mfa_policy_invalid',
             'message' => 'Unknown two-factor policy',
         ], 422);
+    }
+
+    /**
+     * Without a key, turning it on would silently leave new shares in plain text.
+     */
+    private function refuseStorageEncryption(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+
+        if ($incoming->get(StorageEncryption::SETTING_ENABLED) !== 'true' || app(StorageEncryption::class)->hasKey()) {
+            return null;
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'code' => 'storage_key_missing',
+            'message' => 'Set the STORAGE_ENCRYPTION_KEY environment variable before turning this on',
+        ], 422);
+    }
+
+    public function storageEncryptionStatus()
+    {
+        $encryption = app(StorageEncryption::class);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'key_configured' => $encryption->hasKey(),
+                'misconfigured' => $encryption->isMisconfigured(),
+            ]
+        ]);
     }
 
     /**

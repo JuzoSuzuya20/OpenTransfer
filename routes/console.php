@@ -12,6 +12,7 @@ use App\Jobs\backUpDatabase;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\IpAllowlist;
+use App\Services\StorageEncryption;
 use App\Services\TwoFactor;
 use App\Services\SettingsService;
 
@@ -81,3 +82,82 @@ Artisan::command('reset-2fa {email}', function (string $email) {
 
     return 0;
 })->purpose('Remove the second factor of a user who lost their device');
+
+Artisan::command('generate-storage-key', function () {
+    $this->line(StorageEncryption::generateKey());
+    $this->comment('Set it as STORAGE_ENCRYPTION_KEY and keep a copy away from this server: without it, encrypted files are lost.');
+})->purpose('Generate a key for STORAGE_ENCRYPTION_KEY');
+
+// Every stored share file, whatever its state
+$storedShareFiles = function (): Generator {
+    $root = storage_path('app/shares');
+    if (!is_dir($root)) {
+        return;
+    }
+
+    $entries = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
+    foreach ($entries as $entry) {
+        // Shares live in sub-folders: a hidden file right here is the storage skeleton's placeholder
+        $placeholder = $entry->getPath() === $root && str_starts_with($entry->getFilename(), '.');
+
+        if ($entry->isFile() && !$entry->isLink() && !$placeholder && !str_ends_with($entry->getFilename(), '-tmp')) {
+            yield $entry->getPathname();
+        }
+    }
+};
+
+Artisan::command('encrypt-existing-files', function () use ($storedShareFiles) {
+    $encryption = app(StorageEncryption::class);
+    if (!$encryption->hasKey()) {
+        $this->error('STORAGE_ENCRYPTION_KEY is missing or invalid.');
+
+        return 1;
+    }
+
+    $done = 0;
+    $failed = 0;
+    foreach ($storedShareFiles() as $path) {
+        if (StorageEncryption::isEncrypted($path)) {
+            continue;
+        }
+        try {
+            $encryption->encryptFile($path);
+            $done++;
+        } catch (Throwable $e) {
+            $failed++;
+            $this->error($path.': '.$e->getMessage());
+        }
+    }
+
+    $this->info("Encrypted {$done} file(s), {$failed} failed.");
+
+    return $failed ? 1 : 0;
+})->purpose('Encrypt the stored share files still in plain text');
+
+Artisan::command('decrypt-files', function () use ($storedShareFiles) {
+    $encryption = app(StorageEncryption::class);
+    if (!$encryption->hasKey()) {
+        $this->error('STORAGE_ENCRYPTION_KEY is missing or invalid.');
+
+        return 1;
+    }
+
+    $done = 0;
+    $failed = 0;
+    foreach ($storedShareFiles() as $path) {
+        if (!StorageEncryption::isEncrypted($path)) {
+            continue;
+        }
+        try {
+            $encryption->decryptFile($path);
+            $done++;
+        } catch (Throwable $e) {
+            $failed++;
+            $this->error($path.': '.$e->getMessage());
+        }
+    }
+
+    $this->info("Decrypted {$done} file(s), {$failed} failed.");
+
+    return $failed ? 1 : 0;
+})->purpose('Decrypt every stored share file, before removing STORAGE_ENCRYPTION_KEY');

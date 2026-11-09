@@ -816,6 +816,11 @@
       "reverse_shares": "Omgekeerde Aandelen",
       "security": {
         "add_your_ip": "Toevoegen aan de lijst",
+        "encryption": "Versleuteling van opgeslagen bestanden",
+        "encryption_enabled": "Nieuwe shares versleutelen",
+        "encryption_help": "Een kopie van het opslagvolume of van een back-up is onleesbaar zonder de sleutel, die erbuiten staat in de variabele STORAGE_ENCRYPTION_KEY. Wie de sleutel verliest, verliest de versleutelde bestanden definitief: bewaar een kopie ver van deze server. Zie de documentatie voor bestaande shares.",
+        "encryption_key_absent": "Nog geen sleutel. Maak er een met: docker exec CONTAINERNAAM ot-artisan generate-storage-key, bewaar een kopie ver van deze server en stel hem in als STORAGE_ENCRYPTION_KEY.",
+        "encryption_misconfigured": "De sleutel ontbreekt of is ongeldig: versleutelde bestanden kunnen niet worden gedownload en nieuwe shares worden onversleuteld opgeslagen. Stel STORAGE_ENCRYPTION_KEY opnieuw in.",
         "invalid_entries": "Ongeldige items in de lijst: {entries}",
         "ip_allowlist": "Aanmelden per netwerk beperken",
         "ip_allowlist_description": "Leden kunnen zich alleen vanaf deze netwerken aanmelden en hun sessie alleen daar blijven gebruiken. Dit geldt ook voor SSO. Deellinks en gasten van omgekeerde shares blijven overal bereikbaar.",

@@ -23,6 +23,7 @@ support (OpenID Connect, Microsoft Entra ID, Google, Authentik).
 - Images published to `ghcr.io` for `amd64` and `arm64`, scanned with Trivy and signed with cosign
 - Optional allowlist of the networks members may sign in from, and `TRUSTED_PROXIES` for reverse proxies
 - Optional two-factor authentication for password sign-in, which administrators can make mandatory
+- Optional encryption at rest of shared files, with a key kept outside the storage volume
 
 ## Quick Start
 
@@ -138,6 +139,37 @@ in Settings → Users, or on the server:
 ```sh
 docker exec <container> ot-artisan reset-2fa user@example.com
 ```
+
+### Encrypting stored files
+
+Optional, off by default. Shared files can be encrypted on disk (XChaCha20-Poly1305, 1 MiB authenticated
+chunks), so that a copy of the storage volume or of a backup cannot be read on its own. It protects
+against the loss of a disk or a backup, not against someone who controls the running server.
+
+> **Losing the key means losing the encrypted files, for good.** Nobody can recover them. Keep a copy of
+> the key away from this server, in your password manager or vault, before encrypting anything. Do not
+> keep it in the storage volume: the protection would be gone.
+
+1. Generate a key: `docker exec <container> ot-artisan generate-storage-key`
+2. Copy it somewhere safe, then give it to the container:
+
+   ```yaml
+       environment:
+         - STORAGE_ENCRYPTION_KEY=the-generated-key
+   ```
+
+3. Turn on Settings → System → Security → *Encrypt new shares*.
+4. Optional, for the shares created before: `docker exec <container> ot-artisan encrypt-existing-files`
+
+Plain and encrypted files can live side by side: older shares stay readable either way. To stop, untick the
+setting, run `ot-artisan decrypt-files` and only then remove the key. To change the key, decrypt with the old
+one, then encrypt with the new one. Both commands can be run again after an interruption.
+
+If the key is missing or wrong, encrypted files stay safe on disk but their downloads fail, and new shares
+are stored in plain text with a critical line in the logs: Settings → System → Security shows it.
+
+Not covered: uploads in progress, which are encrypted once the share is created, and the database (names of
+files, users).
 
 ### Verifying the image
 

@@ -816,6 +816,11 @@
       "reverse_shares": "Partages inversés",
       "security": {
         "add_your_ip": "L'ajouter à la liste",
+        "encryption": "Chiffrement des fichiers stockés",
+        "encryption_enabled": "Chiffrer les nouveaux partages",
+        "encryption_help": "Une copie du volume de stockage ou d'une sauvegarde est illisible sans la clé, conservée hors du volume dans la variable STORAGE_ENCRYPTION_KEY. Perdre la clé, c'est perdre définitivement les fichiers chiffrés : gardez-en une copie loin de ce serveur. Voir la documentation pour les partages existants.",
+        "encryption_key_absent": "Aucune clé pour l'instant. Générez-en une avec : docker exec NOM_DU_CONTENEUR ot-artisan generate-storage-key, gardez-en une copie loin de ce serveur, puis renseignez-la dans STORAGE_ENCRYPTION_KEY.",
+        "encryption_misconfigured": "La clé est absente ou invalide : les fichiers chiffrés ne peuvent pas être téléchargés et les nouveaux partages sont stockés en clair. Renseignez de nouveau STORAGE_ENCRYPTION_KEY.",
         "invalid_entries": "Entrées invalides dans la liste : {entries}",
         "ip_allowlist": "Restreindre la connexion par réseau",
         "ip_allowlist_description": "Les membres ne peuvent se connecter, et continuer à utiliser leur session, que depuis ces réseaux. Le SSO est concerné aussi. Les liens de partage et les invités des partages inversés restent accessibles de partout.",

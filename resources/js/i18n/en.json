@@ -837,6 +837,11 @@
       "reverse_shares": "Reverse Shares",
       "security": {
         "add_your_ip": "Add it to the list",
+        "encryption": "Encryption of stored files",
+        "encryption_enabled": "Encrypt new shares",
+        "encryption_help": "A copy of the storage volume or of a backup cannot be read without the key, kept outside it in the STORAGE_ENCRYPTION_KEY variable. Losing the key means losing the encrypted files for good: keep a copy away from this server. See the documentation for existing shares.",
+        "encryption_key_absent": "No key yet. Generate one with: docker exec CONTAINER_NAME ot-artisan generate-storage-key, keep a copy away from this server, then set it as STORAGE_ENCRYPTION_KEY.",
+        "encryption_misconfigured": "The key is missing or invalid: encrypted files cannot be downloaded and new shares are stored in plain text. Set STORAGE_ENCRYPTION_KEY again.",
         "invalid_entries": "Invalid entries in the list: {entries}",
         "ip_allowlist": "Restrict sign-in by network",
         "ip_allowlist_description": "Members can only sign in, and keep using their session, from these networks. This covers SSO too. Share links and reverse-share guests stay reachable from everywhere.",

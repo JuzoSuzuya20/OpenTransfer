@@ -117,6 +117,8 @@ Route::group([], function ($router) {
         Route::put('/', [SettingsController::class, 'write'])->name('settings.write');
         //the address the application sees for the admin
         Route::get('/client-ip', [SettingsController::class, 'clientIp'])->name('settings.clientIp');
+        //whether the key for encrypting stored files is there
+        Route::get('/storage-encryption', [SettingsController::class, 'storageEncryptionStatus'])->name('settings.storageEncryption');
         Route::post('/logo', [SettingsController::class, 'writeLogo'])->name('settings.writeLogo');
         Route::delete('/logo', [SettingsController::class, 'deleteLogo'])->name('settings.deleteLogo');
         //favicon management

@@ -198,6 +198,12 @@ jobs:
           rp=$(api_post /api/users/me/passkeys/options '{"password":"smoke-test-password"}' "$jwt" | jq -r .data.options.rp.id)
           check "clés d'accès : options générées dans l'image (rp : $rp)" test "$rp" = localhost
 
+          # Chiffrement au repos : refusé sans clé, ce qui protège d'un faux sentiment de sécurité
+          refused=$(api_post /api/auth/login "$creds" | jq -r .data.access_token)
+          refused=$(curl -s -X PUT -H "Authorization: Bearer $refused" -H 'Content-Type: application/json' -H 'Accept: application/json' \
+            -d '{"settings":[{"key":"storage_encryption_enabled","value":"true"}]}' http://localhost:8080/api/settings | jq -r .code)
+          check "chiffrement : activation refusée sans clé (reçu : $refused)" test "$refused" = storage_key_missing
+
           leftovers=$(docker exec ot find /var/www/html/storage ! -user erugo | wc -l)
           check "ot-artisan ne laisse aucun fichier à root (trouvés : $leftovers)" test "$leftovers" = 0
 

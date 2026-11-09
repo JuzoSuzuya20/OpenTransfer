@@ -795,6 +795,11 @@
       "reverse_shares": "Acções reversíveis",
       "security": {
         "add_your_ip": "Adicionar à lista",
+        "encryption": "Encriptação dos ficheiros armazenados",
+        "encryption_enabled": "Encriptar as novas partilhas",
+        "encryption_help": "Uma cópia do volume de armazenamento ou de uma cópia de segurança é ilegível sem a chave, guardada fora dele na variável STORAGE_ENCRYPTION_KEY. Perder a chave é perder definitivamente os ficheiros encriptados: guarde uma cópia longe deste servidor. Para as partilhas existentes, consulte a documentação.",
+        "encryption_key_absent": "Ainda não há chave. Gere uma com: docker exec NOME_DO_CONTENTOR ot-artisan generate-storage-key, guarde uma cópia longe deste servidor e defina-a em STORAGE_ENCRYPTION_KEY.",
+        "encryption_misconfigured": "A chave está em falta ou é inválida: os ficheiros encriptados não podem ser transferidos e as novas partilhas são armazenadas sem encriptação. Defina novamente STORAGE_ENCRYPTION_KEY.",
         "invalid_entries": "Entradas inválidas na lista: {entries}",
         "ip_allowlist": "Restringir o início de sessão por rede",
         "ip_allowlist_description": "Os membros só podem iniciar sessão, e continuar a usar a sua sessão, a partir destas redes. Isto inclui o SSO. As ligações de partilha e os convidados das partilhas inversas continuam acessíveis de qualquer lugar.",

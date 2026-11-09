@@ -816,6 +816,11 @@
       "reverse_shares": "Reverse-Aktien",
       "security": {
         "add_your_ip": "Zur Liste hinzufügen",
+        "encryption": "Verschlüsselung der gespeicherten Dateien",
+        "encryption_enabled": "Neue Freigaben verschlüsseln",
+        "encryption_help": "Eine Kopie des Speichervolumes oder einer Sicherung ist ohne den Schlüssel nicht lesbar; er liegt außerhalb in der Variable STORAGE_ENCRYPTION_KEY. Wer den Schlüssel verliert, verliert die verschlüsselten Dateien endgültig: Bewahren Sie eine Kopie getrennt von diesem Server auf. Zu bestehenden Freigaben siehe die Dokumentation.",
+        "encryption_key_absent": "Noch kein Schlüssel. Erzeugen Sie einen mit: docker exec CONTAINER_NAME ot-artisan generate-storage-key, bewahren Sie eine Kopie getrennt von diesem Server auf und setzen Sie ihn als STORAGE_ENCRYPTION_KEY.",
+        "encryption_misconfigured": "Der Schlüssel fehlt oder ist ungültig: Verschlüsselte Dateien können nicht heruntergeladen werden und neue Freigaben werden unverschlüsselt gespeichert. Setzen Sie STORAGE_ENCRYPTION_KEY erneut.",
         "invalid_entries": "Ungültige Einträge in der Liste: {entries}",
         "ip_allowlist": "Anmeldung nach Netzwerk einschränken",
         "ip_allowlist_description": "Mitglieder können sich nur aus diesen Netzwerken anmelden und ihre Sitzung nur von dort weiterverwenden. Das gilt auch für SSO. Freigabelinks und Gäste umgekehrter Freigaben bleiben von überall erreichbar.",
