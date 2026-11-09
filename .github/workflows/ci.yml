@@ -54,7 +54,7 @@ jobs:
         run: php artisan test
 
       - name: Tests JavaScript
-        run: node --test tests/js/
+        run: node --test tests/js/*.test.mjs
 
       # Code 100 : Packagist n'a pas répondu. Une panne réseau n'est pas une faille et ne doit
       # pas bloquer une publication, mais une faille (code 1) échoue tout de suite, sans réessai.
