@@ -10,6 +10,7 @@ use App\Haikunator;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\Download;
+use App\Services\IpAllowlist;
 use App\Mail\shareDownloadedMail;
 use App\Jobs\sendEmail;
 use App\Services\SettingsService;
@@ -161,6 +162,11 @@ class SharesController extends Controller
   private function checkShareAccess(Share $share)
   {
     if (!$share->public) {
+      //a private share is read with the member's session, which the IP allowlist restricts
+      if (app(IpAllowlist::class)->blocks(request()->ip())) {
+        return false;
+      }
+
       //get token from cookie
       $refreshToken = request()->cookie('refresh_token');
 

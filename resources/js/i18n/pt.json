@@ -24,10 +24,12 @@
     "": "Se não tiver e-mail providenciaremos um endereço"
   },
   "auth": {
+    "account_disabled": "Esta conta está desativada.",
     "back_to_login": "Voltar à autenticação",
     "confirm_end_guest_session": "Tem a certeza de que pretende terminar esta sessão? Sendo um utilizador convidado, não poderá carregar ficheiros adicionais depois de terminar esta sessão.",
     "confirm_password": "Confirme a palavra-passe",
     "email": "E-mail",
+    "email_not_verified": "Confirme o seu endereço de e-mail antes de iniciar sessão.",
     "end_guest_session": "Terminar sessão de convidado",
     "failed_to_accept_invite": "Este código de convite não é válido. Pode ter expirado, já ter sido utilizado ou ter sido revogado pelo remetente.",
     "failed_to_reset_password": "Falha ao repor a palavra passe",
@@ -38,6 +40,7 @@
     "guest_warning": "Os ficheiros que carregar utilizando o formulário do lado esquerdo serão partilhados diretamente com a pessoa que enviou o convite.",
     "invalid_email_or_password": "Falha na autenticação",
     "invite_accepted": "Convite para partilha aceite. Já pode carregar ficheiros para partilhar.",
+    "ip_not_allowed": "O início de sessão não é permitido a partir da sua rede.",
     "login": "Iniciar Sessão",
     "login_successful": "Autenticação bem sucedida",
     "login_to_accept_invite": "Inicie sessão para aceitar este convite de partilha inversa.",
@@ -56,6 +59,7 @@
     "please_enter_password_and_confirm_password": "Por favor introduza palavra passe e sua confirmação",
     "request_reset": "Requesição enviada",
     "save_new_password": "Guardar a nova palavra-passe",
+    "too_many_login_attempts": "Demasiadas tentativas falhadas. Aguarde alguns minutos e tente novamente.",
     "welcome": "Bem-vindo"
   },
   "button": {
@@ -767,6 +771,22 @@
       "provider_trust_warning": "Aviso: Confiança no fornecedor de autenticação",
       "provider_trust_warning_description": "Certifique-se de que configura e ativa apenas os fornecedores de autenticação em que confia. Os fornecedores de autenticação têm privilégios de acesso elevados à sua aplicação e aos dados do utilizador. A adição de fornecedores não confiáveis ou comprometidos pode levar a acessos não autorizados, fugas de informação ou aquisição de contas.",
       "reverse_shares": "Acções reversíveis",
+      "security": {
+        "add_your_ip": "Adicionar à lista",
+        "invalid_entries": "Entradas inválidas na lista: {entries}",
+        "ip_allowlist": "Restringir o início de sessão por rede",
+        "ip_allowlist_description": "Os membros só podem iniciar sessão, e continuar a usar a sua sessão, a partir destas redes. Isto inclui o SSO. As ligações de partilha e os convidados das partilhas inversas continuam acessíveis de qualquer lugar.",
+        "ip_allowlist_enabled": "Permitir o início de sessão apenas a partir das redes indicadas abaixo",
+        "ip_allowlist_entries": "Endereços e intervalos permitidos",
+        "ip_allowlist_entries_help": "Um endereço ou intervalo por linha, por exemplo 203.0.113.10 ou 10.0.0.0/8. O texto após # é um comentário.",
+        "lockout_error": "Esta lista iria bloqueá-lo: não contém o seu endereço ({ip}).",
+        "proxy_help": "O endereço mostrado aqui deve ser o seu. Se for o do seu reverse proxy, defina TRUSTED_PROXIES com o endereço do proxy no ambiente do contentor: sem isso, a lista vê o proxy para toda a gente.",
+        "proxy_title": "Atrás de um reverse proxy",
+        "recovery_help": "Execute isto no servidor para desativar a lista: docker exec NOME_DO_CONTENTOR ot-artisan disable-ip-allowlist",
+        "recovery_title": "Se ficar bloqueado",
+        "title": "Segurança",
+        "your_ip": "O seu endereço visto pela aplicação: {ip}"
+      },
       "select_auth_provider": "Selecionar um fornecedor de autenticação",
       "share_deleted_emails": "E-mails de \"partilha eliminada\"",
       "share_deleted_emails_description": "Notificar os utilizadores quando as suas partilhas forem permanentemente eliminadas do sistema. Isto assegura o ciclo de vida do conteúdo por motivos de segurança e conformidade.",

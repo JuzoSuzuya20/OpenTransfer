@@ -24,6 +24,14 @@ import { useTranslate } from '@tolgee/vue'
 
 const { t } = useTranslate()
 
+// Why the API refused a login, when it is not simply the wrong password
+const LOGIN_REFUSALS = {
+  ip_not_allowed: 'auth.ip_not_allowed',
+  too_many_attempts: 'auth.too_many_login_attempts',
+  email_not_verified: 'auth.email_not_verified',
+  account_disabled: 'auth.account_disabled'
+}
+
 const apiUrl = getApiUrl()
 const toast = useToast()
 const email = ref('')
@@ -130,7 +138,7 @@ const attemptLogin = async () => {
       }
     }
   } catch (error) {
-    toast.error(t.value('auth.invalid_email_or_password'))
+    toast.error(t.value(LOGIN_REFUSALS[error.code] || 'auth.invalid_email_or_password'))
   }
 }
 

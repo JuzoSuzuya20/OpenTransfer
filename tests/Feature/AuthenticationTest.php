@@ -26,6 +26,27 @@ class AuthenticationTest extends TestCase
         ], $attributes));
     }
 
+    public function test_a_refused_login_says_why_in_a_form_the_interface_can_translate(): void
+    {
+        $disabled = $this->makeUser(['active' => false]);
+        $unverified = $this->makeUser(['active' => false, 'email_verification_code' => '424242']);
+        $locked = $this->makeUser();
+
+        $this->postJson('/api/auth/login', ['email' => $disabled->email, 'password' => 'password'])
+            ->assertForbidden()
+            ->assertJson(['code' => 'account_disabled']);
+        $this->postJson('/api/auth/login', ['email' => $unverified->email, 'password' => 'password'])
+            ->assertForbidden()
+            ->assertJson(['code' => 'email_not_verified']);
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->postJson('/api/auth/login', ['email' => $locked->email, 'password' => 'wrong'])->assertUnauthorized();
+        }
+        $this->postJson('/api/auth/login', ['email' => $locked->email, 'password' => 'wrong'])
+            ->assertStatus(429)
+            ->assertJson(['code' => 'too_many_attempts']);
+    }
+
     public function test_valid_credentials_return_an_access_token_and_a_refresh_cookie(): void
     {
         $user = $this->makeUser();

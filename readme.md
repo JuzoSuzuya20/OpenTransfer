@@ -21,6 +21,7 @@ support (OpenID Connect, Microsoft Entra ID, Google, Authentik).
 - No root at runtime: Caddy, PHP, tusd, the queue worker and the scheduler run as `erugo` (uid 1000)
 - No third-party requests (fonts and CSS are served by the app), Content-Security-Policy and strict security headers
 - Images published to `ghcr.io` for `amd64` and `arm64`, scanned with Trivy and signed with cosign
+- Optional allowlist of the networks members may sign in from, and `TRUSTED_PROXIES` for reverse proxies
 
 ## Quick Start
 
@@ -73,6 +74,43 @@ services:
     ports:
       - "9998:80"
 ```
+
+### Behind a reverse proxy
+
+Behind a proxy, every request appears to come from the proxy. Tell the container which address to
+believe, so that rate limits and the IP allowlist work on the real client address:
+
+```yaml
+    environment:
+      - TRUSTED_PROXIES=192.0.2.1   # or several, separated by commas: 192.0.2.1,10.0.0.0/24
+```
+
+- List the proxy only, not the whole network: a client inside a trusted range can forge its address.
+- `*` trusts whoever connects directly. Only use it if nothing but the proxy can reach the container.
+- The proxy must append to `X-Forwarded-For` (Caddy, Traefik and nginx with
+  `$proxy_add_x_forwarded_for` do).
+- This setting changes the client address and nothing else: the SSO callback URLs stay the same.
+- An invalid value stops the web server from starting, with the reason in `docker logs`.
+
+Settings → System → Security shows the address the application sees for you: it must be yours, not the
+proxy's.
+
+### Restricting sign-in by network
+
+Optional, off by default, in Settings → System → Security. Members can then only sign in (password or
+SSO) and keep using their session from the listed addresses and ranges. Share links and reverse-share
+guests stay reachable from everywhere. An upload already authorized can still send its data until its
+token expires (60 minutes at most), but cannot be turned into a share.
+
+The settings screen refuses a list that does not include your own address. If you lock yourself out
+anyway, for example because your address changed:
+
+```sh
+docker exec <container> ot-artisan disable-ip-allowlist
+```
+
+Use `ot-artisan` for artisan commands: `docker exec` does not inherit the environment the application
+runs with, so plain `php artisan` would look for another database.
 
 ### Verifying the image
 

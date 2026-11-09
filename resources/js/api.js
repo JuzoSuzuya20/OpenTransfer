@@ -246,6 +246,9 @@ const addJsonHeader = () => ({
   Accept: 'application/json'
 })
 
+// An error carrying what the API said, for the screens that react to a specific refusal
+const apiError = (data) => Object.assign(new Error(data.message), { code: data.code, data: data.data })
+
 // Wrapper for fetch that handles auth refresh
 const fetchWithAuth = async (url, options = {}) => {
   // Add auth header if not present
@@ -445,7 +448,7 @@ export const login = async (email, password) => {
   })
   const data = await response.json()
   if (!response.ok) {
-    throw new Error(data.message)
+    throw apiError(data)
   }
   return buildAuthSuccessData(data)
 }
@@ -689,9 +692,24 @@ export const saveSettingsById = async (settings) => {
   })
   const data = await response.json()
   if (!response.ok) {
-    throw new Error(data.message)
+    throw apiError(data)
   }
   return data.data
+}
+
+// The address the application sees for the current admin
+export const getClientIp = async () => {
+  const response = await fetchWithAuth(`${apiUrl}/api/settings/client-ip`, {
+    method: 'GET',
+    headers: {
+      ...addJsonHeader()
+    }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
+  }
+  return data.data.ip
 }
 
 export const saveLogo = async (logoFile) => {

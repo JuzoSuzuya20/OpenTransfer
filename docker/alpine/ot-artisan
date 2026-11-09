@@ -1,0 +1,17 @@
+#!/bin/sh
+# Runs an artisan command from outside the services:
+#
+#   docker exec <container> ot-artisan disable-ip-allowlist
+#
+# `docker exec` does not inherit what start-container prepares: plain artisan
+# would look for another database, and as root it could leave files erugo
+# cannot write.
+
+. /usr/local/lib/opentransfer-env
+
+cd /var/www/html || exit 1
+
+if [ "$(id -u)" = "0" ]; then
+    exec su-exec erugo php artisan "$@"
+fi
+exec php artisan "$@"

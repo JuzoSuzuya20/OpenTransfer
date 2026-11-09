@@ -140,9 +140,34 @@ jobs:
           check "aucun service ne tourne en root (trouvé : ${rootprocs:-aucun})" test -z "$rootprocs"
           check "le code est en lecture seule pour l'application" sh -c "! docker exec -u erugo ot sh -c 'touch /var/www/html/public/x' 2>/dev/null"
 
+          # Adresse du client : Caddy et Laravel doivent croire le même proxy, et lui seul.
+          first_admin() {
+            curl -s -o /dev/null -X POST -H 'Content-Type: application/json' \
+              -d '{"name":"Admin","email":"admin@example.test","password":"smoke-test-password","password_confirmation":"smoke-test-password"}' \
+              "http://localhost:$1/api/setup"
+            curl -s -X POST -H 'Content-Type: application/json' \
+              -d '{"email":"admin@example.test","password":"smoke-test-password"}' \
+              "http://localhost:$1/api/auth/login" | jq -r .data.access_token
+          }
+          seen_ip() {
+            curl -s -H "Authorization: Bearer $2" -H "X-Forwarded-For: $3" "http://localhost:$1/api/settings/client-ip" | jq -r .data.ip
+          }
+          login_from() {
+            curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -H "X-Forwarded-For: $2" \
+              -d '{"email":"admin@example.test","password":"smoke-test-password"}' "http://localhost:$1/api/auth/login"
+          }
+          jwt=$(first_admin 8080)
+          ip=$(seen_ip 8080 "$jwt" 203.0.113.50)
+          check "sans TRUSTED_PROXIES, X-Forwarded-For est ignoré (vu : $ip)" sh -c "echo '$ip' | grep -qE '^[0-9a-f.:]+$' && [ '$ip' != 203.0.113.50 ]"
+          out=$(docker exec ot ot-artisan disable-ip-allowlist 2>&1 | tail -n 1)
+          check "ot-artisan fonctionne via docker exec (reçu : $out)" sh -c "echo '$out' | grep -q 'is disabled'"
+          leftovers=$(docker exec ot find /var/www/html/storage ! -user erugo | wc -l)
+          check "ot-artisan ne laisse aucun fichier à root (trouvés : $leftovers)" test "$leftovers" = 0
+
           # Déploiement durci : sans root, sans capacités, système de fichiers en lecture seule
+          # (derrière un proxy : l'hôte arrive depuis le réseau Docker)
           docker run -d --name ot-hard --user 1000:1000 --read-only --tmpfs /tmp \
-            --cap-drop ALL --security-opt no-new-privileges \
+            --cap-drop ALL --security-opt no-new-privileges -e TRUSTED_PROXIES=172.16.0.0/12 \
             -v ot-hard-storage:/var/www/html/storage -p 8081:80 opentransfer:smoke
           hard=000
           for i in $(seq 1 60); do
@@ -154,6 +179,19 @@ jobs:
           sleep 5
           check "mode durci : tusd et le worker tournent" sh -c "docker exec ot-hard pgrep -f /usr/local/bin/tusd && docker exec ot-hard pgrep -f 'artisan queue:work'"
           check "mode durci : aucun processus abandonné" sh -c "! docker logs ot-hard 2>&1 | grep -qE 'gave up|FATAL|exited: .*not expected'"
+          jwt=$(first_admin 8081)
+          ip=$(seen_ip 8081 "$jwt" '198.51.100.99, 203.0.113.50')
+          check "avec TRUSTED_PROXIES, l'adresse vient du proxy, sans la partie forgée (vu : $ip)" test "$ip" = 203.0.113.50
+          saved=$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H "Authorization: Bearer $jwt" -H 'Content-Type: application/json' -H 'X-Forwarded-For: 203.0.113.50' \
+            -d '{"settings":[{"key":"login_ip_allowlist_enabled","value":"true"},{"key":"login_ip_allowlist","value":"203.0.113.50"}]}' http://localhost:8081/api/settings)
+          check "liste blanche : activation enregistrée (reçu $saved)" test "$saved" = 200
+          outside=$(login_from 8081 198.51.100.7)
+          inside=$(login_from 8081 203.0.113.50)
+          check "liste blanche : connexion refusée hors liste (reçu $outside)" test "$outside" = 403
+          check "liste blanche : connexion acceptée dans la liste (reçu $inside)" test "$inside" = 200
+          docker exec ot-hard ot-artisan disable-ip-allowlist >/dev/null 2>&1 || true
+          recovered=$(login_from 8081 198.51.100.7)
+          check "liste blanche : la commande de secours rouvre la connexion (reçu $recovered)" test "$recovered" = 200
           [ "$fails" -eq 0 ]
 
       # Bloque la publication si l'image contient une vulnérabilité critique corrigeable

@@ -10,6 +10,7 @@ Utilisé en production par une entreprise : la stabilité du SSO et des partages
 - Audits : `composer audit` et `npm audit --audit-level=high`
 - Build du front : `npm ci && npx vite build`
 - Image : `docker build -f docker/alpine/Dockerfile .` (la CI fait build + test de fumée + publication)
+- Artisan dans un conteneur : `docker exec <conteneur> ot-artisan …` (`php artisan` n'y a pas l'environnement de l'application)
 
 ## Conventions
 
@@ -23,6 +24,8 @@ Utilisé en production par une entreprise : la stabilité du SSO et des partages
 - URL de callback SSO `/auth/provider/{uuid}/callback` : déclarée chez les fournisseurs d'identité.
 - Logique de correspondance SSO (sub lié, `trust_email`, `allow_registration`) : couverte par
   `tests/Feature/ExternalAuthTest.php`.
+- `TRUSTED_PROXIES` : seul `X-Forwarded-For` est cru, jamais Host ni Proto (ils construisent l'URL de callback SSO).
+  Caddy doit croire les mêmes proxies que Laravel (`start-container`), sinon il réécrit l'en-tête.
 - Données existantes : le stockage et la base d'une instance Erugo doivent rester utilisables tels quels ;
   une migration ne doit jamais perdre de partages ni d'utilisateurs.
 - `socialiteproviders` / Socialite : fixé sur `^5.30` tant que `jumbojett/openid-connect-php` exige phpseclib 3.

@@ -30,7 +30,8 @@ import {
   getBackups,
   createBackup,
   downloadBackup,
-  deleteBackup
+  deleteBackup,
+  getClientIp
 } from '../../api'
 import HelpTip from '../helpTip.vue'
 
@@ -51,7 +52,11 @@ const toast = useToast()
 const confirmDialog = useConfirmDialog()
 const onLocalhost = ref(false)
 
+const clientIp = ref(null)
+
 const settings = ref({
+  login_ip_allowlist_enabled: false,
+  login_ip_allowlist: '',
   application_name: '',
   application_url: '',
   login_message: '',
@@ -248,7 +253,27 @@ onMounted(async () => {
   await loadAuthProviders()
   await loadBackups()
   onLocalhost.value = window.location.hostname === 'localhost'
+  try {
+    clientIp.value = await getClientIp()
+  } catch (error) {
+    console.error(error)
+  }
 })
+
+const addClientIpToAllowlist = () => {
+  const list = (settings.value.login_ip_allowlist || '').trimEnd()
+  settings.value.login_ip_allowlist = list ? `${list}\n${clientIp.value}` : clientIp.value
+}
+
+const saveFailureMessage = (error) => {
+  if (error.code === 'ip_allowlist_lockout') {
+    return t.value('settings.system.security.lockout_error', { ip: error.data?.ip })
+  }
+  if (error.code === 'ip_allowlist_invalid') {
+    return t.value('settings.system.security.invalid_entries', { entries: error.data?.invalid?.join(', ') })
+  }
+  return t.value('settings.failedToSaveSettings')
+}
 
 const loadSettings = async () => {
   try {
@@ -396,7 +421,7 @@ const saveSettings = async () => {
     notifySettingsChanged()
   } catch (error) {
     saving.value = false
-    toast.error(t.value('settings.failedToSaveSettings'))
+    toast.error(saveFailureMessage(error))
     console.error(error)
   }
 }
@@ -526,6 +551,12 @@ const handleDeleteAuthProvider = async (id) => {
             <a href="#" @click.prevent="handleNavItemClicked('auth')">
               <Fingerprint />
               {{ $t('settings.system.auth') }}
+            </a>
+          </li>
+          <li>
+            <a href="#" @click.prevent="handleNavItemClicked('security')">
+              <ShieldCheck />
+              {{ $t('settings.system.security.title') }}
             </a>
           </li>
           <li>
@@ -1169,6 +1200,63 @@ const handleDeleteAuthProvider = async (id) => {
               <p>{{ $t('settings.system.auth_provider_allow_registration_description') }}</p>
               <h6>{{ $t('settings.system.provider_trust_warning') }}</h6>
               <p>{{ $t('settings.system.provider_trust_warning_description') }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-5">
+          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
+            <div class="setting-group" id="security">
+              <div class="setting-group-header">
+                <h3>
+                  <ShieldCheck />
+                  {{ $t('settings.system.security.title') }}
+                </h3>
+              </div>
+
+              <div class="setting-group-body">
+                <div class="setting-group-body-item">
+                  <div class="checkbox-container">
+                    <input
+                      type="checkbox"
+                      id="login_ip_allowlist_enabled"
+                      v-model="settings.login_ip_allowlist_enabled"
+                    />
+                    <label for="login_ip_allowlist_enabled">
+                      {{ $t('settings.system.security.ip_allowlist_enabled') }}
+                    </label>
+                  </div>
+                </div>
+
+                <div class="setting-group-body-item">
+                  <label for="login_ip_allowlist">{{ $t('settings.system.security.ip_allowlist_entries') }}</label>
+                  <textarea
+                    id="login_ip_allowlist"
+                    rows="5"
+                    spellcheck="false"
+                    v-model="settings.login_ip_allowlist"
+                  ></textarea>
+                  <p class="help-text">{{ $t('settings.system.security.ip_allowlist_entries_help') }}</p>
+                  <p class="help-text" v-if="clientIp">
+                    {{ $t('settings.system.security.your_ip', { ip: clientIp }) }}
+                    <a href="#" @click.prevent="addClientIpToAllowlist">
+                      {{ $t('settings.system.security.add_your_ip') }}
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-none d-md-block col ps-0">
+            <div class="section-help">
+              <h6>{{ $t('settings.system.security.ip_allowlist') }}</h6>
+              <p>{{ $t('settings.system.security.ip_allowlist_description') }}</p>
+
+              <h6>{{ $t('settings.system.security.proxy_title') }}</h6>
+              <p>{{ $t('settings.system.security.proxy_help') }}</p>
+
+              <h6>{{ $t('settings.system.security.recovery_title') }}</h6>
+              <p>{{ $t('settings.system.security.recovery_help') }}</p>
             </div>
           </div>
         </div>

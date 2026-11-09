@@ -2,6 +2,8 @@
     # No admin API: nothing needs to reconfigure Caddy at runtime
     admin off
     servers {
+        # From TRUSTED_PROXIES, see start-container
+        trusted_proxies static {$CADDY_TRUSTED_PROXIES}
         # Slow clients may not hold a connection open by trickling headers (slowloris).
         # No read/write limit on bodies: uploads go through tusd, large downloads can take long.
         timeouts {

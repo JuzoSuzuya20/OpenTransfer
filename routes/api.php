@@ -88,6 +88,8 @@ Route::group([], function ($router) {
     Route::group(['prefix' => 'settings', 'middleware' => ['auth', Admin::class]], function ($router) {
         //create or update a setting
         Route::put('/', [SettingsController::class, 'write'])->name('settings.write');
+        //the address the application sees for the admin
+        Route::get('/client-ip', [SettingsController::class, 'clientIp'])->name('settings.clientIp');
         Route::post('/logo', [SettingsController::class, 'writeLogo'])->name('settings.writeLogo');
         Route::delete('/logo', [SettingsController::class, 'deleteLogo'])->name('settings.deleteLogo');
         //favicon management

@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: [
             'refresh_token',
         ]);
+        // The client address and nothing else: the host and scheme build the SSO
+        // callback URL declared at the identity providers. See config/trustedproxy.php.
+        $middleware->trustProxies(headers: Request::HEADER_X_FORWARDED_FOR);
+        $middleware->appendToGroup('api', \App\Http\Middleware\RestrictSignInToAllowedIps::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\RestrictSignInToAllowedIps::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

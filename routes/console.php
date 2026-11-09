@@ -9,6 +9,8 @@ use App\Jobs\sendDeletionWarningEmails;
 use App\Jobs\pruneLogs;
 use App\Jobs\updateLegacySharePaths;
 use App\Jobs\backUpDatabase;
+use App\Models\Setting;
+use App\Services\IpAllowlist;
 use App\Services\SettingsService;
 
 //daily jobs
@@ -57,3 +59,9 @@ Artisan::command('clear-settings-cache', function () {
     app(SettingsService::class)->clearCache();
     $this->info('Settings cache cleared.');
 })->purpose('Clear the settings cache');
+
+Artisan::command('disable-ip-allowlist', function () {
+    Setting::where('key', IpAllowlist::SETTING_ENABLED)->update(['value' => 'false']);
+    app(SettingsService::class)->clearCache();
+    $this->info('The IP allowlist is disabled: sign-in is open from every network again.');
+})->purpose('Turn the IP allowlist off, for an admin locked out by it');

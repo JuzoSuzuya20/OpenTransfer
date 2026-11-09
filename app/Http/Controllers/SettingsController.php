@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Setting;
+use App\Services\IpAllowlist;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -18,6 +20,12 @@ class SettingsController extends Controller
             'settings.*.key' => 'required|string|max:255',
             'settings.*.value' => 'string|nullable|max:65535',
         ]);
+
+        // Before anything is saved: a refused request must not be half applied
+        $allowlistRefusal = $this->refuseIpAllowlist($request);
+        if ($allowlistRefusal) {
+            return $allowlistRefusal;
+        }
 
         $errors = [];
         $savedSettings = [];
@@ -66,11 +74,67 @@ class SettingsController extends Controller
     }
 
     /**
-     * Settings only admins may read. These read routes are open to every
-     * signed-in account, reverse-share guests included, and the SMTP group
-     * holds the mail server credentials.
+     * Refuses a list with invalid entries, and a change that would lock out
+     * the admin making it (the disable-ip-allowlist command is the way back).
      */
-    private const ADMIN_ONLY_GROUPS = ['system.smtp'];
+    private function refuseIpAllowlist(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+
+        if (!$incoming->hasAny([IpAllowlist::SETTING_ENABLED, IpAllowlist::SETTING_LIST])) {
+            return null;
+        }
+
+        $allowlist = app(IpAllowlist::class);
+        $entries = $incoming->has(IpAllowlist::SETTING_LIST)
+            ? IpAllowlist::parse($incoming->get(IpAllowlist::SETTING_LIST))
+            : $allowlist->entries();
+        $enabled = $incoming->has(IpAllowlist::SETTING_ENABLED)
+            ? $incoming->get(IpAllowlist::SETTING_ENABLED) === 'true'
+            : $allowlist->isEnabled();
+
+        $invalid = IpAllowlist::invalidEntries($entries);
+        if ($invalid) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 'ip_allowlist_invalid',
+                'message' => 'The IP allowlist contains invalid entries',
+                'data' => ['invalid' => $invalid],
+            ], 422);
+        }
+
+        if ($enabled && !IpAllowlist::matches($request->ip(), $entries)) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 'ip_allowlist_lockout',
+                'message' => 'This IP allowlist would lock you out: it does not include your address',
+                'data' => ['ip' => $request->ip()],
+            ], 422);
+        }
+
+        return null;
+    }
+
+    /**
+     * The address the application sees for the admin, as the allowlist will
+     * see it: behind a proxy, it shows whether TRUSTED_PROXIES is right.
+     */
+    public function clientIp(Request $request)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'ip' => $request->ip(),
+            ]
+        ]);
+    }
+
+    /**
+     * Settings only admins may read. These read routes are open to every
+     * signed-in account, reverse-share guests included: the SMTP group holds
+     * the mail server credentials, the security group the company's networks.
+     */
+    private const ADMIN_ONLY_GROUPS = ['system.smtp', 'system.security'];
 
     private function withoutAdminOnlySettings($query, Request $request)
     {

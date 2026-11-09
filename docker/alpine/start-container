@@ -3,9 +3,6 @@
 echo "OpenTransfer is starting..."
 echo "================================================"
 
-export APP_URL=/
-export ASSET_URL=/
-
 STORAGE=/var/www/html/storage
 
 # Root is only used to fix the ownership of the storage volume, then dropped.
@@ -42,27 +39,29 @@ else
     "
 fi
 
-# Load the app key and JWT secret, generating them on first start
+# Generate the app key and JWT secret on first start
 if [ ! -f "$STORAGE/app.key" ]; then
     echo "Generating app key..."
     as_erugo sh -c "php artisan key:generate --force --show > '$STORAGE/app.key'"
 fi
-export APP_KEY=$(cat "$STORAGE/app.key")
 
 if [ ! -f "$STORAGE/jwt.secret" ]; then
     echo "Generating JWT secret..."
     as_erugo sh -c "php -r 'echo base64_encode(random_bytes(32));' > '$STORAGE/jwt.secret'"
 fi
-export JWT_SECRET=$(cat "$STORAGE/jwt.secret")
-
-if [ -z "$DB_CONNECTION" ]; then
-    echo "DB_CONNECTION environment variable not set, setting to sqlite..."
-    export DB_CONNECTION=sqlite
-    export DB_DATABASE=./storage/app/private/database.sqlite
-fi
 
 # The scheduler runs under supervisord (schedule:work) and inherits this
 # environment: no cron, no .env file written into the application code.
+. /usr/local/lib/opentransfer-env
+
+# Caddy sits between the reverse proxy and PHP: unless it trusts the same
+# proxies, it replaces X-Forwarded-For with the proxy's address before the
+# application reads it.
+case "$TRUSTED_PROXIES" in
+    '*') CADDY_TRUSTED_PROXIES='0.0.0.0/0 ::/0' ;;
+    *) CADDY_TRUSTED_PROXIES=$(printf '%s' "$TRUSTED_PROXIES" | tr ',' ' ') ;;
+esac
+export CADDY_TRUSTED_PROXIES
 
 echo "Running migrations..."
 as_erugo php artisan migrate --force

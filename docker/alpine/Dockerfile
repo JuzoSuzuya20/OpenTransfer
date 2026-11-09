@@ -122,9 +122,11 @@ RUN rm -rf /var/www/html/.env /var/www/html/.git /var/www/html/node_modules /var
 
 # Copy configuration files
 COPY ./docker/alpine/start-container /usr/local/bin/start-container
+COPY ./docker/alpine/ot-artisan /usr/local/bin/ot-artisan
+COPY ./docker/alpine/opentransfer-env /usr/local/lib/opentransfer-env
 COPY ./docker/alpine/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./docker/alpine/php.ini /etc/php85/conf.d/99-erugo.ini
-RUN chmod +x /usr/local/bin/start-container
+RUN chmod +x /usr/local/bin/start-container /usr/local/bin/ot-artisan
 
 # Shares, database, keys and logs live here: mount it to keep them across upgrades
 VOLUME ["/var/www/html/storage"]

@@ -46,6 +46,7 @@ class AuthController extends Controller
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             return response()->json([
                 'status' => 'error',
+                'code' => 'too_many_attempts',
                 'message' => 'Too many login attempts. Please try again in ' . RateLimiter::availableIn($throttleKey) . ' seconds.'
             ], 429);
         }
@@ -76,6 +77,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'status' => 'error',
+            'code' => $user->email_verification_code ? 'email_not_verified' : 'account_disabled',
             'message' => $user->email_verification_code
                 ? 'Please verify your email address before signing in'
                 : 'This account is disabled'
