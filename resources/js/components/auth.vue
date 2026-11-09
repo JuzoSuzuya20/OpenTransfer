@@ -36,7 +36,8 @@ const LOGIN_REFUSALS = {
   ip_not_allowed: 'auth.ip_not_allowed',
   too_many_attempts: 'auth.too_many_login_attempts',
   email_not_verified: 'auth.email_not_verified',
-  account_disabled: 'auth.account_disabled'
+  account_disabled: 'auth.account_disabled',
+  altcha_invalid: 'auth.altcha_failed'
 }
 
 const apiUrl = getApiUrl()

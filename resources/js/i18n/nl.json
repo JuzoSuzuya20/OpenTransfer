@@ -25,6 +25,7 @@
   },
   "auth": {
     "account_disabled": "Dit account is uitgeschakeld.",
+    "altcha_failed": "De robotcontrole is mislukt, probeer het opnieuw.",
     "back_to_login": "Terug naar aanmelden",
     "confirm_end_guest_session": "Weet je zeker dat je deze sessie wilt beëindigen? Omdat je een gastgebruiker bent, kun je na het beëindigen van deze sessie geen extra bestanden meer uploaden.",
     "confirm_password": "Wachtwoord bevestigen",
@@ -816,6 +817,11 @@
       "reverse_shares": "Omgekeerde Aandelen",
       "security": {
         "add_your_ip": "Toevoegen aan de lijst",
+        "altcha": "Robotcontrole",
+        "altcha_description": "De browser lost een korte berekening op vóór het aanmelden, het aanvragen van een nieuw wachtwoord en het aanmaken van een account. Dat kost een robot bij elke poging en merken mensen niet. Zelf gehost. SSO valt hierbuiten.",
+        "altcha_difficulty": "Moeilijkheid",
+        "altcha_difficulty_help": "Tussen 1000 en 10000000. De standaardwaarde, 100000, duurt op een recent apparaat ruim minder dan een seconde.",
+        "altcha_enabled": "Robotcontrole vereisen op de aanmeldformulieren",
         "encryption": "Versleuteling van opgeslagen bestanden",
         "encryption_enabled": "Nieuwe shares versleutelen",
         "encryption_help": "Een kopie van het opslagvolume of van een back-up is onleesbaar zonder de sleutel, die erbuiten staat in de variabele STORAGE_ENCRYPTION_KEY. Wie de sleutel verliest, verliest de versleutelde bestanden definitief: bewaar een kopie ver van deze server. Zie de documentatie voor bestaande shares.",

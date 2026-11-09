@@ -25,6 +25,7 @@
   },
   "auth": {
     "account_disabled": "This account is disabled.",
+    "altcha_failed": "The anti-robot verification failed, please try again.",
     "back_to_login": "Back to login",
     "confirm_end_guest_session": "Are you sure you want to end this session? Since you're a guest user, you won't be able to upload additional files after ending this session.",
     "confirm_password": "Confirm Password",
@@ -837,6 +838,11 @@
       "reverse_shares": "Reverse Shares",
       "security": {
         "add_your_ip": "Add it to the list",
+        "altcha": "Anti-robot check",
+        "altcha_description": "The browser solves a short calculation before sign-in, password reset requests and account creation. It costs a bot for every attempt and goes unnoticed by people. Self-hosted. SSO is not concerned.",
+        "altcha_difficulty": "Difficulty",
+        "altcha_difficulty_help": "Between 1000 and 10000000. The default, 100000, takes well under a second on a recent device.",
+        "altcha_enabled": "Require the anti-robot check on sign-in forms",
         "encryption": "Encryption of stored files",
         "encryption_enabled": "Encrypt new shares",
         "encryption_help": "A copy of the storage volume or of a backup cannot be read without the key, kept outside it in the STORAGE_ENCRYPTION_KEY variable. Losing the key means losing the encrypted files for good: keep a copy away from this server. See the documentation for existing shares.",

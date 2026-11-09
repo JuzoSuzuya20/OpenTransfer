@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Middleware\AdminMiddleware as Admin;
+use App\Http\Middleware\RequireAltcha;
+use App\Services\Altcha;
 use App\Http\Middleware\NoUsersMiddleware as NoUsers;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SharesController;
@@ -45,10 +47,17 @@ Route::group([], function ($router) {
 
     //auth
     Route::group(['prefix' => 'auth'], function ($router) {
-        Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+        //anti-robot check of the forms open to anyone, when an admin turns it on
+        Route::get('challenge', function (Altcha $altcha) {
+            abort_unless($altcha->isEnabled(), 404);
+
+            return response()->json(['status' => 'success', 'data' => $altcha->createChallenge()]);
+        })->name('auth.challenge')->middleware('throttle:60,1');
+
+        Route::post('login', [AuthController::class, 'login'])->name('auth.login')->middleware(RequireAltcha::class);
         Route::post('refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
         Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
-        Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword');
+        Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware(RequireAltcha::class);
         Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('auth.resetPassword');
 
         //second factor, after a correct password
@@ -65,9 +74,9 @@ Route::group([], function ($router) {
         Route::post('passkey/login', [TwoFactorController::class, 'passwordlessLogin'])->name('auth.passkey.login')->middleware('throttle:30,1');
         
         // Self-registration routes
-        Route::post('register', [SelfRegistrationController::class, 'register'])->name('auth.register');
+        Route::post('register', [SelfRegistrationController::class, 'register'])->name('auth.register')->middleware(RequireAltcha::class);
         Route::post('verify-email', [SelfRegistrationController::class, 'verifyEmail'])->name('auth.verifyEmail');
-        Route::post('resend-verification', [SelfRegistrationController::class, 'resendCode'])->name('auth.resendVerification');
+        Route::post('resend-verification', [SelfRegistrationController::class, 'resendCode'])->name('auth.resendVerification')->middleware(RequireAltcha::class);
         Route::get('registration-settings', [SelfRegistrationController::class, 'getSettings'])->name('auth.registrationSettings');
     });
 

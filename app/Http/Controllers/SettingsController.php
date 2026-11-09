@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Setting;
+use App\Services\Altcha;
 use App\Services\IpAllowlist;
 use App\Services\StorageEncryption;
 use App\Services\TwoFactor;
@@ -24,7 +25,7 @@ class SettingsController extends Controller
         ]);
 
         // Before anything is saved: a refused request must not be half applied
-        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request);
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request);
         if ($refusal) {
             return $refusal;
         }
@@ -148,6 +149,26 @@ class SettingsController extends Controller
             'status' => 'error',
             'code' => 'storage_key_missing',
             'message' => 'Set the STORAGE_ENCRYPTION_KEY environment variable before turning this on',
+        ], 422);
+    }
+
+    private function refuseAltchaDifficulty(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+
+        if (!$incoming->has(Altcha::SETTING_MAX_NUMBER)) {
+            return null;
+        }
+
+        $value = $incoming->get(Altcha::SETTING_MAX_NUMBER);
+        if (is_string($value) && ctype_digit($value) && (int) $value >= Altcha::MIN_MAX_NUMBER && (int) $value <= Altcha::MAX_MAX_NUMBER) {
+            return null;
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'code' => 'altcha_difficulty_invalid',
+            'message' => 'The difficulty must be between '.Altcha::MIN_MAX_NUMBER.' and '.Altcha::MAX_MAX_NUMBER,
         ], 422);
     }
 

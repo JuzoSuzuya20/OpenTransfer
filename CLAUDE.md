@@ -6,7 +6,7 @@ Utilisé en production par une entreprise : la stabilité du SSO et des partages
 
 ## Commandes
 
-- Tests : `php artisan test` (SQLite en mémoire, voir `phpunit.xml`)
+- Tests : `php artisan test` (SQLite en mémoire, voir `phpunit.xml`) et `node --test tests/js/` pour le peu de logique critique côté navigateur
 - Audits : `composer audit` et `npm audit --audit-level=high`
 - Build du front : `npm ci && npx vite build`
 - Image : `docker build -f docker/alpine/Dockerfile .` (la CI fait build + test de fumée + publication)

@@ -25,6 +25,7 @@
   },
   "auth": {
     "account_disabled": "Ce compte est désactivé.",
+    "altcha_failed": "La vérification anti-robots a échoué, veuillez réessayer.",
     "back_to_login": "Retour à la connexion",
     "confirm_end_guest_session": "Êtes-vous sûr de vouloir mettre fin à cette session ? Comme vous êtes un utilisateur invité, vous ne pourrez pas télécharger d'autres fichiers après avoir mis fin à cette session.",
     "confirm_password": "Confirmez le mot de passe",
@@ -816,6 +817,11 @@
       "reverse_shares": "Partages inversés",
       "security": {
         "add_your_ip": "L'ajouter à la liste",
+        "altcha": "Vérification anti-robots",
+        "altcha_description": "Le navigateur résout un court calcul avant la connexion, la demande de réinitialisation du mot de passe et la création de compte. Cela coûte à un robot à chaque essai et passe inaperçu pour les personnes. Auto-hébergé. Le SSO n'est pas concerné.",
+        "altcha_difficulty": "Difficulté",
+        "altcha_difficulty_help": "Entre 1000 et 10000000. La valeur par défaut, 100000, prend bien moins d'une seconde sur un appareil récent.",
+        "altcha_enabled": "Exiger la vérification anti-robots sur les formulaires de connexion",
         "encryption": "Chiffrement des fichiers stockés",
         "encryption_enabled": "Chiffrer les nouveaux partages",
         "encryption_help": "Une copie du volume de stockage ou d'une sauvegarde est illisible sans la clé, conservée hors du volume dans la variable STORAGE_ENCRYPTION_KEY. Perdre la clé, c'est perdre définitivement les fichiers chiffrés : gardez-en une copie loin de ce serveur. Voir la documentation pour les partages existants.",

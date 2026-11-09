@@ -24,6 +24,7 @@ support (OpenID Connect, Microsoft Entra ID, Google, Authentik).
 - Optional allowlist of the networks members may sign in from, and `TRUSTED_PROXIES` for reverse proxies
 - Optional two-factor authentication for password sign-in, which administrators can make mandatory
 - Optional encryption at rest of shared files, with a key kept outside the storage volume
+- Optional self-hosted anti-robot check on sign-in, password reset and registration
 
 ## Quick Start
 
@@ -139,6 +140,15 @@ in Settings → Users, or on the server:
 ```sh
 docker exec <container> ot-artisan reset-2fa user@example.com
 ```
+
+### Anti-robot check
+
+Optional, off by default, in Settings → System → Security. The browser solves a short proof of work (SHA-256,
+in the ALTCHA format) before sign-in, password reset requests and account creation: it costs a bot for every
+attempt and goes unnoticed by people. Everything is self-hosted, no request leaves your server.
+
+It slows down mass attempts and adds to the limits on failed sign-ins, it does not replace them: a dedicated
+attacker can pay this cost. SSO is not concerned. Scripts calling these routes directly have to solve it too.
 
 ### Encrypting stored files
 

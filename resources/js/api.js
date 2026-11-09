@@ -6,6 +6,8 @@ import debounce from './debounce'
 import * as tus from 'tus-js-client'
 import { watch } from 'vue'
 import JSZip from 'jszip'
+import { domData } from './domData'
+import { solveChallenge } from './proofOfWork'
 
 // Bundling configuration for small files
 const BUNDLE_CONFIG = {
@@ -246,6 +248,21 @@ const addJsonHeader = () => ({
   Accept: 'application/json'
 })
 
+// The anti-robot check of the forms open to anyone, when an administrator turns it on
+const withAltcha = async (body) => {
+  if (domData().altcha_enabled !== true) {
+    return body
+  }
+
+  const response = await fetch(`${apiUrl}/api/auth/challenge`, { headers: { ...addJsonHeader() } })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
+  }
+
+  return { ...body, altcha: await solveChallenge(data.data) }
+}
+
 // An error carrying what the API said, for the screens that react to a specific refusal
 const apiError = (data) => Object.assign(new Error(data.message), { code: data.code, data: data.data })
 
@@ -351,9 +368,7 @@ export const forgotPassword = async (email) => {
     headers: {
       ...addJsonHeader()
     },
-    body: JSON.stringify({
-      email
-    })
+    body: JSON.stringify(await withAltcha({ email }))
   })
   const data = await response.json()
   if (!response.ok) {
@@ -383,12 +398,7 @@ export const registerUser = async (name, email, password, password_confirmation)
     headers: {
       ...addJsonHeader()
     },
-    body: JSON.stringify({
-      name,
-      email,
-      password,
-      password_confirmation
-    })
+    body: JSON.stringify(await withAltcha({ name, email, password, password_confirmation }))
   })
   const data = await response.json()
   if (!response.ok) {
@@ -423,9 +433,7 @@ export const resendVerificationCode = async (email) => {
     headers: {
       ...addJsonHeader()
     },
-    body: JSON.stringify({
-      email
-    })
+    body: JSON.stringify(await withAltcha({ email }))
   })
   const data = await response.json()
   if (!response.ok) {
@@ -441,10 +449,7 @@ export const login = async (email, password) => {
     headers: {
       ...addJsonHeader()
     },
-    body: JSON.stringify({
-      email,
-      password
-    })
+    body: JSON.stringify(await withAltcha({ email, password }))
   })
   const data = await response.json()
   if (!response.ok) {

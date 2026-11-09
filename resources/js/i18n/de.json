@@ -25,6 +25,7 @@
   },
   "auth": {
     "account_disabled": "Dieses Konto ist deaktiviert.",
+    "altcha_failed": "Die Roboter-Prüfung ist fehlgeschlagen, bitte versuchen Sie es erneut.",
     "back_to_login": "Zurück zur Anmeldung",
     "confirm_end_guest_session": "Sind Sie sicher, dass Sie diese Sitzung beenden möchten? Da Sie ein Gastbenutzer sind, können Sie nach Beendigung dieser Sitzung keine weiteren Dateien hochladen.",
     "confirm_password": "Bestätigen Sie Ihr Passwort",
@@ -816,6 +817,11 @@
       "reverse_shares": "Reverse-Aktien",
       "security": {
         "add_your_ip": "Zur Liste hinzufügen",
+        "altcha": "Roboter-Prüfung",
+        "altcha_description": "Der Browser löst vor der Anmeldung, der Passwort-Zurücksetzung und der Kontoerstellung eine kurze Berechnung. Das kostet einen Roboter bei jedem Versuch und bleibt für Menschen unbemerkt. Selbst gehostet. SSO ist nicht betroffen.",
+        "altcha_difficulty": "Schwierigkeit",
+        "altcha_difficulty_help": "Zwischen 1000 und 10000000. Der Standardwert 100000 dauert auf einem aktuellen Gerät deutlich unter einer Sekunde.",
+        "altcha_enabled": "Roboter-Prüfung auf den Anmeldeformularen verlangen",
         "encryption": "Verschlüsselung der gespeicherten Dateien",
         "encryption_enabled": "Neue Freigaben verschlüsseln",
         "encryption_help": "Eine Kopie des Speichervolumes oder einer Sicherung ist ohne den Schlüssel nicht lesbar; er liegt außerhalb in der Variable STORAGE_ENCRYPTION_KEY. Wer den Schlüssel verliert, verliert die verschlüsselten Dateien endgültig: Bewahren Sie eine Kopie getrennt von diesem Server auf. Zu bestehenden Freigaben siehe die Dokumentation.",

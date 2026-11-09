@@ -62,6 +62,8 @@ const settings = ref({
   mfa_required_for: 'none',
   passkey_login_enabled: false,
   storage_encryption_enabled: false,
+  altcha_enabled: false,
+  altcha_max_number: 100000,
   application_name: '',
   application_url: '',
   login_message: '',
@@ -274,6 +276,9 @@ const addClientIpToAllowlist = () => {
 const saveFailureMessage = (error) => {
   if (error.code === 'ip_allowlist_lockout') {
     return t.value('settings.system.security.lockout_error', { ip: error.data?.ip })
+  }
+  if (error.code === 'altcha_difficulty_invalid') {
+    return t.value('settings.system.security.altcha_difficulty_help')
   }
   if (error.code === 'storage_key_missing') {
     return t.value('settings.system.security.encryption_key_absent')
@@ -1287,6 +1292,19 @@ const handleDeleteAuthProvider = async (id) => {
                     {{ $t('settings.system.security.encryption_key_absent') }}
                   </p>
                 </div>
+
+                <div class="setting-group-body-item">
+                  <div class="checkbox-container">
+                    <input type="checkbox" id="altcha_enabled" v-model="settings.altcha_enabled" />
+                    <label for="altcha_enabled">{{ $t('settings.system.security.altcha_enabled') }}</label>
+                  </div>
+                </div>
+
+                <div class="setting-group-body-item" v-if="settings.altcha_enabled">
+                  <label for="altcha_max_number">{{ $t('settings.system.security.altcha_difficulty') }}</label>
+                  <input type="number" id="altcha_max_number" min="1000" max="10000000" v-model="settings.altcha_max_number" />
+                  <p class="help-text">{{ $t('settings.system.security.altcha_difficulty_help') }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -1309,6 +1327,9 @@ const handleDeleteAuthProvider = async (id) => {
 
               <h6>{{ $t('settings.system.security.encryption') }}</h6>
               <p>{{ $t('settings.system.security.encryption_help') }}</p>
+
+              <h6>{{ $t('settings.system.security.altcha') }}</h6>
+              <p>{{ $t('settings.system.security.altcha_description') }}</p>
             </div>
           </div>
         </div>

@@ -25,6 +25,7 @@
   },
   "auth": {
     "account_disabled": "Questo account è disattivato.",
+    "altcha_failed": "La verifica anti-robot non è riuscita, riprova.",
     "back_to_login": "Torna al login",
     "confirm_end_guest_session": "Sei sicuro di voler terminare questa sessione? Poiché sei un utente ospite, non potrai caricare altri file dopo aver terminato questa sessione.",
     "confirm_password": "Conferma password",
@@ -816,6 +817,11 @@
       "reverse_shares": "Azioni inverse",
       "security": {
         "add_your_ip": "Aggiungilo alla lista",
+        "altcha": "Verifica anti-robot",
+        "altcha_description": "Il browser risolve un breve calcolo prima dell'accesso, della richiesta di reimpostazione della password e della creazione dell'account. Costa a un robot a ogni tentativo e passa inosservato alle persone. Self-hosted. Il SSO non è interessato.",
+        "altcha_difficulty": "Difficoltà",
+        "altcha_difficulty_help": "Tra 1000 e 10000000. Il valore predefinito, 100000, richiede molto meno di un secondo su un dispositivo recente.",
+        "altcha_enabled": "Richiedi la verifica anti-robot nei moduli di accesso",
         "encryption": "Crittografia dei file archiviati",
         "encryption_enabled": "Cripta le nuove condivisioni",
         "encryption_help": "Una copia del volume di archiviazione o di un backup è illeggibile senza la chiave, conservata fuori dal volume nella variabile STORAGE_ENCRYPTION_KEY. Perdere la chiave significa perdere definitivamente i file criptati: conservane una copia lontano da questo server. Per le condivisioni esistenti vedi la documentazione.",

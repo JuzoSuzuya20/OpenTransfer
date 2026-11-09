@@ -25,6 +25,7 @@
   },
   "auth": {
     "account_disabled": "Esta conta está desativada.",
+    "altcha_failed": "A verificação anti-robô falhou, tente novamente.",
     "back_to_login": "Voltar à autenticação",
     "confirm_end_guest_session": "Tem a certeza de que pretende terminar esta sessão? Sendo um utilizador convidado, não poderá carregar ficheiros adicionais depois de terminar esta sessão.",
     "confirm_password": "Confirme a palavra-passe",
@@ -795,6 +796,11 @@
       "reverse_shares": "Acções reversíveis",
       "security": {
         "add_your_ip": "Adicionar à lista",
+        "altcha": "Verificação anti-robô",
+        "altcha_description": "O navegador resolve um cálculo curto antes do início de sessão, do pedido de reposição da palavra-passe e da criação de conta. Custa a um robô em cada tentativa e passa despercebido às pessoas. Auto-alojado. O SSO não é abrangido.",
+        "altcha_difficulty": "Dificuldade",
+        "altcha_difficulty_help": "Entre 1000 e 10000000. O valor predefinido, 100000, demora bem menos de um segundo num dispositivo recente.",
+        "altcha_enabled": "Exigir a verificação anti-robô nos formulários de início de sessão",
         "encryption": "Encriptação dos ficheiros armazenados",
         "encryption_enabled": "Encriptar as novas partilhas",
         "encryption_help": "Uma cópia do volume de armazenamento ou de uma cópia de segurança é ilegível sem a chave, guardada fora dele na variável STORAGE_ENCRYPTION_KEY. Perder a chave é perder definitivamente os ficheiros encriptados: guarde uma cópia longe deste servidor. Para as partilhas existentes, consulte a documentação.",
