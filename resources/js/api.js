@@ -450,8 +450,66 @@ export const login = async (email, password) => {
   if (!response.ok) {
     throw apiError(data)
   }
+
+  // The password alone may not be enough to open a session
+  if (data.status === 'mfa_required') {
+    return { mfaRequired: true, mfaToken: data.data.mfa_token, methods: data.data.methods }
+  }
+  if (data.status === 'mfa_enrolment_required') {
+    return { enrolmentRequired: true, enrolToken: data.data.enrol_token }
+  }
+
   return buildAuthSuccessData(data)
 }
+
+const secondFactorRequest = async (path, body) => {
+  const response = await fetch(`${apiUrl}/api/auth/mfa/${path}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      ...addJsonHeader()
+    },
+    body: JSON.stringify(body)
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
+  }
+  return data
+}
+
+export const verifyMfaCode = async (mfaToken, method, code) =>
+  buildAuthSuccessData(await secondFactorRequest('verify', { mfa_token: mfaToken, method, code }))
+
+export const enrolStartTotp = async (enrolToken) =>
+  (await secondFactorRequest('enrol/totp/setup', { enrol_token: enrolToken })).data
+
+export const enrolConfirmTotp = async (enrolToken, code) => {
+  const data = await secondFactorRequest('enrol/totp/confirm', { enrol_token: enrolToken, code })
+  return { auth: buildAuthSuccessData(data), recoveryCodes: data.data.recovery_codes }
+}
+
+const twoFactorRequest = async (path, method = 'GET', body = null) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/${path}`, {
+    method,
+    headers: {
+      ...addJsonHeader()
+    },
+    ...(body ? { body: JSON.stringify(body) } : {})
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
+  }
+  return data.data
+}
+
+export const getTwoFactorStatus = () => twoFactorRequest('users/me/2fa')
+export const startTotpSetup = (password) => twoFactorRequest('users/me/2fa/totp/setup', 'POST', { password })
+export const confirmTotpSetup = (code) => twoFactorRequest('users/me/2fa/totp/confirm', 'POST', { code })
+export const disableTotp = (password) => twoFactorRequest('users/me/2fa/totp', 'DELETE', { password })
+export const regenerateRecoveryCodes = (password) => twoFactorRequest('users/me/2fa/recovery-codes', 'POST', { password })
+export const resetUserTwoFactor = (userId) => twoFactorRequest(`users/${userId}/2fa`, 'DELETE')
 
 export const sendReverseShareInvite = async (email, name, message) => {
   const response = await fetchWithAuth(`${apiUrl}/api/reverse-shares/invite`, {

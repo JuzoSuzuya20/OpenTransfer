@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, defineEmits } from 'vue'
-import { getUsers, createUser, deleteUser, updateUser, forceResetPassword } from '../../api'
-import { UserPen, Trash, UserPlus, CircleX, UserRoundCheck, FolderOpen, KeyRound } from 'lucide-vue-next'
+import { getUsers, createUser, deleteUser, updateUser, forceResetPassword, resetUserTwoFactor } from '../../api'
+import { UserPen, Trash, UserPlus, CircleX, UserRoundCheck, FolderOpen, KeyRound, ShieldOff } from 'lucide-vue-next'
 import { store } from '../../store'
 import { useToast } from 'vue-toastification'
 import { niceDate } from '../../utils'
@@ -151,6 +151,24 @@ const handleViewUserShares = (user) => {
   emit('viewUserShares', user)
 }
 
+const handleResetTwoFactor = async (user) => {
+  const confirmed = await confirmDialog.show({
+    title: t.value('settings.users.reset_two_factor'),
+    message: t.value('settings.users.confirm_reset_two_factor', { name: user.name }),
+    okText: t.value('settings.users.reset_two_factor'),
+    cancelText: t.value('settings.close')
+  })
+  if (!confirmed) return
+
+  try {
+    await resetUserTwoFactor(user.id)
+    toast.success(t.value('settings.users.reset_two_factor_success'))
+    loadUsers()
+  } catch (error) {
+    toast.error(t.value('settings.users.reset_two_factor_failed'))
+  }
+}
+
 const handleForceResetPassword = (user) => {
   if (user.id === store.userId) {
     toast.error(t.value('settings.users.cannot_force_reset_own_password'))
@@ -226,6 +244,15 @@ const confirmForceResetPassword = () => {
             <button class="secondary" :disabled="user.id === store.userId" @click="handleForceResetPassword(user)">
               <KeyRound />
               {{ $t('settings.users.force_reset_password') }}
+            </button>
+            <button
+              class="secondary"
+              v-if="user.totp_enabled_at"
+              :disabled="user.id === store.userId"
+              @click="handleResetTwoFactor(user)"
+            >
+              <ShieldOff />
+              {{ $t('settings.users.reset_two_factor') }}
             </button>
             <button class="secondary" :disabled="user.id === store.userId" @click="handleDeleteUserClick(user.id)">
               <Trash />

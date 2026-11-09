@@ -399,7 +399,8 @@ class ExternalAuthController extends Controller
     {
         // Set refresh token with 24 hour expiry
         $twentyFourHours = 60 * 60 * 24;
-        $refreshToken = Auth::setTTL($twentyFourHours)->tokenById($user->id);
+        // Marked as SSO: renewals are not subject to the second factor policy
+        $refreshToken = Auth::claims(['amr' => 'sso'])->setTTL($twentyFourHours)->tokenById($user->id);
 
         // Create HTTP-only secure cookie with refresh token
         $cookie = cookie('refresh_token', urlencode($refreshToken), $twentyFourHours, null, null, true, true);

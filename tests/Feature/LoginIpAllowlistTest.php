@@ -184,6 +184,9 @@ class LoginIpAllowlistTest extends TestCase
             'register' => ['/api/auth/register'],
             'verify email' => ['/api/auth/verify-email'],
             'resend verification' => ['/api/auth/resend-verification'],
+            'second factor' => ['/api/auth/mfa/verify'],
+            'second factor setup' => ['/api/auth/mfa/enrol/totp/setup'],
+            'second factor setup confirmation' => ['/api/auth/mfa/enrol/totp/confirm'],
         ];
     }
 

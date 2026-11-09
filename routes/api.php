@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Middleware\AdminMiddleware as Admin;
 use App\Http\Middleware\NoUsersMiddleware as NoUsers;
@@ -49,6 +50,11 @@ Route::group([], function ($router) {
         Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword');
         Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('auth.resetPassword');
+
+        //second factor, after a correct password
+        Route::post('mfa/verify', [TwoFactorController::class, 'verifyLogin'])->name('auth.mfa.verify');
+        Route::post('mfa/enrol/totp/setup', [TwoFactorController::class, 'enrolTotpSetup'])->name('auth.mfa.enrolTotpSetup');
+        Route::post('mfa/enrol/totp/confirm', [TwoFactorController::class, 'enrolTotpConfirm'])->name('auth.mfa.enrolTotpConfirm');
         
         // Self-registration routes
         Route::post('register', [SelfRegistrationController::class, 'register'])->name('auth.register');
@@ -62,6 +68,13 @@ Route::group([], function ($router) {
         Route::get('/', [UsersController::class, 'me'])->name('profile.view');
         Route::put('/', [UsersController::class, 'updateMe'])->name('profile.update');
         Route::delete('/providers/{providerId}', [UsersController::class, 'unlinkProvider'])->name('profile.unlinkProvider');
+
+        //second factor
+        Route::get('/2fa', [TwoFactorController::class, 'status'])->name('profile.2fa.status');
+        Route::post('/2fa/totp/setup', [TwoFactorController::class, 'totpSetup'])->name('profile.2fa.totpSetup');
+        Route::post('/2fa/totp/confirm', [TwoFactorController::class, 'totpConfirm'])->name('profile.2fa.totpConfirm');
+        Route::delete('/2fa/totp', [TwoFactorController::class, 'totpDisable'])->name('profile.2fa.totpDisable');
+        Route::post('/2fa/recovery-codes', [TwoFactorController::class, 'regenerateRecoveryCodes'])->name('profile.2fa.recoveryCodes');
     });
 
     //manage users [auth, admin]
@@ -78,6 +91,9 @@ Route::group([], function ($router) {
 
         //delete a user
         Route::delete('/{id}', [UsersController::class, 'delete'])->name('users.delete');
+
+        //remove the second factor of a user who lost their device
+        Route::delete('/{id}/2fa', [TwoFactorController::class, 'adminReset'])->whereNumber('id')->name('users.reset2fa');
 
         //force reset a user's password
         Route::post('/{id}/force-reset-password', [UsersController::class, 'forceResetPassword'])->name('users.forceResetPassword');

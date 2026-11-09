@@ -16,10 +16,12 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Models\ReverseShareInvite;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Services\TwoFactor;
 
 
 class AuthController extends Controller
 {
+    use IssuesTokens;
 
     public function login(Request $request)
     {
@@ -51,7 +53,8 @@ class AuthController extends Controller
             ], 429);
         }
 
-        if (!Auth::attempt($credentials)) {
+        // Without opening a session: a second factor may be needed first
+        if (!Auth::attempt($credentials, false)) {
             RateLimiter::hit($throttleKey, 60);
             return response()->json([
                 'status' => 'error',
@@ -59,10 +62,35 @@ class AuthController extends Controller
             ], 401);
         }
         RateLimiter::clear($throttleKey);
-        $user = Auth::user();
+        $user = Auth::getLastAttempted();
 
         if (!$user->active) {
             return $this->inactiveAccountResponse($user);
+        }
+
+        $twoFactor = app(TwoFactor::class);
+
+        if ($twoFactor->isEnabledFor($user)) {
+            return response()->json([
+                'status' => 'mfa_required',
+                'message' => 'Second factor required',
+                'data' => [
+                    'mfa_token' => $twoFactor->createLoginChallenge($user),
+                    'methods' => $twoFactor->methodsFor($user),
+                    'expires_in' => TwoFactor::CHALLENGE_TTL,
+                ]
+            ]);
+        }
+
+        if ($twoFactor->isRequiredFor($user)) {
+            return response()->json([
+                'status' => 'mfa_enrolment_required',
+                'message' => 'Two-factor authentication must be set up',
+                'data' => [
+                    'enrol_token' => $twoFactor->createEnrolmentChallenge($user),
+                    'expires_in' => TwoFactor::ENROLMENT_TTL,
+                ]
+            ]);
         }
 
         return $this->respondWithToken($user);
@@ -110,7 +138,19 @@ class AuthController extends Controller
             return $this->inactiveAccountResponse($user);
         }
 
-        return $this->respondWithToken($user);
+        // Password sessions of users who must have a second factor but have none are
+        // not renewed: they sign in again and go through the setup. SSO is not concerned.
+        $amr = rescue(fn () => Auth::getPayload()->get('amr'), null, false) === 'sso' ? 'sso' : 'pwd';
+        $twoFactor = app(TwoFactor::class);
+        if ($amr !== 'sso' && $twoFactor->isRequiredFor($user) && !$twoFactor->isEnabledFor($user)) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 'mfa_enrolment_required',
+                'message' => 'Two-factor authentication must be set up: please sign in again'
+            ], 401);
+        }
+
+        return $this->respondWithToken($user, $amr);
     }
 
     //logout the user
@@ -185,34 +225,6 @@ class AuthController extends Controller
         return $this->respondWithToken($user);
     }
 
-    private function respondWithToken($user)
-    {
-        $token = Auth::login($user);
-
-        if (!$token) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized'
-            ], 401);
-        }
-
-        $twentyFourHours = 60 * 60 * 24;
-        $refreshToken = Auth::setTTL($twentyFourHours)->tokenById($user->id);
-
-        $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, false, true);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Login successful',
-            'data' => [
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'expires_in' => Auth::factory()->getTTL() * 60,
-                'guest' => $user->is_guest
-            ]
-        ])->withCookie($cookie);
-    }
-
     public function forgotPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -282,6 +294,17 @@ class AuthController extends Controller
         $twentyFourHours = 60 * 60 * 24;
         if ($status === Password::PASSWORD_RESET) {
             $user = User::where('email', $request->email)->first();
+
+            // Whoever controls the mailbox can get here: this must not be a way around the
+            // second factor. The new password then goes through the normal sign-in.
+            $twoFactor = app(TwoFactor::class);
+            if ($twoFactor->isEnabledFor($user) || $twoFactor->isRequiredFor($user)) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Password reset successfully'
+                ]);
+            }
+
             $refreshToken = Auth::setTTL($twentyFourHours)->tokenById($user->id);
             $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, false, true);
             return response()->json([

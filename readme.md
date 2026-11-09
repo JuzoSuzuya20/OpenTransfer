@@ -22,6 +22,7 @@ support (OpenID Connect, Microsoft Entra ID, Google, Authentik).
 - No third-party requests (fonts and CSS are served by the app), Content-Security-Policy and strict security headers
 - Images published to `ghcr.io` for `amd64` and `arm64`, scanned with Trivy and signed with cosign
 - Optional allowlist of the networks members may sign in from, and `TRUSTED_PROXIES` for reverse proxies
+- Optional two-factor authentication for password sign-in, which administrators can make mandatory
 
 ## Quick Start
 
@@ -111,6 +112,27 @@ docker exec <container> ot-artisan disable-ip-allowlist
 
 Use `ot-artisan` for artisan commands: `docker exec` does not inherit the environment the application
 runs with, so plain `php artisan` would look for another database.
+
+### Two-factor authentication
+
+Each user can add a second step to password sign-in in Settings → My profile: a code from an
+authenticator app, with single-use recovery codes. Administrators can make it mandatory for admins or
+for everyone in Settings → System → Security: users concerned set it up at their next password sign-in.
+
+- SSO sign-in does not change: it is protected by your identity provider, which should enforce its own
+  second factor.
+- Reverse-share guests are not concerned.
+- Resetting a password no longer opens a session for an account with a second factor.
+- Five wrong codes lock the second factor of the account for 15 minutes.
+- Secrets are encrypted with the app key, and the codes hashed: back up `storage/app.key` with the
+  database, as a restored database cannot be read without it.
+
+If someone loses their phone and their recovery codes, an administrator can remove their second factor
+in Settings → Users, or on the server:
+
+```sh
+docker exec <container> ot-artisan reset-2fa user@example.com
+```
 
 ### Verifying the image
 

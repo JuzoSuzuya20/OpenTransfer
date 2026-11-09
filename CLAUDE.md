@@ -26,6 +26,8 @@ Utilisé en production par une entreprise : la stabilité du SSO et des partages
   `tests/Feature/ExternalAuthTest.php`.
 - `TRUSTED_PROXIES` : seul `X-Forwarded-For` est cru, jamais Host ni Proto (ils construisent l'URL de callback SSO).
   Caddy doit croire les mêmes proxies que Laravel (`start-container`), sinon il réécrit l'en-tête.
+- Ouverture de session : toute nouvelle route qui en ouvre une doit respecter la double authentification et figurer
+  dans `SIGN_IN_ROUTES` de `RestrictSignInToAllowedIps`. Le SSO reste hors politique 2FA (claim `amr` du refresh token).
 - Données existantes : le stockage et la base d'une instance Erugo doivent rester utilisables tels quels ;
   une migration ne doit jamais perdre de partages ni d'utilisateurs.
 - `socialiteproviders` / Socialite : fixé sur `^5.30` tant que `jumbojett/openid-connect-php` exige phpseclib 3.

@@ -17,6 +17,7 @@
         "laravel/sanctum": "^4.3",
         "laravel/socialite": "^5.30",
         "laravel/tinker": "^3.0",
+        "paragonie/constant_time_encoding": "^3.1",
         "php-open-source-saver/jwt-auth": "^2.9",
         "rcrowe/twigbridge": "^0.14.8",
         "socialiteproviders/authentik": "^5.3",

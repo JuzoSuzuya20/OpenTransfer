@@ -26,6 +26,16 @@ class AuthenticationTest extends TestCase
         ], $attributes));
     }
 
+    /**
+     * Without Accept: application/json, Laravel redirected to a "login" route
+     * that does not exist here, which ended in a 500 and a stack in the logs.
+     */
+    public function test_the_api_answers_401_to_an_invalid_session_whatever_the_client_accepts(): void
+    {
+        $this->get('/api/users/me', ['Authorization' => 'Bearer not-a-real-token'])->assertUnauthorized();
+        $this->get('/api/users/me')->assertUnauthorized();
+    }
+
     public function test_a_refused_login_says_why_in_a_form_the_interface_can_translate(): void
     {
         $disabled = $this->makeUser(['active' => false]);

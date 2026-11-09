@@ -10,7 +10,9 @@ use App\Jobs\pruneLogs;
 use App\Jobs\updateLegacySharePaths;
 use App\Jobs\backUpDatabase;
 use App\Models\Setting;
+use App\Models\User;
 use App\Services\IpAllowlist;
+use App\Services\TwoFactor;
 use App\Services\SettingsService;
 
 //daily jobs
@@ -65,3 +67,17 @@ Artisan::command('disable-ip-allowlist', function () {
     app(SettingsService::class)->clearCache();
     $this->info('The IP allowlist is disabled: sign-in is open from every network again.');
 })->purpose('Turn the IP allowlist off, for an admin locked out by it');
+
+Artisan::command('reset-2fa {email}', function (string $email) {
+    $user = User::where('email', $email)->first();
+    if (!$user) {
+        $this->error('No user with this email.');
+
+        return 1;
+    }
+
+    app(TwoFactor::class)->disableAll($user);
+    $this->info("The second factor of {$email} is removed.");
+
+    return 0;
+})->purpose('Remove the second factor of a user who lost their device');

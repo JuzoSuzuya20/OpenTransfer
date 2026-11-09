@@ -22,8 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(headers: Request::HEADER_X_FORWARDED_FOR);
         $middleware->appendToGroup('api', \App\Http\Middleware\RestrictSignInToAllowedIps::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\RestrictSignInToAllowedIps::class);
+        // No "login" route here: signing in happens in the application at the root
+        $middleware->redirectGuestsTo('/');
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // JSON for the whole API, whatever the client accepts: a 401 and not a redirect
+        $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->is('api/*'));
     })
     ->create();

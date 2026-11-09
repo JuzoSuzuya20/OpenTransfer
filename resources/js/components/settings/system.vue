@@ -57,6 +57,7 @@ const clientIp = ref(null)
 const settings = ref({
   login_ip_allowlist_enabled: false,
   login_ip_allowlist: '',
+  mfa_required_for: 'none',
   application_name: '',
   application_url: '',
   login_message: '',
@@ -1244,6 +1245,15 @@ const handleDeleteAuthProvider = async (id) => {
                     </a>
                   </p>
                 </div>
+
+                <div class="setting-group-body-item">
+                  <label for="mfa_required_for">{{ $t('settings.system.security.mfa_policy_label') }}</label>
+                  <select id="mfa_required_for" v-model="settings.mfa_required_for">
+                    <option value="none">{{ $t('settings.system.security.mfa_policy_none') }}</option>
+                    <option value="admins">{{ $t('settings.system.security.mfa_policy_admins') }}</option>
+                    <option value="everyone">{{ $t('settings.system.security.mfa_policy_everyone') }}</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -1257,6 +1267,9 @@ const handleDeleteAuthProvider = async (id) => {
 
               <h6>{{ $t('settings.system.security.recovery_title') }}</h6>
               <p>{{ $t('settings.system.security.recovery_help') }}</p>
+
+              <h6>{{ $t('settings.system.security.mfa_policy') }}</h6>
+              <p>{{ $t('settings.system.security.mfa_policy_help') }}</p>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Services\IpAllowlist;
+use App\Services\TwoFactor;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -22,9 +23,9 @@ class SettingsController extends Controller
         ]);
 
         // Before anything is saved: a refused request must not be half applied
-        $allowlistRefusal = $this->refuseIpAllowlist($request);
-        if ($allowlistRefusal) {
-            return $allowlistRefusal;
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request);
+        if ($refusal) {
+            return $refusal;
         }
 
         $errors = [];
@@ -113,6 +114,22 @@ class SettingsController extends Controller
         }
 
         return null;
+    }
+
+    private function refuseMfaPolicy(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+
+        if (!$incoming->has(TwoFactor::SETTING_REQUIRED_FOR)
+            || in_array($incoming->get(TwoFactor::SETTING_REQUIRED_FOR), TwoFactor::POLICIES, true)) {
+            return null;
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'code' => 'mfa_policy_invalid',
+            'message' => 'Unknown two-factor policy',
+        ], 422);
     }
 
     /**

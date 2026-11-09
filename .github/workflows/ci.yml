@@ -171,6 +171,30 @@ jobs:
           check "sans TRUSTED_PROXIES, X-Forwarded-For est ignoré (vu : $ip)" sh -c "echo '$ip' | grep -qE '^[0-9a-f.:]+$' && [ '$ip' != 203.0.113.50 ]"
           out=$(docker exec ot ot-artisan disable-ip-allowlist 2>&1 | tail -n 1)
           check "ot-artisan fonctionne via docker exec (reçu : $out)" sh -c "echo '$out' | grep -q 'is disabled'"
+
+          # Double authentification avec la base, le cache et le chiffrement réels de l'image
+          totp_code() {
+            docker exec ot php -r 'require "/var/www/html/vendor/autoload.php"; echo App\Services\Totp::codeAt($argv[1], App\Services\Totp::timestep() + (int) $argv[2]);' -- "$1" "$2"
+          }
+          api_post() {
+            curl -s -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' ${3:+-H "Authorization: Bearer $3"} -d "$2" "http://localhost:8080$1"
+          }
+          creds='{"email":"admin@example.test","password":"smoke-test-password"}'
+          secret=$(api_post /api/users/me/2fa/totp/setup '{"password":"smoke-test-password"}' "$jwt" | jq -r .data.secret)
+          codes=$(api_post /api/users/me/2fa/totp/confirm "{\"code\":\"$(totp_code "$secret" -1)\"}" "$jwt" | jq -r '.data.recovery_codes | length')
+          check "2FA : activation avec 10 codes de secours (reçu : $codes)" test "$codes" = 10
+          step=$(api_post /api/auth/login "$creds")
+          status=$(echo "$step" | jq -r .status)
+          token=$(echo "$step" | jq -r .data.mfa_token)
+          check "2FA : le mot de passe seul n'ouvre pas de session (reçu : $status)" test "$status" = mfa_required
+          wrong=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "{\"mfa_token\":\"$token\",\"method\":\"totp\",\"code\":\"000000\"}" http://localhost:8080/api/auth/mfa/verify)
+          check "2FA : mauvais code refusé (reçu $wrong)" test "$wrong" = 401
+          opened=$(api_post /api/auth/mfa/verify "{\"mfa_token\":\"$token\",\"method\":\"totp\",\"code\":\"$(totp_code "$secret" 0)\"}" | jq -r .status)
+          check "2FA : le bon code ouvre la session (reçu : $opened)" test "$opened" = success
+          docker exec ot ot-artisan reset-2fa admin@example.test >/dev/null 2>&1 || true
+          direct=$(api_post /api/auth/login "$creds" | jq -r .status)
+          check "2FA : reset-2fa la retire (reçu : $direct)" test "$direct" = success
+
           leftovers=$(docker exec ot find /var/www/html/storage ! -user erugo | wc -l)
           check "ot-artisan ne laisse aucun fichier à root (trouvés : $leftovers)" test "$leftovers" = 0
 

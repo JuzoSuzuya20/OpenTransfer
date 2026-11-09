@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
 import { domData } from '../domData'
-import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft } from 'lucide-vue-next'
+import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck } from 'lucide-vue-next'
+import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
 import { store } from '../store'
 import {
   login,
+  verifyMfaCode,
   refresh,
   logout,
   forgotPassword,
@@ -60,6 +62,15 @@ const registrationEmail = ref('')
 const isRegistering = ref(false)
 const isVerifying = ref(false)
 const isResending = ref(false)
+
+// Second factor, after a correct password
+const mfaToken = ref('')
+const mfaMethods = ref([])
+const mfaCode = ref('')
+const mfaUseRecovery = ref(false)
+const mfaBusy = ref(false)
+const mfaInput = ref(null)
+const enrolToken = ref('')
 
 onMounted(async () => {
   const token = domData().token
@@ -122,24 +133,90 @@ const attemptLogin = async () => {
 
   try {
     const data = await login(email.value, password.value)
-    store.authSuccess(data)
-    toast.success(t.value('auth.login_successful'))
 
-    // If there's a pending invite, accept it after successful login
-    if (hasInviteIdPending.value && pendingInviteId.value) {
-      try {
-        await acceptReverseShareInviteById(pendingInviteId.value)
-        toast.success(t.value('auth.invite_accepted'))
-      } catch (inviteError) {
-        toast.error(t.value('auth.failed_to_accept_invite'))
-      } finally {
-        hasInviteIdPending.value = false
-        pendingInviteId.value = null
-      }
+    if (data.mfaRequired) {
+      password.value = ''
+      mfaToken.value = data.mfaToken
+      mfaMethods.value = data.methods
+      mfaUseRecovery.value = !data.methods.includes('totp')
+      focusMfaInput()
+      return
     }
+
+    if (data.enrolmentRequired) {
+      password.value = ''
+      enrolToken.value = data.enrolToken
+      return
+    }
+
+    await completeSignIn(data)
   } catch (error) {
     toast.error(t.value(LOGIN_REFUSALS[error.code] || 'auth.invalid_email_or_password'))
   }
+}
+
+const completeSignIn = async (data) => {
+  store.authSuccess(data)
+  toast.success(t.value('auth.login_successful'))
+
+  // If there's a pending invite, accept it after successful login
+  if (hasInviteIdPending.value && pendingInviteId.value) {
+    try {
+      await acceptReverseShareInviteById(pendingInviteId.value)
+      toast.success(t.value('auth.invite_accepted'))
+    } catch (inviteError) {
+      toast.error(t.value('auth.failed_to_accept_invite'))
+    } finally {
+      hasInviteIdPending.value = false
+      pendingInviteId.value = null
+    }
+  }
+}
+
+const focusMfaInput = async () => {
+  await nextTick()
+  mfaInput.value?.focus()
+}
+
+const leaveMfa = () => {
+  mfaToken.value = ''
+  mfaMethods.value = []
+  mfaCode.value = ''
+  mfaUseRecovery.value = false
+}
+
+const toggleRecoveryCode = () => {
+  mfaUseRecovery.value = !mfaUseRecovery.value
+  mfaCode.value = ''
+  focusMfaInput()
+}
+
+const attemptMfaCode = async () => {
+  if (!mfaCode.value) return
+
+  mfaBusy.value = true
+  try {
+    const data = await verifyMfaCode(mfaToken.value, mfaUseRecovery.value ? 'recovery' : 'totp', mfaCode.value)
+    leaveMfa()
+    await completeSignIn(data)
+  } catch (error) {
+    mfaCode.value = ''
+    if (error.code === 'mfa_expired') {
+      toast.error(t.value('auth.mfa.expired'))
+      leaveMfa()
+    } else if (error.code === 'mfa_too_many_attempts') {
+      toast.error(t.value('auth.mfa.too_many_attempts'))
+    } else {
+      toast.error(t.value('auth.mfa.invalid_code'))
+    }
+  } finally {
+    mfaBusy.value = false
+  }
+}
+
+const finishEnrolment = async (data) => {
+  enrolToken.value = ''
+  await completeSignIn(data)
 }
 
 const attemptRefresh = async () => {
@@ -288,8 +365,58 @@ const switchToLogin = () => {
 </script>
 
 <template>
+  <!-- Mandatory second factor setup -->
+  <div class="auth-container" v-if="enrolToken">
+    <div class="auth-container-inner">
+      <TwoFactorEnrolment :enrol-token="enrolToken" @done="finishEnrolment" @cancel="enrolToken = ''" />
+    </div>
+  </div>
+
+  <!-- Second factor -->
+  <div class="auth-container" v-else-if="mfaToken">
+    <div class="auth-container-inner">
+      <h1>{{ $t('auth.mfa.title') }}</h1>
+      <p>{{ mfaUseRecovery ? $t('auth.mfa.enter_recovery_code') : $t('auth.mfa.enter_code') }}</p>
+      <div class="input-container">
+        <label for="mfa_code">{{ mfaUseRecovery ? $t('settings.two_factor.recovery_codes') : $t('auth.mfa.code') }}</label>
+        <input
+          id="mfa_code"
+          ref="mfaInput"
+          type="text"
+          autocomplete="one-time-code"
+          :inputmode="mfaUseRecovery ? 'text' : 'numeric'"
+          :maxlength="mfaUseRecovery ? 32 : 6"
+          :class="{ 'verification-code-input': !mfaUseRecovery }"
+          v-model="mfaCode"
+          @keyup.enter="attemptMfaCode"
+        />
+      </div>
+      <div class="row mt-3 align-items-center w-100">
+        <div class="col-12 ps-0 pe-0 mb-2">
+          <button class="block" @click="attemptMfaCode" :disabled="mfaBusy || !mfaCode">
+            <ShieldCheck />
+            {{ $t('auth.mfa.verify') }}
+          </button>
+        </div>
+      </div>
+      <div class="row mt-2 align-items-center w-100">
+        <div class="col-6 ps-0">
+          <a href="" v-if="mfaMethods.includes('recovery') && mfaMethods.includes('totp')" @click.prevent="toggleRecoveryCode">
+            {{ mfaUseRecovery ? $t('auth.mfa.use_authenticator') : $t('auth.mfa.use_recovery_code') }}
+          </a>
+        </div>
+        <div class="col-6 pe-0 text-end">
+          <a href="" @click.prevent="leaveMfa">
+            <ArrowLeft style="width: 14px; height: 14px; margin-top: -2px;" />
+            {{ $t('auth.back_to_login') }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Verification Code Screen -->
-  <div class="auth-container" v-if="verificationMode">
+  <div class="auth-container" v-else-if="verificationMode">
     <div class="auth-container-inner">
       <h1>{{ $t('auth.verify_email') }}</h1>
       <p>{{ $t('auth.verification_code_sent', { email: registrationEmail }) }}</p>
