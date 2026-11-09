@@ -53,8 +53,18 @@ jobs:
       - name: Tests
         run: php artisan test
 
+      # Code 100 : Packagist n'a pas répondu. Une panne réseau n'est pas une faille et ne doit
+      # pas bloquer une publication, mais une faille (code 1) échoue tout de suite, sans réessai.
       - name: Audit des dépendances PHP
-        run: composer audit --no-interaction
+        run: |
+          for attempt in 1 2 3; do
+            status=0
+            composer audit --no-interaction || status=$?
+            [ "$status" -ne 100 ] && exit "$status"
+            echo "Packagist injoignable (essai $attempt/3)"
+            sleep 30
+          done
+          exit 100
 
       - name: Audit des dépendances JS
         run: npm audit --audit-level=high
