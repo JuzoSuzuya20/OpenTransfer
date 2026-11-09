@@ -194,6 +194,9 @@ jobs:
           docker exec ot ot-artisan reset-2fa admin@example.test >/dev/null 2>&1 || true
           direct=$(api_post /api/auth/login "$creds" | jq -r .status)
           check "2FA : reset-2fa la retire (reçu : $direct)" test "$direct" = success
+          # La bibliothèque WebAuthn tourne avec les extensions PHP de l'image
+          rp=$(api_post /api/users/me/passkeys/options '{"password":"smoke-test-password"}' "$jwt" | jq -r .data.options.rp.id)
+          check "clés d'accès : options générées dans l'image (rp : $rp)" test "$rp" = localhost
 
           leftovers=$(docker exec ot find /var/www/html/storage ! -user erugo | wc -l)
           check "ot-artisan ne laisse aucun fichier à root (trouvés : $leftovers)" test "$leftovers" = 0

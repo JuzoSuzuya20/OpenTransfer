@@ -462,8 +462,8 @@ export const login = async (email, password) => {
   return buildAuthSuccessData(data)
 }
 
-const secondFactorRequest = async (path, body) => {
-  const response = await fetch(`${apiUrl}/api/auth/mfa/${path}`, {
+const secondFactorRequest = async (path, body = {}) => {
+  const response = await fetch(`${apiUrl}/api/auth/${path}`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -479,13 +479,32 @@ const secondFactorRequest = async (path, body) => {
 }
 
 export const verifyMfaCode = async (mfaToken, method, code) =>
-  buildAuthSuccessData(await secondFactorRequest('verify', { mfa_token: mfaToken, method, code }))
+  buildAuthSuccessData(await secondFactorRequest('mfa/verify', { mfa_token: mfaToken, method, code }))
+
+export const getMfaPasskeyOptions = async (mfaToken) =>
+  (await secondFactorRequest('mfa/passkey/options', { mfa_token: mfaToken })).data.options
+
+export const verifyMfaPasskey = async (mfaToken, credential) =>
+  buildAuthSuccessData(await secondFactorRequest('mfa/passkey', { mfa_token: mfaToken, credential }))
+
+export const getPasswordlessOptions = async () => (await secondFactorRequest('passkey/options')).data
+
+export const passwordlessLogin = async (token, credential) =>
+  buildAuthSuccessData(await secondFactorRequest('passkey/login', { token, credential }))
 
 export const enrolStartTotp = async (enrolToken) =>
-  (await secondFactorRequest('enrol/totp/setup', { enrol_token: enrolToken })).data
+  (await secondFactorRequest('mfa/enrol/totp/setup', { enrol_token: enrolToken })).data
 
 export const enrolConfirmTotp = async (enrolToken, code) => {
-  const data = await secondFactorRequest('enrol/totp/confirm', { enrol_token: enrolToken, code })
+  const data = await secondFactorRequest('mfa/enrol/totp/confirm', { enrol_token: enrolToken, code })
+  return { auth: buildAuthSuccessData(data), recoveryCodes: data.data.recovery_codes }
+}
+
+export const enrolPasskeyOptions = async (enrolToken) =>
+  (await secondFactorRequest('mfa/enrol/passkey/options', { enrol_token: enrolToken })).data.options
+
+export const enrolPasskey = async (enrolToken, name, credential) => {
+  const data = await secondFactorRequest('mfa/enrol/passkey', { enrol_token: enrolToken, name, credential })
   return { auth: buildAuthSuccessData(data), recoveryCodes: data.data.recovery_codes }
 }
 
@@ -509,6 +528,10 @@ export const startTotpSetup = (password) => twoFactorRequest('users/me/2fa/totp/
 export const confirmTotpSetup = (code) => twoFactorRequest('users/me/2fa/totp/confirm', 'POST', { code })
 export const disableTotp = (password) => twoFactorRequest('users/me/2fa/totp', 'DELETE', { password })
 export const regenerateRecoveryCodes = (password) => twoFactorRequest('users/me/2fa/recovery-codes', 'POST', { password })
+export const getPasskeyRegistrationOptions = async (password) =>
+  (await twoFactorRequest('users/me/passkeys/options', 'POST', { password })).options
+export const registerPasskey = (name, credential) => twoFactorRequest('users/me/passkeys', 'POST', { name, credential })
+export const deletePasskey = (id, password) => twoFactorRequest(`users/me/passkeys/${id}`, 'DELETE', { password })
 export const resetUserTwoFactor = (userId) => twoFactorRequest(`users/${userId}/2fa`, 'DELETE')
 
 export const sendReverseShareInvite = async (email, name, message) => {

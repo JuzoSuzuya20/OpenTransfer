@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Passkeys;
 use App\Services\SettingsService;
 use App\Services\Totp;
 use App\Services\TwoFactor;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Second factor: signing in with it, setting it up, managing it.
@@ -39,11 +41,7 @@ class TwoFactorController extends Controller
 
         $user = $this->twoFactor->userForChallenge($request->mfa_token);
         if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 'mfa_expired',
-                'message' => 'Sign-in expired, please start again',
-            ], 401);
+            return $this->challengeExpired();
         }
 
         if ($this->twoFactor->isLocked($user)) {
@@ -70,6 +68,112 @@ class TwoFactorController extends Controller
         return $this->respondWithToken($user->fresh());
     }
 
+    public function passkeyLoginOptions(Request $request, Passkeys $passkeys): JsonResponse
+    {
+        $request->validate(['mfa_token' => 'required|string']);
+
+        $user = $this->twoFactor->userForChallenge($request->mfa_token);
+        if (!$user || !$user->passkeys()->exists()) {
+            return $this->challengeExpired();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => ['options' => $passkeys->authenticationOptions($user, $request->mfa_token)],
+        ]);
+    }
+
+    public function passkeyLogin(Request $request, Passkeys $passkeys): JsonResponse
+    {
+        $request->validate([
+            'mfa_token' => 'required|string',
+            'credential' => 'required|array',
+        ]);
+
+        $user = $this->twoFactor->userForChallenge($request->mfa_token);
+        if (!$user) {
+            return $this->challengeExpired();
+        }
+
+        if ($this->twoFactor->isLocked($user)) {
+            return $this->tooManyAttempts();
+        }
+
+        if (!$passkeys->verify($user, $request->mfa_token, $request->input('credential'))) {
+            $this->twoFactor->recordFailure($user);
+
+            return response()->json([
+                'status' => 'error',
+                'code' => 'mfa_invalid_passkey',
+                'message' => 'Passkey verification failed',
+            ], 401);
+        }
+
+        $this->twoFactor->clearFailures($user);
+        $this->twoFactor->completeChallenge($request->mfa_token);
+
+        return $this->respondWithToken($user->fresh());
+    }
+
+    private function challengeExpired(): JsonResponse
+    {
+        return response()->json([
+            'status' => 'error',
+            'code' => 'mfa_expired',
+            'message' => 'Sign-in expired, please start again',
+        ], 401);
+    }
+
+    // ===== signing in with a passkey alone (when an admin allows it) ======
+
+    public function passwordlessOptions(Passkeys $passkeys): JsonResponse
+    {
+        if (!$this->passwordlessEnabled()) {
+            return $this->passwordlessDisabled();
+        }
+
+        $token = Str::random(64);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => ['token' => $token, 'options' => $passkeys->discoverableOptions($token)],
+        ]);
+    }
+
+    public function passwordlessLogin(Request $request, Passkeys $passkeys): JsonResponse
+    {
+        if (!$this->passwordlessEnabled()) {
+            return $this->passwordlessDisabled();
+        }
+
+        $request->validate([
+            'token' => 'required|string',
+            'credential' => 'required|array',
+        ]);
+
+        $user = $passkeys->verifyDiscoverable($request->token, $request->input('credential'));
+        if (!$user || !$user->active || $user->is_guest) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 'passkey_login_failed',
+                'message' => 'This passkey could not be used to sign in',
+            ], 401);
+        }
+
+        // With user verification, a passkey is already two factors: the device and its PIN or biometrics
+        return $this->respondWithToken($user, 'passkey');
+    }
+
+    private function passwordlessEnabled(): bool
+    {
+        return app(SettingsService::class)->get(TwoFactor::SETTING_PASSWORDLESS) === true;
+    }
+
+    private function passwordlessDisabled(): JsonResponse
+    {
+        return response()->json(['status' => 'error', 'message' => 'Passkey sign-in is not enabled'], 404);
+    }
+
     // ===== managing it from the profile ===================================
 
     public function status(): JsonResponse
@@ -81,6 +185,7 @@ class TwoFactorController extends Controller
             'data' => [
                 'enabled' => $this->twoFactor->isEnabledFor($user),
                 'totp_enabled' => $user->totp_enabled_at !== null,
+                'passkeys' => $user->passkeys()->orderBy('created_at')->get(['id', 'name', 'created_at', 'last_used_at']),
                 'recovery_codes_remaining' => $this->twoFactor->remainingRecoveryCodes($user),
                 'required' => $this->twoFactor->isRequiredFor($user),
             ],
@@ -105,12 +210,46 @@ class TwoFactorController extends Controller
     {
         $user = Auth::user();
 
-        $refusal = $this->refusePassword($request, $user) ?? $this->refuseIfRequired($user);
+        $refusal = $this->refusePassword($request, $user) ?? $this->refuseIfLastFactor($user, removesTotp: true);
         if ($refusal) {
             return $refusal;
         }
 
         $this->twoFactor->disableTotp($user);
+
+        return $this->status();
+    }
+
+    public function passkeyRegistrationOptions(Request $request, Passkeys $passkeys): JsonResponse
+    {
+        $user = Auth::user();
+
+        return $this->refusePassword($request, $user) ?? response()->json([
+            'status' => 'success',
+            'data' => ['options' => $passkeys->registrationOptions($user)],
+        ]);
+    }
+
+    public function passkeyRegister(Request $request, Passkeys $passkeys): JsonResponse
+    {
+        $request->validate([
+            'name' => 'nullable|string|max:100',
+            'credential' => 'required|array',
+        ]);
+
+        return $this->registerPasskey(Auth::user(), $request, $passkeys);
+    }
+
+    public function passkeyDelete(Request $request, int $id): JsonResponse
+    {
+        $user = Auth::user();
+
+        $refusal = $this->refusePassword($request, $user) ?? $this->refuseIfLastFactor($user, removesPasskeyId: $id);
+        if ($refusal) {
+            return $refusal;
+        }
+
+        $this->twoFactor->removePasskey($user, $id);
 
         return $this->status();
     }
@@ -162,17 +301,54 @@ class TwoFactorController extends Controller
             return $this->enrolmentExpired();
         }
 
-        $confirmation = $this->confirmTotp($user, $request->code);
-        if (!$confirmation->isSuccessful()) {
-            return $confirmation;
+        return $this->finishEnrolment($request->enrol_token, $user, $this->confirmTotp($user, $request->code));
+    }
+
+    public function enrolPasskeyOptions(Request $request, Passkeys $passkeys): JsonResponse
+    {
+        $request->validate(['enrol_token' => 'required|string']);
+
+        $user = $this->twoFactor->userForEnrolment($request->enrol_token);
+        if (!$user) {
+            return $this->enrolmentExpired();
         }
 
-        $this->twoFactor->completeEnrolment($request->enrol_token);
+        return response()->json([
+            'status' => 'success',
+            'data' => ['options' => $passkeys->registrationOptions($user)],
+        ]);
+    }
 
-        // The session, with the recovery codes that go with the first factor
+    public function enrolPasskey(Request $request, Passkeys $passkeys): JsonResponse
+    {
+        $request->validate([
+            'enrol_token' => 'required|string',
+            'name' => 'nullable|string|max:100',
+            'credential' => 'required|array',
+        ]);
+
+        $user = $this->twoFactor->userForEnrolment($request->enrol_token);
+        if (!$user) {
+            return $this->enrolmentExpired();
+        }
+
+        return $this->finishEnrolment($request->enrol_token, $user, $this->registerPasskey($user, $request, $passkeys));
+    }
+
+    /**
+     * The session, with the recovery codes that go with the first factor.
+     */
+    private function finishEnrolment(string $token, User $user, JsonResponse $factor): JsonResponse
+    {
+        if (!$factor->isSuccessful()) {
+            return $factor;
+        }
+
+        $this->twoFactor->completeEnrolment($token);
+
         $session = $this->respondWithToken($user->fresh());
         $data = $session->getData(true);
-        $data['data']['recovery_codes'] = $confirmation->getData(true)['data']['recovery_codes'];
+        $data['data']['recovery_codes'] = $factor->getData(true)['data']['recovery_codes'];
 
         return $session->setData($data);
     }
@@ -254,6 +430,28 @@ class TwoFactorController extends Controller
         ]);
     }
 
+    private function registerPasskey(User $user, Request $request, Passkeys $passkeys): JsonResponse
+    {
+        $firstFactor = !$this->twoFactor->isEnabledFor($user);
+
+        $passkey = $passkeys->register($user, $request->input('credential'), (string) $request->input('name', ''));
+        if (!$passkey) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 'passkey_registration_failed',
+                'message' => 'The passkey could not be registered',
+            ], 422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'passkey' => $passkey->only(['id', 'name', 'created_at', 'last_used_at']),
+                'recovery_codes' => $firstFactor ? $this->twoFactor->regenerateRecoveryCodes($user) : null,
+            ],
+        ]);
+    }
+
     /**
      * Every change needs the password: a stolen session must not be able to
      * take the account for good by replacing its second factor.
@@ -280,9 +478,18 @@ class TwoFactorController extends Controller
         return null;
     }
 
-    private function refuseIfRequired(User $user): ?JsonResponse
+    /**
+     * Keeps at least one factor when the policy requires one for this user.
+     */
+    private function refuseIfLastFactor(User $user, bool $removesTotp = false, ?int $removesPasskeyId = null): ?JsonResponse
     {
         if (!$this->twoFactor->isRequiredFor($user)) {
+            return null;
+        }
+
+        $totpLeft = $user->totp_enabled_at !== null && !$removesTotp;
+        $passkeysLeft = $user->passkeys()->when($removesPasskeyId, fn ($query) => $query->whereKeyNot($removesPasskeyId))->exists();
+        if ($totpLeft || $passkeysLeft) {
             return null;
         }
 

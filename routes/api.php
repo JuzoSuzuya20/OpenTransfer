@@ -55,6 +55,14 @@ Route::group([], function ($router) {
         Route::post('mfa/verify', [TwoFactorController::class, 'verifyLogin'])->name('auth.mfa.verify');
         Route::post('mfa/enrol/totp/setup', [TwoFactorController::class, 'enrolTotpSetup'])->name('auth.mfa.enrolTotpSetup');
         Route::post('mfa/enrol/totp/confirm', [TwoFactorController::class, 'enrolTotpConfirm'])->name('auth.mfa.enrolTotpConfirm');
+        Route::post('mfa/passkey/options', [TwoFactorController::class, 'passkeyLoginOptions'])->name('auth.mfa.passkeyOptions');
+        Route::post('mfa/passkey', [TwoFactorController::class, 'passkeyLogin'])->name('auth.mfa.passkey');
+        Route::post('mfa/enrol/passkey/options', [TwoFactorController::class, 'enrolPasskeyOptions'])->name('auth.mfa.enrolPasskeyOptions');
+        Route::post('mfa/enrol/passkey', [TwoFactorController::class, 'enrolPasskey'])->name('auth.mfa.enrolPasskey');
+
+        //signing in with a passkey alone, when an admin allows it. Open to anyone: limited
+        Route::post('passkey/options', [TwoFactorController::class, 'passwordlessOptions'])->name('auth.passkey.options')->middleware('throttle:30,1');
+        Route::post('passkey/login', [TwoFactorController::class, 'passwordlessLogin'])->name('auth.passkey.login')->middleware('throttle:30,1');
         
         // Self-registration routes
         Route::post('register', [SelfRegistrationController::class, 'register'])->name('auth.register');
@@ -75,6 +83,9 @@ Route::group([], function ($router) {
         Route::post('/2fa/totp/confirm', [TwoFactorController::class, 'totpConfirm'])->name('profile.2fa.totpConfirm');
         Route::delete('/2fa/totp', [TwoFactorController::class, 'totpDisable'])->name('profile.2fa.totpDisable');
         Route::post('/2fa/recovery-codes', [TwoFactorController::class, 'regenerateRecoveryCodes'])->name('profile.2fa.recoveryCodes');
+        Route::post('/passkeys/options', [TwoFactorController::class, 'passkeyRegistrationOptions'])->name('profile.passkeys.options');
+        Route::post('/passkeys', [TwoFactorController::class, 'passkeyRegister'])->name('profile.passkeys.register');
+        Route::delete('/passkeys/{id}', [TwoFactorController::class, 'passkeyDelete'])->whereNumber('id')->name('profile.passkeys.delete');
     });
 
     //manage users [auth, admin]

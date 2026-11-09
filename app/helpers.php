@@ -20,6 +20,7 @@ function getSettings()
         ->orWhere('key', 'allow_reverse_shares')
         ->orWhere('key', 'max_expiry_time')
         ->orWhere('key', 'default_expiry_time')
+        ->orWhere('key', 'passkey_login_enabled')
         ->get();
 
     $settings = $settings->map(function ($setting) use ($settingsService) {

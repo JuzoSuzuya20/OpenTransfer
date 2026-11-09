@@ -64,6 +64,11 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function passkeys()
+    {
+        return $this->hasMany(UserPasskey::class);
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

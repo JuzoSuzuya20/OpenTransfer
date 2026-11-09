@@ -7,6 +7,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use App\Models\User;
 use App\Models\UploadSession;
 use App\Models\ChunkUpload;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class maintainDb implements ShouldQueue
@@ -36,5 +37,11 @@ class maintainDb implements ShouldQueue
         //delete any guest users over 7 days old
         Log::info('Deleting guest users over 7 days old: ' . User::where('is_guest', true)->where('created_at', '<', now()->subDays(7))->count() . ' users');
         User::where('is_guest', true)->where('created_at', '<', now()->subDays(7))->delete();
+
+        // The database cache only removes an expired entry when it is read again:
+        // abandoned sign-ins, which anyone can start, would stay forever
+        if (config('cache.default') === 'database') {
+            DB::table(config('cache.stores.database.table'))->where('expiration', '<=', now()->getTimestamp())->delete();
+        }
     }
 }

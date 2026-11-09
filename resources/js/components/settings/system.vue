@@ -58,6 +58,7 @@ const settings = ref({
   login_ip_allowlist_enabled: false,
   login_ip_allowlist: '',
   mfa_required_for: 'none',
+  passkey_login_enabled: false,
   application_name: '',
   application_url: '',
   login_message: '',
@@ -1254,6 +1255,13 @@ const handleDeleteAuthProvider = async (id) => {
                     <option value="everyone">{{ $t('settings.system.security.mfa_policy_everyone') }}</option>
                   </select>
                 </div>
+
+                <div class="setting-group-body-item">
+                  <div class="checkbox-container">
+                    <input type="checkbox" id="passkey_login_enabled" v-model="settings.passkey_login_enabled" />
+                    <label for="passkey_login_enabled">{{ $t('settings.system.security.passkey_login') }}</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1270,6 +1278,9 @@ const handleDeleteAuthProvider = async (id) => {
 
               <h6>{{ $t('settings.system.security.mfa_policy') }}</h6>
               <p>{{ $t('settings.system.security.mfa_policy_help') }}</p>
+
+              <h6>{{ $t('settings.system.security.passkey_login') }}</h6>
+              <p>{{ $t('settings.system.security.passkey_login_help') }}</p>
             </div>
           </div>
         </div>

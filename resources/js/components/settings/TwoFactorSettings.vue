@@ -1,16 +1,20 @@
 <script setup>
-// The second factor of the account: authenticator app and recovery codes.
-import { ref, onMounted, nextTick } from 'vue'
+// The second factor of the account: authenticator app, passkeys and recovery codes.
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
-import { ShieldCheck, Smartphone, KeyRound, Trash, Plus, RefreshCw } from 'lucide-vue-next'
+import { ShieldCheck, Smartphone, Fingerprint, KeyRound, Trash, Plus, RefreshCw } from 'lucide-vue-next'
 import {
   getTwoFactorStatus,
   startTotpSetup,
   confirmTotpSetup,
   disableTotp,
-  regenerateRecoveryCodes
+  regenerateRecoveryCodes,
+  getPasskeyRegistrationOptions,
+  registerPasskey,
+  deletePasskey
 } from '../../api'
+import { passkeysSupported, passkeyCancelled, createPasskey } from '../../webauthn'
 import TotpSetup from '../twoFactor/TotpSetup.vue'
 import RecoveryCodes from '../twoFactor/RecoveryCodes.vue'
 
@@ -21,6 +25,9 @@ const status = ref(null)
 const busy = ref(false)
 const setup = ref(null)
 const recoveryCodes = ref(null)
+const passkeyName = ref('')
+const passkeyToRemove = ref(null)
+const canUsePasskeys = passkeysSupported()
 
 // Every change needs the current password: the action waits here for it
 const pendingAction = ref(null)
@@ -39,13 +46,18 @@ onMounted(load)
 
 const errorMessage = (error) =>
   t.value(
-    {
-      invalid_password: 'settings.two_factor.wrong_password',
-      mfa_too_many_attempts: 'settings.two_factor.too_many_attempts',
-      mfa_required_by_policy: 'settings.two_factor.required_by_policy',
-      mfa_invalid_code: 'auth.mfa.invalid_code',
-      totp_setup_expired: 'settings.two_factor.setup_expired'
-    }[error.code] ?? 'settings.two_factor.action_failed'
+    passkeyCancelled(error)
+      ? 'auth.mfa.passkey_cancelled'
+      : error?.name === 'InvalidStateError'
+        ? 'settings.two_factor.passkey_exists'
+        : {
+            invalid_password: 'settings.two_factor.wrong_password',
+            mfa_too_many_attempts: 'settings.two_factor.too_many_attempts',
+            mfa_required_by_policy: 'settings.two_factor.required_by_policy',
+            mfa_invalid_code: 'auth.mfa.invalid_code',
+            totp_setup_expired: 'settings.two_factor.setup_expired',
+            passkey_registration_failed: 'settings.two_factor.passkey_failed'
+          }[error.code] ?? 'settings.two_factor.action_failed'
   )
 
 const askPassword = async (action) => {
@@ -73,8 +85,34 @@ const actions = {
   regenerate: async (currentPassword) => {
     recoveryCodes.value = (await regenerateRecoveryCodes(currentPassword)).recovery_codes
     await load()
+  },
+  addPasskey: async (currentPassword) => {
+    const options = await getPasskeyRegistrationOptions(currentPassword)
+    const credential = await createPasskey(options)
+    const name = passkeyName.value || t.value('settings.two_factor.default_passkey_name')
+    const result = await registerPasskey(name, credential)
+    passkeyName.value = ''
+    recoveryCodes.value = result.recovery_codes
+    toast.success(t.value('settings.two_factor.passkey_added'))
+    await load()
+  },
+  removePasskey: async (currentPassword) => {
+    status.value = await deletePasskey(passkeyToRemove.value.id, currentPassword)
+    passkeyToRemove.value = null
+    toast.success(t.value('settings.two_factor.passkey_removed'))
   }
 }
+
+const askToRemovePasskey = (passkey) => {
+  passkeyToRemove.value = passkey
+  askPassword('removePasskey')
+}
+
+const formatDate = (value) => (value ? new Date(value).toLocaleDateString() : t.value('settings.two_factor.never'))
+
+// The only one left cannot go while the policy requires a second factor
+const canRemovePasskey = computed(() => !status.value?.required || status.value.totp_enabled || status.value.passkeys.length > 1)
+const canRemoveTotp = computed(() => !status.value?.required || status.value.passkeys.length > 0)
 
 const submitPassword = async () => {
   if (!password.value) return
@@ -160,7 +198,7 @@ const confirmSetup = async (code) => {
             <RefreshCw />
             {{ $t('settings.two_factor.replace_app') }}
           </button>
-          <button class="secondary" v-if="!status.required" :disabled="busy" @click="askPassword('disable')">
+          <button class="secondary" v-if="canRemoveTotp" :disabled="busy" @click="askPassword('disable')">
             <Trash />
             {{ $t('settings.two_factor.disable') }}
           </button>
@@ -174,6 +212,46 @@ const confirmSetup = async (code) => {
           {{ $t('settings.two_factor.set_up_app') }}
         </button>
       </template>
+
+      <h5 class="mt-4"><Fingerprint class="inline-icon" /> {{ $t('settings.two_factor.passkeys') }}</h5>
+      <p>{{ $t('settings.two_factor.passkeys_description') }}</p>
+      <ul class="passkeys" v-if="status.passkeys.length">
+        <li v-for="passkey in status.passkeys" :key="passkey.id">
+          <div>
+            <strong>{{ passkey.name }}</strong>
+            <small>
+              {{ $t('settings.two_factor.added_on', { date: formatDate(passkey.created_at) }) }} ·
+              {{ $t('settings.two_factor.last_used', { date: formatDate(passkey.last_used_at) }) }}
+            </small>
+          </div>
+          <button
+            class="secondary icon-only"
+            v-if="canRemovePasskey"
+            :disabled="busy"
+            :title="$t('settings.two_factor.disable')"
+            @click="askToRemovePasskey(passkey)"
+          >
+            <Trash />
+          </button>
+        </li>
+      </ul>
+      <template v-if="canUsePasskeys">
+        <div class="input-container">
+          <label for="passkey_name">{{ $t('settings.two_factor.passkey_name') }}</label>
+          <input
+            id="passkey_name"
+            type="text"
+            maxlength="100"
+            v-model="passkeyName"
+            :placeholder="$t('settings.two_factor.passkey_name_placeholder')"
+          />
+        </div>
+        <button class="mt-2" :disabled="busy" @click="askPassword('addPasskey')">
+          <Plus />
+          {{ $t('settings.two_factor.add_passkey') }}
+        </button>
+      </template>
+      <p v-else>{{ $t('settings.two_factor.passkeys_unsupported') }}</p>
 
       <template v-if="status.enabled">
         <h5 class="mt-4"><KeyRound class="inline-icon" /> {{ $t('settings.two_factor.recovery_codes') }}</h5>
@@ -203,5 +281,21 @@ const confirmSetup = async (code) => {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+.passkeys {
+  list-style: none;
+  padding-left: 0;
+}
+.passkeys li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--panel-border-color, rgba(0, 0, 0, 0.1));
+}
+.passkeys small {
+  display: block;
+  opacity: 0.75;
 }
 </style>

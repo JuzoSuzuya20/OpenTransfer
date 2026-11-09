@@ -116,14 +116,19 @@ runs with, so plain `php artisan` would look for another database.
 ### Two-factor authentication
 
 Each user can add a second step to password sign-in in Settings → My profile: a code from an
-authenticator app, with single-use recovery codes. Administrators can make it mandatory for admins or
-for everyone in Settings → System → Security: users concerned set it up at their next password sign-in.
+authenticator app or a passkey (fingerprint, face, PIN or security key), with single-use recovery codes.
+Administrators can make it mandatory for admins or for everyone in Settings → System → Security: users
+concerned set it up at their next password sign-in.
 
 - SSO sign-in does not change: it is protected by your identity provider, which should enforce its own
   second factor.
 - Reverse-share guests are not concerned.
+- Passkeys are bound to the domain the application is reached on, and need HTTPS (or localhost).
+  Changing the domain means adding them again.
+- Administrators can also allow signing in with a passkey alone, without a password: the device must
+  then verify the user (biometrics or PIN).
 - Resetting a password no longer opens a session for an account with a second factor.
-- Five wrong codes lock the second factor of the account for 15 minutes.
+- Five failed attempts lock the second factor of the account for 15 minutes.
 - Secrets are encrypted with the app key, and the codes hashed: back up `storage/app.key` with the
   database, as a restored database cannot be read without it.
 

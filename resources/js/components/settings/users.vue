@@ -247,7 +247,7 @@ const confirmForceResetPassword = () => {
             </button>
             <button
               class="secondary"
-              v-if="user.totp_enabled_at"
+              v-if="user.totp_enabled_at || user.passkeys_exists"
               :disabled="user.id === store.userId"
               @click="handleResetTwoFactor(user)"
             >

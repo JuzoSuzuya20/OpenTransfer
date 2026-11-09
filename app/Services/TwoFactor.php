@@ -10,8 +10,9 @@ use Illuminate\Support\Str;
 use ParagonIE\ConstantTime\Base32;
 
 /**
- * Second factor for password sign-in, adapted from the moutonnoireu/erugo-security
- * fork. SSO accounts answer to their identity provider and are not concerned.
+ * Second factor for password sign-in: authenticator app, passkeys and recovery
+ * codes. Adapted from the moutonnoireu/erugo-security fork. SSO accounts answer
+ * to their identity provider and are not concerned.
  *
  * After a correct password, a user with a second factor gets a short-lived
  * challenge token instead of a session; a user who must have one but has none
@@ -21,6 +22,7 @@ class TwoFactor
 {
     public const SETTING_REQUIRED_FOR = 'mfa_required_for';
     public const POLICIES = ['none', 'admins', 'everyone'];
+    public const SETTING_PASSWORDLESS = 'passkey_login_enabled';
 
     public const CHALLENGE_TTL = 300;
     public const ENROLMENT_TTL = 900;
@@ -48,7 +50,7 @@ class TwoFactor
 
     public function isEnabledFor(User $user): bool
     {
-        return $user->totp_enabled_at !== null;
+        return $user->totp_enabled_at !== null || $user->passkeys()->exists();
     }
 
     /** @return string[] */
@@ -57,6 +59,9 @@ class TwoFactor
         $methods = [];
         if ($user->totp_enabled_at !== null) {
             $methods[] = 'totp';
+        }
+        if ($user->passkeys()->exists()) {
+            $methods[] = 'passkey';
         }
         if ($this->remainingRecoveryCodes($user) > 0) {
             $methods[] = 'recovery';
@@ -183,7 +188,17 @@ class TwoFactor
     public function disableTotp(User $user): void
     {
         $user->forceFill(['totp_secret' => null, 'totp_enabled_at' => null, 'totp_last_timestep' => null])->save();
+        $this->dropRecoveryCodesIfUnused($user);
+    }
 
+    public function removePasskey(User $user, int $id): void
+    {
+        $user->passkeys()->whereKey($id)->delete();
+        $this->dropRecoveryCodesIfUnused($user);
+    }
+
+    private function dropRecoveryCodesIfUnused(User $user): void
+    {
         if (!$this->isEnabledFor($user)) {
             $user->forceFill(['two_factor_recovery_codes' => null])->save();
         }
@@ -257,6 +272,7 @@ class TwoFactor
      */
     public function disableAll(User $user): void
     {
+        $user->passkeys()->delete();
         $user->forceFill([
             'totp_secret' => null,
             'totp_enabled_at' => null,

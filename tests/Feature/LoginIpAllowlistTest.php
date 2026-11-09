@@ -187,6 +187,12 @@ class LoginIpAllowlistTest extends TestCase
             'second factor' => ['/api/auth/mfa/verify'],
             'second factor setup' => ['/api/auth/mfa/enrol/totp/setup'],
             'second factor setup confirmation' => ['/api/auth/mfa/enrol/totp/confirm'],
+            'passkey second factor options' => ['/api/auth/mfa/passkey/options'],
+            'passkey second factor' => ['/api/auth/mfa/passkey'],
+            'passkey setup options' => ['/api/auth/mfa/enrol/passkey/options'],
+            'passkey setup' => ['/api/auth/mfa/enrol/passkey'],
+            'passwordless options' => ['/api/auth/passkey/options'],
+            'passwordless sign-in' => ['/api/auth/passkey/login'],
         ];
     }
 

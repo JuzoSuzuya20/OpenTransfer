@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 trait IssuesTokens
 {
     /**
-     * @param string $amr how the session was opened ("pwd" or "sso"), kept across
+     * @param string $amr how the session was opened ("pwd", "passkey" or "sso"), kept across
      *                    renewals: the second factor policy only covers passwords
      */
     protected function respondWithToken($user, string $amr = 'pwd')

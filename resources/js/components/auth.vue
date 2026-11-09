@@ -1,14 +1,19 @@
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
 import { domData } from '../domData'
 import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck } from 'lucide-vue-next'
 import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
+import { passkeysSupported, passkeyCancelled, getPasskeyAssertion } from '../webauthn'
 import { store } from '../store'
 import {
   login,
   verifyMfaCode,
+  getMfaPasskeyOptions,
+  verifyMfaPasskey,
+  getPasswordlessOptions,
+  passwordlessLogin,
   refresh,
   logout,
   forgotPassword,
@@ -67,10 +72,15 @@ const isResending = ref(false)
 const mfaToken = ref('')
 const mfaMethods = ref([])
 const mfaCode = ref('')
-const mfaUseRecovery = ref(false)
+const mfaMethod = ref('totp')
 const mfaBusy = ref(false)
 const mfaInput = ref(null)
 const enrolToken = ref('')
+const canUsePasskey = computed(() => mfaMethods.value.includes('passkey') && passkeysSupported())
+
+// Signing in with a passkey alone, when an administrator allows it
+const passkeyLoginEnabled = domData().passkey_login_enabled === true && passkeysSupported()
+const passkeyLoginBusy = ref(false)
 
 onMounted(async () => {
   const token = domData().token
@@ -138,8 +148,11 @@ const attemptLogin = async () => {
       password.value = ''
       mfaToken.value = data.mfaToken
       mfaMethods.value = data.methods
-      mfaUseRecovery.value = !data.methods.includes('totp')
-      focusMfaInput()
+      if (data.methods.includes('totp')) {
+        chooseMfaMethod('totp')
+      } else {
+        chooseMfaMethod(canUsePasskey.value ? 'passkey' : 'recovery')
+      }
       return
     }
 
@@ -182,13 +195,28 @@ const leaveMfa = () => {
   mfaToken.value = ''
   mfaMethods.value = []
   mfaCode.value = ''
-  mfaUseRecovery.value = false
+  mfaMethod.value = 'totp'
 }
 
-const toggleRecoveryCode = () => {
-  mfaUseRecovery.value = !mfaUseRecovery.value
+const chooseMfaMethod = (method) => {
+  mfaMethod.value = method
   mfaCode.value = ''
   focusMfaInput()
+}
+
+const handleMfaError = (error) => {
+  if (error.code === 'mfa_expired') {
+    toast.error(t.value('auth.mfa.expired'))
+    leaveMfa()
+  } else if (error.code === 'mfa_too_many_attempts') {
+    toast.error(t.value('auth.mfa.too_many_attempts'))
+  } else if (passkeyCancelled(error)) {
+    toast.error(t.value('auth.mfa.passkey_cancelled'))
+  } else if (error.code === 'mfa_invalid_passkey' || mfaMethod.value === 'passkey') {
+    toast.error(t.value('auth.mfa.passkey_failed'))
+  } else {
+    toast.error(t.value('auth.mfa.invalid_code'))
+  }
 }
 
 const attemptMfaCode = async () => {
@@ -196,21 +224,48 @@ const attemptMfaCode = async () => {
 
   mfaBusy.value = true
   try {
-    const data = await verifyMfaCode(mfaToken.value, mfaUseRecovery.value ? 'recovery' : 'totp', mfaCode.value)
+    const data = await verifyMfaCode(mfaToken.value, mfaMethod.value, mfaCode.value)
     leaveMfa()
     await completeSignIn(data)
   } catch (error) {
     mfaCode.value = ''
-    if (error.code === 'mfa_expired') {
-      toast.error(t.value('auth.mfa.expired'))
-      leaveMfa()
-    } else if (error.code === 'mfa_too_many_attempts') {
-      toast.error(t.value('auth.mfa.too_many_attempts'))
-    } else {
-      toast.error(t.value('auth.mfa.invalid_code'))
-    }
+    handleMfaError(error)
   } finally {
     mfaBusy.value = false
+  }
+}
+
+const attemptMfaPasskey = async () => {
+  mfaBusy.value = true
+  try {
+    const options = await getMfaPasskeyOptions(mfaToken.value)
+    const credential = await getPasskeyAssertion(options)
+    const data = await verifyMfaPasskey(mfaToken.value, credential)
+    leaveMfa()
+    await completeSignIn(data)
+  } catch (error) {
+    handleMfaError(error)
+  } finally {
+    mfaBusy.value = false
+  }
+}
+
+const attemptPasskeyLogin = async () => {
+  passkeyLoginBusy.value = true
+  try {
+    const { token, options } = await getPasswordlessOptions()
+    const credential = await getPasskeyAssertion(options)
+    await completeSignIn(await passwordlessLogin(token, credential))
+  } catch (error) {
+    if (passkeyCancelled(error)) {
+      toast.error(t.value('auth.mfa.passkey_cancelled'))
+    } else if (error.code === 'ip_not_allowed') {
+      toast.error(t.value('auth.ip_not_allowed'))
+    } else {
+      toast.error(t.value('auth.passkey_login_failed'))
+    }
+  } finally {
+    passkeyLoginBusy.value = false
   }
 }
 
@@ -376,36 +431,58 @@ const switchToLogin = () => {
   <div class="auth-container" v-else-if="mfaToken">
     <div class="auth-container-inner">
       <h1>{{ $t('auth.mfa.title') }}</h1>
-      <p>{{ mfaUseRecovery ? $t('auth.mfa.enter_recovery_code') : $t('auth.mfa.enter_code') }}</p>
-      <div class="input-container">
-        <label for="mfa_code">{{ mfaUseRecovery ? $t('settings.two_factor.recovery_codes') : $t('auth.mfa.code') }}</label>
-        <input
-          id="mfa_code"
-          ref="mfaInput"
-          type="text"
-          autocomplete="one-time-code"
-          :inputmode="mfaUseRecovery ? 'text' : 'numeric'"
-          :maxlength="mfaUseRecovery ? 32 : 6"
-          :class="{ 'verification-code-input': !mfaUseRecovery }"
-          v-model="mfaCode"
-          @keyup.enter="attemptMfaCode"
-        />
-      </div>
-      <div class="row mt-3 align-items-center w-100">
-        <div class="col-12 ps-0 pe-0 mb-2">
-          <button class="block" @click="attemptMfaCode" :disabled="mfaBusy || !mfaCode">
-            <ShieldCheck />
-            {{ $t('auth.mfa.verify') }}
-          </button>
+
+      <template v-if="mfaMethod === 'passkey'">
+        <p>{{ $t('auth.mfa.use_passkey_prompt') }}</p>
+        <div class="row mt-3 align-items-center w-100">
+          <div class="col-12 ps-0 pe-0 mb-2">
+            <button class="block" @click="attemptMfaPasskey" :disabled="mfaBusy">
+              <Fingerprint />
+              {{ $t('auth.mfa.use_passkey') }}
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
+
+      <template v-else>
+        <p>{{ mfaMethod === 'recovery' ? $t('auth.mfa.enter_recovery_code') : $t('auth.mfa.enter_code') }}</p>
+        <div class="input-container">
+          <label for="mfa_code">{{ mfaMethod === 'recovery' ? $t('settings.two_factor.recovery_codes') : $t('auth.mfa.code') }}</label>
+          <input
+            id="mfa_code"
+            ref="mfaInput"
+            type="text"
+            autocomplete="one-time-code"
+            :inputmode="mfaMethod === 'recovery' ? 'text' : 'numeric'"
+            :maxlength="mfaMethod === 'recovery' ? 32 : 6"
+            :class="{ 'verification-code-input': mfaMethod !== 'recovery' }"
+            v-model="mfaCode"
+            @keyup.enter="attemptMfaCode"
+          />
+        </div>
+        <div class="row mt-3 align-items-center w-100">
+          <div class="col-12 ps-0 pe-0 mb-2">
+            <button class="block" @click="attemptMfaCode" :disabled="mfaBusy || !mfaCode">
+              <ShieldCheck />
+              {{ $t('auth.mfa.verify') }}
+            </button>
+          </div>
+        </div>
+      </template>
+
       <div class="row mt-2 align-items-center w-100">
-        <div class="col-6 ps-0">
-          <a href="" v-if="mfaMethods.includes('recovery') && mfaMethods.includes('totp')" @click.prevent="toggleRecoveryCode">
-            {{ mfaUseRecovery ? $t('auth.mfa.use_authenticator') : $t('auth.mfa.use_recovery_code') }}
+        <div class="col-7 ps-0">
+          <a href="" class="d-block" v-if="mfaMethod !== 'passkey' && canUsePasskey" @click.prevent="chooseMfaMethod('passkey')">
+            {{ $t('auth.mfa.use_passkey') }}
+          </a>
+          <a href="" class="d-block" v-if="mfaMethod !== 'totp' && mfaMethods.includes('totp')" @click.prevent="chooseMfaMethod('totp')">
+            {{ $t('auth.mfa.use_authenticator') }}
+          </a>
+          <a href="" class="d-block" v-if="mfaMethod !== 'recovery' && mfaMethods.includes('recovery')" @click.prevent="chooseMfaMethod('recovery')">
+            {{ $t('auth.mfa.use_recovery_code') }}
           </a>
         </div>
-        <div class="col-6 pe-0 text-end">
+        <div class="col-5 pe-0 text-end">
           <a href="" @click.prevent="leaveMfa">
             <ArrowLeft style="width: 14px; height: 14px; margin-top: -2px;" />
             {{ $t('auth.back_to_login') }}
@@ -486,6 +563,14 @@ const switchToLogin = () => {
           </div>
           <div class="col-6 pe-0">
             <a href="" @click.prevent="forgotPasswordMode = true">{{ $t('auth.forgot_password') }}</a>
+          </div>
+        </div>
+        <div class="row mt-2 w-100" v-if="passkeyLoginEnabled">
+          <div class="col ps-0 pe-0">
+            <button class="block secondary" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
+              <Fingerprint />
+              {{ $t('auth.sign_in_with_passkey') }}
+            </button>
           </div>
         </div>
 
