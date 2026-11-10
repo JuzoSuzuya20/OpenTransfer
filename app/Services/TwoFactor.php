@@ -41,6 +41,10 @@ class TwoFactor
             return false;
         }
 
+        if (app(SsoPolicy::class)->requiresSecondFactor($user)) {
+            return true;
+        }
+
         return match ($this->settings->get(self::SETTING_REQUIRED_FOR)) {
             'everyone' => true,
             'admins' => (bool) $user->admin,

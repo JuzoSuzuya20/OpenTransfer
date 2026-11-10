@@ -521,6 +521,23 @@ class PasskeysTest extends TestCase
             ->assertPlainCookie('refresh_token');
     }
 
+    // The accounts of the organisation sign in through its identity provider, not with a passkey alone
+    public function test_a_passkey_alone_opens_no_session_for_a_member_of_a_required_sso_domain(): void
+    {
+        $user = $this->user();
+        $user->forceFill(['email' => 'camille@entreprise.fr'])->save();
+        $authenticator = $this->addPasskey($user);
+        $this->enablePasswordless();
+        Setting::where('key', 'sso_required_domains')->update(['value' => 'entreprise.fr']);
+        app(SettingsService::class)->clearCache();
+        [$token, $options] = $this->passwordlessOptions();
+
+        $this->passwordlessLogin($token, $authenticator->assert($options, (string) $user->id))
+            ->assertForbidden()
+            ->assertJsonPath('code', 'sso_required')
+            ->assertCookieMissing('refresh_token');
+    }
+
     /**
      * Without it, a stolen device or security key would be enough: nothing
      * replaces the password that this sign-in skips.

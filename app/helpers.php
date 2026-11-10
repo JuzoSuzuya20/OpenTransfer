@@ -23,6 +23,7 @@ function getSettings()
         ->orWhere('key', 'default_expiry_time')
         ->orWhere('key', 'passkey_login_enabled')
         ->orWhere('key', 'altcha_enabled')
+        ->orWhere('key', 'sso_required_domains')
         ->get();
 
     $settings = $settings->map(function ($setting) use ($settingsService) {

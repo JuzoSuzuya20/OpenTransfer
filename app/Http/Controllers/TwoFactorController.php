@@ -160,6 +160,10 @@ class TwoFactorController extends Controller
             ], 401);
         }
 
+        if (app(\App\Services\SsoPolicy::class)->forbidsPassword($user)) {
+            return \App\Services\SsoPolicy::refusal();
+        }
+
         // With user verification, a passkey is already two factors: the device and its PIN or biometrics
         return $this->respondWithToken($user, 'passkey');
     }

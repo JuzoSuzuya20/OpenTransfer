@@ -47,6 +47,11 @@ class SelfRegistrationController extends Controller
             ], 422);
         }
 
+        // The addresses of the organisation come through its identity provider
+        if (app(\App\Services\SsoPolicy::class)->requiresSso($request->email)) {
+            return \App\Services\SsoPolicy::refusal();
+        }
+
         // Check domain restrictions
         $allowAnyDomain = Setting::where('key', 'self_registration_allow_any_domain')->first();
         $allowedDomains = Setting::where('key', 'self_registration_allowed_domains')->first();

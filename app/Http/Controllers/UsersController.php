@@ -99,6 +99,12 @@ class UsersController extends Controller
 
     $user = Auth::user();
 
+    // The address of an account of the organisation is the one of its identity provider
+    if ($request->filled('email') && strcasecmp($request->input('email'), $user->email) !== 0
+      && app(\App\Services\SsoPolicy::class)->forbidsPassword($user)) {
+      return \App\Services\SsoPolicy::refusal();
+    }
+
     $validator = Validator::make($request->all(), [
       'password' => ['sometimes', 'confirmed', Password::min(8)],
       'current_password' => [

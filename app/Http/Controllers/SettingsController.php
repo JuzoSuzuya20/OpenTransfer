@@ -25,7 +25,7 @@ class SettingsController extends Controller
         ]);
 
         // Before anything is saved: a refused request must not be half applied
-        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request);
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request);
         if ($refusal) {
             return $refusal;
         }
@@ -116,6 +116,27 @@ class SettingsController extends Controller
         }
 
         return null;
+    }
+
+    // A mistyped domain would silently leave its accounts on their passwords
+    private function refuseSsoDomains(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+        if (!$incoming->has(\App\Services\SsoPolicy::SETTING_DOMAINS)) {
+            return null;
+        }
+
+        $invalid = \App\Services\SsoPolicy::invalid($incoming->get(\App\Services\SsoPolicy::SETTING_DOMAINS));
+        if ($invalid === []) {
+            return null;
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'code' => 'sso_domains_invalid',
+            'message' => 'Not a domain name: ' . implode(', ', $invalid),
+            'data' => ['invalid' => $invalid],
+        ], 422);
     }
 
     private function refuseMfaPolicy(Request $request): ?JsonResponse

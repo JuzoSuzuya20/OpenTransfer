@@ -16,6 +16,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Models\ReverseShareInvite;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Services\SsoPolicy;
 use App\Services\TwoFactor;
 
 
@@ -66,6 +67,10 @@ class AuthController extends Controller
 
         if (!$user->active) {
             return $this->inactiveAccountResponse($user);
+        }
+
+        if (app(SsoPolicy::class)->forbidsPassword($user)) {
+            return SsoPolicy::refusal();
         }
 
         $twoFactor = app(TwoFactor::class);
@@ -142,6 +147,9 @@ class AuthController extends Controller
         // not renewed: they sign in again and go through the setup. SSO is not concerned.
         $amr = rescue(fn () => Auth::getPayload()->get('amr'), null, false);
         $amr = in_array($amr, ['sso', 'passkey'], true) ? $amr : 'pwd';
+        if ($amr !== 'sso' && app(SsoPolicy::class)->forbidsPassword($user)) {
+            return SsoPolicy::refusal(401);
+        }
         $twoFactor = app(TwoFactor::class);
         if ($amr !== 'sso' && $twoFactor->isRequiredFor($user) && !$twoFactor->isEnabledFor($user)) {
             return response()->json([
@@ -244,7 +252,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (!$user || app(SsoPolicy::class)->forbidsPassword($user)) {
             // just respond with success so we don't leak information
             return response()->json([
                 'status' => 'success',
@@ -278,6 +286,12 @@ class AuthController extends Controller
                     'errors' => $validator->errors()
                 ]
             ], 422);
+        }
+
+        $resetting = User::where('email', $request->email)->first();
+        if ($resetting && app(SsoPolicy::class)->forbidsPassword($resetting)
+            && Password::broker()->tokenExists($resetting, (string) $request->token)) {
+            return SsoPolicy::refusal();
         }
 
         $status = Password::reset(

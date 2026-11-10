@@ -422,6 +422,14 @@ class SettingsSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'key' => 'sso_required_domains',
+                'value' => '',
+                'previous_value' => null,
+                'group' => 'system.auth',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
                 'key' => 'self_registration_allow_any_domain',
                 'value' => 'true',
                 'previous_value' => null,
