@@ -1117,7 +1117,13 @@
     "password_required": "É necessária uma palavra-passe para proteger a partilha",
     "time_remaining_suffix": "s",
     "time_remaining_text": "restantes",
-    "upload_mode_swapped": "Modo de carregamento alterado para {value}"
+    "upload_mode_swapped": "Modo de carregamento alterado para {value}",
+    "access_title": "Acesso",
+    "drop_hint": "Largue os ficheiros aqui, ou clique para os escolher",
+    "expiry_title": "Expira após",
+    "files_title": "Ficheiros a enviar",
+    "password_set": "Protegido por palavra-passe",
+    "recipients_title": "Destinatários"
   },
   "uploading": {
     "files": "{value, plural, one {Transferindo # ficheiro} other {Transferindo # ficheiros} }"
@@ -1137,5 +1143,12 @@
     "search": "Pesquisar",
     "send": "Enviar",
     "statistics": "Estatísticas"
+  },
+  "downloader": {
+    "expiry": "Disponibilidade",
+    "files_title": "Ficheiros",
+    "items": "Elementos",
+    "protected_title": "Esta partilha está protegida",
+    "size": "Tamanho"
   }
 }

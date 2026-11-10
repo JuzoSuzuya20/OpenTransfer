@@ -1146,7 +1146,13 @@
     "password_required": "La password è necessaria per proteggere la condivisione",
     "time_remaining_suffix": "s",
     "time_remaining_text": "rimanente",
-    "upload_mode_swapped": "Modalità di caricamento cambiata in {value}"
+    "upload_mode_swapped": "Modalità di caricamento cambiata in {value}",
+    "access_title": "Accesso",
+    "drop_hint": "Trascina qui i file, oppure fai clic per sceglierli",
+    "expiry_title": "Scade dopo",
+    "files_title": "File da inviare",
+    "password_set": "Protetto da una password",
+    "recipients_title": "Destinatari"
   },
   "uploading": {
     "files": "{value, plural, one {Caricamento del file} other {Caricamento di # file} }"
@@ -1166,5 +1172,12 @@
     "search": "Cerca",
     "send": "Invia",
     "statistics": "Statistiche"
+  },
+  "downloader": {
+    "expiry": "Disponibilità",
+    "files_title": "File",
+    "items": "Elementi",
+    "protected_title": "Questa condivisione è protetta",
+    "size": "Dimensione"
   }
 }

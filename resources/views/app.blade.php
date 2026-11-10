@@ -153,6 +153,9 @@
       @if(isset($theme->theme->page->background))
       --page-background-color: {{ $theme->theme->page->background }};
       @endif
+      @if(isset($theme->theme->page->heading))
+      --heading-color: {{ $theme->theme->page->heading }};
+      @endif
 
       /* Status Colors */
       --color-success: {{ $theme->theme->status->success ?? 'rgb(34, 197, 94)' }};

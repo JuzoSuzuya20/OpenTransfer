@@ -100,11 +100,13 @@ defineExpose({
   position: relative;
   display: block;
   background: var(--primary-button-background-color);
-  font-size: 12px;
+  font-size: 0.8125rem;
   color: var(--primary-button-text-color);
-  font-weight: 400;
-  padding: 5px;
-  border-radius: 5px;
+  font-weight: 600;
+  padding: 0 10px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: var(--button-border-radius);
   cursor: pointer;
   &:hover {
     background: var(--primary-button-background-color-hover);

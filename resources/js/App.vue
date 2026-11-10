@@ -297,7 +297,7 @@ watch(
       </nav>
     </header>
 
-    <main class="main" :class="`main-${store.mode}`">
+    <main class="main" :class="{ 'main-wide': store.mode === 'upload' && store.isLoggedIn(), 'main-medium': store.mode === 'download' }">
       <!-- auth: shows if user is not logged in and the mode is upload -->
       <Auth v-show="!store.isLoggedIn() && store.mode === 'upload'" ref="auth" />
 

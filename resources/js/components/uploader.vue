@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import {
-  CircleSlash2,
   FilePlus,
   FolderPlus,
   Upload,
@@ -13,7 +12,6 @@ import {
   Plus,
   Pause,
   Play,
-  Clock9,
   Lock,
   LockOpen,
   RotateCcw
@@ -579,10 +577,6 @@ const togglePause = () => {
   }
 }
 
-const showExpirySettings = ref(false)
-const toggleExpirySettings = () => {
-  showExpirySettings.value = !showExpirySettings.value
-}
 
 const expiryValueWatchEnabled = ref(true)
 watch(expiryValue, () => {
@@ -809,22 +803,54 @@ const filesByDirectory = computed(() => {
 </script>
 
 <template>
-  <div class="upload-form">
-    <div class="buttons">
-      <button class="upload-files block text-large" @click="showFilePicker">
-        <FilePlus />
-        {{ $t('Add Files') }}
-      </button>
-      <button class="upload-folder block text-large secondary" @click="showFolderPicker">
-        <FolderPlus />
-        {{ $t('Add Folders') }}
-      </button>
-    </div>
-    <div class="max-size-label">{{ niceFileSize(totalSize) }} / {{ niceFileSize(maxShareSize) }}</div>
+  <div class="send">
+    <section class="send-card send-files">
+      <header class="send-card-head">
+        <h2>{{ $t('uploader.files_title') }}</h2>
+        <span class="max-size-label">{{ niceFileSize(totalSize) }} / {{ niceFileSize(maxShareSize) }}</span>
+      </header>
 
+      <div class="upload-basket">
+        <div
+          class="basket-items dropzone"
+          @drop="handleDrop"
+          @dragenter="handleDragOver"
+          @dragover.prevent.stop
+          @dragleave="handleDragLeave($event)"
+          @click="handleDropzoneClick"
+          ref="dropzone"
+        >
+          <template v-if="uploadBasket.length > 0">
+            <directory-item
+              :structure="filesByDirectory"
+              :is-root="true"
+              @remove-file="removeFile"
+              :is-uploading="currentlyUploading"
+              :current-uploading-file="currentFilePath"
+              :current-file-progress="currentFileProgress"
+              :completed-files="completedFiles"
+            />
+          </template>
+
+          <div class="upload-basket-empty" v-else>
+            <Upload />
+            <div class="upload-basket-empty-text">{{ $t('uploader.drop_hint') }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="upload-files" @click="showFilePicker" :disabled="currentlyUploading">
+          <FilePlus />
+          {{ $t('Add Files') }}
+        </button>
+        <button class="upload-folder secondary" @click="showFolderPicker" :disabled="currentlyUploading">
+          <FolderPlus />
+          {{ $t('Add Folders') }}
+        </button>
+      </div>
 
       <div class="progress-bar-container" :class="{ visible: currentlyUploading }">
-
         <div class="progress-bar-text">
           <template v-if="uploadProgress < 100">
             <div class="progress-item percentage-text">
@@ -836,7 +862,7 @@ const filesByDirectory = computed(() => {
             <div class="progress-item time-remaining-text">
               {{ Math.round(timeRemaining) }}{{ $t('uploader.time_remaining_suffix', 's') }} {{ t('uploader.time_remaining_text', 'remaining') }}
             </div>
-            
+
             <div v-if="currentFileName" class="progress-item file-name-text">
               {{ currentFileIndex }} / {{ totalFiles }}
             </div>
@@ -846,44 +872,72 @@ const filesByDirectory = computed(() => {
           </template>
         </div>
 
-        <div class="progress-bar">
-          <div class="progress-bar-fill" :style="{ width: `${uploadProgress}%` }"></div>
+        <div class="progress-bar-row">
+          <div class="progress-bar">
+            <div class="progress-bar-fill" :style="{ width: `${uploadProgress}%` }"></div>
+          </div>
+          <button class="pause-button icon-only secondary" @click="togglePause">
+            <Pause v-if="!isPaused" />
+            <Play v-else />
+          </button>
         </div>
-        <div class="pause-button" @click="togglePause">
-          <Pause v-if="!isPaused" />
-          <Play v-else />
+      </div>
+    </section>
+
+    <section class="send-card send-access">
+      <header class="send-card-head">
+        <h2>{{ $t('uploader.access_title') }}</h2>
+      </header>
+
+      <div class="input-container" v-if="!store.isGuest()">
+        <label for="share-name">{{ $t('Share Name') }}</label>
+        <input
+          type="text"
+          v-model="shareName"
+          required
+          :class="{ error: errors.shareName }"
+          id="share-name"
+          name="share-name"
+          autocomplete="share-name"
+        />
+        <div class="error-message" v-if="errors.shareName">
+          {{ errors.shareName }}
         </div>
       </div>
 
-  </div>
-  <div class="expiry-settings-container">
-    <span class="expiry-label" @click="toggleExpirySettings">
-      <Clock9 />
-      {{ $t('uploader.expiry_label', { value: expiryValue, unit: t('uploader.expiry_unit.' + expiryUnit) }) }}
-    </span>
-    <div class="expiry-settings" :class="{ visible: showExpirySettings }">
-      <input type="number" v-model="expiryValue" />
-      <span class="maxValueOverlay" v-if="maxExpiryTimeInSelectedUnit != null">
-        {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
-      </span>
-      <select v-model="expiryUnit">
-        <option value="days">{{ $t('uploader.expiry_unit.days') }}</option>
-        <option value="weeks" v-if="canExpireInWeeks">{{ $t('uploader.expiry_unit.weeks') }}</option>
-        <option value="months" v-if="canExpireInMonths">{{ $t('uploader.expiry_unit.months') }}</option>
-        <option value="years" v-if="canExpireInYears">{{ $t('uploader.expiry_unit.years') }}</option>
-      </select>
-    </div>
-  </div>
-  <div class="upload-basket-details pt-2">
-    <div class="recipients" v-if="!store.isGuest()">
-      <div class="button-outside-label uploader-add-recipient">
-        <button class="icon-only round" @click="addRecipient">
-          <Plus />
-        </button>
-        <div class="button-outside-label-text">{{ $t('Add Recipient') }}</div>
+      <div class="input-container" v-if="!store.isGuest()">
+        <label for="share-description">{{ $t('Message to share recipients (optional)') }}</label>
+        <textarea
+          v-model="shareDescription"
+          required
+          :class="{ error: errors.shareDescription }"
+          rows="2"
+          id="share-description"
+        />
+        <div class="error-message" v-if="errors.shareDescription">
+          {{ errors.shareDescription }}
+        </div>
       </div>
-      <div class="recipient-list">
-        <template v-if="recipients.length > 0">
+
+      <div class="input-container expiry-settings-container">
+        <label for="share-expiry">{{ $t('uploader.expiry_title') }}</label>
+        <div class="expiry-settings">
+          <input type="number" v-model="expiryValue" id="share-expiry" min="1" />
+          <select v-model="expiryUnit" :aria-label="$t('uploader.expiry_title')">
+            <option value="days">{{ $t('uploader.expiry_unit.days') }}</option>
+            <option value="weeks" v-if="canExpireInWeeks">{{ $t('uploader.expiry_unit.weeks') }}</option>
+            <option value="months" v-if="canExpireInMonths">{{ $t('uploader.expiry_unit.months') }}</option>
+            <option value="years" v-if="canExpireInYears">{{ $t('uploader.expiry_unit.years') }}</option>
+          </select>
+        </div>
+        <p class="help-text" v-if="maxExpiryTimeInSelectedUnit != null">
+          {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
+        </p>
+      </div>
+
+      <div class="input-container recipients" v-if="!store.isGuest()">
+        <label>{{ $t('uploader.recipients_title') }}</label>
+        <div class="recipient-list">
           <Recipient
             v-for="recipient in recipients"
             :key="recipient.id"
@@ -891,113 +945,45 @@ const filesByDirectory = computed(() => {
             @remove="removeRecipient"
             :ref="`recipient-${recipient.email}`"
           />
-        </template>
-        <template v-else>
-          <div class="recipient-list-empty">
-            {{ $t('No recipients') }}
-            <br />
-            <small>{{ $t("We'll provide you with a link instead.") }}</small>
-          </div>
-        </template>
-      </div>
-    </div>
-
-    <div class="input-container mb-0">
-      <input
-        type="text"
-        v-model="shareName"
-        :placeholder="$t('Share Name')"
-        required
-        :class="{ error: errors.shareName }"
-        class="mb-0"
-        id="share-name"
-        name="share-name"
-        autocomplete="share-name"
-        v-if="!store.isGuest()"
-      />
-      <div class="error-message" v-if="errors.shareName">
-        {{ errors.shareName }}
-      </div>
-    </div>
-
-    <div class="input-container mt-0 mb-0">
-      <textarea
-        v-model="shareDescription"
-        :placeholder="$t('Message to share recipients (optional)')"
-        required
-        :class="{ error: errors.shareDescription }"
-        rows="1"
-        class="mt-0 mb-0"
-        v-if="!store.isGuest()"
-      />
-      <div class="error-message" v-if="errors.shareDescription">
-        {{ errors.shareDescription }}
-      </div>
-    </div>
-  </div>
-  <div class="upload-basket">
-    <div
-      class="basket-items dropzone"
-      @drop="handleDrop"
-      @dragenter="handleDragOver"
-      @dragover.prevent.stop
-      @dragleave="handleDragLeave($event)"
-      @click="handleDropzoneClick"
-      ref="dropzone"
-    >
-      <template v-if="uploadBasket.length > 0">
-        <directory-item 
-          :structure="filesByDirectory" 
-          :is-root="true" 
-          @remove-file="removeFile"
-          :is-uploading="currentlyUploading"
-          :current-uploading-file="currentFilePath"
-          :current-file-progress="currentFileProgress"
-          :completed-files="completedFiles"
-        />
-      </template>
-
-      <div class="upload-basket-empty" v-else>
-        <div class="upload-basket-empty-text">
-          <CircleSlash2 />
-          {{ $t('No files added yet') }}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="upload-button-container">
-    <div class="container-fluid">
-      <div class="row align-items-center">
-        <div class="col d-flex align-items-center justify-content-end">
-          <button
-            class="upload-button block"
-            :disabled="uploadBasket.length === 0 || currentlyUploading"
-            @click="uploadFiles"
-            :class="{ uploading: currentlyUploading }"
-          >
-            <div class="loader" v-if="currentlyUploading">
-              <Loader />
-            </div>
-            <Upload v-else />
-            <template v-if="uploadBasket.length > 0 && currentlyUploading">
-              {{ $t('uploading.files', 'Uploading {value} files', { value: uploadBasket.length }) }}
-            </template>
-            <template v-if="uploadBasket.length > 0 && !currentlyUploading">
-              {{ $t('upload.files', 'Upload {value} files', { value: uploadBasket.length }) }}
-            </template>
-            <template v-if="uploadBasket.length === 0">{{ $t('No files added yet') }}</template>
+          <button class="secondary add-recipient" @click="addRecipient">
+            <Plus />
+            {{ $t('Add Recipient') }}
           </button>
         </div>
-
-        <div class="ps-0 col-auto">
-          <button class="icon-only secondary" @click="showPasswordForm = !showPasswordForm">
-            <Lock v-if="passwordProtected" />
-            <LockOpen v-else />
-          </button>
-        </div>
+        <p class="help-text" v-if="recipients.length === 0">
+          {{ $t('No recipients') }} {{ $t("We'll provide you with a link instead.") }}
+        </p>
       </div>
-    </div>
+
+      <button
+        class="secondary block password-toggle"
+        :class="{ protected: passwordProtected }"
+        @click="showPasswordForm = !showPasswordForm"
+      >
+        <Lock v-if="passwordProtected" />
+        <LockOpen v-else />
+        {{ passwordProtected ? $t('uploader.password_set') : $t('settings.title.share.password_protect') }}
+      </button>
+
+      <button
+        class="upload-button block"
+        :disabled="uploadBasket.length === 0 || currentlyUploading"
+        @click="uploadFiles"
+        :class="{ uploading: currentlyUploading }"
+      >
+        <div class="loader" v-if="currentlyUploading">
+          <Loader />
+        </div>
+        <Upload v-else />
+        <template v-if="uploadBasket.length > 0 && currentlyUploading">
+          {{ $t('uploading.files', 'Uploading {value} files', { value: uploadBasket.length }) }}
+        </template>
+        <template v-if="uploadBasket.length > 0 && !currentlyUploading">
+          {{ $t('upload.files', 'Upload {value} files', { value: uploadBasket.length }) }}
+        </template>
+        <template v-if="uploadBasket.length === 0">{{ $t('No files added yet') }}</template>
+      </button>
+    </section>
   </div>
 
   <input

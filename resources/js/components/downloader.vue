@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onMounted, nextTick, computed } from 'vue'
 import { niceFileSize, timeUntilExpiration, getApiUrl, niceFileType, niceFileName } from '../utils'
-import { FileIcon, HeartCrack, TrendingDown, FileX, Boxes } from 'lucide-vue-next'
+import { HeartCrack, TrendingDown, FileX, Lock, Download } from 'lucide-vue-next'
 import { getShare } from '../api'
 import { domError } from '../domData'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
 import DirectoryItem from './directory-item.vue'
+import initials from '../lib/initials'
 
 const { t } = useTranslate()
 
@@ -154,28 +155,77 @@ const filesByDirectory = computed(() => {
 </script>
 
 <template>
-  <div class="download-panel-content">
+  <div class="download">
     <template v-if="share">
-      <h1 class="share-name">
-        <Boxes />
-        {{ share.name }}
-      </h1>
-      <div class="stats">
-        <div class="total-size stat">{{ niceFileSize(share.size) }}</div>
-        <div class="file-count stat">
-          {{ $t('share.contains.count', 'Contains: {value} files', { value: share.file_count }) }}
+      <div class="download-sender" v-if="share.user?.name">
+        <span class="avatar" aria-hidden="true">{{ initials(share.user.name) }}</span>
+        <span>{{ share.user.name }}</span>
+      </div>
+      <h1 class="share-name">{{ share.name }}</h1>
+
+      <div class="download-stats">
+        <div class="stat-card">
+          <span class="stat-label">{{ $t('downloader.items') }}</span>
+          <span class="stat-value">{{ share.file_count }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ $t('downloader.size') }}</span>
+          <span class="stat-value">{{ niceFileSize(share.size) }}</span>
+        </div>
+        <div class="stat-card stat-expiry">
+          <span class="stat-label">{{ $t('downloader.expiry') }}</span>
+          <span class="stat-value share-expires">
+            {{
+              $t('share.expires.in', {
+                days: timeUntilExpiration(share.expires_at).days,
+                hours: timeUntilExpiration(share.expires_at).hours,
+                minutes: timeUntilExpiration(share.expires_at).minutes
+              })
+            }}
+          </span>
         </div>
       </div>
-      <div class="share-expires">
-        {{
-          $t('share.expires.in', {
-            days: timeUntilExpiration(share.expires_at).days,
-            hours: timeUntilExpiration(share.expires_at).hours,
-            minutes: timeUntilExpiration(share.expires_at).minutes
-          })
-        }}
+
+      <div class="download-card share-message" v-if="share.description">
+        <h2>{{ $t('message.from', { name: splitFullName(share.user.name) }) }}</h2>
+        <div class="message">
+          {{ share.description }}
+        </div>
       </div>
-      <div class="share-files-list">
+
+      <div class="download-card download-button-container" v-if="!share.password_protected">
+        <button class="download-button block" @click="downloadFiles">
+          <Download />
+          {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}
+        </button>
+      </div>
+
+      <div class="download-card password-input-container" v-else>
+        <h2>
+          <Lock />
+          {{ $t('downloader.protected_title') }}
+        </h2>
+        <div class="input-container">
+          <label for="share-password">{{ $t('settings.share.password') }}</label>
+          <input
+            type="password"
+            id="share-password"
+            v-model="password"
+            :class="{ error: error }"
+            @keyup.enter="downloadPasswordProtectedFiles"
+          />
+          <div class="error-message" v-if="error" role="alert">
+            {{ error }}
+          </div>
+        </div>
+        <button class="download-button block" @click="downloadPasswordProtectedFiles">
+          <Download />
+          {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}
+        </button>
+      </div>
+
+      <div class="download-card share-files-list">
+        <h2>{{ $t('downloader.files_title') }}</h2>
         <directory-item
           :structure="filesByDirectory"
           :is-root="true"
@@ -183,168 +233,23 @@ const filesByDirectory = computed(() => {
           :share-code="downloadShareCode"
         />
       </div>
-      <div class="share-message mt-3" v-if="share.description">
-        <h6>{{ $t('message.from', { name: splitFullName(share.user.name) }) }}</h6>
-        <div class="message">
-          {{ share.description }}
-        </div>
-      </div>
-      <div class="download-button-container mt-3" v-if="!share.password_protected">
-        <button class="download-button" @click="downloadFiles">
-          {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}
-        </button>
-      </div>
-
-      <div class="password-input-container" v-else>
-        <div class="input-container">
-          <input
-            type="password"
-            v-model="password"
-            :placeholder="$t('settings.share.password')"
-            :class="{ error: error }"
-            @keyup.enter="downloadPasswordProtectedFiles"
-          />
-          <div class="error-message" v-if="error">
-            {{ error }}
-          </div>
-        </div>
-        <button class="download-button mt-3" @click="downloadPasswordProtectedFiles">
-          {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}
-        </button>
-      </div>
     </template>
-    <template v-else>
+    <div class="download-card download-state" v-else>
       <template v-if="shareExpired">
-        <h1>
-          <HeartCrack />
-          {{ $t('share.expired') }}
-        </h1>
+        <HeartCrack />
+        <h1>{{ $t('share.expired') }}</h1>
         <p>{{ $t('share.expired.message') }}</p>
       </template>
       <template v-else-if="downloadLimitReached">
-        <h1>
-          <TrendingDown />
-          {{ $t('share.download_limit_reached') }}
-        </h1>
-        <p>
-          {{ $t('share.download_limit_reached.message') }}
-        </p>
+        <TrendingDown />
+        <h1>{{ $t('share.download_limit_reached') }}</h1>
+        <p>{{ $t('share.download_limit_reached.message') }}</p>
       </template>
       <template v-else-if="shareNotFound">
-        <div class="my-5">
-          <FileX />
-        </div>
-        <h1>
-          {{ $t('share.not_found') }}
-        </h1>
+        <FileX />
+        <h1>{{ $t('share.not_found') }}</h1>
       </template>
       <h1 v-else>{{ $t('share.data_loading') }}</h1>
-    </template>
+    </div>
   </div>
 </template>
-<style lang="scss" scoped>
-.file-list {
-  padding: 20px;
-}
-.share-message {
-  width: 100%;
-  margin-top: 20px;
-  background: var(--panel-section-background-color);
-  padding: 20px;
-  h6 {
-    font-weight: 500;
-    &:after {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 1px;
-      background: var(--panel-section-background-color-alt);
-      margin-top: 5px;
-    }
-  }
-  .message {
-    font-weight: 200;
-  }
-}
-
-.download-button-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.password-input-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  padding: 20px;
-  input {
-    width: 100%;
-    display: block;
-  }
-}
-
-.error-message {
-  margin-top: -24px;
-}
-
-.share-name {
-  color: var(--panel-text-color);
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  background: var(--primary-button-background-color);
-  color: var(--primary-button-text-color);
-  padding: 20px 20px;
-  border-radius: var(--panel-border-radius);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  width: calc(100%);
-  margin-top: -20px;
-  margin-bottom: 0px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-}
-
-.stats {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 0px!important;
-  width: 100%;
-  background: var(--panel-section-background-color-alt);
-  padding: 10px 20px;
-}
-.stat {
-  color: var(--panel-text-color);
-  font-size: 0.8rem;
-  display: block;
-  background: var(--panel-section-background-color);
-  padding: 10px 20px;
-  border-radius: var(--panel-border-radius);
-  margin-bottom: 0!important;
-}
-
-
-.share-expires {
-  width: 100%;
-  background: var(--panel-item-background-color);
-  padding: 10px 20px;
-  display: flex;
-  justify-content: center;
-  margin-top: 0!important;
-}
-</style>

@@ -44,4 +44,21 @@ class PageBackgroundTokenTest extends TestCase
             ->assertOk()
             ->assertSee('--page-background-color: #fdf2f8;', false);
     }
+
+    public function test_the_opentransfer_theme_sets_the_colour_of_its_headings(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('--heading-color: #ffffff;', false);
+    }
+
+    public function test_a_theme_without_heading_colour_does_not_emit_the_variable(): void
+    {
+        Theme::query()->update(['active' => false]);
+        Theme::where('name', 'Sakura')->update(['active' => true]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('--heading-color', false);
+    }
 }

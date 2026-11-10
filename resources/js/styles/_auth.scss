@@ -1,0 +1,111 @@
+// Sign-in, second factor, registration and password reset: one card, centred on the page.
+
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px;
+  background: var(--panel-background-color);
+  color: var(--panel-text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--panel-border-radius);
+
+  @media (max-width: 480px) {
+    padding: 20px;
+  }
+
+  .auth-container-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--heading-color);
+    }
+
+    > p {
+      margin: 0 0 20px;
+      color: var(--panel-text-color-alt);
+    }
+
+    .input-container {
+      margin-bottom: 6px;
+    }
+    .input-container label {
+      font-size: 0.8125rem;
+    }
+
+    button.block {
+      margin-right: 0;
+    }
+  }
+
+  // Bootstrap rows of the other steps: no negative gutter inside the card
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.auth-providers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .provider-button {
+    height: 52px;
+    padding: 0 16px;
+    justify-content: flex-start;
+    gap: 12px;
+    font-weight: 600;
+
+    svg {
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .provider-name {
+      flex: 1;
+      text-align: left;
+    }
+    .provider-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--panel-text-color-alt);
+    }
+  }
+}
+
+// "or", between two ways of doing the same thing
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--panel-text-color-alt);
+  font-size: 0.8125rem;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+  }
+}
+
+.auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+
+  .auth-link {
+    align-self: center;
+    margin-top: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+}

@@ -260,7 +260,7 @@ function getDirectories(structure) {
   align-items: center;
   gap: 6px;
   margin-left: auto;
-  padding-left: 12px;
+  padding-right: 6px;
   font-size: 0.85em;
   
   .status-icon {
@@ -272,11 +272,11 @@ function getDirectories(structure) {
     }
     
     &.uploading {
-      color: var(--accent-color, #3b82f6);
+      color: var(--link-color);
     }
     
     &.completed {
-      color: var(--success-color, #22c55e);
+      color: var(--color-success);
     }
     
     &.spin {
@@ -288,7 +288,7 @@ function getDirectories(structure) {
     min-width: 40px;
     text-align: right;
     font-variant-numeric: tabular-nums;
-    color: var(--accent-color, #3b82f6);
+    color: var(--link-color);
   }
 }
 
@@ -302,15 +302,8 @@ function getDirectories(structure) {
 }
 
 .upload-basket-item {
-  &.is-uploading {
-    background-color: rgba(59, 130, 246, 0.1);
-  }
-  
-  &.is-completed {
-    opacity: 0.7;
-  }
-  
-  &.is-waiting {
+  &.is-waiting .name,
+  &.is-waiting .meta {
     opacity: 0.6;
   }
 }

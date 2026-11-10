@@ -1167,7 +1167,13 @@
     "password_required": "Password is required to protect share",
     "time_remaining_suffix": "s",
     "time_remaining_text": "remaining",
-    "upload_mode_swapped": "Upload mode changed to {value}"
+    "upload_mode_swapped": "Upload mode changed to {value}",
+    "access_title": "Access",
+    "drop_hint": "Drop your files here, or click to choose them",
+    "expiry_title": "Expires after",
+    "files_title": "Files to send",
+    "password_set": "Protected by a password",
+    "recipients_title": "Recipients"
   },
   "uploading": {
     "files": "{value, plural, one {Uploading # file} other {Uploading # files}}"
@@ -1187,5 +1193,12 @@
     "search": "Search",
     "send": "Send",
     "statistics": "Statistics"
+  },
+  "downloader": {
+    "expiry": "Availability",
+    "files_title": "Files",
+    "items": "Items",
+    "protected_title": "This share is protected",
+    "size": "Size"
   }
 }

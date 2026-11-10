@@ -3086,7 +3086,8 @@ VALUES
     "background": "rgba(22, 22, 22, 0.8)"
   },
   "page": {
-    "background": "#161616"
+    "background": "#161616",
+    "heading": "#ffffff"
   },
   "scrollbars": {
     "track": "#1e1e1e",

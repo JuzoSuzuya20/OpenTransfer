@@ -1146,7 +1146,13 @@
     "password_required": "Un mot de passe est nécessaire pour protéger le partage",
     "time_remaining_suffix": "s",
     "time_remaining_text": "restant(es)",
-    "upload_mode_swapped": "Le mode de téléchargement est passé à {value}\n"
+    "upload_mode_swapped": "Le mode de téléchargement est passé à {value}\n",
+    "access_title": "Accès",
+    "drop_hint": "Déposez vos fichiers ici, ou cliquez pour les choisir",
+    "expiry_title": "Expire après",
+    "files_title": "Fichiers à envoyer",
+    "password_set": "Protégé par un mot de passe",
+    "recipients_title": "Destinataires"
   },
   "uploading": {
     "files": "{value, plural, one {Téléchargement du fichier #.} other {Téléchargement des fichiers #.} }"
@@ -1166,5 +1172,12 @@
     "search": "Rechercher",
     "send": "Envoyer",
     "statistics": "Statistiques"
+  },
+  "downloader": {
+    "expiry": "Disponibilité",
+    "files_title": "Fichiers",
+    "items": "Éléments",
+    "protected_title": "Ce partage est protégé",
+    "size": "Taille"
   }
 }

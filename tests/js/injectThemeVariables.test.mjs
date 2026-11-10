@@ -54,3 +54,16 @@ test('a theme without page background puts its panel background behind the page'
 
   assert.equal(properties.get('--page-background-color'), 'var(--panel-background-color)')
 })
+
+test('the heading colour of the theme is written on the page', () => {
+  injectThemeVariables('body', { ...baseTheme(), page: { background: '#161616', heading: '#ffffff' } })
+
+  assert.equal(properties.get('--heading-color'), '#ffffff')
+})
+
+test('a theme without heading colour writes its headings in the text colour', () => {
+  injectThemeVariables('body', { ...baseTheme(), page: { background: '#161616', heading: '#ffffff' } })
+  injectThemeVariables('body', baseTheme())
+
+  assert.equal(properties.get('--heading-color'), 'var(--panel-text-color)')
+})

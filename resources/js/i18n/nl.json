@@ -1146,7 +1146,13 @@
     "password_required": "Wachtwoord is nodig om delen te beveiligen",
     "time_remaining_suffix": "s",
     "time_remaining_text": "overgebleven",
-    "upload_mode_swapped": "Uploadmodus gewijzigd in {value}"
+    "upload_mode_swapped": "Uploadmodus gewijzigd in {value}",
+    "access_title": "Toegang",
+    "drop_hint": "Sleep je bestanden hierheen, of klik om ze te kiezen",
+    "expiry_title": "Verloopt na",
+    "files_title": "Te verzenden bestanden",
+    "password_set": "Beveiligd met een wachtwoord",
+    "recipients_title": "Ontvangers"
   },
   "uploading": {
     "files": "{value, plural, one {# bestand uploaden} other {# bestanden uploaden}}"
@@ -1166,5 +1172,12 @@
     "search": "Zoeken",
     "send": "Verzenden",
     "statistics": "Statistieken"
+  },
+  "downloader": {
+    "expiry": "Beschikbaarheid",
+    "files_title": "Bestanden",
+    "items": "Items",
+    "protected_title": "Deze share is beveiligd",
+    "size": "Grootte"
   }
 }

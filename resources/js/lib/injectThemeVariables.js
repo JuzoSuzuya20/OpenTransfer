@@ -165,6 +165,8 @@ const injectThemeVariables = (location, theme) => {
       '--page-background-color',
       theme.page?.background ?? 'var(--panel-background-color)'
     )
+    // Headings: a theme without a colour for them writes them in its text colour
+    injectionPoint.style.setProperty('--heading-color', theme.page?.heading ?? 'var(--panel-text-color)')
 
     // Status Colors
     injectionPoint.style.setProperty('--color-success', theme.status?.success ?? 'rgb(34, 197, 94)')

@@ -1146,7 +1146,13 @@
     "password_required": "Zum Schutz der Freigabe ist ein Passwort erforderlich",
     "time_remaining_suffix": "s",
     "time_remaining_text": "verbleibende",
-    "upload_mode_swapped": "Upload-Modus auf {value} geändert"
+    "upload_mode_swapped": "Upload-Modus auf {value} geändert",
+    "access_title": "Zugriff",
+    "drop_hint": "Dateien hier ablegen oder klicken, um sie auszuwählen",
+    "expiry_title": "Läuft ab nach",
+    "files_title": "Zu sendende Dateien",
+    "password_set": "Durch ein Passwort geschützt",
+    "recipients_title": "Empfänger"
   },
   "uploading": {
     "files": "{value, plural, one {Hochladen der Datei #} other {Hochladen von # Dateien}}"
@@ -1166,5 +1172,12 @@
     "search": "Suchen",
     "send": "Senden",
     "statistics": "Statistiken"
+  },
+  "downloader": {
+    "expiry": "Verfügbarkeit",
+    "files_title": "Dateien",
+    "items": "Elemente",
+    "protected_title": "Diese Freigabe ist geschützt",
+    "size": "Größe"
   }
 }

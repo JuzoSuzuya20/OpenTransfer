@@ -1,443 +1,332 @@
-// Common mixins
-@mixin flex-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+// The send screen: the files on one card, who gets them and for how long on the other.
 
-@mixin flex-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-@mixin blur-background($blur-amount) {
-  backdrop-filter: blur($blur-amount);
-}
-
-// Main components
-.upload-form {
+.send {
   width: 100%;
-  @include flex-column;
-  justify-content: center;
-  background: var(--uploader-header-background-color);
-  color: var(--uploader-header-text-color);
-  @include blur-background(10px);
-  padding: 20px;
-  padding-bottom: 0;
-  border-radius: var(--panel-border-radius) var(--panel-border-radius) 0 0;
-  margin-bottom: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 24px;
+  align-items: start;
 
-  .buttons {
-    @include flex-row;
-    justify-content: center;
-    width: 100%;
-    gap: 10px;
+  @media (max-width: 960px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.send-card {
+  position: relative;
+  background: var(--uploader-background-color);
+  color: var(--uploader-text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--panel-border-radius);
+  padding: 24px;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+}
+
+.send-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--heading-color);
   }
 
   .max-size-label {
-    margin-top: 10px;
-    color: var(--uploader-header-text-color);
-    font-size: 0.8rem;
+    font-size: 0.8125rem;
+    color: var(--panel-text-color-alt);
+    font-variant-numeric: tabular-nums;
   }
 }
 
-.upload-basket-details {
-  position: relative;
-  width: 100%;
-  background: var(--uploader-background-color);
-
-  input,
-  textarea {
-    border-radius: 0 !important;
-    border: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--panel-text-color), transparent 93%);
-  }
-}
-
-.upload-basket {
-  background: var(--uploader-background-color);
-  @include blur-background(5px);
-  width: 100%;
+.dropzone {
+  min-height: 260px;
+  max-height: 55vh;
   overflow-y: auto;
-  overflow-x: hidden;
-  padding: 10px 10px 6px;
-  flex-grow: 1;
-  @include flex-column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  padding: 10px;
+  border: 1px dashed var(--border-color-strong);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
 
-  .basket-items {
-    flex-grow: 1;
-    width: 100%;
-  }
-
-  .upload-basket-folder {
-    position: relative;
-    background: var(--uploader-item-background-color);
-    padding: 10px;
-    border-radius: var(--panel-border-radius);
-    margin-bottom: 3px;
-    
-    .upload-basket-folder {
-      padding-left: 20px;
-    }
-  }
-  
-  .upload-basket-item {
-    position: relative;
-    @include flex-column;
-    justify-content: space-between;
-    background: var(--uploader-item-background-color);
-    padding: 5px 10px;
-    border-radius: var(--panel-border-radius);
-    margin-bottom: 3px;
-    cursor: default;
-    
-    .name {
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--uploader-item-text-color);
-      @include flex-row;
-      justify-content: flex-start;
-      gap: 5px;
-
-      svg {
-        width: 16px;
-        height: 16px;
-        margin-top: -3px;
-      }
-    }
-    
-    .meta {
-      @include flex-row;
-      justify-content: space-between;
-      width: 100%;
-      color: var(--uploader-item-text-color);
-      font-size: 0.8rem;
-      margin-top: 3px;
-      margin-left: 5px;
-      opacity: 0.4;
-    }
-    
-    .hover-actions {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      @include flex-row;
-      justify-content: flex-end;
-      width: 100%;
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      pointer-events: none;
-      padding-right: 10px;
-      background-image: linear-gradient(to right, var(--panel-item-action-hover-background-color-from) 50%, var(--panel-item-action-hover-background-color-to));
-      border-radius: 0 5px 5px 0;
-      
-      button {
-        border: none;
-        cursor: pointer;
-        border-radius: 50%;
-        width: var(--icon-only-button-width);
-        height: var(--icon-only-button-width);
-      }
-    }
-    
-    &:hover {
-      .hover-actions {
-        opacity: 1;
-        pointer-events: all;
-      }
-    }
-  }
-  
-  .upload-basket-empty {
-    @include flex-column;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    
-    .upload-basket-empty-text {
-      color: var(--uploader-text-color);
-      opacity: 0.7;
-      font-size: 0.8rem;
-      @include flex-row;
-      justify-content: center;
-      gap: 5px;
-      
-      svg {
-        width: 12px;
-        height: 12px;
-        margin-top: -2px;
-      }
-    }
-  }
-}
-
-.upload-button-container {
-  border-radius: 0 0 var(--panel-border-radius) var(--panel-border-radius);
-  width: 100%;
-  margin-top: 0;
-  padding: 10px 20px;
-  background: var(--uploader-background-color);
-  @include blur-background(5px);
-  z-index: 100;
-
-  .svg-container {
-    svg {
-      width: 20px;
-      height: 20px;
-      opacity: 0.5;
-    }
-  }
-}
-
-.progress-bar-container {
-  margin-top: -20px;
-  background: var(--panel-item-background-color);
-  border-radius: var(--panel-border-radius);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+
+  &:hover {
+    border-color: var(--input-border-color-hover);
+  }
+  // A file is being dragged over the zone
+  &.active {
+    border-style: solid;
+    border-color: var(--focus-ring-color);
+    box-shadow: inset 0 0 0 1px var(--focus-ring-color);
+  }
+}
+
+.upload-basket-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  position: absolute;
-  opacity: 0;
-  transition: all 0.3s ease-in-out;
-  left: 0;
-  right: 0;
-  top: 20px;
-  bottom: 0;
-  z-index: 1000;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: var(--panel-text-color-alt);
+  text-align: center;
+  // Clicks go through to the drop zone, which opens the file picker
   pointer-events: none;
 
-  &.visible {
-    opacity: 1;
-    pointer-events: auto;
+  svg {
+    width: 28px;
+    height: 28px;
   }
+}
 
-  .progress-bar {
-    height:10px;
-    width: calc(100% - 20px);
-    border-radius: var(--panel-border-radius);
-    background: var(--progress-bar-background-color);
-    margin-bottom: 10px;
-    
-    .progress-bar-fill {
-      background: var(--progress-bar-fill-color);
-      border-radius: 5px;
-      transition: all 0.1s linear;
-      height: 100%;
-    }
-  }
-  
-  .pause-button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
+// One file: name and details on the left, status or removal on the right.
+// The left border tells where the file stands in the upload.
+.upload-basket-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name actions"
+    "meta actions";
+  align-items: center;
+  column-gap: 12px;
+  padding: 8px 8px 8px 12px;
+  margin-bottom: 6px;
+  background: var(--uploader-item-background-color);
+  color: var(--uploader-item-text-color);
+  border-left: 3px solid var(--border-color-strong);
+  border-radius: var(--button-border-radius);
+  cursor: default;
+
+  .name {
+    grid-area: name;
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    
-    &:hover {
-      background: rgba(0, 0, 0, 0.2);
+    gap: 6px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
     }
-    
+  }
+
+  .meta {
+    grid-area: meta;
+    display: flex;
+    gap: 12px;
+    font-size: 0.8125rem;
+    color: var(--panel-text-color-alt);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .upload-status,
+  .hover-actions {
+    grid-area: actions;
+  }
+
+  // Always there: nothing to discover by hovering
+  .hover-actions button {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--panel-text-color-alt);
+
+    &:hover {
+      color: var(--color-danger);
+      border-color: var(--color-danger);
+    }
+    svg {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
+  }
+
+  &.is-uploading {
+    border-left-color: var(--focus-ring-color);
+  }
+  &.is-completed {
+    border-left-color: var(--color-success);
+  }
+}
+
+.upload-basket-folder {
+  padding: 10px 10px 4px 12px;
+  margin-bottom: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--button-border-radius);
+
+  .directory-header {
+    margin-bottom: 8px;
+    font-weight: 600;
+    cursor: pointer;
     svg {
       width: 16px;
       height: 16px;
     }
   }
-  
-  .progress-bar-text {
-    font-size: 24px;
-    color: var(--panel-text-color);
-    font-weight: 600;
-   
-    width: auto;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-
-    padding: 10px;
-    border-radius: 5px;
-    
-    .progress-bar-text-sub {
-      font-size: 10px;
-      color: var(--panel-text-color);
-      opacity: 0.8;
-      font-weight: 400;
-    }
-
-    .progress-item {
-      font-size: 14px;
-      background: var(--panel-section-background-color-alt);
-      padding: 5px 20px;
-      border-radius: var(--panel-border-radius);
-      margin-right: 10px;
-      // Use tabular numbers so all digits have equal width (prevents jiggling)
-      font-variant-numeric: tabular-nums;
-      // Prevent layout shift by keeping items from shrinking
-      flex-shrink: 0;
-      text-align: center;
-      
-      &:last-child {
-        margin-right: 0;
-      }
-      
-      // Set minimum widths to accommodate typical max values
-      &.percentage-text {
-        min-width: 70px;
-      }
-      
-      &.upload-speed-text {
-        min-width: 110px;
-      }
-      
-      &.time-remaining-text {
-        min-width: 130px;
-      }
-      
-      &.file-name-text {
-        min-width: 70px;
-      }
-    }
-  }
 }
 
-.recipients {
-  @include flex-row;
-  justify-content: flex-start;
-  gap: 10px;
-  background: var(--input-background-color);
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  
-  .recipient-list {
-    @include flex-row;
-    justify-content: flex-start;
+.send-files {
+  .buttons {
+    display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    flex-grow: 1;
-    min-height: 30px;
-  }
+    margin-top: 16px;
 
-  .recipient-list-empty {
-    @include flex-row;
-    justify-content: center;
-    gap: 10px;
-    font-size: 0.7rem;
-    color: var(--panel-text-color);
-    width: 100%;
-    flex-grow: 1;
-    font-style: italic;
-    
-    svg {
-      width: 13px;
-      height: 13px;
+    button {
+      margin: 0;
     }
   }
 }
 
-.expiry-settings-container {
-  width: 100%;
-  background: var(--uploader-header-background-color);
-  @include blur-background(10px);
-  color: var(--uploader-header-text-color);
-  text-align: center;
+.progress-bar-container {
+  display: none;
+  margin-top: 16px;
 
-  .expiry-label {
-    font-size: 0.8rem;
-    color: var(--panel-text-color);
-    font-weight: 200;
-    cursor: pointer;
-    user-select: none;
+  &.visible {
     display: block;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    
-    &:hover {
-      color: var(--link-color-hover);
+  }
+
+  .progress-bar-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 16px;
+    margin-bottom: 8px;
+    font-size: 0.8125rem;
+    color: var(--panel-text-color-alt);
+    font-variant-numeric: tabular-nums;
+
+    .percentage-text {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--heading-color);
     }
-    
-    svg {
-      width: 12px;
-      height: 12px;
-      margin-right: 5px;
-      margin-top: -2px;
+  }
+
+  .progress-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--progress-bar-background-color);
+    overflow: hidden;
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--progress-bar-fill-color);
+      transition: width 0.2s ease;
+    }
+  }
+
+  .pause-button {
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+}
+
+.send-access {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .send-card-head {
+    margin-bottom: 0;
+  }
+
+  .input-container {
+    input,
+    textarea,
+    select {
+      margin-bottom: 0;
+    }
+    label {
+      font-size: 0.8125rem;
+    }
+    .error-message {
+      position: static;
+      margin-top: 4px;
+    }
+    .help-text {
+      margin: 6px 0 0;
+      color: var(--panel-text-color-alt);
     }
   }
 
   .expiry-settings {
-    position: relative;
-    overflow: hidden;
-    max-height: 0;
-    transition: all 0.3s ease-in-out;
-    width: 100%;
-    @include flex-row;
-    justify-content: flex-start;
-    gap: 1px;
-    
-    &.visible {
-      max-height: 50px;
-    }
-    
-    input,
-    textarea,
-    select {
-      border-radius: 0 !important;
-      border: none;
-      display: block;
-      margin: 0;
-    }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 
-    input[type='number'] {
-      text-align: right;
-      
-      &::-webkit-inner-spin-button,
-      &::-webkit-outer-spin-button {
-        opacity: 0;
-        -moz-appearance: textfield;
-        appearance: textfield;
-        pointer-events: none;
-      }
-    }
+  .recipient-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
 
-    .maxValueOverlay {
-      position: absolute;
-      left: 20px;
-      padding: 5px;
-      border-radius: 5px;
-      font-size: 0.8rem;
-      opacity: 0.5;
+  .add-recipient {
+    height: 32px;
+    padding: 0 10px;
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    svg {
+      width: 14px;
+      height: 14px;
+      margin: 0 6px 0 0;
     }
   }
-}
 
+  button.block {
+    margin: 0;
+  }
 
+  .password-toggle {
+    justify-content: flex-start;
+    padding: 0 14px;
+    font-weight: 600;
 
-.dropzone {
-  transition: all 0.3s ease;
-  border-radius: var(--panel-border-radius);
-  border: 1px solid transparent;
-  cursor: pointer;
-  
-  &.active {
-    border: 1px dashed var(--link-color);
-    overflow: hidden;
+    &.protected {
+      border-color: var(--color-success);
+    }
+  }
+
+  .upload-button {
+    height: 48px;
+
+    .loader {
+      display: inline-flex;
+      svg {
+        animation: spin 1s linear infinite;
+      }
+    }
   }
 }

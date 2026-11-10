@@ -9,9 +9,10 @@
 .app-header {
   position: relative;
   z-index: 50;
-  background: var(--panel-background-color);
+  // The pair every theme already defines for the top of its panels
+  background: var(--panel-header-background-color);
   border-bottom: 1px solid var(--border-color);
-  color: var(--panel-text-color);
+  color: var(--panel-header-text-color);
 }
 
 .app-header-bar,
@@ -30,6 +31,10 @@
   align-items: center;
   gap: 16px;
   min-height: 64px;
+  @media (max-width: 600px) {
+    gap: 8px;
+    min-height: 56px;
+  }
 }
 
 .brand {
@@ -61,6 +66,10 @@
     font-weight: 800;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+    // On a phone the mark stands for the name: the room goes to the actions
+    @media (max-width: 600px) {
+      display: none;
+    }
   }
   // A custom logo keeps the width chosen in the branding settings, within the header
   #logo {
@@ -140,7 +149,7 @@
     flex-shrink: 0;
     border-radius: 0;
     background: none;
-    color: var(--panel-text-color-alt);
+    color: color-mix(in srgb, var(--panel-header-text-color) 62%, transparent);
     font-size: 0.875rem;
     font-weight: 600;
     white-space: nowrap;
@@ -169,6 +178,21 @@
   max-width: 500px;
   margin: 0 auto;
   padding: 32px 16px;
+
+  &.main-medium {
+    max-width: 720px;
+    justify-content: flex-start;
+  }
+
+  // Screens made of several cards take the width of the header
+  &.main-wide {
+    max-width: 1200px;
+    justify-content: flex-start;
+    padding: 32px 24px;
+    @media (max-width: 600px) {
+      padding: 16px;
+    }
+  }
 }
 
 footer {

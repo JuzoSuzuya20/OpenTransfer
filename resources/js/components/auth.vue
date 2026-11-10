@@ -3,7 +3,7 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
 import { domData } from '../domData'
-import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck } from 'lucide-vue-next'
+import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck, ChevronRight } from 'lucide-vue-next'
 import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
 import { passkeysSupported, passkeyCancelled, getPasskeyAssertion } from '../webauthn'
 import { store } from '../store'
@@ -541,61 +541,63 @@ const switchToLogin = () => {
         <h1>{{ $t('auth.welcome') }}</h1>
         <p v-if="hasInviteIdPending">{{ $t('auth.login_to_accept_invite') }}</p>
         <p v-else>{{ loginMessage }}</p>
+
+        <!-- The accounts of the organisation come first: most people sign in with them -->
+        <template v-if="authProviders.length > 0 && !waitingForRedirect">
+          <div class="auth-providers">
+            <button
+              class="block secondary provider-button"
+              v-for="provider in authProviders"
+              :key="provider.id"
+              @click="attemptAuthProviderLogin(provider.id)"
+            >
+              <Fingerprint v-if="!provider.icon" />
+              <svg v-else v-html="provider.icon" class="custom"></svg>
+              <span class="provider-name">{{ provider.name }}</span>
+              <ChevronRight class="provider-chevron" />
+            </button>
+          </div>
+          <div class="auth-divider">
+            <span>{{ $t('auth.or') }}</span>
+          </div>
+        </template>
+
         <div class="input-container">
           <label for="email">{{ $t('auth.email') }}</label>
-          <input type="text" v-model="email" :placeholder="$t('auth.email')" @keyup.enter="moveToPassword" />
+          <input type="text" id="email" v-model="email" autocomplete="username" @keyup.enter="moveToPassword" />
         </div>
         <div class="input-container">
           <label for="password">{{ $t('auth.password') }}</label>
           <input
             type="password"
+            id="password"
             v-model="password"
-            :placeholder="$t('auth.password')"
+            autocomplete="current-password"
             @keyup.enter="attemptLogin"
             ref="passwordInput"
           />
         </div>
-        <div class="row mt-3 align-items-center w-100">
-          <div class="col-6 ps-0">
-            <button class="block" @click="attemptLogin">
-              <KeyRound />
-              {{ $t('auth.login') }}
-            </button>
-          </div>
-          <div class="col-6 pe-0">
-            <a href="" @click.prevent="forgotPasswordMode = true">{{ $t('auth.forgot_password') }}</a>
-          </div>
-        </div>
-        <div class="row mt-2 w-100" v-if="passkeyLoginEnabled">
-          <div class="col ps-0 pe-0">
-            <button class="block secondary" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
-              <Fingerprint />
-              {{ $t('auth.sign_in_with_passkey') }}
-            </button>
-          </div>
+        <div class="auth-actions">
+          <button class="block" @click="attemptLogin">
+            <KeyRound />
+            {{ $t('auth.login') }}
+          </button>
+          <button class="block secondary" v-if="passkeyLoginEnabled" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
+            <Fingerprint />
+            {{ $t('auth.sign_in_with_passkey') }}
+          </button>
+          <a href="" class="auth-link" @click.prevent="forgotPasswordMode = true">{{ $t('auth.forgot_password') }}</a>
         </div>
 
         <!-- Create Account Link -->
         <template v-if="selfRegistrationEnabled">
-          <div class="row w-100 mt-4 mb-0 align-items-center">
-            <div class="col">
-              <hr />
-            </div>
-            <div class="col text-center pt-0 pb-0">
-              <p class="m-0" style="font-size: 0.7rem; line-height: 0.8rem">{{ $t('auth.no_account') }}</p>
-            </div>
-            <div class="col">
-              <hr />
-            </div>
+          <div class="auth-divider">
+            <span>{{ $t('auth.no_account') }}</span>
           </div>
-          <div class="row mt-3 w-100">
-            <div class="col ps-0 pe-0">
-              <button class="block secondary" @click="switchToRegistration">
-                <UserPlus />
-                {{ $t('auth.create_account') }}
-              </button>
-            </div>
-          </div>
+          <button class="block secondary" @click="switchToRegistration">
+            <UserPlus />
+            {{ $t('auth.create_account') }}
+          </button>
         </template>
       </template>
 
@@ -658,31 +660,6 @@ const switchToLogin = () => {
         </div>
       </template>
 
-      <!-- Auth Providers -->
-      <template v-if="authProviders.length > 0 && !waitingForRedirect && !forgotPasswordMode && !registrationMode">
-        <div class="row w-100 mt-5 mb-0 align-items-center">
-          <div class="col">
-            <hr />
-          </div>
-          <div class="col text-center pt-0 pb-0">
-            <p class="m-0" style="font-size: 0.7rem; line-height: 0.8rem">{{ $t('auth.or') }}</p>
-            <p class="m-0" style="font-size: 0.7rem; line-height: 0.8rem">{{ $t('auth.login_with') }}</p>
-          </div>
-          <div class="col">
-            <hr />
-          </div>
-        </div>
-
-        <div class="row mt-4 w-100 gap-0">
-          <div class="col-6 pe-1 ps-1 mb-2" v-for="provider in authProviders" :key="provider.id">
-            <button class="block secondary provider-button" @click="attemptAuthProviderLogin(provider.id)">
-              <Fingerprint v-if="!provider.icon" />
-              <svg v-else v-html="provider.icon" class="custom"></svg>
-              {{ provider.name }}
-            </button>
-          </div>
-        </div>
-      </template>
     </div>
     <svg id="gradientDefs">
       <linearGradient id="gradient">
@@ -739,7 +716,7 @@ const switchToLogin = () => {
 
 <style scoped lang="scss">
 .provider-button {
-  svg {
+  svg:not(.provider-chevron) {
     stroke: url(#gradient);
     &.custom {
       fill: url(#gradient);
