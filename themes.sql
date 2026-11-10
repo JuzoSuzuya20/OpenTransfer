@@ -3085,6 +3085,9 @@ VALUES
   "overlay": {
     "background": "rgba(22, 22, 22, 0.8)"
   },
+  "page": {
+    "background": "#161616"
+  },
   "scrollbars": {
     "track": "#1e1e1e",
     "thumb": "#3a3a3a",

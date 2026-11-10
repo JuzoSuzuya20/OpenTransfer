@@ -149,6 +149,11 @@
       --overlay-background-color: {{ $theme->theme->overlay->background ?? 'rgba(255, 255, 255, 0.2)' }};
       @endif
 
+      /* Page Colors: themes without one keep the panel background behind the page (style.scss) */
+      @if(isset($theme->theme->page->background))
+      --page-background-color: {{ $theme->theme->page->background }};
+      @endif
+
       /* Status Colors */
       --color-success: {{ $theme->theme->status->success ?? 'rgb(34, 197, 94)' }};
       --color-warning: {{ $theme->theme->status->warning ?? 'rgb(234, 179, 8)' }};

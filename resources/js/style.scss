@@ -130,6 +130,9 @@
 
   --overlay-background-color: rgba(255, 255, 255, 0.2);
 
+  /* Page: a theme without a page background shows its panel background behind the page */
+  --page-background-color: var(--panel-background-color);
+
   /* Button dimensions */
   --button-height: 50px;
   --button-width: 100%;
@@ -154,9 +157,25 @@
   --color-danger: rgb(239, 68, 68);
 }
 
+/*
+ * Derived tokens: computed from the theme, they are not theme keys.
+ * They are declared on <body> too because the theme preview of the branding settings writes
+ * its variables inline on <body>: declared on :root alone, they would keep the colours of the
+ * active theme. Borders derive from the text colour, as panel backgrounds may be gradients.
+ * A theme key of the same name emitted on :root would be overridden by this declaration.
+ */
+:root,
 body {
-  font-family: "Outfit Variable", "Outfit", sans-serif;
-  background: var(--panel-background-color);
+  --border-color: color-mix(in srgb, var(--panel-text-color) 14%, transparent);
+  --border-color-subtle: color-mix(in srgb, var(--panel-text-color) 7%, transparent);
+  --border-color-strong: color-mix(in srgb, var(--panel-text-color) 28%, transparent);
+  --focus-ring-color: var(--input-border-color-focus);
+}
+
+body {
+  font-family: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 0.9375rem;
+  background: var(--page-background-color);
   color: var(--panel-text-color);
 
   a {
@@ -235,15 +254,17 @@ body {
       position: fixed;
       top: 20px;
       right: 0px;
-      background: var(--accent-color-light);
+      // The branding colours only exist once the branding settings were saved in this
+      // session: until then the credit takes the colours of the theme.
+      background: var(--accent-color-light, var(--panel-background-color));
       backdrop-filter: blur(10px);
       padding: 10px;
       border-radius: 5px 0 0 5px;
-      color: var(--secondary-color);
+      color: var(--secondary-color, var(--panel-text-color));
       font-size: 0.6rem;
       z-index: 199;
       a {
-        color: var(--secondary-color);
+        color: var(--secondary-color, var(--panel-text-color));
         text-decoration: none;
       }
     }
@@ -645,10 +666,10 @@ body {
   justify-content: center;
   height: 100vh;
   .share-status-inner {
-    background: var(--secondary-color);
-    color: var(--accent-color-light);
+    background: var(--secondary-color, var(--panel-background-color));
+    color: var(--accent-color-light, var(--panel-text-color));
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--panel-border-radius);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -689,7 +710,13 @@ body {
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(90deg, var(--accent-color-light) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 90%, var(--accent-color-light) 100%);
+      background: linear-gradient(
+        90deg,
+        var(--accent-color-light, transparent) 0%,
+        transparent 10%,
+        transparent 90%,
+        var(--accent-color-light, transparent) 100%
+      );
       pointer-events: none;
       z-index: 150;
     }
@@ -805,7 +832,7 @@ body {
 }
 
 .text-danger {
-  color: #ee7354 !important;
+  color: var(--color-danger) !important;
 }
 
 .tg-dev-tools {
@@ -824,7 +851,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
 }
 
 ::-webkit-scrollbar-track {
@@ -833,6 +861,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb-color);
+  border-radius: var(--scrollbar-border-radius);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -859,4 +888,25 @@ body {
 
 .error-message {
   pointer-events: none;
+}
+
+// Keyboard focus: one ring for links and custom controls. Buttons and fields set their own.
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+// People who asked their system for less motion get state changes without the animation.
+// No script waits for a transition or an animation to end.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

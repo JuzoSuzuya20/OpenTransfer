@@ -2,55 +2,73 @@ input,
 textarea,
 select {
   width: 100%;
-  padding: 10px;
-  border-radius: 3px;
-  border: none;
+  padding: 8px 14px;
+  border-radius: var(--button-border-radius);
   background: var(--input-background-color);
   color: var(--input-text-color);
   margin-bottom: 10px;
   border: 1px solid var(--input-border-color);
-  transition: all 0.3s ease-in-out;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
   outline: none;
   resize: none;
 
+  // Fields line up with the buttons they sit next to
   &:not(textarea) {
-    height: 50px;
+    height: var(--button-height);
   }
 
-  //placeholder
   &::placeholder {
     color: var(--input-placeholder-color);
   }
 
-  &:focus {
-    border: 1px solid var(--input-border-color-focus);
-    outline: none;
-  }
-  &.error {
-    border: 1px solid red;
+  &:hover {
+    border-color: var(--input-border-color-hover);
   }
 
+  &:focus {
+    border-color: var(--input-border-color-focus);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -1px;
+  }
+  &.error {
+    border-color: var(--color-danger);
+  }
 }
 
 input:read-only,
 textarea:read-only,
 select:disabled {
-  background: var(--panel-background-color-alt);
+  // A tint of the text colour: it reads as inactive on light and dark panels alike
+  background: color-mix(in srgb, var(--panel-text-color) 4%, transparent);
   cursor: not-allowed;
   border: 1px dashed var(--input-border-color);
+  &:hover,
   &:focus {
-    border: 1px solid var(--input-border-color);
-    outline: none;
+    border-color: var(--input-border-color);
   }
 }
 
 select {
   appearance: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"), var(--input-background-color);
-  background-repeat: no-repeat, repeat;
-  background-position: right 10px center;
-  background-size: 16px, 10px;
-  padding-right: 30px;
+  // The chevron is drawn with gradients so that it takes the text colour of the theme
+  background:
+    linear-gradient(45deg, transparent 50%, var(--input-text-color) 50%),
+    linear-gradient(135deg, var(--input-text-color) 50%, transparent 50%),
+    var(--input-background-color);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-position:
+    right 19px center,
+    right 14px center,
+    0 0;
+  background-size:
+    5px 5px,
+    5px 5px,
+    auto;
+  padding-right: 40px;
   color: var(--input-text-color);
 }
 
@@ -59,14 +77,14 @@ select {
   width: 100%;
   label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     font-size: 0.8rem;
     color: var(--label-text-color);
-    font-weight: bold;
+    font-weight: 600;
   }
   .error-message {
     position: absolute;
-    color: rgb(169, 86, 86);
+    color: var(--color-danger);
     font-size: 0.8rem;
     top: 40px;
     right: 10px;
@@ -74,6 +92,7 @@ select {
 }
 
 .checkbox-container {
+  position: relative;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
@@ -85,10 +104,19 @@ select {
     pointer-events: none;
   }
 
+  // Hidden from sight only: the checkbox stays reachable with the keyboard
   input {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
   }
   label {
+    position: relative;
     font-size: 1rem;
     flex-grow: 1;
     display: flex;
@@ -99,35 +127,55 @@ select {
     cursor: pointer;
 
     &::before {
-      font-family: "Material Icons";
       content: "";
       width: 20px;
       height: 20px;
-      background: var(--input-background-color);
-      color: transparent;
-      border-radius: 5px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      flex-shrink: 0;
+      background: var(--checkbox-background-color);
+      border: 1px solid var(--input-border-color);
+      border-radius: 4px;
       margin-right: 10px;
-      font-size: 1.2rem;
-      font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease-in-out;
-      overflow: hidden;
+      transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+    }
+
+    // The check mark, drawn rather than taken from an icon font
+    &::after {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 50%;
+      width: 6px;
+      height: 11px;
+      border: solid var(--checkbox-checked-check-color);
+      border-width: 0 2px 2px 0;
+      transform: translateY(-60%) rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    &:hover::before {
+      border-color: var(--input-border-color-hover);
     }
   }
   input:checked + label {
     &::before {
-      content: "check";
       background: var(--checkbox-checked-background-color);
-      color: var(--checkbox-checked-check-color);
+      border-color: transparent;
     }
+    &::after {
+      opacity: 1;
+    }
+  }
+  input:focus-visible + label::before {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 }
 
 p.help-text {
-  // margin-left: 30px;
   width: 100%;
   font-size: 0.8rem;
   color: var(--label-text-color);
@@ -144,14 +192,20 @@ p.help-text {
   align-items: center;
   background: var(--input-background-color);
   border: 1px solid var(--input-border-color);
-  border-radius: 5px;
+  border-radius: var(--button-border-radius);
   padding: 5px;
   padding-left: 0;
   margin-bottom: 10px;
-  transition: all 0.3s ease-in-out;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--input-border-color-hover);
+  }
 
   &:focus-within {
     border-color: var(--input-border-color-focus);
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -1px;
   }
 
   input {
@@ -161,7 +215,8 @@ p.help-text {
     margin-bottom: 0;
     height: 40px;
 
-    &:focus {
+    &:focus,
+    &:focus-visible {
       border: none;
       outline: none;
     }

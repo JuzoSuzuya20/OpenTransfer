@@ -1,84 +1,45 @@
+// vue-toastification loads its stylesheet after this one, hence the !important
+
 .Vue-Toastification__close-button {
-  opacity: 1!important;
-  height: 20px!important;
-  width: 20px!important;
+  opacity: 1 !important;
+  height: 20px !important;
+  width: 20px !important;
   &:hover {
-    background: none!important;
+    background: none !important;
   }
 }
 
 .Vue-Toastification__progress-bar {
-  border-radius: var(--panel-border-radius)!important;
+  border-radius: var(--panel-border-radius) !important;
 }
 
-
+// Panel backgrounds may be gradients: "background", never "background-color"
 .Vue-Toastification__toast {
-  border-radius: var(--panel-border-radius)!important;
-  border: none;
+  --toast-accent: var(--link-color);
+  border-radius: var(--panel-border-radius) !important;
+  border: 1px solid var(--border-color);
   overflow: hidden;
   color: var(--panel-text-color) !important;
-  background-color: var(--panel-background-color)!important;
+  background: var(--panel-background-color) !important;
+  font-family: inherit !important;
+
+  .Vue-Toastification__progress-bar {
+    background: var(--toast-accent);
+  }
+  .Vue-Toastification__icon,
+  .Vue-Toastification__close-button {
+    color: var(--toast-accent);
+  }
 }
 
-.Vue-Toastification__toast--default {
-  background: var(--panel-background-color);
-  .Vue-Toastification__progress-bar {
-    background: #1976d2;
-  }
-  .Vue-Toastification__icon {
-    color: #1976d2;
-  }
-  .Vue-Toastification__close-button {
-    color: #1976d2;
-  }
-}
-.Vue-Toastification__toast--info {
-  background: var(--panel-background-color);
-  .Vue-Toastification__progress-bar {
-    background: #2196f3;
-  }
-  .Vue-Toastification__icon {
-    color: #2196f3;
-  }
-  .Vue-Toastification__close-button {
-    color: #2196f3;
-  }
-}
 .Vue-Toastification__toast--success {
-  background: var(--panel-background-color);
-  .Vue-Toastification__progress-bar {
-    background: #4caf50;
-  }
-  .Vue-Toastification__icon {
-    color: #4caf50;
-  }
-  .Vue-Toastification__close-button {
-    color: #4caf50;
-  }
+  --toast-accent: var(--color-success);
 }
 .Vue-Toastification__toast--error {
-  background: var(--panel-background-color);
-  .Vue-Toastification__progress-bar {
-    background: #ff5252;
-  }
-  .Vue-Toastification__icon {
-    color: #ff5252;
-  }
-  .Vue-Toastification__close-button {
-    color: #ff5252;
-  }
+  --toast-accent: var(--color-danger);
 }
 .Vue-Toastification__toast--warning {
-  background: var(--panel-background-color);
-  .Vue-Toastification__progress-bar {
-    background: #ffc107;
-  }
-  .Vue-Toastification__icon {
-    color: #ffc107;
-  }
-  .Vue-Toastification__close-button {
-    color: #ffc107;
-  }
+  --toast-accent: var(--color-warning);
 }
 
 .Vue-Toastification__container.bottom-left,

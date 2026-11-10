@@ -159,6 +159,13 @@ const injectThemeVariables = (location, theme) => {
       injectionPoint.style.setProperty('--overlay-background-color', theme.overlay.background)
     }
 
+    // Page: a theme without one shows its panel background behind the page. Removing the
+    // property would not do: the injection point would inherit the page of the active theme.
+    injectionPoint.style.setProperty(
+      '--page-background-color',
+      theme.page?.background ?? 'var(--panel-background-color)'
+    )
+
     // Status Colors
     injectionPoint.style.setProperty('--color-success', theme.status?.success ?? 'rgb(34, 197, 94)')
     injectionPoint.style.setProperty('--color-warning', theme.status?.warning ?? 'rgb(234, 179, 8)')
