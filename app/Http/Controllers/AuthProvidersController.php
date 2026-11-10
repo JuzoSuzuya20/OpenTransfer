@@ -64,6 +64,7 @@ class AuthProvidersController extends Controller
         'provider_description' => $class::getDescription(),
         'enabled' => $authProvider->enabled == "true",
         'allow_registration' => (bool) $authProvider->allow_registration,
+        'trust_email' => (bool) $authProvider->trust_email,
         'class' => $authProvider->provider_class,
         'provider_config' => $authProvider->provider_config,
         'icon' => $class::getIcon(),
@@ -206,6 +207,7 @@ class AuthProvidersController extends Controller
       $authProvider->provider_config = $provider['provider_config'];
       $authProvider->enabled = $provider['enabled'];
       $authProvider->allow_registration = $provider['allow_registration'] ?? false;
+      $authProvider->trust_email = (bool) ($provider['trust_email'] ?? false);
       $authProvider->uuid = $provider['uuid'];
       $authProvider->save();
 
@@ -219,6 +221,10 @@ class AuthProvidersController extends Controller
       'enabled' => $provider['enabled'],
       'allow_registration' => $provider['allow_registration'] ?? false
     ]);
+    // Kept out of the fillable fields: only this admin route changes it
+    if (array_key_exists('trust_email', $provider)) {
+      $authProvider->forceFill(['trust_email' => (bool) $provider['trust_email']])->save();
+    }
 
     return $authProvider;
   }
@@ -318,6 +324,36 @@ class AuthProvidersController extends Controller
    * 
    * @return \Illuminate\Http\JsonResponse JSON response with available provider types
    */
+  /**
+   * Tests a configuration before it is saved: does the provider answer at that address, and does it
+   * recognise the client? Only for the providers built on OpenID Connect discovery.
+   */
+  public function testConnection(Request $request)
+  {
+    $class = $request->input('class');
+    $config = (array) $request->input('provider_config', []);
+    if (!in_array($class, ['Keycloak', 'OIDC'], true)) {
+      return response()->json(['status' => 'error', 'message' => 'This provider cannot be tested'], 422);
+    }
+
+    $providerClass = $this->getProviderClass($class);
+    $validator = $providerClass::getValidator($config);
+    $issuer = $providerClass::issuer((object) $config);
+    // The server fetches this address: nothing but the web
+    if ($validator->fails() || !$issuer || !in_array(parse_url($issuer, PHP_URL_SCHEME), ['http', 'https'], true)) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'Invalid provider config',
+        'data' => ['errors' => $validator->errors()],
+      ], 422);
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'data' => app(\App\Services\OidcConnectionTest::class)->run($issuer, $config['client_id'], $config['client_secret']),
+    ]);
+  }
+
   public function listAvailableProviderTypes()
   {
     $namespace = 'App\\AuthProviders';

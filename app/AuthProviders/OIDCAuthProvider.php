@@ -21,10 +21,33 @@ class OIDCAuthProvider extends BaseAuthProvider
 
   public function __construct(AuthProviderModel $provider)
   {
-    $this->client_id = $provider->provider_config->client_id;
-    $this->client_secret = $provider->provider_config->client_secret;
-    $this->base_url = $provider->provider_config->base_url;
+    $this->client_id = $provider->provider_config->client_id ?? null;
+    $this->client_secret = $provider->provider_config->client_secret ?? null;
+    $this->base_url = static::issuer($provider->provider_config);
     $this->provider = $provider;
+  }
+
+  // The address the provider publishes its configuration under, at /.well-known/openid-configuration
+  public static function issuer(object $config): ?string
+  {
+    return $config->base_url ?? null;
+  }
+
+  /**
+   * The person the provider describes. Not every provider sends a name: Keycloak leaves it out when
+   * the first and last names are empty, so the account falls back on the username, then the address.
+   */
+  public static function userFromClaims(object $claims): AuthProviderUser
+  {
+    $fullName = trim((($claims->given_name ?? '') . ' ' . ($claims->family_name ?? '')));
+
+    return new AuthProviderUser([
+      'sub' => $claims->sub ?? null,
+      'name' => ($claims->name ?? null) ?: ($fullName ?: (($claims->preferred_username ?? null) ?: ($claims->email ?? null))),
+      'email' => $claims->email ?? null,
+      'avatar' => $claims->picture ?? null,
+      'verified' => (bool) ($claims->email_verified ?? false),
+    ]);
   }
 
   private function createClient()
@@ -88,18 +111,8 @@ class OIDCAuthProvider extends BaseAuthProvider
     // Get user info
     $userInfo = $oidc->requestUserInfo();
 
-    \Log::info("User info: " . json_encode($userInfo));
-    $userdata = [
-      'sub' => $userInfo->sub,
-      'name' => $userInfo->name,
-      'email' => $userInfo->email,
-      'avatar' => $userInfo->picture ?? null,
-      'verified' => $userInfo->email_verified ?? false
-    ];
 
-    \Log::info("User data: " . json_encode($userdata));
-
-    return new AuthProviderUser($userdata);
+    return static::userFromClaims($userInfo);
   }
 
 
