@@ -217,7 +217,7 @@ const filesByDirectory = computed(() => {
           />
           <div class="download-error" id="share-password-error" v-if="error" role="alert">{{ error }}</div>
         </div>
-        <button class="download-button block" @click="downloadPasswordProtectedFiles">
+        <button class="download-button block cta" @click="downloadPasswordProtectedFiles">
           {{ $t('downloader.unlock_and_download') }}
         </button>
       </section>
@@ -225,7 +225,7 @@ const filesByDirectory = computed(() => {
       <section class="ot-card download-card share-files-list" aria-labelledby="h-files">
         <h2 class="ot-card-title" id="h-files">{{ $t('downloader.files_title') }}</h2>
         <directory-item :structure="filesByDirectory" :is-root="true" :read-only="true" :share-code="downloadShareCode" />
-        <button class="download-button block" v-if="!share.password_protected" @click="downloadFiles">
+        <button class="download-button block cta" v-if="!share.password_protected" @click="downloadFiles">
           <Download aria-hidden="true" />
           {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}
         </button>

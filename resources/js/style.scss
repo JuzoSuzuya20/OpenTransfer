@@ -65,7 +65,11 @@
   --ot-radius: 6px;
   --ot-radius-lg: 8px;
   --ot-radius-sm: 4px;
-  --ot-control: 44px;
+  --ot-control: 36px;
+  --ot-control-sm: 30px;
+  --ot-control-lg: 42px;
+  --ot-field-height: 40px;
+  --ot-btn-radius: 4px;
   --ot-shadow: 0 8px 24px rgb(22 22 22 / 0.12);
 }
 
@@ -216,10 +220,10 @@
   --color-danger: var(--ot-danger);
 
   /* Dimensions */
-  --button-height: var(--ot-control);
+  --button-height: var(--ot-field-height);
   --button-width: 100%;
   --icon-only-button-width: var(--ot-control);
-  --button-border-radius: var(--ot-radius);
+  --button-border-radius: var(--ot-btn-radius);
   --panel-border-radius: var(--ot-radius);
   --tabs-border-radius: var(--ot-radius) var(--ot-radius) 0 0;
   --settings-width: 100vw;
@@ -233,7 +237,7 @@
 
 body {
   font-family: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   background: var(--page-background-color);
   color: var(--panel-text-color);
   line-height: 1.5;

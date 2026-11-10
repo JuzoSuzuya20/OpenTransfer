@@ -1,25 +1,31 @@
-button {
-  height: var(--button-height);
-  width: fit-content;
-  padding: 0px 20px;
-  margin-right: 10px;
+// Buttons as DPM.lol draws them: compact, square-ish corners, bold small text, icon on the left.
+// Primary: the accent. Secondary: a raised dark ground without a border. Ghost: a thin outline.
+// Icon buttons: small squares with a thin line. The main action of a form is the larger CTA.
 
+button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  height: var(--ot-control);
+  width: fit-content;
+  margin-right: 10px;
+  padding: 0 14px;
 
-  border: none;
-  border-radius: var(--button-border-radius);
+  border: 1px solid transparent;
+  border-radius: var(--ot-btn-radius);
   background: var(--primary-button-background-color);
   color: var(--primary-button-text-color);
 
+  font-size: 0.84375rem;
   font-weight: 700;
   line-height: 1;
+  white-space: nowrap;
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
+    background-color 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
 
   &:last-child {
     margin-right: 0;
@@ -29,42 +35,64 @@ button {
     background: var(--primary-button-background-color-hover);
     color: var(--primary-button-text-color-hover);
   }
-
-  // Themes written before the active state existed fall back on their hover colours
   &:active {
     background: var(--primary-button-background-color-active, var(--primary-button-background-color-hover));
     color: var(--primary-button-text-color-active, var(--primary-button-text-color-hover));
   }
-
   &:disabled {
     background: var(--primary-button-background-color-disabled);
     color: var(--primary-button-text-color-disabled);
     pointer-events: none;
   }
-
   &:focus-visible {
     outline: 2px solid var(--focus-ring-color);
     outline-offset: 2px;
   }
 
+  svg {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
   &.secondary {
     background: var(--secondary-button-background-color);
     color: var(--secondary-button-text-color);
-    border: 1px solid var(--border-color);
-    &:hover {
+    &:hover,
+    &:active {
       background: var(--secondary-button-background-color-hover);
       color: var(--secondary-button-text-color-hover);
-      border-color: var(--border-color-strong);
-    }
-    &:active {
-      background: var(--secondary-button-background-color-active, var(--secondary-button-background-color-hover));
-      color: var(--secondary-button-text-color-active, var(--secondary-button-text-color-hover));
     }
     &:disabled {
       background: var(--secondary-button-background-color-disabled);
       color: var(--secondary-button-text-color-disabled);
-      border-color: var(--border-color-subtle);
     }
+  }
+
+  &.ghost {
+    background: transparent;
+    color: var(--ot-text);
+    border-color: var(--ot-line-strong);
+    &:hover,
+    &:active {
+      background: var(--ot-raised);
+      color: var(--ot-heading);
+    }
+    &:disabled {
+      color: var(--ot-faint);
+      border-color: var(--ot-line);
+    }
+  }
+
+  // The main action of a form: larger, set in small capitals
+  &.cta {
+    height: var(--ot-control-lg);
+    padding: 0 18px;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   &.block {
@@ -72,11 +100,8 @@ button {
   }
 
   &.icon-only {
-    width: var(--icon-only-button-width);
-    padding: 0px;
-    svg {
-      margin-right: 0;
-    }
+    width: var(--ot-control);
+    padding: 0;
   }
 
   &.round {
@@ -84,14 +109,40 @@ button {
   }
 
   &.text-large {
-    font-size: 1.1rem;
+    font-size: 0.9375rem;
   }
+}
 
+// The compact buttons of toolbars and list rows: a thin line on a transparent ground
+button.ot-act {
+  height: var(--ot-control-sm);
+  margin: 0;
+  padding: 0 10px;
+  gap: 6px;
+  background: transparent;
+  color: var(--ot-text);
+  border-color: var(--ot-line-field);
+  font-size: 0.78125rem;
+  font-weight: 700;
+
+  &:hover,
+  &:active {
+    background: var(--ot-raised);
+    color: var(--ot-heading);
+    border-color: var(--ot-line-strong);
+  }
+  &:disabled {
+    background: transparent;
+    color: var(--ot-faint);
+    border-color: var(--ot-line);
+  }
   svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    margin-top: -3px;
+    width: 14px;
+    height: 14px;
+  }
+  &.icon-only {
+    width: var(--ot-control-sm);
+    padding: 0;
   }
 }
 
@@ -119,32 +170,19 @@ button.close-settings-button {
   gap: 10px;
 
   button {
-    width: calc(var(--icon-only-button-width) / 2);
-    height: calc(var(--icon-only-button-width) / 2);
-    min-width: calc(var(--icon-only-button-width) / 2);
-    min-height: calc(var(--icon-only-button-width) / 2);
+    width: var(--ot-control-sm);
+    height: var(--ot-control-sm);
+    min-width: var(--ot-control-sm);
     margin-right: 0;
+    padding: 0;
     svg {
       width: 12px;
       height: 12px;
-      margin-top: 0px;
     }
   }
   .button-outside-label-text {
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-}
-
-// A quiet action next to a primary one
-button.ghost {
-  background: transparent;
-  color: var(--ot-text);
-  border: 1px solid var(--ot-line-strong);
-
-  &:hover {
-    background: var(--ot-raised);
-    color: var(--ot-heading);
+    font-size: 0.8125rem;
+    font-weight: 600;
   }
 }
 
@@ -155,20 +193,21 @@ a.button-link {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: var(--button-height);
-  padding: 0 18px;
-  border-radius: var(--ot-radius);
+  height: var(--ot-control);
+  padding: 0 14px;
+  border-radius: var(--ot-btn-radius);
+  font-size: 0.84375rem;
   font-weight: 700;
-  transition: background-color 0.15s ease;
+  white-space: nowrap;
+  transition: background-color 0.12s ease;
 }
 a.button-secondary {
-  background: var(--ot-raised);
-  color: var(--ot-text);
-  border: 1px solid var(--ot-line);
+  background: var(--secondary-button-background-color);
+  color: var(--secondary-button-text-color);
 
   &:hover {
-    background: var(--ot-active);
-    color: var(--ot-heading);
+    background: var(--secondary-button-background-color-hover);
+    color: var(--secondary-button-text-color-hover);
   }
 }
 a.button-link {

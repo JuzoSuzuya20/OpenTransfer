@@ -111,9 +111,6 @@
   .checkbox-container label {
     font-size: 0.875rem;
   }
-  .ot-act svg {
-    margin-right: 6px;
-  }
 }
 
 .share-group {
@@ -207,12 +204,6 @@
     display: flex;
     gap: 6px;
 
-    .ot-act svg {
-      margin-right: 6px;
-    }
-    .ot-act.icon-only svg {
-      margin: 0;
-    }
   }
 
   .share-row-limit {
@@ -231,11 +222,10 @@
     select {
       width: auto;
       min-width: 140px;
-      height: 40px;
+      height: var(--ot-control);
       margin: 0;
     }
     button {
-      height: 40px;
       margin: 0;
     }
   }

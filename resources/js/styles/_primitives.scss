@@ -4,7 +4,7 @@
 .ot-card {
   position: relative;
   min-width: 0;
-  padding: 24px 24px 27px;
+  padding: 20px 20px 23px;
   background: var(--ot-card);
   color: var(--ot-text);
   border: 1px solid var(--ot-line);
@@ -24,7 +24,7 @@
   }
 
   &.ot-card--tight {
-    padding: 16px 18px 19px;
+    padding: 14px 16px 17px;
   }
 
   @media (max-width: 600px) {
@@ -93,9 +93,9 @@
 
 .ot-pill {
   display: inline-block;
-  padding: 1px 8px;
-  border-radius: var(--ot-radius-sm);
-  font-size: 0.75rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.71875rem;
   font-weight: 700;
   line-height: 1.6;
   white-space: nowrap;
@@ -119,59 +119,33 @@
 // Filters that switch what a list shows
 .ot-segmented {
   display: inline-flex;
-  gap: 4px;
-  padding: 4px;
+  gap: 2px;
+  padding: 3px;
   border: 1px solid var(--ot-line);
-  border-radius: var(--ot-radius-lg);
+  border-radius: var(--ot-radius);
   background: var(--ot-field);
 
   button {
-    height: 34px;
+    height: 28px;
     margin: 0;
-    padding: 0 14px;
-    border: 0;
-    border-radius: var(--ot-radius);
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: var(--ot-btn-radius);
     background: none;
     color: var(--ot-muted);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
 
     &:hover {
       background: var(--ot-raised);
       color: var(--ot-heading);
     }
+    // The chosen option is tinted with the accent, as on DPM.lol
     &[aria-selected="true"] {
-      background: var(--ot-active);
+      background: var(--ot-accent-soft);
+      border-color: color-mix(in srgb, var(--ot-accent) 45%, transparent);
       color: var(--ot-heading);
     }
-  }
-}
-
-// The compact action buttons of a list row
-button.ot-act {
-  min-width: 40px;
-  height: 40px;
-  margin: 0;
-  padding: 0 12px;
-  border: 1px solid var(--ot-line-field);
-  border-radius: var(--ot-radius);
-  background: var(--ot-raised);
-  color: var(--ot-text);
-  font-size: 0.8125rem;
-  font-weight: 600;
-
-  &:hover {
-    background: var(--ot-active);
-    color: var(--ot-heading);
-  }
-  svg {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-  }
-  &.icon-only {
-    width: 40px;
-    padding: 0;
   }
 }
 

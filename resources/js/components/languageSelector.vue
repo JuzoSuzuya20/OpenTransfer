@@ -57,9 +57,10 @@ const setLanguage = (event) => {
 
   select {
     width: auto;
-    height: 40px;
+    height: 32px;
     margin: 0;
-    padding: 0 36px 0 36px;
+    padding: 0 32px 0 34px;
+    border-radius: var(--ot-btn-radius);
     background-color: var(--ot-raised);
     border-color: var(--ot-line-field);
     font-size: 0.875rem;

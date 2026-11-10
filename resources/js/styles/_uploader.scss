@@ -85,8 +85,8 @@
   }
 
   .dropzone-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     color: var(--ot-accent);
     stroke-width: 1.6;
     pointer-events: none;
@@ -227,7 +227,7 @@
 // A number and its unit in one field
 .field-group {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: 64px minmax(0, 1fr);
   gap: 6px;
 }
 
@@ -241,8 +241,8 @@
     position: absolute;
     top: 4px;
     right: 4px;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     margin: 0;
     padding: 0;
     border: 0;
@@ -337,13 +337,7 @@
 }
 
 .send-access .upload-button {
-  min-height: 48px;
   margin: 0;
-  font-size: 1rem;
-
-  .spin {
-    margin-right: 10px;
-  }
 }
 
 // --- The share just created

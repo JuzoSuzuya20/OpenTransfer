@@ -63,7 +63,7 @@ const dateFormat = computed(() => new Intl.DateTimeFormat(tolgee.value.getLangua
             <label for="invite-message">{{ t('invite.labels.message') }}</label>
             <textarea id="invite-message" v-model="invite.message" rows="3" />
           </div>
-          <button type="submit" class="block" :disabled="sending || !invite.email">
+          <button type="submit" class="block cta" :disabled="sending || !invite.email">
             <Send aria-hidden="true" />
             {{ t('button.reverse_share_invite_send') }}
           </button>

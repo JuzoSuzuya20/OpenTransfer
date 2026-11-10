@@ -1029,7 +1029,7 @@ const filesByDirectory = computed(() => {
 
         <button
           type="button"
-          class="upload-button block"
+          class="upload-button block cta"
           :disabled="uploadBasket.length === 0 || currentlyUploading"
           @click="uploadFiles"
         >

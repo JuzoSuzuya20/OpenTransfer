@@ -591,7 +591,7 @@ const switchToLogin = () => {
               ref="passwordInput"
             />
           </div>
-          <button class="block" @click="attemptLogin">{{ $t('auth.login') }}</button>
+          <button class="block cta" @click="attemptLogin">{{ $t('auth.login') }}</button>
           <button class="block secondary" v-if="passkeyLoginEnabled" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
             <Fingerprint aria-hidden="true" />
             {{ $t('auth.sign_in_with_passkey') }}
