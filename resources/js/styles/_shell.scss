@@ -1,4 +1,4 @@
-// The frame of every screen: header (brand, search, account), navigation, main area, footer.
+// The frame of every screen: header (brand, search, new share, account), navigation, main area, footer.
 
 #app {
   min-height: 100vh;
@@ -6,13 +6,33 @@
   flex-direction: column;
 }
 
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  padding: 8px 14px;
+  border-radius: var(--ot-radius);
+  background: var(--ot-accent);
+  color: var(--ot-on-accent);
+  font-weight: 700;
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    transform: none;
+    color: var(--ot-on-accent);
+  }
+}
+
 .app-header {
   position: relative;
-  z-index: 50;
-  // The pair every theme already defines for the top of its panels
-  background: var(--panel-header-background-color);
-  border-bottom: 1px solid var(--border-color);
-  color: var(--panel-header-text-color);
+  z-index: 60;
+
+  &.is-full,
+  &.is-guest {
+    background: var(--ot-card);
+    border-bottom: 1px solid var(--ot-line-soft);
+  }
 }
 
 .app-header-bar,
@@ -21,6 +41,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+
   @media (max-width: 600px) {
     padding: 0 16px;
   }
@@ -29,89 +50,82 @@
 .app-header-bar {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px 20px;
   min-height: 64px;
-  @media (max-width: 600px) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+  .is-simple &,
+  .is-bare & {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  @media (max-width: 720px) {
     gap: 8px;
-    min-height: 56px;
   }
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--panel-header-text-color);
-  &:hover {
-    color: var(--panel-header-text-color);
-  }
+  flex-shrink: 0;
+  border-radius: var(--ot-radius-sm);
 
-  .brand-mark {
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
-    rect {
-      fill: var(--focus-ring-color);
-    }
-    path {
-      fill: none;
-      stroke: #fff;
-      stroke-width: 2.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-  }
-  .brand-name {
-    font-size: 1.1875rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    // On a phone the mark stands for the name: the room goes to the actions
-    @media (max-width: 600px) {
-      display: none;
-    }
-  }
   // A custom logo keeps the width chosen in the branding settings, within the header
   #logo {
-    max-height: 44px;
+    max-height: 40px;
     max-width: 100%;
     object-fit: contain;
+  }
+
+  @media (max-width: 720px) {
+    .is-full & .brand-name {
+      display: none;
+    }
   }
 }
 
 .header-search {
-  flex: 1;
-  max-width: 420px;
+  flex: 1 1 280px;
+  min-width: 0;
   height: 40px;
-  margin: 0 auto;
+  margin: 0;
   padding: 0 12px;
   justify-content: flex-start;
   gap: 10px;
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius-lg);
+  background: var(--ot-field);
+  color: var(--ot-muted);
+  font-size: 0.875rem;
   font-weight: 400;
-  color: var(--panel-text-color-alt);
+
+  &:hover {
+    background: var(--ot-field);
+    color: var(--ot-text);
+    border-color: var(--ot-line-strong);
+  }
 
   svg {
     width: 16px;
     height: 16px;
     margin: 0;
+    flex-shrink: 0;
   }
   .header-search-label {
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     text-align: left;
   }
-  kbd {
-    padding: 2px 6px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background: none;
-    color: inherit;
-    font: inherit;
-    font-size: 0.75rem;
-  }
-  @media (max-width: 600px) {
-    flex: 0;
+
+  @media (max-width: 720px) {
+    flex: 0 0 40px;
     width: 40px;
-    min-width: 40px;
+    margin-left: auto;
     padding: 0;
     justify-content: center;
     .header-search-label,
@@ -121,94 +135,336 @@
   }
 }
 
-.app-header-actions {
+// A link that reads as the primary button
+.header-new-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  flex-shrink: 0;
+  border-radius: var(--ot-radius);
+  background: var(--ot-accent);
+  color: var(--ot-on-accent);
+  font-weight: 700;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--ot-accent-hover);
+    color: var(--ot-on-accent);
+  }
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 720px) {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    span {
+      display: none;
+    }
+  }
+}
+
+.app-header-end {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
 
-  button {
+  .header-end-session {
     height: 40px;
-    width: 40px;
     margin: 0;
+    font-size: 0.875rem;
+    svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
   }
 }
 
-.app-nav {
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
+// --- Account menu
+.account-menu {
+  position: relative;
+  flex-shrink: 0;
 
-  .app-nav-item {
+  .account-button {
     height: 44px;
-    padding: 0 14px;
     margin: 0;
-    display: inline-flex;
+    padding: 0 10px 0 6px;
+    gap: 8px;
+    font-weight: 700;
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--ot-active);
+      color: var(--ot-heading);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .chevron {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      color: var(--ot-muted);
+    }
+
+    @media (max-width: 720px) {
+      width: 44px;
+      padding: 0;
+      justify-content: center;
+      .account-name,
+      .chevron {
+        display: none;
+      }
+    }
+  }
+
+  .account-menu-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 80;
+    min-width: 240px;
+    padding: 6px;
+    background: var(--ot-card);
+    border: 1px solid var(--ot-line);
+    border-radius: var(--ot-radius-lg);
+    box-shadow: var(--ot-shadow);
+  }
+
+  .account-menu-who {
+    padding: 8px 10px 10px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--ot-line-soft);
+    color: var(--ot-muted);
+    font-size: 0.8125rem;
+    overflow-wrap: anywhere;
+  }
+
+  .account-menu-item {
+    display: flex;
     align-items: center;
-    flex-shrink: 0;
-    border-radius: 0;
+    gap: 10px;
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding: 0 10px;
+    justify-content: flex-start;
+    border: 0;
+    border-radius: var(--ot-radius);
     background: none;
-    color: color-mix(in srgb, var(--panel-header-text-color) 62%, transparent);
+    color: var(--ot-text);
     font-size: 0.875rem;
     font-weight: 600;
-    white-space: nowrap;
 
     &:hover {
-      background: none;
-      color: var(--panel-header-text-color);
+      background: var(--ot-raised);
+      color: var(--ot-heading);
     }
-    &:focus-visible {
-      outline-offset: -2px;
+    svg {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      color: var(--ot-muted);
     }
-    &.active {
-      color: var(--panel-header-text-color);
-      box-shadow: inset 0 -2px 0 0 var(--focus-ring-color);
+    &.is-danger:hover {
+      color: var(--ot-danger);
+      svg {
+        color: var(--ot-danger);
+      }
+    }
+  }
+
+  .account-menu-language {
+    padding: 6px 4px;
+    margin: 4px 0;
+    border-top: 1px solid var(--ot-line-soft);
+    border-bottom: 1px solid var(--ot-line-soft);
+
+
+    .language-selector {
+      width: 100%;
+      select {
+        width: 100%;
+      }
     }
   }
 }
 
+// --- Main navigation: underlined tabs
+.app-nav {
+  display: flex;
+  gap: 4px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.app-nav-item,
+.sub-nav-item {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 10px 0;
+  color: var(--ot-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--ot-heading);
+  }
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+  &.active {
+    color: var(--ot-heading);
+    box-shadow: inset 0 -2px 0 0 var(--ot-accent);
+  }
+}
+
+// --- Main area
 .main {
   flex: 1;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  &:focus {
+    outline: none;
+  }
+
+  &.is-wide {
+    max-width: 1200px;
+    padding: 32px 24px 56px;
+  }
+  &.is-medium {
+    max-width: 720px;
+    padding: 24px 24px 64px;
+  }
+  &.is-narrow {
+    max-width: 452px;
+    padding: 24px 16px 48px;
+    justify-content: center;
+  }
+
+  @media (max-width: 600px) {
+    &.is-wide,
+    &.is-medium {
+      padding: 20px 16px 40px;
+    }
+  }
+}
+
+// --- Pages
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 20px;
+
+  .page-head-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+
+    button,
+    select {
+      margin: 0;
+    }
+    select {
+      width: auto;
+      max-width: 320px;
+      height: 44px;
+    }
+  }
+}
+
+.page-description {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--ot-muted);
+}
+
+.sub-nav {
+  display: flex;
+  gap: 4px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--ot-line-soft);
+}
+
+.admin-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 360px;
+  color: var(--ot-muted);
+  font-size: 0.8125rem;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}
+
+.not-found {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 32px 16px;
+  gap: 12px;
+  padding: 56px 24px 59px;
+  text-align: center;
 
-  &.main-medium {
-    max-width: 720px;
-    justify-content: flex-start;
+  > svg {
+    width: 40px;
+    height: 40px;
+    color: var(--ot-faint);
   }
-
-  // Screens made of several cards take the width of the header
-  &.main-wide {
-    max-width: 1200px;
-    justify-content: flex-start;
-    padding: 32px 24px;
-    @media (max-width: 600px) {
-      padding: 16px;
-    }
+  p {
+    margin: 0;
+    color: var(--ot-muted);
   }
 }
 
-footer {
-  display: flex;
-  justify-content: center;
-  padding: 0 16px 20px;
-}
-
-.powered-by {
-  color: var(--panel-text-color-alt);
+// --- Footer
+.app-footer {
+  padding: 0 16px 24px;
+  text-align: center;
+  color: var(--ot-muted);
   font-size: 0.8125rem;
+
   a {
-    color: var(--link-color);
+    color: var(--ot-text);
     font-weight: 600;
     &:hover {
-      color: var(--link-color-hover);
+      color: var(--ot-heading);
     }
   }
 }

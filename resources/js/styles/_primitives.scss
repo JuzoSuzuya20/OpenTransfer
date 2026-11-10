@@ -182,7 +182,10 @@ kbd {
   background: none;
   box-shadow: none;
   color: var(--ot-muted);
-  font: 600 0.6875rem / 1.4 inherit;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .visually-hidden-label {

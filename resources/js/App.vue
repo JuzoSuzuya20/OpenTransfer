@@ -1,334 +1,256 @@
 <script setup>
-import { ref, onMounted, nextTick, watch, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, watch, computed, provide } from 'vue'
+import { TolgeeProvider, useTranslate } from '@tolgee/vue'
+import { useToast } from 'vue-toastification'
 
-
-//components
-import LanguageSelector from './components/languageSelector.vue'
+import AppHeader from './components/layout/AppHeader.vue'
 import Uploader from './components/uploader.vue'
 import Downloader from './components/downloader.vue'
 import Auth from './components/auth.vue'
-import Settings from './components/settings.vue'
 import Setup from './components/setup.vue'
 import ThankGuestForUpload from './components/thankGuestForUpload.vue'
-import ReverseInvite from './components/reverseInvite.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
 import CommandPalette from './components/CommandPalette.vue'
+import MySharesPage from './pages/MySharesPage.vue'
+import RequestsPage from './pages/RequestsPage.vue'
+import StatsPage from './pages/StatsPage.vue'
+import AdminPage from './pages/AdminPage.vue'
+import ProfilePage from './pages/ProfilePage.vue'
+import AboutPage from './pages/AboutPage.vue'
+import NotFoundPage from './pages/NotFoundPage.vue'
 
-//3rd party
-import { LogOut, Settings as SettingsIcon, Search } from 'lucide-vue-next'
-import { TolgeeProvider } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
-import { useTranslate } from '@tolgee/vue'
-
-//1st party
 import { domData, domError, domSuccess } from './domData'
 import { emitter, store } from './store'
-import { logout } from './api'
-import { checkUrlHash, clearUrlHash } from './composables/useSettingsNavigation'
+import { logout, getMyProfile } from './api'
+import { resolveRoute, settingsTabToPath, legacyHashToPath } from './lib/router'
 
-
-//use
 const { t } = useTranslate()
+const toast = useToast()
 
-//static data
+const settings = domData()
+const applicationName = settings.application_name
+const allowFileRequests = settings.allow_reverse_shares === true
+const showPoweredBy = settings.show_powered_by === true
+const logoWidth = settings.logo_width
+const defaultLogo = ref(settings.default_logo !== false)
 const logoTimestamp = ref(Date.now())
 const logoUrl = computed(() => `/images/logo.png?t=${logoTimestamp.value}`)
-const allowReverseShares = ref(false)
-const logoWidth = ref(0)
-const showPoweredBy = ref(false)
-const setupNeeded = ref(false)
-const defaultLogo = ref(true)
-const applicationName = ref('')
 
-//reactive data
-const auth = ref(null)
-const downloadShareCode = ref('')
-const settingsPanel = ref(null)
-const toast = useToast()
-const reverseInvite = ref(null)
 const commandPalette = ref(null)
+const userName = ref('')
 
-// The navigation belongs to people with an account: guests only upload what they were asked for
-const showNavigation = computed(() => store.isLoggedIn() && !store.isGuest())
+// --- Addresses -------------------------------------------------------------------------------
+const route = ref(resolveRoute(location.pathname))
+
+// Waits for the element of an anchor, which a page may render after its data arrives
+const scrollToAnchor = (id, attempts = 40) => {
+  const element = id && document.getElementById(id)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    return
+  }
+  if (id && attempts > 0) {
+    setTimeout(() => scrollToAnchor(id, attempts - 1), 50)
+  }
+}
+
+const navigate = (target, { replace = false } = {}) => {
+  const url = new URL(target, location.origin)
+  const changed = url.pathname + url.search + url.hash !== location.pathname + location.search + location.hash
+  if (changed) {
+    history[replace ? 'replaceState' : 'pushState']({}, '', url.pathname + url.search + url.hash)
+  }
+  route.value = resolveRoute(url.pathname)
+  nextTick(() => {
+    if (url.hash) {
+      scrollToAnchor(decodeURIComponent(url.hash.slice(1)))
+    } else if (changed) {
+      window.scrollTo({ top: 0 })
+    }
+  })
+}
+
+const onPopState = () => {
+  route.value = resolveRoute(location.pathname)
+}
+
+provide('navigate', navigate)
+provide('scrollToAnchor', scrollToAnchor)
+
+// --- Who is here --------------------------------------------------------------------------------
+const isDownload = computed(() => route.value.name === 'download')
+const needsSignIn = computed(
+  () =>
+    !store.isLoggedIn() &&
+    !isDownload.value &&
+    store.mode !== 'setup' &&
+    store.mode !== 'thank_guest_for_upload'
+)
+const showAuth = computed(() => needsSignIn.value || (route.value.name === 'reset-password' && !store.isLoggedIn()))
+
+// Guests only upload what they were asked for; the administration belongs to admins
+const page = computed(() => {
+  if (store.mode === 'setup') return 'setup'
+  if (store.mode === 'thank_guest_for_upload') return 'thanks'
+  if (isDownload.value) return 'download'
+  if (showAuth.value) return 'auth'
+  if (store.isGuest()) return 'send'
+  const name = route.value.name
+  if ((name === 'stats' || name === 'admin') && !store.isAdmin()) return 'not-found'
+  if (name === 'requests' && !allowFileRequests) return 'not-found'
+  return name === 'reset-password' ? 'send' : name
+})
+
+const headerVariant = computed(() => {
+  if (page.value === 'setup' || page.value === 'auth') return 'bare'
+  if (page.value === 'download' || page.value === 'thanks') return 'simple'
+  if (store.isGuest()) return 'guest'
+  return 'full'
+})
+
+const mainWidth = computed(() => {
+  if (page.value === 'auth' || page.value === 'setup') return 'is-narrow'
+  if (page.value === 'download' || page.value === 'thanks') return 'is-medium'
+  return 'is-wide'
+})
+
+const pageTitles = computed(() => ({
+  send: t.value('nav.send'),
+  'my-shares': t.value('nav.my_shares'),
+  requests: t.value('nav.file_requests'),
+  stats: t.value('nav.statistics'),
+  admin: t.value('nav.administration'),
+  profile: t.value('settings.title.myProfile'),
+  about: t.value('settings.title.about'),
+  download: t.value('downloader.files_title'),
+  auth: t.value('auth.login')
+}))
+
+watch(
+  [page, pageTitles],
+  () => {
+    const title = pageTitles.value[page.value]
+    document.title = title ? `${title} · ${applicationName}` : applicationName
+  },
+  { immediate: true }
+)
+
+watch(
+  () => store.isLoggedIn() && !store.isGuest(),
+  async (signedIn) => {
+    if (!signedIn) {
+      userName.value = ''
+      return
+    }
+    try {
+      userName.value = (await getMyProfile()).name ?? ''
+    } catch (error) {
+      console.error('Failed to load the profile', error)
+    }
+  },
+  { immediate: true }
+)
+
+const handleLogout = () => {
+  if (store.isGuest() && !window.confirm(t.value('auth.confirm_end_guest_session'))) {
+    return
+  }
+  logout()
+}
+
+// Former settings links (command palette, deep links of e-mails and bookmarks)
+const handleSettingsNavigate = ({ tab, section, subSection }) => {
+  const path = settingsTabToPath(tab, section, subSection)
+  if (path) {
+    navigate(path)
+  }
+}
 
 onMounted(() => {
+  window.addEventListener('popstate', onPopState)
 
-  allowReverseShares.value = domData().allow_reverse_shares
-  logoWidth.value = domData().logo_width
-  showPoweredBy.value = domData().show_powered_by
-  setupNeeded.value = domData().setup_needed
-  defaultLogo.value = domData().default_logo !== false
-  applicationName.value = domData().application_name
+  const legacy = legacyHashToPath(location.hash)
+  if (legacy) {
+    navigate(legacy, { replace: true })
+  } else if (location.hash) {
+    scrollToAnchor(decodeURIComponent(location.hash.slice(1)))
+  }
 
+  if (domError().length > 0) {
+    nextTick(() => toast.error(domError()))
+  }
+  if (domSuccess().length > 0) {
+    nextTick(() => {
+      toast.success(domSuccess())
+      if (domSuccess() == 'Account linked successfully') {
+        navigate('/profile#linked_accounts')
+      }
+    })
+  }
+
+  if (settings.setup_needed) {
+    store.setMode('setup')
+    return
+  }
+  store.setMode(isDownload.value ? 'download' : 'upload')
+
+  emitter.on('showPasswordResetForm', () => navigate('/profile'))
+  emitter.on('settingsNavigate', handleSettingsNavigate)
   // The branding settings uploaded a logo, or went back to the default one
   emitter.on('logoChanged', (isDefault) => {
     defaultLogo.value = isDefault
     logoTimestamp.value = Date.now()
   })
-
-  if (domError().length > 0) {
-    console.log('error', domError())
-    nextTick(() => {
-      toast.error(domError())
-    })
-  }
-
-  if (domSuccess().length > 0) {
-    nextTick(() => {
-      console.log('domSuccess', domSuccess())
-      toast.success(domSuccess())
-      if (domSuccess() == 'Account linked successfully') {
-        store.setSettingsOpen(true)
-        settingsPanel.value.setActiveTab('myProfile')
-        setTimeout(() => {
-          settingsPanel.value.handleNavItemClicked('linked_accounts')
-        }, 500)
-      }
-    })
-  }
-
-  if (setupNeeded.value) {
-    store.setMode('setup')
-    return
-  }
-
-  //figure out which mode the application is in
-  setMode()
-
-  //register events
-  emitter.on('showPasswordResetForm', () => {
-    settingsPanel.value.setActiveTab('myProfile')
-    nextTick(() => {
-      store.setSettingsOpen(true)
-      nextTick(() => {
-        emitter.emit('profileEditActive')
-      })
-    })
-  })
-
-  // Register settings navigation event listener
-  emitter.on('settingsNavigate', handleSettingsNavigate)
-
-  // Check for settings deep-link in URL hash
-  // Delay slightly to ensure user is logged in and settings panel is available
-  setTimeout(() => {
-    checkSettingsDeepLink()
-  }, 100)
 })
 
-const setMode = () => {
-  if (window.location.pathname.includes('shares')) {
-    store.setMode('download')
-    downloadShareCode.value = window.location.pathname.split('/').pop()
-    setPageTitle('Download Share')
-  } else {
-    store.setMode('upload')
-    setPageTitle('Create Share')
-  }
-}
-
-const setPageTitle = (title) => {
-  let currentTitle = document.title
-  document.title = `${currentTitle} - ${title}`
-}
-
-const handleLogoutClick = () => {
-  if (store.isGuest()) {
-    const confirm = window.confirm(t.value('auth.confirm_end_guest_session'))
-    if (!confirm) {
-      return
-    }
-  }
-
-  logout()
-}
-
-const openSettings = () => {
-  store.setSettingsOpen(true)
-}
-
-const openSettingsTab = (tab) => {
-  handleSettingsNavigate({ tab, section: null, subSection: null })
-}
-
-const openCommandPalette = () => {
-  commandPalette.value?.open()
-}
-
-const openReverseShareInvite = () => {
-  reverseInvite.value.showReverseInviteForm()
-}
-
-/**
- * Handle settings navigation from the composable
- * @param {{ tab: string, section: string|null, subSection: string|null, skipUrlUpdate?: boolean }} navigation
- */
-const handleSettingsNavigate = (navigation) => {
-  const { tab, section, subSection, skipUrlUpdate = false } = navigation
-
-  // Open settings panel
-  store.setSettingsOpen(true)
-
-  // Wait for settings panel to be ready, then navigate
-  nextTick(() => {
-    if (!settingsPanel.value) {
-      console.warn('[App] Settings panel not available')
-      return
-    }
-
-    // Set the active tab (skip URL update if requested)
-    settingsPanel.value.setActiveTab(tab, { updateUrl: !skipUrlUpdate })
-
-    // If there's a section or sub-section to scroll to, do it after a short delay
-    // to allow the tab content to render
-    if (section || subSection) {
-      setTimeout(() => {
-        // Prefer sub-section if available, otherwise use section
-        const scrollTarget = subSection || section
-        settingsPanel.value.handleNavItemClicked(scrollTarget, { skipUrlUpdate })
-      }, 300)
-    }
-  })
-}
-
-/**
- * Track if we've already handled the initial deep-link
- */
-const deepLinkHandled = ref(false)
-
-/**
- * Check for settings deep-link in URL hash on page load
- */
-const checkSettingsDeepLink = () => {
-  if (deepLinkHandled.value) return
-  
-  const hashNav = checkUrlHash()
-  if (hashNav && store.isLoggedIn()) {
-    deepLinkHandled.value = true
-    // Skip URL update since we're already at the correct URL
-    handleSettingsNavigate({ ...hashNav, skipUrlUpdate: true })
-  }
-}
-
-// Watch for login state changes to handle deep-links
-watch(
-  () => store.loggedIn,
-  (isLoggedIn) => {
-    if (isLoggedIn && !deepLinkHandled.value) {
-      // Small delay to ensure settings panel is mounted
-      setTimeout(() => {
-        checkSettingsDeepLink()
-      }, 100)
-    }
-  }
-)
+onBeforeUnmount(() => {
+  window.removeEventListener('popstate', onPopState)
+})
 </script>
 
 <template>
   <TolgeeProvider>
-    <header class="app-header">
-      <div class="app-header-bar">
-        <a class="brand" href="/" :aria-label="t('nav.home')">
-          <!-- no custom logo: the OpenTransfer mark, drawn in the colours of the theme -->
-          <template v-if="defaultLogo">
-            <svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true">
-              <rect width="28" height="28" rx="7" />
-              <path d="M8 15l6-6 6 6M14 9v11" />
-            </svg>
-            <span class="brand-name">OpenTransfer</span>
-          </template>
-          <img v-else :src="logoUrl" :alt="applicationName" id="logo" :style="{ width: `${logoWidth}px` }" />
-        </a>
+    <a class="skip-link" href="#main">{{ t('nav.skip_to_content') }}</a>
 
-        <button class="header-search secondary" v-if="showNavigation" @click="openCommandPalette">
-          <Search />
-          <span class="header-search-label">{{ t('nav.search') }}</span>
-          <kbd>Ctrl K</kbd>
-        </button>
+    <AppHeader
+      :variant="headerVariant"
+      :route-name="route.name"
+      :user-name="userName"
+      :is-admin="store.isAdmin()"
+      :allow-file-requests="allowFileRequests"
+      :default-logo="defaultLogo"
+      :logo-url="logoUrl"
+      :logo-width="logoWidth"
+      :application-name="applicationName"
+      @search="commandPalette?.open()"
+      @logout="handleLogout"
+    />
 
-        <div class="app-header-actions">
-          <LanguageSelector />
-          <button
-            class="settings-button secondary icon-only"
-            @click="openSettings"
-            v-if="showNavigation"
-            :title="t('settings.title.manage')"
-            :aria-label="t('settings.title.manage')"
-          >
-            <SettingsIcon />
-          </button>
-          <button
-            class="logout icon-only secondary"
-            @click="handleLogoutClick"
-            v-if="store.isLoggedIn()"
-            :title="store.isGuest() ? t('auth.end_guest_session') : t('auth.logout')"
-            :aria-label="store.isGuest() ? t('auth.end_guest_session') : t('auth.logout')"
-          >
-            <LogOut />
-          </button>
-        </div>
-      </div>
+    <main class="main" :class="mainWidth" id="main" tabindex="-1">
+      <!-- Mounted from the start: it restores a session before anything else shows -->
+      <Auth v-show="showAuth" />
 
-      <!-- every entry leads to a screen that already exists: the settings panel opens on its tab -->
-      <nav class="app-nav" v-if="showNavigation" :aria-label="t('nav.main')">
-        <a
-          class="app-nav-item"
-          href="/"
-          :class="{ active: store.mode === 'upload' }"
-          :aria-current="store.mode === 'upload' ? 'page' : null"
-        >
-          {{ t('nav.send') }}
-        </a>
-        <button class="app-nav-item" @click="openSettingsTab('myShares')">{{ t('nav.my_shares') }}</button>
-        <button class="app-nav-item" @click="openReverseShareInvite" v-if="allowReverseShares">
-          {{ t('nav.file_requests') }}
-        </button>
-        <button class="app-nav-item" @click="openSettingsTab('stats')" v-if="store.isAdmin()">
-          {{ t('nav.statistics') }}
-        </button>
-        <button class="app-nav-item" @click="openSettingsTab('system')" v-if="store.isAdmin()">
-          {{ t('nav.administration') }}
-        </button>
-        <button class="app-nav-item" @click="openSettingsTab('myProfile')" v-else>
-          {{ t('nav.profile') }}
-        </button>
-      </nav>
-    </header>
-
-    <main class="main" :class="{ 'main-wide': store.mode === 'upload' && store.isLoggedIn(), 'main-medium': store.mode === 'download' }">
-      <!-- auth: shows if user is not logged in and the mode is upload -->
-      <Auth v-show="!store.isLoggedIn() && store.mode === 'upload'" ref="auth" />
-
-      <!-- uploader: shows if user is logged in and mode is upload -->
-      <Uploader v-if="store.mode === 'upload' && store.isLoggedIn()" />
-
-      <!-- downloader -->
-      <Downloader v-if="store.mode === 'download'" :downloadShareCode="downloadShareCode" />
-
-      <!-- setup wizard: shows if mode is setup -->
-      <Setup v-if="store.mode === 'setup'" />
-
-      <!-- thank guest for upload: shows if mode is thank_guest_for_upload -->
-      <ThankGuestForUpload v-if="store.mode === 'thank_guest_for_upload'" />
+      <Setup v-if="page === 'setup'" />
+      <ThankGuestForUpload v-else-if="page === 'thanks'" />
+      <Downloader v-else-if="page === 'download'" :downloadShareCode="route.params.code" />
+      <template v-else-if="page !== 'auth'">
+        <Uploader v-if="page === 'send'" />
+        <MySharesPage v-else-if="page === 'my-shares'" />
+        <RequestsPage v-else-if="page === 'requests'" />
+        <StatsPage v-else-if="page === 'stats'" />
+        <AdminPage v-else-if="page === 'admin'" :section="route.params.section" />
+        <ProfilePage v-else-if="page === 'profile'" />
+        <AboutPage v-else-if="page === 'about'" />
+        <NotFoundPage v-else />
+      </template>
     </main>
 
-    <footer>
-      <div class="powered-by" v-if="showPoweredBy">
-        {{ $t('Powered by') }}
-        <a href="https://github.com/JuzoSuzuya20/OpenTransfer" rel="noopener">OpenTransfer</a>
-      </div>
+    <footer class="app-footer" v-if="showPoweredBy">
+      {{ $t('Powered by') }}
+      <a href="https://github.com/JuzoSuzuya20/OpenTransfer" rel="noopener">OpenTransfer</a>
     </footer>
 
-    <!-- settings: load only if user is logged in -->
-    <Settings ref="settingsPanel" v-if="store.isLoggedIn()" />
-
-    <!-- reverse invite: load only if reverse shares are allowed and user is logged in and not a guest -->
-    <ReverseInvite ref="reverseInvite" v-if="allowReverseShares && !store.isGuest() && store.isLoggedIn()" />
-
-    <!-- confirmation dialog: available globally -->
     <ConfirmDialog />
-
-    <!-- command palette: available when logged in -->
-    <CommandPalette ref="commandPalette" v-if="store.isLoggedIn()" />
+    <CommandPalette ref="commandPalette" v-if="store.isLoggedIn() && !store.isGuest()" />
   </TolgeeProvider>
 </template>

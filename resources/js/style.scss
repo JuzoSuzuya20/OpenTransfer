@@ -387,94 +387,127 @@ body {
   gap: 10px;
 }
 
+// A group of settings is a card; its help text sits beside it, outside the card
 .setting-group {
-  border-radius: 8px;
-  padding: 20px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 10px;
-  height: 100%;
-  background: var(--panel-section-background-color);
-  border-radius: 5px 0 0 5px;
+  align-items: stretch;
+  gap: 14px;
+  height: auto;
+  padding: 24px 24px 27px;
+  background: var(--ot-card);
+  color: var(--ot-text);
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+  overflow: hidden;
+  scroll-margin-top: 24px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--ot-accent);
+    pointer-events: none;
+  }
 
   .setting-group-header {
-    padding: 20px 10px;
-    border-radius: 8px 8px 0 0;
-    color: var(--panel-section-text-color);
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-top: -20px;
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-    width: calc(100% + 40px);
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px 0 0 0;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
     h3 {
-      font-size: 1.2rem;
-      font-weight: bold;
       margin: 0;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ot-accent-text);
+
+      // The title names the group; the icon of the former settings adds nothing
       svg {
-        width: 20px;
-        height: 20px;
+        display: none;
       }
     }
     p {
-      font-size: 0.8rem;
       margin: 0;
+      font-size: 0.8125rem;
+      color: var(--ot-muted);
     }
   }
+
   .settings-group-info {
-    font-size: 0.8rem;
-    margin-top: 4px;
+    font-size: 0.8125rem;
+    color: var(--ot-muted);
   }
 
   .setting-group-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
 
     .setting-group-body-item {
       width: 100%;
-      label {
-        // display: block;
-        margin-bottom: 5px;
-      }
     }
-
     input,
     select,
-    .background-image,
     .file-input {
       width: 100%;
     }
-
     h6,
     label {
-      font-weight: bold;
-      font-size: 1rem;
-      margin: 0;
-      margin-bottom: 10px;
-      color: var(--label-text-color);
+      margin: 0 0 6px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--ot-text);
+
       small {
-        font-weight: normal;
-        font-size: 0.7rem;
-        color: color-mix(in srgb, var(--panel-section-text-color) 60%, transparent 40%);
+        font-weight: 400;
+        color: var(--ot-muted);
       }
     }
   }
 }
+
+// A card and its help, side by side on a wide screen
+.setting-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.setting-row .section-help {
+  padding-left: 0;
+}
+
+// The settings pages were drawn for an overlay: the page gives them their room
+.page {
+  .pt-5 {
+    padding-top: 0 !important;
+  }
+  .row.mb-5 {
+    margin-bottom: 20px !important;
+  }
+}
+
+.admin-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 
 .setting-group-body-item {
   .background-images {
@@ -567,24 +600,29 @@ body {
 }
 
 .section-help {
-  height: 100%;
-  margin-top: 0px;
-  background: var(--panel-section-background-color-alt);
-  color: var(--panel-section-text-color);
-  padding: 20px;
-  border-radius: 0 5px 5px 0;
-  h5 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 0;
-    margin-bottom: 10px;
-  }
-  h6 {
-    font-size: 1rem;
+  height: auto;
+  margin: 0;
+  padding: 4px 0 0 24px;
+  background: none;
+  color: var(--ot-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
 
-    margin-bottom: 10px;
-    margin-top: 10px;
-    font-weight: bold;
+  h3,
+  h5,
+  h6 {
+    margin: 14px 0 4px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--ot-heading);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+  p {
+    margin: 0 0 8px;
+    max-width: 65ch;
   }
 }
 
@@ -738,33 +776,35 @@ body {
   }
 }
 
+// The sections of a settings page, listed beside it
 .settings-nav {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
   position: sticky;
-  top: 0px;
-  li {
-    a {
-      display: block;
-      padding: 10px 20px;
-      background: var(--panel-nav-item-background-color);
-      color: var(--panel-nav-item-text-color);
-      text-decoration: none;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 5px;
-      margin-bottom: 5px;
-      &:hover {
-        background: var(--panel-nav-item-background-color-hover);
-        color: var(--panel-nav-item-text-color-hover);
-      }
-      svg {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-        margin-top: -1px;
-      }
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--ot-radius);
+    color: var(--ot-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--ot-raised);
+      color: var(--ot-heading);
+    }
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
     }
   }
 }

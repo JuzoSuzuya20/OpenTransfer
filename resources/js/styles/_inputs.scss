@@ -237,3 +237,11 @@ p.help-text {
     }
   }
 }
+
+// A single checkbox among the actions of a page
+.checkbox-container.inline {
+  display: inline-flex;
+  width: auto;
+  padding: 0;
+  grid-template-rows: none;
+}

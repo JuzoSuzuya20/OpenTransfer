@@ -9,17 +9,23 @@ use App\Models\Share;
 use App\Http\Controllers\ExternalAuthController;
 use App\Services\SettingsService;
 
-Route::get('/', function () {
+// The screens of the application: the page is the same, the front end shows the one its address names
+$appPage = function () {
     $indexedSettings = getSettings();
 
     //grab the app url from env
-    $appURL = config('app.url');
-    $indexedSettings['api_url'] = $appURL;
-
-
+    $indexedSettings['api_url'] = config('app.url');
 
     return view('app', ['settings' => $indexedSettings]);
-});
+};
+
+Route::get('/', $appPage);
+Route::get('/my-shares', $appPage);
+Route::get('/requests', $appPage);
+Route::get('/stats', $appPage);
+Route::get('/profile', $appPage);
+Route::get('/about', $appPage);
+Route::get('/admin/{section?}', $appPage)->whereIn('section', ['system', 'branding', 'email-templates', 'users', 'all-shares']);
 
 Route::get('/reset-password/{token}', function ($token) {
     $indexedSettings = getSettings();

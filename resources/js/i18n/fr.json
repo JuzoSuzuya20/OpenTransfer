@@ -214,11 +214,11 @@
     "instance": {
       "create": "Créer une instance",
       "createTitle": "Créer une instance",
-      "description": "Choisissez un sous-domaine pour votre instance Erugo.",
+      "description": "Choisissez un sous-domaine pour votre instance OpenTransfer.",
       "name": "Nom de l'instance",
-      "namePlaceholder": "Mon serveur Erugo",
+      "namePlaceholder": "Mon serveur OpenTransfer",
       "subdomain": "Sous-domaine",
-      "subdomainHelp": "Il s'agit de l'URL publique par laquelle vos utilisateurs accèderont à votre instance Erugo.",
+      "subdomainHelp": "Il s'agit de l'URL publique par laquelle vos utilisateurs accèderont à votre instance OpenTransfer.",
       "subdomainPlaceholder": "mon-serveur",
       "suggestions": "Alternatives disponibles",
       "title": "Configurer votre instance"
@@ -247,10 +247,10 @@
       "editSubdomain": "Changer",
       "editTitle": "Modifier l'instance",
       "lastSeen": "Dernière observation",
-      "link": "Lien vers cet Erugo",
+      "link": "Lien vers cet OpenTransfer",
       "linkDescription": "Liez cette instance à votre installation Erugo actuelle. Cela vous permettra de vous connecter au tunnel en utilisant cette instance.",
       "linkFailed": "Échec de la liaison de l'instance",
-      "linkNote": "Note : Un nouveau jeton d'instance sera généré. Toute autre installation d'Erugo utilisant cette instance devra être reliée à nouveau.",
+      "linkNote": "Note : Un nouveau jeton d'instance sera généré. Toute autre installation d'OpenTransfer utilisant cette instance devra être reliée à nouveau.",
       "linkSuccess": "Instance liée avec succès",
       "linkTitle": "Instance de liaison",
       "loadFailed": "Échec du chargement des instances",
@@ -445,8 +445,8 @@
   },
   "settings": {
     "about": {
-      "description": "Informations sur votre installation Erugo.",
-      "title": "À propos d'Erugo",
+      "description": "Informations sur votre installation OpenTransfer.",
+      "title": "À propos d'OpenTransfer",
       "version": "Version",
       "visit_website": "Visitez erugo.app"
     },
@@ -479,8 +479,8 @@
       "background_slideshow_speed_off": "Désactiver",
       "confirm": "Veuillez confirmer",
       "confirm_delete_theme": "Êtes-vous sûr de vouloir supprimer le thème \"{name}\" ? Cette opération ne peut être annulée.",
-      "confirm_reset_favicon": "Voulez-vous vraiment réinitialiser le favicon ? Cette opération supprimera votre favicon et rétablira le favicon par défaut d'Erugo. Il n'y a aucun moyen de récupérer votre favicon, alors assurez-vous de l'avoir sauvegardé avant de continuer.",
-      "confirm_reset_logo": "Voulez-vous vraiment réinitialiser le logo ? Cette opération supprimera votre logo et rétablira le logo par défaut d'Erugo. Il n'y a aucun moyen de récupérer ton logo, alors assure-toi de l'avoir sauvegardé avant de continuer.",
+      "confirm_reset_favicon": "Voulez-vous vraiment réinitialiser le favicon ? Cette opération supprimera votre favicon et rétablira le favicon par défaut d'OpenTransfer. Il n'y a aucun moyen de récupérer votre favicon, alors assurez-vous de l'avoir sauvegardé avant de continuer.",
+      "confirm_reset_logo": "Voulez-vous vraiment réinitialiser le logo ? Cette opération supprimera votre logo et rétablira le logo par défaut d'OpenTransfer. Il n'y a aucun moyen de récupérer ton logo, alors assure-toi de l'avoir sauvegardé avant de continuer.",
       "delete": "Supprimer",
       "delete_theme": "Supprimer le thème",
       "delete_theme_description": "Supprimer le thème sélectionné. Il sera alors supprimé de la liste des thèmes et vous ne pourrez plus l'utiliser. Il n'est pas possible de supprimer le thème actif ou les thèmes groupés.",
@@ -492,7 +492,7 @@
       },
       "failed_to_save_settings": "L'enregistrement des paramètres a échoué.",
       "favicon": "Favicon",
-      "favicon_description": "Envoyez un favicon personnalisé pour remplacer l’icône Erugo par défaut dans l’onglet du navigateur. »",
+      "favicon_description": "Envoyez un favicon personnalisé pour remplacer l’icône OpenTransfer par défaut dans l’onglet du navigateur. »",
       "favicon_reset_failed": "Échec de la réinitialisation du favicon",
       "favicon_reset_success": "Favicon réinitialisé avec succès",
       "favicon_upload_failed": "Le téléchargement du favicon a échoué",
@@ -516,8 +516,8 @@
       "select_theme": "Sélectionner un thème",
       "select_theme_description": "Choisissez parmi une gamme de thèmes prédéfinis ou un thème que vous avez installé.",
       "settings_saved": "Paramètres changés avec succès",
-      "show_powered_by": "Afficher Propulsé par Erugo",
-      "show_powered_by_description": "Afficher ou masquer le texte \"Propulsé par Erugo\" en bas de page. Ce texte permet à Erugo d'être découvert par les utilisateurs et nous aide à nous développer, mais vous pouvez le masquer si vous le souhaitez.\n",
+      "show_powered_by": "Afficher Propulsé par OpenTransfer",
+      "show_powered_by_description": "Afficher ou masquer le texte \"Propulsé par OpenTransfer\" en bas de page. Ce texte permet à OpenTransfer d'être découvert par les utilisateurs et nous aide à nous développer, mais vous pouvez le masquer si vous le souhaitez.\n",
       "theme": "Thèmes",
       "theme_delete_failed": "Échec de la suppression du thème",
       "theme_deleted_successfully": "Thème supprimé avec succès",
@@ -556,15 +556,15 @@
       "pruneExpiredShares": "Êtes-vous sûr de vouloir supprimer vos partages expirés ? Cette opération ne peut pas être annulée."
     },
     "description": {
-      "about": "Informations sur votre installation Erugo",
+      "about": "Informations sur votre installation OpenTransfer",
       "allShares": "Visualiser et gérer les partages de tous les utilisateurs",
-      "branding": "Personnalisez l'interface utilisateur et l’identité visuelle de votre instance erugo.",
+      "branding": "Personnalisez l'interface utilisateur et l’identité visuelle de votre instance OpenTransfer.",
       "cloudConnect": "Connectez votre instance à Erugo Cloud pour faciliter le routage des domaines",
       "emailTemplates": "Gérer les modèles",
       "myProfile": "Gérer votre profil.",
       "myShares": "Gérez vos partages.",
-      "stats": "Votre système Erugo en un coup d'œil",
-      "system": "Gérer le comportement de votre instance Erugo.",
+      "stats": "Votre système OpenTransfer en un coup d'œil",
+      "system": "Gérer le comportement de votre instance OpenTransfer.",
       "users": "Gérez vos utilisateurs."
     },
     "emailTemplates": {
@@ -742,7 +742,7 @@
       "auth_provider_type": "Type de prestataire",
       "auth_providers": "Fournisseurs d'authentification",
       "auth_providers_description": "Configurez les fournisseurs d'authentification par lesquels vous souhaitez que vos utilisateurs puissent s'authentifier.",
-      "auth_providers_description_localhost": "La configuration de l'authentification externe n'est pas disponible sur localhost. Les fournisseurs OAuth ont besoin d'un nom de domaine entièrement qualifié (FQDN) pour fonctionner correctement. Veuillez accéder à Erugo via un domaine enregistré pour configurer ces paramètres.",
+      "auth_providers_description_localhost": "La configuration de l'authentification externe n'est pas disponible sur localhost. Les fournisseurs OAuth ont besoin d'un nom de domaine entièrement qualifié (FQDN) pour fonctionner correctement. Veuillez accéder à OpenTransfer via un domaine enregistré pour configurer ces paramètres.",
       "backups": {
         "actions": "Actions",
         "auto_backup": "Sauvegardes automatiques",
@@ -870,14 +870,14 @@
       "share_expiry_warning_emails_description": "Envoyez des notifications proactives aux utilisateurs lorsque leurs partages approchent de l'expiration. Ils ont ainsi la possibilité de prolonger l'accès si nécessaire.",
       "share_url_generation": "Génération d'URL de partage",
       "share_url_mode": "Mode de génération d'URL",
-      "share_url_mode_description": "Choisissez la façon dont les URL de partage sont générées. Le mode Haïku permet de créer des combinaisons de mots mémorables (par exemple, \"automne-brise-silence-lune\"). Le mode Pattern vous permet de définir un format personnalisé à l'aide de la syntaxe Erugo Pattern.",
+      "share_url_mode_description": "Choisissez la façon dont les URL de partage sont générées. Le mode Haïku permet de créer des combinaisons de mots mémorables (par exemple, \"automne-brise-silence-lune\"). Le mode Pattern vous permet de définir un format personnalisé à l'aide de la syntaxe OpenTransfer Pattern.",
       "share_url_mode_haiku": "Un haïku classique",
       "share_url_mode_pattern": "Modèle",
       "share_url_mode_random": "Chaîne aléatoire",
       "share_url_mode_shortcode": "Numéro abrégé",
       "share_url_mode_uuid": "UUID",
       "share_url_pattern": "Modèle",
-      "share_url_pattern_description": "Définissez un motif à l'aide de la syntaxe de motif Erugo. Utilisez des jetons spéciaux pour les caractères aléatoires ou incluez des caractères littéraux pour les préfixes et les séparateurs.",
+      "share_url_pattern_description": "Définissez un motif à l'aide de la syntaxe de motif OpenTransfer. Utilisez des jetons spéciaux pour les caractères aléatoires ou incluez des caractères littéraux pour les préfixes et les séparateurs.",
       "share_url_pattern_placeholder": "par exemple, ES-####-AAA ou [A-Z][0-9]***.",
       "share_url_pattern_preview": "Aperçu",
       "share_url_pattern_syntax": "Syntaxe du motif",
@@ -925,7 +925,7 @@
     },
     "title": {
       "about": "A propos de",
-      "allShares": "Toutes les partages",
+      "allShares": "Tous les partages",
       "branding": "Identité visuelle et interface utilisateur",
       "cloudConnect": "Erugo Connect",
       "emailTemplates": "Modèles de mails",
@@ -1068,7 +1068,7 @@
       "password": "Mot de passe",
       "password_confirmation": "Confirmez le mot de passe"
     },
-    "intro": "Merci d'avoir installé Erugo ! Créez votre premier utilisateur administrateur pour commencer.",
+    "intro": "Merci d'avoir installé OpenTransfer ! Créez votre premier utilisateur administrateur pour commencer.",
     "logo": "Logo",
     "logo_placeholder": "Sélectionner l'image du logo (PNG ou SVG)",
     "save_and_login": "Sauvegarder les paramètres et se connecter",
@@ -1171,7 +1171,12 @@
     "profile": "Mon profil",
     "search": "Rechercher",
     "send": "Envoyer",
-    "statistics": "Statistiques"
+    "statistics": "Statistiques",
+    "account": "Compte",
+    "language": "Langue",
+    "new_share": "Nouveau partage",
+    "search_placeholder": "Rechercher une page ou un réglage…",
+    "skip_to_content": "Aller au contenu"
   },
   "downloader": {
     "expiry": "Disponibilité",
@@ -1179,5 +1184,13 @@
     "items": "Éléments",
     "protected_title": "Ce partage est protégé",
     "size": "Taille"
+  },
+  "admin": {
+    "save": "Enregistrer"
+  },
+  "not_found": {
+    "back": "Retour à l'envoi",
+    "text": "Cette adresse ne mène à aucune page de l'application.",
+    "title": "Page introuvable"
   }
 }

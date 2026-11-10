@@ -27,3 +27,22 @@ test('no name gives no initials', () => {
   assert.equal(initials(''), '')
   assert.equal(initials(null), '')
 })
+
+// The account menu shows the first name and the initial of the last name
+import { shortName } from '../../resources/js/lib/initials.js'
+
+test('the account menu shortens a full name', () => {
+  assert.equal(shortName('Camille Martin'), 'Camille M.')
+})
+
+test('only the last name is shortened', () => {
+  assert.equal(shortName('Jean Pierre de La Fontaine'), 'Jean F.')
+})
+
+test('a single name stays whole', () => {
+  assert.equal(shortName('Camille'), 'Camille')
+})
+
+test('no name gives an empty label', () => {
+  assert.equal(shortName(undefined), '')
+})

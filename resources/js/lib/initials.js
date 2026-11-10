@@ -12,3 +12,13 @@ const initials = (name) => {
 }
 
 export default initials
+
+// First word in full, then the initial of the last word: "Camille Martin" gives "Camille M."
+export const shortName = (name) => {
+  const words = (name ?? '').trim().split(/\s+/).filter(Boolean)
+  if (words.length < 2) {
+    return words[0] ?? ''
+  }
+
+  return `${words[0]} ${Array.from(words[words.length - 1])[0].toUpperCase()}.`
+}

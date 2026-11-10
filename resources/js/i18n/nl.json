@@ -214,16 +214,16 @@
     "instance": {
       "create": "Instantie maken",
       "createTitle": "Instantie maken",
-      "description": "Kies een subdomein voor uw Erugo instantie.",
+      "description": "Kies een subdomein voor uw OpenTransfer instantie.",
       "name": "Instance Naam",
-      "namePlaceholder": "Mijn Erugo-server",
+      "namePlaceholder": "Mijn OpenTransfer-server",
       "subdomain": "Subdomein",
-      "subdomainHelp": "Dit is de publieke URL waarmee uw gebruikers toegang krijgen tot uw Erugo instantie.",
+      "subdomainHelp": "Dit is de publieke URL waarmee uw gebruikers toegang krijgen tot uw OpenTransfer instantie.",
       "subdomainPlaceholder": "mijn-server",
       "suggestions": "Beschikbare alternatieven",
       "title": "Uw Instance instellen"
     },
-    "instanceAlreadyLinked": "Deze installatie van Erugo is al geregistreerd bij een andere gebruikersaccount. Als je een nieuw account hebt aangemaakt, meld je dan aan met je vorige account om verbinding te maken met je reeds geclaimde instantie.",
+    "instanceAlreadyLinked": "Deze installatie van OpenTransfer is al geregistreerd bij een andere gebruikersaccount. Als je een nieuw account hebt aangemaakt, meld je dan aan met je vorige account om verbinding te maken met je reeds geclaimde instantie.",
     "instanceCreateFailed": "Instantie niet aangemaakt",
     "instanceCreated": "Instance succesvol aangemaakt!",
     "instances": {
@@ -247,10 +247,10 @@
       "editSubdomain": "Verander",
       "editTitle": "Bewerk instantie",
       "lastSeen": "Laatst gezien",
-      "link": "Link naar deze Erugo",
-      "linkDescription": "Koppel deze instantie aan je huidige Erugo installatie. Hierdoor kun je verbinding maken met de tunnel door deze instantie te gebruiken.",
+      "link": "Link naar deze OpenTransfer",
+      "linkDescription": "Koppel deze instantie aan je huidige OpenTransfer installatie. Hierdoor kun je verbinding maken met de tunnel door deze instantie te gebruiken.",
       "linkFailed": "Koppeling van instantie mislukt",
-      "linkNote": "Opmerking: Een nieuw instance token zal worden gegenereerd. Alle andere Erugo installaties die deze instantie gebruiken moeten opnieuw worden gekoppeld.",
+      "linkNote": "Opmerking: Een nieuw instance token zal worden gegenereerd. Alle andere OpenTransfer installaties die deze instantie gebruiken moeten opnieuw worden gekoppeld.",
       "linkSuccess": "Instance succesvol gekoppeld",
       "linkTitle": "Link Instantie",
       "loadFailed": "Laadt geen instanties",
@@ -389,7 +389,7 @@
       "waitingForPayment": "Wachten op betaling..."
     },
     "subscriptionActive": "Abonnement geactiveerd!",
-    "title": "Erugo aansluiten",
+    "title": "OpenTransfer aansluiten",
     "tunnelConnected": "Tunnel aangesloten",
     "usage": {
       "in": "In",
@@ -445,8 +445,8 @@
   },
   "settings": {
     "about": {
-      "description": "Informatie over uw Erugo installatie.",
-      "title": "Over Erugo",
+      "description": "Informatie over uw OpenTransfer installatie.",
+      "title": "Over OpenTransfer",
       "version": "Versie",
       "visit_website": "Bezoek erugo.app"
     },
@@ -479,8 +479,8 @@
       "background_slideshow_speed_off": "uitschakelen",
       "confirm": "Bevestigen a.u.b.",
       "confirm_delete_theme": "Weet je zeker dat je het thema \"{name}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
-      "confirm_reset_favicon": "Wil je echt de favicon resetten? Dit zal je favicon verwijderen en de standaard Erugo favicon herstellen. Er is geen manier om je favicon te herstellen dus zorg ervoor dat je een back-up hebt voordat je verder gaat.",
-      "confirm_reset_logo": "Wilt u echt het logo resetten? Dit zal je logo verwijderen en het standaard Erugo-logo herstellen. Er is geen manier om je logo te herstellen, dus zorg ervoor dat je een back-up hebt voordat je verder gaat.",
+      "confirm_reset_favicon": "Wil je echt de favicon resetten? Dit zal je favicon verwijderen en de standaard OpenTransfer favicon herstellen. Er is geen manier om je favicon te herstellen dus zorg ervoor dat je een back-up hebt voordat je verder gaat.",
+      "confirm_reset_logo": "Wilt u echt het logo resetten? Dit zal je logo verwijderen en het standaard OpenTransfer-logo herstellen. Er is geen manier om je logo te herstellen, dus zorg ervoor dat je een back-up hebt voordat je verder gaat.",
       "delete": "Verwijder",
       "delete_theme": "Thema verwijderen",
       "delete_theme_description": "Verwijder het geselecteerde thema. Hierdoor wordt het verwijderd uit de lijst met thema's en kunt u het niet langer gebruiken. Het is niet mogelijk om het actieve thema of gebundelde thema's te verwijderen.",
@@ -492,7 +492,7 @@
       },
       "failed_to_save_settings": "Mislukt bij het opslaan van instellingen.",
       "favicon": "Favicon",
-      "favicon_description": "Upload een aangepast favicon om het standaard erugo-pictogram in het browsertabblad te vervangen.",
+      "favicon_description": "Upload een aangepast favicon om het standaard OpenTransfer-pictogram in het browsertabblad te vervangen.",
       "favicon_reset_failed": "Gefaald om favicon opnieuw in te stellen",
       "favicon_reset_success": "Favicon met succes gereset",
       "favicon_upload_failed": "favicon uploaden mislukt",
@@ -516,8 +516,8 @@
       "select_theme": "Thema Selecteren",
       "select_theme_description": "Kies uit een reeks kant-en-klare thema's of een thema dat je zelf hebt geïnstalleerd.",
       "settings_saved": "Branding instellingen succesvol opgeslagen",
-      "show_powered_by": "Toon Aangedreven door Erugo",
-      "show_powered_by_description": "Toon of verberg de \"Aangedreven door Erugo\" tekst onderaan de pagina. Deze tekst zorgt ervoor dat Erugo ontdekt wordt door gebruikers en helpt ons te groeien, je kunt het echter verbergen als je dat wilt.\n",
+      "show_powered_by": "Toon Aangedreven door OpenTransfer",
+      "show_powered_by_description": "Toon of verberg de \"Aangedreven door OpenTransfer\" tekst onderaan de pagina. Deze tekst zorgt ervoor dat OpenTransfer ontdekt wordt door gebruikers en helpt ons te groeien, je kunt het echter verbergen als je dat wilt.\n",
       "theme": "Thema's",
       "theme_delete_failed": "Thema niet verwijderd",
       "theme_deleted_successfully": "Thema succesvol verwijderd",
@@ -556,15 +556,15 @@
       "pruneExpiredShares": "Weet je zeker dat je verlopen aandelen wilt verwijderen? Het is niet mogelijk om deze bewerking ongedaan te maken."
     },
     "description": {
-      "about": "Informatie over uw Erugo installatie",
+      "about": "Informatie over uw OpenTransfer installatie",
       "allShares": "Aandelen van alle gebruikers bekijken en beheren",
-      "branding": "Pas de UI van je erugo instantie aan en voeg je eigen branding toe.",
+      "branding": "Pas de UI van je OpenTransfer instantie aan en voeg je eigen branding toe.",
       "cloudConnect": "Verbind je instantie met Erugo Cloud voor eenvoudige domeinroutering",
       "emailTemplates": "E-mailsjablonen beheren",
       "myProfile": "Beheer je profiel",
       "myShares": "Beheer je gedeelde links.",
-      "stats": "Uw Erugo systeem in één oogopslag",
-      "system": "Beheer het gedrag van je Erugo instantie.",
+      "stats": "Uw OpenTransfer systeem in één oogopslag",
+      "system": "Beheer het gedrag van je OpenTransfer instantie.",
       "users": "Beheer je gebruikers."
     },
     "emailTemplates": {
@@ -742,7 +742,7 @@
       "auth_provider_type": "Type aanbieder",
       "auth_providers": "Auth providers",
       "auth_providers_description": "Configureer de auth providers waarmee je wilt dat je gebruikers zich kunnen authenticeren.",
-      "auth_providers_description_localhost": "Externe authenticatieconfiguratie is niet beschikbaar op localhost. OAuth providers hebben een volledig gekwalificeerde domeinnaam (FQDN) nodig om goed te functioneren. Ga naar Erugo via een geregistreerd domein om deze instellingen te configureren.",
+      "auth_providers_description_localhost": "Externe authenticatieconfiguratie is niet beschikbaar op localhost. OAuth providers hebben een volledig gekwalificeerde domeinnaam (FQDN) nodig om goed te functioneren. Ga naar OpenTransfer via een geregistreerd domein om deze instellingen te configureren.",
       "backups": {
         "actions": "Acties",
         "auto_backup": "Automatische back-ups",
@@ -870,14 +870,14 @@
       "share_expiry_warning_emails_description": "Stuur proactieve meldingen naar gebruikers wanneer hun links bijna verlopen. Dit geeft hen de mogelijkheid om de toegang te verlengen als dat nodig is.",
       "share_url_generation": "URL delen genereren",
       "share_url_mode": "Modus URL genereren",
-      "share_url_mode_description": "Kies hoe gedeelde URL's worden gegenereerd. Haiku creëert gedenkwaardige woordcombinaties (bijv. 'herfst-wind-stille-maan'). Met de Patroonmodus kun je een aangepaste indeling definiëren met behulp van de Erugo Patroon Syntax.",
+      "share_url_mode_description": "Kies hoe gedeelde URL's worden gegenereerd. Haiku creëert gedenkwaardige woordcombinaties (bijv. 'herfst-wind-stille-maan'). Met de Patroonmodus kun je een aangepaste indeling definiëren met behulp van de OpenTransfer Patroon Syntax.",
       "share_url_mode_haiku": "Klassieke haiku-stijl",
       "share_url_mode_pattern": "Patroon",
       "share_url_mode_random": "Willekeurige snaar",
       "share_url_mode_shortcode": "Verkorte code",
       "share_url_mode_uuid": "UUID",
       "share_url_pattern": "Patroon",
-      "share_url_pattern_description": "Definieer een patroon met behulp van de Erugo Pattern Syntax. Gebruik speciale tokens voor willekeurige tekens of neem letterlijke tekens op voor voorvoegsels en scheidingstekens.",
+      "share_url_pattern_description": "Definieer een patroon met behulp van de OpenTransfer Pattern Syntax. Gebruik speciale tokens voor willekeurige tekens of neem letterlijke tekens op voor voorvoegsels en scheidingstekens.",
       "share_url_pattern_placeholder": "bijv. ES-####-AAA of [A-Z][0-9]***",
       "share_url_pattern_preview": "Voorbeeld",
       "share_url_pattern_syntax": "Patroon Syntax",
@@ -927,7 +927,7 @@
       "about": "Over",
       "allShares": "Alle Aandelen",
       "branding": "Branding & UI",
-      "cloudConnect": "Erugo aansluiten",
+      "cloudConnect": "OpenTransfer aansluiten",
       "emailTemplates": "E-mail sjablonen",
       "linked_accounts": "Verwante accounts",
       "manage": "Beheer",
@@ -1068,7 +1068,7 @@
       "password": "Wachtwoord",
       "password_confirmation": "Wachtwoord bevestigen"
     },
-    "intro": "Bedankt voor het installeren van Erugo! Laten we beginnen!",
+    "intro": "Bedankt voor het installeren van OpenTransfer! Laten we beginnen!",
     "logo": "Logo",
     "logo_placeholder": "Selecteer logoafbeelding (PNG of SVG)",
     "save_and_login": "Instellingen opslaan en aanmelden",
@@ -1171,7 +1171,12 @@
     "profile": "Mijn profiel",
     "search": "Zoeken",
     "send": "Verzenden",
-    "statistics": "Statistieken"
+    "statistics": "Statistieken",
+    "account": "Account",
+    "language": "Taal",
+    "new_share": "Nieuwe share",
+    "search_placeholder": "Zoek een pagina of instelling…",
+    "skip_to_content": "Naar de inhoud"
   },
   "downloader": {
     "expiry": "Beschikbaarheid",
@@ -1179,5 +1184,13 @@
     "items": "Items",
     "protected_title": "Deze share is beveiligd",
     "size": "Grootte"
+  },
+  "admin": {
+    "save": "Opslaan"
+  },
+  "not_found": {
+    "back": "Terug naar verzenden",
+    "text": "Dit adres leidt naar geen enkele pagina van de applicatie.",
+    "title": "Pagina niet gevonden"
   }
 }
