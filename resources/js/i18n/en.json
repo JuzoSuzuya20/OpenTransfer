@@ -1272,5 +1272,53 @@
     "copy_link": "Copy the link",
     "copied": "Link copied",
     "close": "Close"
+  },
+  "shares": {
+    "this_month": "This month",
+    "opened_ring": "{percent} % of the shares downloaded at least once",
+    "opened_title": "Shares opened",
+    "opened_text": "{opened} of {count, plural, one {# share} other {# shares}} downloaded at least once",
+    "sent_volume": "Volume sent",
+    "received_files": "Files received (requests)",
+    "filter": "Filter the shares",
+    "filter_all": "All",
+    "filter_active": "Active",
+    "filter_expired": "Expired",
+    "this_week": "This week",
+    "last_week": "Last week",
+    "group_summary": "{count, plural, one {# share} other {# shares}} · {downloads, plural, one {# download} other {# downloads}}",
+    "state": {
+      "active": "Active",
+      "ending": "Ending soon",
+      "expired": "Expired",
+      "deleted": "Deleted",
+      "failed": "Failed"
+    },
+    "items": "{count, plural, one {# item} other {# items}}",
+    "received": "received through a request",
+    "password": "password",
+    "limit": "limit {count}",
+    "expires_on": "expires on {date}",
+    "expired_on": "expired on {date}",
+    "downloads_label": "{count, plural, one {download} other {downloads}}",
+    "more_actions": "More actions for {name}",
+    "open_page": "Open the share page",
+    "download": "Download",
+    "extend": "Extend",
+    "set_limit": "Download limit…",
+    "expire_now": "Expire now",
+    "limit_saved": "Download limit saved",
+    "limit_failed": "The download limit could not be saved",
+    "copy_failed": "The link could not be copied",
+    "load_failed": "Your shares could not be loaded",
+    "empty": "You have not sent anything yet.",
+    "empty_filter": "No share matches this filter."
+  },
+  "requests": {
+    "description": "Ask someone outside the organisation to send you files. What they send lands in My shares.",
+    "new": "New request",
+    "received": "Received through requests",
+    "none": "Nothing received yet.",
+    "see_all": "See them in My shares"
   }
 }

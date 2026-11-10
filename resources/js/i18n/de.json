@@ -1251,5 +1251,53 @@
     "copy_link": "Link kopieren",
     "copied": "Link kopiert",
     "close": "Schließen"
+  },
+  "shares": {
+    "this_month": "Diesen Monat",
+    "opened_ring": "{percent} % der Freigaben mindestens einmal heruntergeladen",
+    "opened_title": "Geöffnete Freigaben",
+    "opened_text": "{opened} von {count, plural, one {# Freigabe} other {# Freigaben}} mindestens einmal heruntergeladen",
+    "sent_volume": "Gesendetes Volumen",
+    "received_files": "Empfangene Dateien (Anfragen)",
+    "filter": "Freigaben filtern",
+    "filter_all": "Alle",
+    "filter_active": "Aktiv",
+    "filter_expired": "Abgelaufen",
+    "this_week": "Diese Woche",
+    "last_week": "Letzte Woche",
+    "group_summary": "{count, plural, one {# Freigabe} other {# Freigaben}} · {downloads, plural, one {# Download} other {# Downloads}}",
+    "state": {
+      "active": "Aktiv",
+      "ending": "Läuft bald ab",
+      "expired": "Abgelaufen",
+      "deleted": "Gelöscht",
+      "failed": "Fehlgeschlagen"
+    },
+    "items": "{count, plural, one {# Element} other {# Elemente}}",
+    "received": "über eine Anfrage erhalten",
+    "password": "Passwort",
+    "limit": "Limit {count}",
+    "expires_on": "läuft am {date} ab",
+    "expired_on": "am {date} abgelaufen",
+    "downloads_label": "{count, plural, one {Download} other {Downloads}}",
+    "more_actions": "Weitere Aktionen für {name}",
+    "open_page": "Freigabeseite öffnen",
+    "download": "Herunterladen",
+    "extend": "Verlängern",
+    "set_limit": "Download-Limit…",
+    "expire_now": "Jetzt ablaufen lassen",
+    "limit_saved": "Download-Limit gespeichert",
+    "limit_failed": "Das Download-Limit konnte nicht gespeichert werden",
+    "copy_failed": "Der Link konnte nicht kopiert werden",
+    "load_failed": "Ihre Freigaben konnten nicht geladen werden",
+    "empty": "Sie haben noch nichts gesendet.",
+    "empty_filter": "Keine Freigabe entspricht diesem Filter."
+  },
+  "requests": {
+    "description": "Bitten Sie eine externe Person, Ihnen Dateien zu senden. Was sie sendet, landet in Meine Freigaben.",
+    "new": "Neue Anfrage",
+    "received": "Über Anfragen erhalten",
+    "none": "Noch nichts erhalten.",
+    "see_all": "In Meine Freigaben ansehen"
   }
 }

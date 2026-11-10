@@ -9,6 +9,7 @@
 @use "./styles/downloader";
 @use "./styles/shell";
 @use "./styles/auth";
+@use "./styles/shares";
 
 
 /*
@@ -53,8 +54,8 @@
   --ot-success-soft: #dffee6;
   --ot-success-line: #b8fec9;
   --ot-warning: #b34000;
-  --ot-warning-soft: #fff4f3;
-  --ot-warning-line: #ffddd9;
+  --ot-warning-soft: #fff1e6;
+  --ot-warning-line: #ffd6b5;
   --ot-danger: #ce0500;
   --ot-danger-soft: #fef4f4;
   --ot-danger-line: #ffdddd;

@@ -1251,5 +1251,53 @@
     "copy_link": "Link kopiëren",
     "copied": "Link gekopieerd",
     "close": "Sluiten"
+  },
+  "shares": {
+    "this_month": "Deze maand",
+    "opened_ring": "{percent} % van de shares minstens één keer gedownload",
+    "opened_title": "Geopende shares",
+    "opened_text": "{opened} van {count, plural, one {# share} other {# shares}} minstens één keer gedownload",
+    "sent_volume": "Verzonden volume",
+    "received_files": "Ontvangen bestanden (verzoeken)",
+    "filter": "Shares filteren",
+    "filter_all": "Alle",
+    "filter_active": "Actief",
+    "filter_expired": "Verlopen",
+    "this_week": "Deze week",
+    "last_week": "Vorige week",
+    "group_summary": "{count, plural, one {# share} other {# shares}} · {downloads, plural, one {# download} other {# downloads}}",
+    "state": {
+      "active": "Actief",
+      "ending": "Verloopt binnenkort",
+      "expired": "Verlopen",
+      "deleted": "Verwijderd",
+      "failed": "Mislukt"
+    },
+    "items": "{count, plural, one {# item} other {# items}}",
+    "received": "ontvangen via een verzoek",
+    "password": "wachtwoord",
+    "limit": "limiet {count}",
+    "expires_on": "verloopt op {date}",
+    "expired_on": "verlopen op {date}",
+    "downloads_label": "{count, plural, one {download} other {downloads}}",
+    "more_actions": "Meer acties voor {name}",
+    "open_page": "Sharepagina openen",
+    "download": "Downloaden",
+    "extend": "Verlengen",
+    "set_limit": "Downloadlimiet…",
+    "expire_now": "Nu laten verlopen",
+    "limit_saved": "Downloadlimiet opgeslagen",
+    "limit_failed": "De downloadlimiet kon niet worden opgeslagen",
+    "copy_failed": "De link kon niet worden gekopieerd",
+    "load_failed": "Je shares konden niet worden geladen",
+    "empty": "Je hebt nog niets verzonden.",
+    "empty_filter": "Geen share past bij dit filter."
+  },
+  "requests": {
+    "description": "Vraag iemand buiten de organisatie om je bestanden te sturen. Wat die stuurt, komt in Mijn shares.",
+    "new": "Nieuw verzoek",
+    "received": "Ontvangen via verzoeken",
+    "none": "Nog niets ontvangen.",
+    "see_all": "Bekijk ze in Mijn shares"
   }
 }

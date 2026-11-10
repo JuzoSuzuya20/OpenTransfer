@@ -1222,5 +1222,53 @@
     "copy_link": "Copiar a ligação",
     "copied": "Ligação copiada",
     "close": "Fechar"
+  },
+  "shares": {
+    "this_month": "Este mês",
+    "opened_ring": "{percent} % das partilhas transferidas pelo menos uma vez",
+    "opened_title": "Partilhas abertas",
+    "opened_text": "{opened} de {count, plural, one {# partilha} other {# partilhas}} transferidas pelo menos uma vez",
+    "sent_volume": "Volume enviado",
+    "received_files": "Ficheiros recebidos (pedidos)",
+    "filter": "Filtrar as partilhas",
+    "filter_all": "Todas",
+    "filter_active": "Ativas",
+    "filter_expired": "Expiradas",
+    "this_week": "Esta semana",
+    "last_week": "Semana passada",
+    "group_summary": "{count, plural, one {# partilha} other {# partilhas}} · {downloads, plural, one {# transferência} other {# transferências}}",
+    "state": {
+      "active": "Ativa",
+      "ending": "Expira em breve",
+      "expired": "Expirada",
+      "deleted": "Eliminada",
+      "failed": "Falhou"
+    },
+    "items": "{count, plural, one {# elemento} other {# elementos}}",
+    "received": "recebida através de um pedido",
+    "password": "palavra-passe",
+    "limit": "limite {count}",
+    "expires_on": "expira a {date}",
+    "expired_on": "expirou a {date}",
+    "downloads_label": "{count, plural, one {transferência} other {transferências}}",
+    "more_actions": "Mais ações para {name}",
+    "open_page": "Abrir a página da partilha",
+    "download": "Transferir",
+    "extend": "Prolongar",
+    "set_limit": "Limite de transferências…",
+    "expire_now": "Fazer expirar agora",
+    "limit_saved": "Limite de transferências guardado",
+    "limit_failed": "Não foi possível guardar o limite de transferências",
+    "copy_failed": "Não foi possível copiar a ligação",
+    "load_failed": "Não foi possível carregar as suas partilhas",
+    "empty": "Ainda não enviou nada.",
+    "empty_filter": "Nenhuma partilha corresponde a este filtro."
+  },
+  "requests": {
+    "description": "Peça a uma pessoa externa que lhe envie ficheiros. O que ela enviar chega a As minhas partilhas.",
+    "new": "Novo pedido",
+    "received": "Recebidos através de pedidos",
+    "none": "Ainda nada recebido.",
+    "see_all": "Vê-los em As minhas partilhas"
   }
 }

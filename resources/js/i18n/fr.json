@@ -1251,5 +1251,53 @@
     "copy_link": "Copier le lien",
     "copied": "Lien copié",
     "close": "Fermer"
+  },
+  "shares": {
+    "this_month": "Ce mois-ci",
+    "opened_ring": "{percent} % des partages téléchargés au moins une fois",
+    "opened_title": "Partages ouverts",
+    "opened_text": "{opened} sur {count, plural, one {# partage} other {# partages}} téléchargés au moins une fois",
+    "sent_volume": "Volume envoyé",
+    "received_files": "Fichiers reçus (demandes)",
+    "filter": "Filtrer les partages",
+    "filter_all": "Tous",
+    "filter_active": "Actifs",
+    "filter_expired": "Expirés",
+    "this_week": "Cette semaine",
+    "last_week": "Semaine dernière",
+    "group_summary": "{count, plural, one {# partage} other {# partages}} · {downloads, plural, one {# téléchargement} other {# téléchargements}}",
+    "state": {
+      "active": "Actif",
+      "ending": "Expire bientôt",
+      "expired": "Expiré",
+      "deleted": "Supprimé",
+      "failed": "Échec"
+    },
+    "items": "{count, plural, one {# élément} other {# éléments}}",
+    "received": "reçu via une demande",
+    "password": "mot de passe",
+    "limit": "limite {count}",
+    "expires_on": "expire le {date}",
+    "expired_on": "expiré le {date}",
+    "downloads_label": "{count, plural, one {téléchargement} other {téléchargements}}",
+    "more_actions": "Plus d'actions pour {name}",
+    "open_page": "Ouvrir la page du partage",
+    "download": "Télécharger",
+    "extend": "Prolonger",
+    "set_limit": "Limite de téléchargements…",
+    "expire_now": "Faire expirer maintenant",
+    "limit_saved": "Limite de téléchargements enregistrée",
+    "limit_failed": "La limite de téléchargements n'a pas pu être enregistrée",
+    "copy_failed": "Le lien n'a pas pu être copié",
+    "load_failed": "Vos partages n'ont pas pu être chargés",
+    "empty": "Vous n'avez encore rien envoyé.",
+    "empty_filter": "Aucun partage ne correspond à ce filtre."
+  },
+  "requests": {
+    "description": "Demandez à une personne extérieure de vous envoyer des fichiers. Ce qu'elle envoie arrive dans Mes partages.",
+    "new": "Nouvelle demande",
+    "received": "Reçus via des demandes",
+    "none": "Rien reçu pour l'instant.",
+    "see_all": "Les voir dans Mes partages"
   }
 }

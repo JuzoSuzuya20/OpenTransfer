@@ -1,0 +1,326 @@
+// "My shares" and "File requests": a summary beside the list, rows grouped by week.
+
+.my-shares {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.month-card {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 20px 23px;
+
+  @media (min-width: 900px) {
+    position: sticky;
+    top: 16px;
+  }
+}
+
+.month-ring {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  svg {
+    flex-shrink: 0;
+  }
+  .ring-track,
+  .ring-fill {
+    fill: none;
+    stroke-width: 4;
+  }
+  .ring-track {
+    stroke: var(--ot-raised);
+  }
+  .ring-fill {
+    stroke: var(--ot-text);
+    stroke-linecap: round;
+  }
+  text {
+    font-size: 8px;
+    font-weight: 800;
+    fill: var(--ot-heading);
+    font-family: inherit;
+  }
+
+  .month-ring-title {
+    font-weight: 700;
+    color: var(--ot-heading);
+  }
+  .month-ring-text {
+    font-size: 0.8125rem;
+    color: var(--ot-muted);
+  }
+}
+
+.month-figures {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  font-size: 0.875rem;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  dt {
+    font-weight: 400;
+    color: var(--ot-muted);
+  }
+  dd {
+    margin: 0;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--ot-heading);
+
+    &.is-accent {
+      color: var(--ot-accent-text);
+    }
+  }
+}
+
+.my-shares-list {
+  flex: 999 1 600px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.list-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+
+  .checkbox-container label {
+    font-size: 0.875rem;
+  }
+  .ot-act svg {
+    margin-right: 6px;
+  }
+}
+
+.share-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    color: var(--ot-heading);
+  }
+  .ot-pill {
+    background: var(--ot-raised);
+  }
+}
+
+// One share: name and details, its state, its downloads, its actions.
+// The ground of the row follows the state: neutral, ending soon, expired.
+.share-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  padding: 14px 16px;
+  background: var(--ot-field);
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+
+  &.is-ending {
+    background: var(--ot-warning-soft);
+    border-color: var(--ot-warning-line);
+    .share-row-count {
+      color: var(--ot-warning);
+    }
+  }
+  &.is-expired,
+  &.is-failed {
+    background: var(--ot-danger-soft);
+    border-color: var(--ot-danger-line);
+    .share-row-count {
+      color: var(--ot-danger);
+    }
+  }
+  &.is-deleted {
+    opacity: 0.7;
+  }
+
+  .share-row-main {
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+  .share-row-name {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--ot-heading);
+    overflow-wrap: anywhere;
+  }
+  .share-row-meta {
+    font-size: 0.75rem;
+    color: var(--ot-muted);
+  }
+
+  .share-row-downloads {
+    min-width: 76px;
+    text-align: right;
+  }
+  .share-row-count {
+    font-size: 1.375rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--ot-heading);
+  }
+  .share-row-count-label {
+    font-size: 0.6875rem;
+    color: var(--ot-muted);
+  }
+
+  .share-row-actions {
+    display: flex;
+    gap: 6px;
+
+    .ot-act svg {
+      margin-right: 6px;
+    }
+    .ot-act.icon-only svg {
+      margin: 0;
+    }
+  }
+
+  .share-row-limit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 1px solid var(--ot-line);
+
+    label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+    select {
+      width: auto;
+      min-width: 140px;
+      height: 40px;
+      margin: 0;
+    }
+    button {
+      height: 40px;
+      margin: 0;
+    }
+  }
+}
+
+.share-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
+  p {
+    margin: 0;
+    color: var(--ot-muted);
+  }
+}
+
+// --- File requests
+.requests-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.requests-form {
+  flex: 1 1 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .input-container {
+    input,
+    textarea {
+      margin-bottom: 0;
+    }
+    label {
+      font-size: 0.8125rem;
+    }
+  }
+  button {
+    margin: 0;
+  }
+}
+
+.requests-received {
+  flex: 999 1 480px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  .received-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .received-row {
+    padding: 12px 14px;
+    border-radius: var(--ot-radius);
+    background: var(--ot-field);
+  }
+  .received-name {
+    font-weight: 700;
+    color: var(--ot-heading);
+    overflow-wrap: anywhere;
+  }
+  .received-meta {
+    font-size: 0.75rem;
+    color: var(--ot-muted);
+  }
+  .received-empty {
+    margin: 0;
+    color: var(--ot-muted);
+  }
+  .received-link {
+    align-self: flex-start;
+    font-weight: 700;
+  }
+}

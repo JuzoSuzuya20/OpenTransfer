@@ -1251,5 +1251,53 @@
     "copy_link": "Copia il link",
     "copied": "Link copiato",
     "close": "Chiudi"
+  },
+  "shares": {
+    "this_month": "Questo mese",
+    "opened_ring": "{percent} % delle condivisioni scaricate almeno una volta",
+    "opened_title": "Condivisioni aperte",
+    "opened_text": "{opened} su {count, plural, one {# condivisione} other {# condivisioni}} scaricate almeno una volta",
+    "sent_volume": "Volume inviato",
+    "received_files": "File ricevuti (richieste)",
+    "filter": "Filtra le condivisioni",
+    "filter_all": "Tutte",
+    "filter_active": "Attive",
+    "filter_expired": "Scadute",
+    "this_week": "Questa settimana",
+    "last_week": "Settimana scorsa",
+    "group_summary": "{count, plural, one {# condivisione} other {# condivisioni}} · {downloads, plural, one {# download} other {# download}}",
+    "state": {
+      "active": "Attiva",
+      "ending": "Scade presto",
+      "expired": "Scaduta",
+      "deleted": "Eliminata",
+      "failed": "Non riuscita"
+    },
+    "items": "{count, plural, one {# elemento} other {# elementi}}",
+    "received": "ricevuta tramite una richiesta",
+    "password": "password",
+    "limit": "limite {count}",
+    "expires_on": "scade il {date}",
+    "expired_on": "scaduta il {date}",
+    "downloads_label": "{count, plural, one {download} other {download}}",
+    "more_actions": "Altre azioni per {name}",
+    "open_page": "Apri la pagina della condivisione",
+    "download": "Scarica",
+    "extend": "Prolunga",
+    "set_limit": "Limite di download…",
+    "expire_now": "Fai scadere ora",
+    "limit_saved": "Limite di download salvato",
+    "limit_failed": "Il limite di download non è stato salvato",
+    "copy_failed": "Il link non è stato copiato",
+    "load_failed": "Le tue condivisioni non sono state caricate",
+    "empty": "Non hai ancora inviato nulla.",
+    "empty_filter": "Nessuna condivisione corrisponde a questo filtro."
+  },
+  "requests": {
+    "description": "Chiedi a una persona esterna di inviarti dei file. Ciò che invia arriva in Le mie condivisioni.",
+    "new": "Nuova richiesta",
+    "received": "Ricevuti tramite richieste",
+    "none": "Ancora niente ricevuto.",
+    "see_all": "Vedili in Le mie condivisioni"
   }
 }
