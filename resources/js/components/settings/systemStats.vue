@@ -616,80 +616,35 @@ const categoryColors = {
   }
 }
 
+// A figure inside a card: a thin outline, a label, the number in heavy tabular figures.
+// The state colour moves from the former icon tile onto the number itself.
 .stat-card {
-  background: var(--panel-section-background-color-alt);
-  border-radius: 10px;
-  padding: 20px;
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  
+  gap: 12px;
+  padding: 14px 16px;
+  background: none;
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+
   &.large {
     grid-column: 1 / -1;
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   &.compact {
-    padding: 16px;
-    
+    padding: 12px 14px;
+
     .stat-value {
-      font-size: 1.5rem;
+      font-size: 1.375rem;
       white-space: nowrap;
     }
   }
 }
 
 .stat-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--primary-button-background-color);
-  color: var(--primary-button-text-color);
-  flex-shrink: 0;
-  
-  svg {
-    width: 22px;
-    height: 22px;
-  }
-  
-  &.active {
-    background: #10b98130;
-    color: #10b981;
-  }
-  
-  &.warning {
-    background: #f59e0b30;
-    color: #f59e0b;
-  }
-  
-  &.danger {
-    background: #ef444430;
-    color: #ef4444;
-  }
-  
-  &.secure {
-    background: #8b5cf630;
-    color: #8b5cf6;
-  }
-  
-  &.admin {
-    background: #3b82f630;
-    color: #3b82f6;
-  }
-  
-  &.guest {
-    background: #6b728030;
-    color: #6b7280;
-  }
-  
-  &.free {
-    background: #10b98130;
-    color: #10b981;
-  }
+  display: none;
 }
 
 .stat-content {
@@ -698,25 +653,39 @@ const categoryColors = {
 }
 
 .stat-value {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--panel-text-color);
-  line-height: 1.2;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  color: var(--ot-heading);
   white-space: nowrap;
 }
 
+.stat-icon.active + .stat-content .stat-value,
+.stat-icon.free + .stat-content .stat-value {
+  color: var(--ot-success);
+}
+.stat-icon.warning + .stat-content .stat-value {
+  color: var(--ot-warning);
+}
+.stat-icon.danger + .stat-content .stat-value {
+  color: var(--ot-danger);
+}
+.stat-icon.secure + .stat-content .stat-value,
+.stat-icon.admin + .stat-content .stat-value {
+  color: var(--ot-accent-text);
+}
+
 .stat-label {
-  font-size: 0.85rem;
-  color: var(--panel-text-color);
-  opacity: 0.7;
-  margin-top: 4px;
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
 }
 
 .stat-sublabel {
-  font-size: 0.75rem;
-  color: var(--panel-text-color);
-  opacity: 0.5;
   margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--ot-faint);
 }
 
 .progress-container {

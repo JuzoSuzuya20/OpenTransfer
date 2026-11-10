@@ -454,66 +454,6 @@ const handleUnlinkProvider = async (provider) => {
   }
 }
 
-.user-form-overlay {
-  border-radius: 10px 10px 0 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--overlay-background-color);
-  backdrop-filter: blur(10px);
-  z-index: 230;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s ease;
-
-  h2 {
-    margin-bottom: 10px;
-    font-size: 24px;
-    color: var(--panel-text-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      width: 24px;
-      height: 24px;
-      margin-right: 10px;
-    }
-  }
-  .user-form {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translate(-50%, 100%);
-    width: min(500px, 100vw);
-    background: var(--panel-background-color);
-    color: var(--panel-text-color);
-    padding: 20px;
-    border-radius: 10px 10px 0 0;
-    box-shadow: 0 0 100px 0 rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 10px;
-    transition: all 0.3s ease;
-    padding-bottom: 20px;
-    button {
-      display: block;
-      width: 100%;
-    }
-  }
-
-  &.active {
-    opacity: 1;
-    pointer-events: auto;
-    .user-form {
-      transform: translate(-50%, 0%);
-    }
-  }
-}
 
 .provider {
   margin-bottom: 8px;
