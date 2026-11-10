@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Mail\shareDownloadedMail;
 use App\Jobs\sendEmail;
 use App\Models\Share;
-use App\Models\Theme;
 use App\Http\Controllers\ExternalAuthController;
 use App\Services\SettingsService;
 
@@ -17,10 +16,9 @@ Route::get('/', function () {
     $appURL = config('app.url');
     $indexedSettings['api_url'] = $appURL;
 
-    $theme = Theme::where('active', true)->first();
 
 
-    return view('app', ['settings' => $indexedSettings, 'theme' => $theme]);
+    return view('app', ['settings' => $indexedSettings]);
 });
 
 Route::get('/reset-password/{token}', function ($token) {
@@ -28,10 +26,9 @@ Route::get('/reset-password/{token}', function ($token) {
 
     $indexedSettings['token'] = $token;
 
-    $theme = Theme::where('active', true)->first();
 
 
-    return view('app', ['settings' => $indexedSettings, 'theme' => $theme]);
+    return view('app', ['settings' => $indexedSettings]);
 });
 
 Route::get('/shares/{share}', function ($shareId) {
@@ -61,9 +58,8 @@ Route::get('/shares/{share}', function ($shareId) {
 
     $indexedSettings = getSettings();
 
-    $theme = Theme::where('active', true)->first();
 
-    return view('app', ['settings' => $indexedSettings, 'theme' => $theme]);
+    return view('app', ['settings' => $indexedSettings]);
 });
 
 // Direct download route with filename in URL (for wget compatibility - wget uses URL path for filename)

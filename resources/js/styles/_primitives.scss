@@ -1,0 +1,198 @@
+// The pieces every screen is built from: the card and its accent line, card titles, figures,
+// status pills, segmented filters and keyboard keys.
+
+.ot-card {
+  position: relative;
+  min-width: 0;
+  padding: 24px 24px 27px;
+  background: var(--ot-card);
+  color: var(--ot-text);
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+  overflow: hidden;
+
+  // The signature of the identity: a 3 px accent line at the foot of every card
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--ot-accent);
+    pointer-events: none;
+  }
+
+  &.ot-card--tight {
+    padding: 16px 18px 19px;
+  }
+
+  @media (max-width: 600px) {
+    padding: 18px 16px 21px;
+  }
+}
+
+// The title of a card names its content: small capitals in the accent colour
+.ot-card-title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ot-accent-text);
+}
+
+.ot-page-title {
+  margin: 0;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--ot-heading);
+  text-wrap: balance;
+}
+
+// A number that matters, set in heavy tabular figures
+.ot-figure {
+  font-size: 1.875rem;
+  font-weight: 800;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  color: var(--ot-heading);
+
+  &.is-accent {
+    color: var(--ot-accent-text);
+  }
+  &.is-success {
+    color: var(--ot-success);
+  }
+  &.is-warning {
+    color: var(--ot-warning);
+  }
+  &.is-danger {
+    color: var(--ot-danger);
+  }
+}
+
+.ot-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .ot-stat-value {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+  .ot-stat-sub {
+    font-size: 0.8125rem;
+    color: var(--ot-muted);
+  }
+}
+
+.ot-pill {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: var(--ot-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.6;
+  white-space: nowrap;
+  background: var(--ot-active);
+  color: var(--ot-text);
+
+  &.is-success {
+    background: var(--ot-success-soft);
+    color: var(--ot-success);
+  }
+  &.is-warning {
+    background: var(--ot-warning-soft);
+    color: var(--ot-warning);
+  }
+  &.is-danger {
+    background: var(--ot-danger-soft);
+    color: var(--ot-danger);
+  }
+}
+
+// Filters that switch what a list shows
+.ot-segmented {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius-lg);
+  background: var(--ot-field);
+
+  button {
+    height: 34px;
+    margin: 0;
+    padding: 0 14px;
+    border: 0;
+    border-radius: var(--ot-radius);
+    background: none;
+    color: var(--ot-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--ot-raised);
+      color: var(--ot-heading);
+    }
+    &[aria-selected="true"] {
+      background: var(--ot-active);
+      color: var(--ot-heading);
+    }
+  }
+}
+
+// The compact action buttons of a list row
+button.ot-act {
+  min-width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--ot-line-field);
+  border-radius: var(--ot-radius);
+  background: var(--ot-raised);
+  color: var(--ot-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+
+  &:hover {
+    background: var(--ot-active);
+    color: var(--ot-heading);
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+  &.icon-only {
+    width: 40px;
+    padding: 0;
+  }
+}
+
+kbd {
+  padding: 2px 6px;
+  border: 1px solid var(--ot-line-kbd);
+  border-radius: var(--ot-radius-sm);
+  background: none;
+  box-shadow: none;
+  color: var(--ot-muted);
+  font: 600 0.6875rem / 1.4 inherit;
+}
+
+.visually-hidden-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

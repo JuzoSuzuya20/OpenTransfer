@@ -2,14 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\Theme;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-// The page tells the front end two things it cannot find out by itself: whether the logo is
-// still a default one (the header then draws the OpenTransfer mark in the colours of the
-// theme), and whether the theme brings its own page background (no default image over it).
+// The page tells the front end what it cannot find out by itself: whether the logo is
+// still a default one (the header then draws the OpenTransfer mark).
 class ShellBrandingTest extends TestCase
 {
     use RefreshDatabase;
@@ -60,18 +58,5 @@ class ShellBrandingTest extends TestCase
     public function test_a_missing_logo_falls_back_on_the_default_mark(): void
     {
         $this->assertTrue($this->pageSetting('default_logo'));
-    }
-
-    public function test_a_theme_with_its_own_page_background_says_so(): void
-    {
-        $this->assertTrue($this->pageSetting('theme_page_background'));
-    }
-
-    public function test_a_theme_without_page_background_keeps_the_default_image(): void
-    {
-        Theme::query()->update(['active' => false]);
-        Theme::where('name', 'Sakura')->update(['active' => true]);
-
-        $this->assertFalse($this->pageSetting('theme_page_background'));
     }
 }

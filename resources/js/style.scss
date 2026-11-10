@@ -1,5 +1,6 @@
 @use "sass:color";
 
+@use "./styles/primitives";
 @use "./styles/buttons";
 @use "./styles/tables";
 @use "./styles/inputs";
@@ -10,169 +11,223 @@
 @use "./styles/auth";
 
 
+/*
+ * One identity, light or dark after the system setting of the visitor: the DSFR colours,
+ * without anything official. The --ot-* tokens are the palette; the older names below them keep
+ * the screens that are not rebuilt yet on the same palette.
+ */
 :root {
-  /* link colors */
-  --link-color: rgb(57, 115, 144);
-  --link-color-hover: rgb(27, 162, 230);
-  --link-color-active: rgb(70, 154, 196);
-  --link-color-disabled: rgba(190, 190, 190, 0.566);
+  color-scheme: light;
 
-  /* Button Colors */
-  --primary-button-background-color: rgb(138, 208, 242);
-  --primary-button-text-color: rgb(37, 37, 37);
+  /* Grounds, from the page up */
+  --ot-page: #f6f6f6;
+  --ot-card: #ffffff;
+  --ot-field: #f6f6f6;
+  --ot-raised: #eeeeee;
+  --ot-active: #e5e5e5;
 
-  --primary-button-background-color-hover: rgb(70, 154, 196);
-  --primary-button-text-color-hover: white;
+  /* Lines */
+  --ot-line: #dddddd;
+  --ot-line-soft: #e5e5e5;
+  --ot-line-field: #cecece;
+  --ot-line-strong: #929292;
+  --ot-line-kbd: #cacafb;
 
-  --primary-button-background-color-disabled: rgba(100, 100, 100, 0.566);
-  --primary-button-text-color-disabled: rgba(255, 255, 255, 0.579);
+  /* Text */
+  --ot-text: #3a3a3a;
+  --ot-heading: #161616;
+  --ot-muted: #666666;
+  --ot-faint: #929292;
 
-  --secondary-button-background-color: rgb(255, 255, 255);
-  --secondary-button-text-color: rgb(34, 34, 34);
+  /* Accent */
+  --ot-accent: #000091;
+  --ot-accent-hover: #1212ff;
+  --ot-accent-active: #2323ff;
+  --ot-accent-text: #000091;
+  --ot-accent-text-hover: #1212ff;
+  --ot-on-accent: #ffffff;
+  --ot-accent-soft: #ececfe;
 
-  --secondary-button-background-color-hover: rgb(238, 238, 238);
-  --secondary-button-text-color-hover: rgb(34, 34, 34);
+  /* States: the colour, the ground it tints and the line around that ground */
+  --ot-success: #18753c;
+  --ot-success-soft: #dffee6;
+  --ot-success-line: #b8fec9;
+  --ot-warning: #b34000;
+  --ot-warning-soft: #fff4f3;
+  --ot-warning-line: #ffddd9;
+  --ot-danger: #ce0500;
+  --ot-danger-soft: #fef4f4;
+  --ot-danger-line: #ffdddd;
+  --ot-danger-text: #ce0500;
 
-  --secondary-button-background-color-disabled: rgba(100, 100, 100, 0.566);
-  --secondary-button-text-color-disabled: rgba(255, 255, 255, 0.579);
+  /* Shapes */
+  --ot-radius: 6px;
+  --ot-radius-lg: 8px;
+  --ot-radius-sm: 4px;
+  --ot-control: 44px;
+  --ot-shadow: 0 8px 24px rgb(22 22 22 / 0.12);
+}
 
-  /* Uploader Colors */
-  --uploader-background-color: rgba(240, 240, 240, 0.769);
-  --uploader-text-color: rgb(71, 71, 71);
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
 
-  --uploader-header-background-color: rgba(245, 245, 245, 0.5);
-  --uploader-header-text-color: rgb(39, 39, 39);
+    --ot-page: #161616;
+    --ot-card: #1e1e1e;
+    --ot-field: #242424;
+    --ot-raised: #2a2a2a;
+    --ot-active: #353535;
 
-  --uploader-item-background-color: rgba(255, 255, 255, 0.8);
-  --uploader-item-text-color: rgb(39, 39, 39);
+    --ot-line: #353535;
+    --ot-line-soft: #2a2a2a;
+    --ot-line-field: #3a3a3a;
+    --ot-line-strong: #6a6a6a;
+    --ot-line-kbd: #3a3e5c;
 
-  /* Panel Colors */
-  --panel-background-color: rgb(235, 235, 235);
-  --panel-text-color: rgb(34, 34, 34);
+    --ot-text: #cecece;
+    --ot-heading: #ffffff;
+    --ot-muted: #929292;
+    --ot-faint: #6a6a6a;
 
-  --panel-item-background-color: rgb(215, 215, 215);
-  --panel-item-text-color: rgb(34, 34, 34);
-  --panel-item-background-color-hover: rgb(238, 238, 238);
-  --panel-item-text-color-hover: rgb(34, 34, 34);
+    --ot-accent: #6a6af4;
+    --ot-accent-hover: #7c7cf6;
+    --ot-accent-active: #5b5be6;
+    --ot-accent-text: #8585f6;
+    --ot-accent-text-hover: #b1b1f9;
+    --ot-on-accent: #ffffff;
+    --ot-accent-soft: #23233f;
 
-  --panel-item-action-hover-background-color-from: rgba(238, 238, 238, 0.42);
-  --panel-item-action-hover-background-color-to: rgb(238, 238, 238);
+    --ot-success: #27a658;
+    --ot-success-soft: #19271d;
+    --ot-success-line: #1f3a27;
+    --ot-warning: #fc5d00;
+    --ot-warning-soft: #361e19;
+    --ot-warning-line: #4a2a20;
+    --ot-danger: #ff5655;
+    --ot-danger-soft: #391c1c;
+    --ot-danger-line: #5a2a2a;
+    --ot-danger-text: #ff9c9c;
 
-  --panel-header-background-color: rgba(80, 175, 223, 0.8);
-  --panel-header-text-color: rgb(34, 34, 34);
-  --panel-text-color-alt: rgb(126, 126, 126);
+    --ot-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+  }
+}
 
-  --panel-subheader-background-color: linear-gradient(to bottom, rgb(236, 236, 236) 0%, rgb(241, 241, 241) 100%);
-  --panel-subheader-text-color: rgb(34, 34, 34);
+:root {
+  /* Links and buttons */
+  --link-color: var(--ot-accent-text);
+  --link-color-hover: var(--ot-accent-text-hover);
+  --link-color-active: var(--ot-accent-text-hover);
+  --link-color-disabled: var(--ot-faint);
 
-  --tabs-bar-background-color: rgb(221, 221, 221);
+  --primary-button-background-color: var(--ot-accent);
+  --primary-button-text-color: var(--ot-on-accent);
+  --primary-button-background-color-hover: var(--ot-accent-hover);
+  --primary-button-text-color-hover: var(--ot-on-accent);
+  --primary-button-background-color-active: var(--ot-accent-active);
+  --primary-button-text-color-active: var(--ot-on-accent);
+  --primary-button-background-color-disabled: var(--ot-raised);
+  --primary-button-text-color-disabled: var(--ot-faint);
 
-  --tabs-tab-background-color: rgb(211, 211, 211);
-  --tabs-tab-text-color: rgb(53, 53, 53);
+  --secondary-button-background-color: var(--ot-raised);
+  --secondary-button-text-color: var(--ot-text);
+  --secondary-button-background-color-hover: var(--ot-active);
+  --secondary-button-text-color-hover: var(--ot-heading);
+  --secondary-button-background-color-active: var(--ot-active);
+  --secondary-button-text-color-active: var(--ot-heading);
+  --secondary-button-background-color-disabled: var(--ot-field);
+  --secondary-button-text-color-disabled: var(--ot-faint);
 
-  --tabs-tab-background-color-hover: rgba(80, 175, 223, 0.8);
-  --tabs-tab-text-color-hover: rgb(244, 244, 244);
+  /* Panels, the cards of the screens */
+  --panel-background-color: var(--ot-card);
+  --panel-text-color: var(--ot-text);
+  --panel-text-color-alt: var(--ot-muted);
+  --panel-item-background-color: var(--ot-field);
+  --panel-item-text-color: var(--ot-text);
+  --panel-item-background-color-hover: var(--ot-raised);
+  --panel-item-text-color-hover: var(--ot-heading);
+  --panel-item-action-hover-background-color-from: transparent;
+  --panel-item-action-hover-background-color-to: var(--ot-raised);
+  --panel-header-background-color: var(--ot-card);
+  --panel-header-text-color: var(--ot-heading);
+  --panel-subheader-background-color: var(--ot-field);
+  --panel-subheader-text-color: var(--ot-text);
+  --panel-nav-item-background-color: transparent;
+  --panel-nav-item-text-color: var(--ot-muted);
+  --panel-nav-item-background-color-hover: var(--ot-raised);
+  --panel-nav-item-text-color-hover: var(--ot-heading);
+  --panel-section-background-color: var(--ot-card);
+  --panel-section-text-color: var(--ot-text);
+  --panel-section-background-color-alt: var(--ot-field);
+  --panel-section-text-color-alt: var(--ot-text);
 
-  --tabs-tab-background-color-active: rgba(80, 175, 223, 0.8);
-  --tabs-tab-text-color-active: rgb(244, 244, 244);
+  --uploader-background-color: var(--ot-card);
+  --uploader-text-color: var(--ot-text);
+  --uploader-header-background-color: var(--ot-card);
+  --uploader-header-text-color: var(--ot-heading);
+  --uploader-item-background-color: var(--ot-field);
+  --uploader-item-text-color: var(--ot-text);
 
-  --panel-nav-item-background-color: rgb(223, 223, 223);
-  --panel-nav-item-text-color: rgb(53, 53, 53);
+  --tabs-bar-background-color: transparent;
+  --tabs-tab-background-color: transparent;
+  --tabs-tab-text-color: var(--ot-muted);
+  --tabs-tab-background-color-hover: var(--ot-raised);
+  --tabs-tab-text-color-hover: var(--ot-heading);
+  --tabs-tab-background-color-active: var(--ot-active);
+  --tabs-tab-text-color-active: var(--ot-heading);
 
-  --panel-nav-item-background-color-hover: rgba(80, 175, 223, 0.8);
-  --panel-nav-item-text-color-hover: rgb(244, 244, 244);
+  --table-background-color: var(--ot-card);
+  --table-text-color: var(--ot-text);
+  --table-header-background-color: var(--ot-field);
+  --table-header-text-color: var(--ot-muted);
+  --table-row-background-color: var(--ot-card);
+  --table-row-text-color: var(--ot-text);
+  --table-row-background-color-alt: var(--ot-card);
+  --table-row-text-color-alt: var(--ot-text);
 
-  --panel-section-background-color: rgb(225, 225, 225);
-  --panel-section-text-color: rgb(53, 53, 53);
+  /* Fields */
+  --input-background-color: var(--ot-field);
+  --input-text-color: var(--ot-text);
+  --input-border-color: var(--ot-line-field);
+  --input-border-color-hover: var(--ot-line-strong);
+  --input-border-color-focus: var(--ot-accent);
+  --input-placeholder-color: var(--ot-muted);
+  --checkbox-background-color: var(--ot-field);
+  --checkbox-checked-background-color: var(--ot-accent);
+  --checkbox-checked-check-color: var(--ot-on-accent);
+  --label-text-color: var(--ot-text);
 
-  --panel-section-background-color-alt: rgb(218, 218, 218);
-  --panel-section-text-color-alt: rgb(53, 53, 53);
+  --progress-bar-background-color: var(--ot-raised);
+  --progress-bar-fill-color: var(--ot-accent);
+  --progress-bar-text-color: var(--ot-on-accent);
+  --overlay-background-color: color-mix(in srgb, var(--ot-page) 80%, transparent);
 
-  /* table colors */
-  --table-background-color: rgb(221, 221, 221);
-  --table-text-color: rgb(34, 34, 34);
+  --page-background-color: var(--ot-page);
+  --heading-color: var(--ot-heading);
 
-  --table-header-background-color: rgba(80, 175, 223, 1);
-  --table-header-text-color: rgb(255, 255, 255);
-
-  --table-row-background-color: rgb(238, 238, 238);
-  --table-row-text-color: rgb(34, 34, 34);
-
-  --table-row-background-color-alt: rgb(241, 241, 241);
-  --table-row-text-color-alt: rgb(34, 34, 34);
-
-  /* input colors */
-  --input-background-color: rgb(236, 236, 236);
-  --input-text-color: rgb(34, 34, 34);
-  --input-border-color: rgb(222, 222, 222);
-  --input-border-color-hover: rgb(205, 205, 205);
-  --input-border-color-focus: rgb(80, 175, 223);
-  --input-placeholder-color: rgb(164, 164, 164);
-
-  --checkbox-background-color: rgb(236, 236, 236);
-
-  --checkbox-checked-background-color: rgb(80, 175, 223);
-  --checkbox-checked-check-color: rgb(255, 255, 255);
-
-  --label-text-color: rgb(34, 34, 34);
-
-  --progress-bar-background-color: rgb(211, 211, 211);
-  --progress-bar-fill-color: rgb(80, 175, 223);
-  --progress-bar-text-color: rgb(34, 34, 34);
-
-  /* Scrollbar Colors */
-  --scrollbar-track-color: rgba(113, 113, 113, 0.119);
-  --scrollbar-thumb-color: rgba(118, 118, 118, 0.495);
-  --scrollbar-thumb-hover-color: rgba(81, 81, 81, 0.434);
+  --scrollbar-track-color: transparent;
+  --scrollbar-thumb-color: var(--ot-line-field);
+  --scrollbar-thumb-hover-color: var(--ot-line-strong);
   --scrollbar-width: 8px;
   --scrollbar-border-radius: 4px;
 
-  /* Overlay */
+  --color-success: var(--ot-success);
+  --color-warning: var(--ot-warning);
+  --color-danger: var(--ot-danger);
 
-  --overlay-background-color: rgba(255, 255, 255, 0.2);
-
-  /* Page: a theme without a page background shows its panel background behind the page */
-  --page-background-color: var(--panel-background-color);
-  /* Headings of screens and cards: the text colour unless the theme sets one */
-  --heading-color: var(--panel-text-color);
-
-  /* Button dimensions */
-  --button-height: 50px;
+  /* Dimensions */
+  --button-height: var(--ot-control);
   --button-width: 100%;
-  --icon-only-button-width: 50px;
-
-  /* Button border radius */
-  --button-border-radius: 10px;
-
-  /* Panel border radius */
-  --panel-border-radius: 10px;
-
-  /* Tabs border radius */
-  --tabs-border-radius: 5px 5px 0 0;
-
-  /* Settings dimensions */
+  --icon-only-button-width: var(--ot-control);
+  --button-border-radius: var(--ot-radius);
+  --panel-border-radius: var(--ot-radius);
+  --tabs-border-radius: var(--ot-radius) var(--ot-radius) 0 0;
   --settings-width: 100vw;
   --settings-height: 100vh;
 
-  /* Status Colors */
-  --color-success: rgb(34, 197, 94);
-  --color-warning: rgb(234, 179, 8);
-  --color-danger: rgb(239, 68, 68);
-}
-
-/*
- * Derived tokens: computed from the theme, they are not theme keys.
- * They are declared on <body> too because the theme preview of the branding settings writes
- * its variables inline on <body>: declared on :root alone, they would keep the colours of the
- * active theme. Borders derive from the text colour, as panel backgrounds may be gradients.
- * A theme key of the same name emitted on :root would be overridden by this declaration.
- */
-:root,
-body {
-  --border-color: color-mix(in srgb, var(--panel-text-color) 14%, transparent);
-  --border-color-subtle: color-mix(in srgb, var(--panel-text-color) 7%, transparent);
-  --border-color-strong: color-mix(in srgb, var(--panel-text-color) 28%, transparent);
-  --focus-ring-color: var(--input-border-color-focus);
+  --border-color: var(--ot-line);
+  --border-color-subtle: var(--ot-line-soft);
+  --border-color-strong: var(--ot-line-strong);
+  --focus-ring-color: var(--ot-accent);
 }
 
 body {
@@ -180,71 +235,19 @@ body {
   font-size: 0.9375rem;
   background: var(--page-background-color);
   color: var(--panel-text-color);
+  line-height: 1.5;
+  caret-color: var(--ot-accent);
+
+  ::selection {
+    background: var(--ot-accent);
+    color: var(--ot-on-accent);
+  }
 
   a {
     color: var(--link-color);
     text-decoration: none;
     &:hover {
       color: var(--link-color-hover);
-    }
-  }
-}
-
-.backgrounds {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -100;
-  overflow: hidden;
-
-  .backgrounds-item {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    .backgrounds-item-credit {
-      position: fixed;
-      top: 20px;
-      right: 0px;
-      // The branding colours only exist once the branding settings were saved in this
-      // session: until then the credit takes the colours of the theme.
-      background: var(--accent-color-light, var(--panel-background-color));
-      backdrop-filter: blur(10px);
-      padding: 10px;
-      border-radius: 5px 0 0 5px;
-      color: var(--secondary-color, var(--panel-text-color));
-      font-size: 0.6rem;
-      z-index: 199;
-      a {
-        color: var(--secondary-color, var(--panel-text-color));
-        text-decoration: none;
-      }
-    }
-    &.active {
-      opacity: 1;
-    }
-
-    // Video background styles
-    &.backgrounds-item-video {
-      video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        min-width: 100%;
-        min-height: 100%;
-        width: auto;
-        height: auto;
-        transform: translate(-50%, -50%);
-        object-fit: cover;
-      }
     }
   }
 }
@@ -601,8 +604,8 @@ body {
   justify-content: center;
   height: 100vh;
   .share-status-inner {
-    background: var(--secondary-color, var(--panel-background-color));
-    color: var(--accent-color-light, var(--panel-text-color));
+    background: var(--panel-section-background-color-alt);
+    color: var(--panel-text-color);
     padding: 20px;
     border-radius: var(--panel-border-radius);
     display: flex;
@@ -647,10 +650,10 @@ body {
       bottom: 0;
       background: linear-gradient(
         90deg,
-        var(--accent-color-light, transparent) 0%,
+        var(--ot-card) 0%,
         transparent 10%,
         transparent 90%,
-        var(--accent-color-light, transparent) 100%
+        var(--ot-card) 100%
       );
       pointer-events: none;
       z-index: 150;

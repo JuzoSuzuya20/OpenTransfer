@@ -11,7 +11,6 @@ import Settings from './components/settings.vue'
 import Setup from './components/setup.vue'
 import ThankGuestForUpload from './components/thankGuestForUpload.vue'
 import ReverseInvite from './components/reverseInvite.vue'
-import Background from './components/layout/background.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
 import CommandPalette from './components/CommandPalette.vue'
 
@@ -227,7 +226,6 @@ watch(
 
 <template>
   <TolgeeProvider>
-    <Background />
     <header class="app-header">
       <div class="app-header-bar">
         <a class="brand" href="/" :aria-label="t('nav.home')">

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Theme;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Setting;
 use App\Models\User;
@@ -47,12 +46,8 @@ function getSettings()
     $indexedSettings['api_url'] = $appURL;
 
     // The logo is still one that shipped with the application (OpenTransfer, or Erugo before
-    // it): the header then draws the OpenTransfer mark in the colours of the theme.
+    // it): the header then draws the OpenTransfer mark.
     $indexedSettings['default_logo'] = usesDefaultLogo();
-
-    // A theme with its own page background is not covered by the default background image
-    $activeTheme = Theme::where('active', true)->first();
-    $indexedSettings['theme_page_background'] = isset($activeTheme?->theme->page->background);
 
     // Add app version
     $indexedSettings['version'] = config('app.version');
