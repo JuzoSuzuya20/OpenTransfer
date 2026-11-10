@@ -104,7 +104,10 @@
     "verification_failed": "Échec de la vérification",
     "verify_email": "Vérifier l'e-mail",
     "verifying": "Vérification...",
-    "welcome": "Bienvenue"
+    "welcome": "Bienvenue",
+    "organisation_account": "Compte de l'organisation",
+    "local_account": "Identifiant et mot de passe",
+    "forgot_password_question": "Mot de passe oublié ?"
   },
   "button": {
     "reverse_share_invite": "Créer une demande de partage inversé",
@@ -1183,7 +1186,14 @@
     "files_title": "Fichiers",
     "items": "Éléments",
     "protected_title": "Ce partage est protégé",
-    "size": "Taille"
+    "size": "Taille",
+    "sent_by": "{name} vous a envoyé",
+    "expires": "Expire dans",
+    "protected_text": "Saisissez le mot de passe transmis par l'expéditeur pour télécharger les fichiers.",
+    "unlock_and_download": "Déverrouiller et télécharger",
+    "left_days": "{count} j",
+    "left_hours": "{count} h",
+    "left_minutes": "{count} min"
   },
   "admin": {
     "save": "Enregistrer"

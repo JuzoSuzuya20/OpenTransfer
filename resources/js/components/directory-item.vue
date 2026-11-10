@@ -117,7 +117,7 @@ function getDirectories(structure) {
         @click="readOnly && shareCode ? downloadFile(file) : null"
       >
         <div class="name">
-          {{ niceFileName(file.name) }}
+          {{ file.name }}
         </div>
         <div class="meta">
           <div class="size">
@@ -174,7 +174,7 @@ function getDirectories(structure) {
               <div class="icon">
                 <File />
               </div>
-              {{ niceFileName(file.name) }}
+              {{ file.name }}
             </div>
             <div class="meta">
               <div class="size">

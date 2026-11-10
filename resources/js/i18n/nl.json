@@ -104,7 +104,10 @@
     "verification_failed": "Verificatie mislukt",
     "verify_email": "E-mail controleren",
     "verifying": "Controleren...",
-    "welcome": "Welkom"
+    "welcome": "Welkom",
+    "organisation_account": "Account van de organisatie",
+    "local_account": "E-mail en wachtwoord",
+    "forgot_password_question": "Wachtwoord vergeten?"
   },
   "button": {
     "reverse_share_invite": "Een verzoek tot omgekeerd delen maken",
@@ -1183,7 +1186,14 @@
     "files_title": "Bestanden",
     "items": "Items",
     "protected_title": "Deze share is beveiligd",
-    "size": "Grootte"
+    "size": "Grootte",
+    "sent_by": "{name} heeft je gestuurd",
+    "expires": "Verloopt over",
+    "protected_text": "Voer het wachtwoord in dat de afzender je gaf om de bestanden te downloaden.",
+    "unlock_and_download": "Ontgrendelen en downloaden",
+    "left_days": "{count, plural, one {# dag} other {# dagen}}",
+    "left_hours": "{count} u",
+    "left_minutes": "{count} min"
   },
   "admin": {
     "save": "Opslaan"

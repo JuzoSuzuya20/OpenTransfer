@@ -104,7 +104,10 @@
     "verification_failed": "Verifizierung fehlgeschlagen",
     "verify_email": "E-Mail verifizieren",
     "verifying": "Überprüfen...",
-    "welcome": "Willkommen"
+    "welcome": "Willkommen",
+    "organisation_account": "Konto der Organisation",
+    "local_account": "E-Mail und Passwort",
+    "forgot_password_question": "Passwort vergessen?"
   },
   "button": {
     "reverse_share_invite": "Erstellen Sie eine umgekehrte Freigabeanforderung",
@@ -1183,7 +1186,14 @@
     "files_title": "Dateien",
     "items": "Elemente",
     "protected_title": "Diese Freigabe ist geschützt",
-    "size": "Größe"
+    "size": "Größe",
+    "sent_by": "{name} hat Ihnen gesendet",
+    "expires": "Läuft ab in",
+    "protected_text": "Geben Sie das Passwort ein, das Ihnen der Absender mitgeteilt hat, um die Dateien herunterzuladen.",
+    "unlock_and_download": "Entsperren und herunterladen",
+    "left_days": "{count, plural, one {# Tag} other {# Tagen}}",
+    "left_hours": "{count} Std.",
+    "left_minutes": "{count} Min."
   },
   "admin": {
     "save": "Speichern"

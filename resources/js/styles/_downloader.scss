@@ -4,129 +4,117 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  color: var(--panel-text-color);
+  gap: 18px;
+  color: var(--ot-text);
+}
+
+.download-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
 
   .download-sender {
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: var(--panel-text-color-alt);
-    font-weight: 600;
+    gap: 8px;
+    font-size: 0.875rem;
+    color: var(--ot-muted);
 
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
       border-radius: 50%;
-      background: var(--primary-button-background-color);
-      color: var(--primary-button-text-color);
+      background: var(--ot-active);
+      color: var(--ot-heading);
       font-size: 0.75rem;
       font-weight: 800;
     }
   }
 
   .share-name {
-    margin: 0 0 8px;
-    font-size: clamp(1.5rem, 5vw, 2.125rem);
+    margin: 0;
+    font-size: clamp(1.625rem, 5vw, 2.125rem);
     font-weight: 800;
     line-height: 1.2;
-    color: var(--heading-color);
+    color: var(--ot-heading);
+    text-wrap: balance;
     overflow-wrap: anywhere;
   }
 }
 
 .download-stats {
   display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr 1fr;
-    .stat-expiry {
-      grid-column: 1 / -1;
-    }
-  }
 
   .stat-card {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 14px 16px;
-    background: var(--panel-background-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--panel-border-radius);
+    align-items: center;
+    gap: 2px;
+    padding: 14px 16px 17px;
+    text-align: center;
   }
-  .stat-label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--panel-text-color-alt);
+  .ot-figure {
+    font-size: 1.5rem;
   }
-  .stat-value {
-    font-size: 1.375rem;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    color: var(--heading-color);
-  }
-  .share-expires {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--color-warning);
+
+  @media (max-width: 420px) {
+    gap: 8px;
+    .stat-card {
+      padding: 12px 8px 15px;
+    }
+    .ot-figure {
+      font-size: 1.125rem;
+      white-space: nowrap;
+    }
   }
 }
 
 .download-card {
-  padding: 20px;
-  background: var(--panel-background-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--panel-border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
-  h2 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0 0 14px;
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--heading-color);
-
-    svg {
-      width: 18px;
-      height: 18px;
-    }
+  p {
+    margin: 0;
   }
-
   .message {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
 
   .input-container {
-    margin-bottom: 14px;
     input {
+      min-height: 48px;
       margin-bottom: 0;
     }
     label {
       font-size: 0.8125rem;
     }
-    // The reason the password was refused, right under the field
-    .error-message {
-      position: static;
-      margin-top: 8px;
-      padding: 8px 12px;
-      border-left: 3px solid var(--color-danger);
-      border-radius: 0 4px 4px 0;
-      background: color-mix(in srgb, var(--color-danger) 12%, transparent);
-      color: var(--panel-text-color);
-      pointer-events: auto;
-    }
+  }
+
+  // Why the password was refused, right under the field
+  .download-error {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--ot-danger);
+    border-radius: var(--ot-radius);
+    background: var(--ot-danger-soft);
+    color: var(--ot-danger-text);
+    font-size: 0.8125rem;
   }
 
   .download-button {
-    height: 48px;
+    min-height: 48px;
     margin: 0;
+    font-size: 1rem;
   }
 }
 
@@ -135,22 +123,105 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 48px 20px;
+  padding: 48px 20px 51px;
   text-align: center;
 
   > svg {
     width: 40px;
     height: 40px;
-    color: var(--panel-text-color-alt);
+    color: var(--ot-faint);
   }
   h1 {
     margin: 0;
     font-size: 1.375rem;
     font-weight: 800;
-    color: var(--heading-color);
+    color: var(--ot-heading);
   }
   p {
     margin: 0;
-    color: var(--panel-text-color-alt);
+    color: var(--ot-muted);
+  }
+}
+
+// The files of a share, as the recipient sees them
+.share-files-list {
+  .directory-structure {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .root-files,
+  .directory-files {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .upload-basket-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name status"
+      "meta status";
+    align-items: center;
+    column-gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--ot-radius);
+    background: var(--ot-field);
+
+    &.clickable:hover {
+      background: var(--ot-raised);
+    }
+
+    .name {
+      grid-area: name;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-weight: 700;
+      color: var(--ot-heading);
+      overflow-wrap: anywhere;
+
+      svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        color: var(--ot-muted);
+      }
+    }
+    .meta {
+      grid-area: meta;
+      display: flex;
+      gap: 10px;
+      font-size: 0.75rem;
+      color: var(--ot-muted);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .upload-basket-folder {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--ot-line);
+    border-radius: var(--ot-radius);
+
+    .directory-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--ot-heading);
+      svg {
+        width: 16px;
+        height: 16px;
+        color: var(--ot-muted);
+      }
+    }
+    .directory-files {
+      margin-left: 0;
+    }
   }
 }

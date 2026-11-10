@@ -104,7 +104,10 @@
     "verification_failed": "Verification failed",
     "verify_email": "Verify Email",
     "verifying": "Verifying...",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "organisation_account": "Account of the organisation",
+    "local_account": "Email and password",
+    "forgot_password_question": "Forgot your password?"
   },
   "button": {
     "reverse_share_invite": "Create a reverse share request",
@@ -1204,7 +1207,14 @@
     "files_title": "Files",
     "items": "Items",
     "protected_title": "This share is protected",
-    "size": "Size"
+    "size": "Size",
+    "sent_by": "{name} sent you",
+    "expires": "Expires in",
+    "protected_text": "Enter the password the sender gave you to download the files.",
+    "unlock_and_download": "Unlock and download",
+    "left_days": "{count, plural, one {# day} other {# days}}",
+    "left_hours": "{count} h",
+    "left_minutes": "{count} min"
   },
   "admin": {
     "save": "Save changes"

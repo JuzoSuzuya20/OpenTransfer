@@ -104,7 +104,10 @@
     "verification_failed": "Verifica fallita",
     "verify_email": "Verifica email",
     "verifying": "Verifica...",
-    "welcome": "Benvenuto"
+    "welcome": "Benvenuto",
+    "organisation_account": "Account dell'organizzazione",
+    "local_account": "E-mail e password",
+    "forgot_password_question": "Password dimenticata?"
   },
   "button": {
     "reverse_share_invite": "Creare una richiesta di condivisione inversa",
@@ -1183,7 +1186,14 @@
     "files_title": "File",
     "items": "Elementi",
     "protected_title": "Questa condivisione è protetta",
-    "size": "Dimensione"
+    "size": "Dimensione",
+    "sent_by": "{name} ti ha inviato",
+    "expires": "Scade tra",
+    "protected_text": "Inserisci la password che ti ha dato il mittente per scaricare i file.",
+    "unlock_and_download": "Sblocca e scarica",
+    "left_days": "{count, plural, one {# giorno} other {# giorni}}",
+    "left_hours": "{count} h",
+    "left_minutes": "{count} min"
   },
   "admin": {
     "save": "Salva"

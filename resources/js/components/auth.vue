@@ -5,6 +5,7 @@ import { useToast } from 'vue-toastification'
 import { domData } from '../domData'
 import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck, ChevronRight } from 'lucide-vue-next'
 import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
+import BrandMark from './layout/BrandMark.vue'
 import { passkeysSupported, passkeyCancelled, getPasskeyAssertion } from '../webauthn'
 import { store } from '../store'
 import {
@@ -49,6 +50,10 @@ const password_confirmation = ref('')
 const verificationCode = ref('')
 const passwordInput = ref(null)
 const loginMessage = domData().login_message
+const applicationName = domData().application_name
+const defaultLogo = domData().default_logo !== false
+const logoWidth = domData().logo_width
+const logoUrl = `/images/logo.png?t=${Date.now()}`
 const forgotPasswordMode = ref(false)
 const haveResetToken = ref(false)
 const resetToken = ref('')
@@ -77,6 +82,11 @@ const mfaMethod = ref('totp')
 const mfaBusy = ref(false)
 const mfaInput = ref(null)
 const enrolToken = ref('')
+
+// The first screen of signing in: the brand is its heading, every other step has its own
+const isSignInStep = computed(
+  () => !enrolToken.value && !mfaToken.value && !verificationMode.value && !haveResetToken.value && !waitingForRedirect.value && !forgotPasswordMode.value && !registrationMode.value
+)
 const canUsePasskey = computed(() => mfaMethods.value.includes('passkey') && passkeysSupported())
 
 // Signing in with a passkey alone, when an administrator allows it
@@ -421,6 +431,14 @@ const switchToLogin = () => {
 </script>
 
 <template>
+  <div class="auth">
+    <div class="auth-brand">
+      <BrandMark v-if="defaultLogo" :size="56" :with-name="false" />
+      <img v-else :src="logoUrl" :alt="applicationName" class="auth-logo" :style="{ width: `${logoWidth}px` }" />
+      <component :is="isSignInStep ? 'h1' : 'p'" class="auth-title">{{ applicationName }}</component>
+      <p class="auth-subtitle" v-if="isSignInStep">{{ loginMessage }}</p>
+    </div>
+
   <!-- Mandatory second factor setup -->
   <div class="auth-container" v-if="enrolToken">
     <div class="auth-container-inner">
@@ -535,70 +553,56 @@ const switchToLogin = () => {
 
   <!-- Main Auth Container -->
   <div class="auth-container" v-else-if="!haveResetToken && !waitingForRedirect">
-    <div class="auth-container-inner">
+    <div class="auth-container-inner" :class="{ 'is-sign-in': isSignInStep }">
       <!-- Login Mode -->
       <template v-if="!forgotPasswordMode && !registrationMode">
-        <h1>{{ $t('auth.welcome') }}</h1>
-        <p v-if="hasInviteIdPending">{{ $t('auth.login_to_accept_invite') }}</p>
-        <p v-else>{{ loginMessage }}</p>
+        <p class="auth-notice" v-if="hasInviteIdPending">{{ $t('auth.login_to_accept_invite') }}</p>
 
         <!-- The accounts of the organisation come first: most people sign in with them -->
-        <template v-if="authProviders.length > 0 && !waitingForRedirect">
-          <div class="auth-providers">
-            <button
-              class="block secondary provider-button"
-              v-for="provider in authProviders"
-              :key="provider.id"
-              @click="attemptAuthProviderLogin(provider.id)"
-            >
-              <Fingerprint v-if="!provider.icon" />
-              <svg v-else v-html="provider.icon" class="custom"></svg>
-              <span class="provider-name">{{ provider.name }}</span>
-              <ChevronRight class="provider-chevron" />
-            </button>
-          </div>
-          <div class="auth-divider">
-            <span>{{ $t('auth.or') }}</span>
-          </div>
-        </template>
-
-        <div class="input-container">
-          <label for="email">{{ $t('auth.email') }}</label>
-          <input type="text" id="email" v-model="email" autocomplete="username" @keyup.enter="moveToPassword" />
-        </div>
-        <div class="input-container">
-          <label for="password">{{ $t('auth.password') }}</label>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            autocomplete="current-password"
-            @keyup.enter="attemptLogin"
-            ref="passwordInput"
-          />
-        </div>
-        <div class="auth-actions">
-          <button class="block" @click="attemptLogin">
-            <KeyRound />
-            {{ $t('auth.login') }}
+        <section class="ot-card auth-card" v-if="authProviders.length > 0 && !waitingForRedirect" aria-labelledby="h-sso">
+          <h2 class="ot-card-title" id="h-sso">{{ $t('auth.organisation_account') }}</h2>
+          <button
+            class="block secondary provider-button"
+            v-for="provider in authProviders"
+            :key="provider.id"
+            @click="attemptAuthProviderLogin(provider.id)"
+          >
+            <Fingerprint v-if="!provider.icon" aria-hidden="true" />
+            <svg v-else v-html="provider.icon" class="custom" aria-hidden="true"></svg>
+            <span class="provider-name">{{ provider.name }}</span>
+            <ChevronRight class="provider-chevron" aria-hidden="true" />
           </button>
+        </section>
+
+        <section class="ot-card auth-card" aria-labelledby="h-local">
+          <h2 class="ot-card-title" id="h-local">{{ $t('auth.local_account') }}</h2>
+          <div class="input-container">
+            <label for="email">{{ $t('auth.email') }}</label>
+            <input type="email" id="email" v-model="email" autocomplete="username" @keyup.enter="moveToPassword" />
+          </div>
+          <div class="input-container">
+            <label for="password">{{ $t('auth.password') }}</label>
+            <input
+              type="password"
+              id="password"
+              v-model="password"
+              autocomplete="current-password"
+              @keyup.enter="attemptLogin"
+              ref="passwordInput"
+            />
+          </div>
+          <button class="block" @click="attemptLogin">{{ $t('auth.login') }}</button>
           <button class="block secondary" v-if="passkeyLoginEnabled" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
-            <Fingerprint />
+            <Fingerprint aria-hidden="true" />
             {{ $t('auth.sign_in_with_passkey') }}
           </button>
-          <a href="" class="auth-link" @click.prevent="forgotPasswordMode = true">{{ $t('auth.forgot_password') }}</a>
-        </div>
+          <a href="" class="auth-link" @click.prevent="forgotPasswordMode = true">{{ $t('auth.forgot_password_question') }}</a>
+        </section>
 
-        <!-- Create Account Link -->
-        <template v-if="selfRegistrationEnabled">
-          <div class="auth-divider">
-            <span>{{ $t('auth.no_account') }}</span>
-          </div>
-          <button class="block secondary" @click="switchToRegistration">
-            <UserPlus />
-            {{ $t('auth.create_account') }}
-          </button>
-        </template>
+        <p class="auth-register" v-if="selfRegistrationEnabled">
+          {{ $t('auth.no_account') }}
+          <a href="" @click.prevent="switchToRegistration">{{ $t('auth.create_account') }}</a>
+        </p>
       </template>
 
       <!-- Forgot Password Mode -->
@@ -711,6 +715,7 @@ const switchToLogin = () => {
       <h1>{{ t('auth.password_set') }}</h1>
       <p>{{ t('auth.password_set_description') }}</p>
     </div>
+  </div>
   </div>
 </template>
 

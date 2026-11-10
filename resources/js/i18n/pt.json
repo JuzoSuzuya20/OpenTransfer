@@ -83,7 +83,10 @@
     "save_new_password": "Guardar a nova palavra-passe",
     "sign_in_with_passkey": "Iniciar sessão com uma chave de acesso",
     "too_many_login_attempts": "Demasiadas tentativas falhadas. Aguarde alguns minutos e tente novamente.",
-    "welcome": "Bem-vindo"
+    "welcome": "Bem-vindo",
+    "organisation_account": "Conta da organização",
+    "local_account": "E-mail e palavra-passe",
+    "forgot_password_question": "Esqueceu-se da palavra-passe?"
   },
   "button": {
     "reverse_share_invite": "Enviar um pedido de partilha",
@@ -1154,7 +1157,14 @@
     "files_title": "Ficheiros",
     "items": "Elementos",
     "protected_title": "Esta partilha está protegida",
-    "size": "Tamanho"
+    "size": "Tamanho",
+    "sent_by": "{name} enviou-lhe",
+    "expires": "Expira em",
+    "protected_text": "Introduza a palavra-passe que o remetente lhe deu para transferir os ficheiros.",
+    "unlock_and_download": "Desbloquear e transferir",
+    "left_days": "{count, plural, one {# dia} other {# dias}}",
+    "left_hours": "{count} h",
+    "left_minutes": "{count} min"
   },
   "admin": {
     "save": "Guardar"
