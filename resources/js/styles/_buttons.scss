@@ -135,3 +135,48 @@ button.close-settings-button {
     font-weight: 500;
   }
 }
+
+// A quiet action next to a primary one
+button.ghost {
+  background: transparent;
+  color: var(--ot-text);
+  border: 1px solid var(--ot-line-strong);
+
+  &:hover {
+    background: var(--ot-raised);
+    color: var(--ot-heading);
+  }
+}
+
+// Links that read as buttons
+a.button-secondary,
+a.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--button-height);
+  padding: 0 18px;
+  border-radius: var(--ot-radius);
+  font-weight: 700;
+  transition: background-color 0.15s ease;
+}
+a.button-secondary {
+  background: var(--ot-raised);
+  color: var(--ot-text);
+  border: 1px solid var(--ot-line);
+
+  &:hover {
+    background: var(--ot-active);
+    color: var(--ot-heading);
+  }
+}
+a.button-link {
+  background: var(--ot-accent);
+  color: var(--ot-on-accent);
+
+  &:hover {
+    background: var(--ot-accent-hover);
+    color: var(--ot-on-accent);
+  }
+}

@@ -1,264 +1,37 @@
-// The send screen: the files on one card, who gets them and for how long on the other.
+// The send screen: what is online, then the files on one card and who gets them on the other.
 
 .send {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
+}
+
+.send-stats {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 400px;
-  gap: 24px;
-  align-items: start;
-
-  @media (max-width: 960px) {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
 
-.send-card {
-  position: relative;
-  background: var(--uploader-background-color);
-  color: var(--uploader-text-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--panel-border-radius);
-  padding: 24px;
-
-  @media (max-width: 600px) {
-    padding: 16px;
-  }
-}
-
-.send-card-head {
+.send-columns {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-
-  h2 {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 800;
-    color: var(--heading-color);
-  }
-
-  .max-size-label {
-    font-size: 0.8125rem;
-    color: var(--panel-text-color-alt);
-    font-variant-numeric: tabular-nums;
-  }
-}
-
-.dropzone {
-  min-height: 260px;
-  max-height: 55vh;
-  overflow-y: auto;
-  padding: 10px;
-  border: 1px dashed var(--border-color-strong);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.15s ease;
-
-  display: flex;
-  flex-direction: column;
-
-  &:hover {
-    border-color: var(--input-border-color-hover);
-  }
-  // A file is being dragged over the zone
-  &.active {
-    border-style: solid;
-    border-color: var(--focus-ring-color);
-    box-shadow: inset 0 0 0 1px var(--focus-ring-color);
-  }
-}
-
-.upload-basket-empty {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 24px;
-  color: var(--panel-text-color-alt);
-  text-align: center;
-  // Clicks go through to the drop zone, which opens the file picker
-  pointer-events: none;
-
-  svg {
-    width: 28px;
-    height: 28px;
-  }
-}
-
-// One file: name and details on the left, status or removal on the right.
-// The left border tells where the file stands in the upload.
-.upload-basket-item {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas:
-    "name actions"
-    "meta actions";
-  align-items: center;
-  column-gap: 12px;
-  padding: 8px 8px 8px 12px;
-  margin-bottom: 6px;
-  background: var(--uploader-item-background-color);
-  color: var(--uploader-item-text-color);
-  border-left: 3px solid var(--border-color-strong);
-  border-radius: var(--button-border-radius);
-  cursor: default;
-
-  .name {
-    grid-area: name;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
-  }
-
-  .meta {
-    grid-area: meta;
-    display: flex;
-    gap: 12px;
-    font-size: 0.8125rem;
-    color: var(--panel-text-color-alt);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .upload-status,
-  .hover-actions {
-    grid-area: actions;
-  }
-
-  // Always there: nothing to discover by hovering
-  .hover-actions button {
-    width: 36px;
-    height: 36px;
-    margin: 0;
-    background: none;
-    border: 1px solid var(--border-color);
-    color: var(--panel-text-color-alt);
-
-    &:hover {
-      color: var(--color-danger);
-      border-color: var(--color-danger);
-    }
-    svg {
-      width: 16px;
-      height: 16px;
-      margin: 0;
-    }
-  }
-
-  &.is-uploading {
-    border-left-color: var(--focus-ring-color);
-  }
-  &.is-completed {
-    border-left-color: var(--color-success);
-  }
-}
-
-.upload-basket-folder {
-  padding: 10px 10px 4px 12px;
-  margin-bottom: 6px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--button-border-radius);
-
-  .directory-header {
-    margin-bottom: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .send-files {
-  .buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 16px;
-
-    button {
-      margin: 0;
-    }
-  }
-}
-
-.progress-bar-container {
-  display: none;
-  margin-top: 16px;
-
-  &.visible {
-    display: block;
-  }
-
-  .progress-bar-text {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 4px 16px;
-    margin-bottom: 8px;
-    font-size: 0.8125rem;
-    color: var(--panel-text-color-alt);
-    font-variant-numeric: tabular-nums;
-
-    .percentage-text {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--heading-color);
-    }
-  }
-
-  .progress-bar-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .progress-bar {
-    flex: 1;
-    height: 4px;
-    border-radius: 4px;
-    background: var(--progress-bar-background-color);
-    overflow: hidden;
-
-    .progress-bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      background: var(--progress-bar-fill-color);
-      transition: width 0.2s ease;
-    }
-  }
-
-  .pause-button {
-    width: 40px;
-    height: 40px;
-    margin: 0;
-    flex-shrink: 0;
-  }
+  flex: 999 1 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .send-access {
+  flex: 1 1 360px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-
-  .send-card-head {
-    margin-bottom: 0;
-  }
 
   .input-container {
     input,
@@ -266,67 +39,352 @@
     select {
       margin-bottom: 0;
     }
-    label {
-      font-size: 0.8125rem;
-    }
     .error-message {
       position: static;
-      margin-top: 4px;
-    }
-    .help-text {
-      margin: 6px 0 0;
-      color: var(--panel-text-color-alt);
+      margin-top: 6px;
     }
   }
+  .help-text {
+    margin: 6px 0 0;
+    color: var(--ot-muted);
+    font-size: 0.8125rem;
 
-  .expiry-settings {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    &.is-error {
+      color: var(--ot-danger-text);
+    }
+  }
+  > .help-text {
+    margin-top: -8px;
+  }
+}
+
+// --- Drop zone
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 36px 24px;
+  text-align: center;
+  background: var(--ot-field);
+  border: 1px dashed var(--ot-line-strong);
+  border-radius: var(--ot-radius-lg);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--ot-accent);
+  }
+  // A file is being dragged over the zone
+  &.active {
+    border-style: solid;
+    border-color: var(--ot-accent);
+    background: var(--ot-accent-soft);
   }
 
-  .recipient-list {
+  .dropzone-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--ot-accent);
+    stroke-width: 1.6;
+    pointer-events: none;
+  }
+  .dropzone-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--ot-heading);
+    pointer-events: none;
+  }
+  .dropzone-sub {
+    max-width: 52ch;
+    font-size: 0.8125rem;
+    color: var(--ot-muted);
+    pointer-events: none;
+  }
+  .dropzone-actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 4px;
+
+    button {
+      margin: 0;
+    }
   }
 
-  .add-recipient {
-    height: 32px;
-    padding: 0 10px;
+  @media (max-width: 600px) {
+    padding: 28px 16px;
+  }
+}
+
+// --- What will be sent: one row per file or folder. The left edge says where its upload stands.
+.basket {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.basket-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 12px 14px;
+  background: var(--ot-field);
+  border-left: 3px solid var(--ot-line-strong);
+  border-radius: var(--ot-radius);
+
+  &.is-uploading {
+    border-left-color: var(--ot-text);
+  }
+  &.is-done {
+    border-left-color: var(--ot-success);
+  }
+
+  .basket-row-main {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .basket-row-name {
+    font-weight: 700;
+    color: var(--ot-heading);
+    overflow-wrap: anywhere;
+  }
+  .basket-row-meta {
+    font-size: 0.75rem;
+    color: var(--ot-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .basket-progress {
+    height: 4px;
+    margin-top: 8px;
+    border-radius: 4px;
+    background: var(--ot-raised);
+    overflow: hidden;
+  }
+  .basket-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--ot-accent);
+    transition: width 0.2s ease;
+  }
+  &.is-waiting .basket-progress {
+    visibility: hidden;
+  }
+
+  .basket-row-status {
+    font-size: 1.125rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--ot-text);
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: var(--ot-success);
+      stroke-width: 3;
+    }
+  }
+}
+
+.send-files-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+  font-variant-numeric: tabular-nums;
+
+  .send-progress-text {
+    margin-left: auto;
+    strong {
+      color: var(--ot-heading);
+      font-weight: 800;
+    }
+  }
+}
+
+// --- Access
+.send-access-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  @media (max-width: 420px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// A number and its unit in one field
+.field-group {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 6px;
+}
+
+.field-with-action {
+  position: relative;
+
+  input {
+    padding-right: 48px;
+  }
+  .field-action {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 36px;
+    height: 36px;
     margin: 0;
-    font-size: 0.8125rem;
-    font-weight: 600;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ot-muted);
+
+    &:hover {
+      background: var(--ot-raised);
+      color: var(--ot-heading);
+    }
+    svg {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+    }
+  }
+}
+
+.recipients-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--ot-control);
+  padding: 6px 8px;
+  background: var(--ot-field);
+  border: 1px solid var(--ot-line-field);
+  border-radius: var(--ot-radius);
+  cursor: text;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--ot-line-strong);
+  }
+  &:focus-within {
+    border-color: var(--ot-accent);
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -1px;
+  }
+  &.error {
+    border-color: var(--ot-danger);
+  }
+
+  input {
+    flex: 1 1 100px;
+    min-width: 0;
+    height: 30px !important;
+    margin: 0;
+    padding: 0 6px;
+    border: 0;
+    background: transparent;
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
+}
+
+.recipient-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  padding: 2px 2px 2px 10px;
+  border-radius: var(--ot-radius-sm);
+  background: var(--ot-active);
+  color: var(--ot-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+
+  button {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    border-radius: var(--ot-radius-sm);
+    background: none;
+    color: var(--ot-muted);
+
+    &:hover {
+      background: var(--ot-line-field);
+      color: var(--ot-heading);
+    }
     svg {
       width: 14px;
       height: 14px;
-      margin: 0 6px 0 0;
+      margin: 0;
     }
   }
+}
 
-  button.block {
-    margin: 0;
+.send-access .upload-button {
+  min-height: 48px;
+  margin: 0;
+  font-size: 1rem;
+
+  .spin {
+    margin-right: 10px;
   }
+}
 
-  .password-toggle {
-    justify-content: flex-start;
-    padding: 0 14px;
-    font-weight: 600;
+// --- The share just created
+.share-created {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: var(--overlay-background-color);
 
-    &.protected {
-      border-color: var(--color-success);
+  .share-created-card {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: var(--ot-shadow);
+
+    p {
+      margin: 0;
+      color: var(--ot-muted);
+    }
+    input {
+      margin: 0;
     }
   }
+  .share-created-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 
-  .upload-button {
-    height: 48px;
-
-    .loader {
-      display: inline-flex;
-      svg {
-        animation: spin 1s linear infinite;
-      }
+    button {
+      margin: 0;
     }
   }
+}
+
+.share-created .share-created-card input:read-only {
+  border-style: solid;
+  background: var(--ot-field);
+  cursor: text;
 }

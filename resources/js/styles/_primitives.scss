@@ -199,3 +199,7 @@ kbd {
   white-space: nowrap;
   border: 0;
 }
+
+.spin {
+  animation: spin 1s linear infinite;
+}

@@ -1,30 +1,16 @@
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import {
-  FilePlus,
-  FolderPlus,
-  Upload,
-  Trash,
-  Copy,
-  X,
-  Loader,
-  Check,
-  Plus,
-  Pause,
-  Play,
-  Lock,
-  LockOpen,
-  RotateCcw
-} from 'lucide-vue-next'
-import { niceFileSize, niceFileType, simpleUUID } from '../utils'
-import { getHealth, getMyProfile, uploadFilesInChunks, logout } from '../api'
-import Recipient from './recipient.vue'
+import { Upload, Copy, X, Loader, Check, Pause, Play, Eye, EyeOff, Link as LinkIcon } from 'lucide-vue-next'
+import { niceFileSize, niceFileType, niceFileName, simpleUUID } from '../utils'
+import { getHealth, getMyProfile, uploadFilesInChunks, logout, getMyShares, setDownloadLimit } from '../api'
+import { basketRows } from '../lib/basket'
+import { sendSummary } from '../lib/shares'
+import AppLink from './layout/AppLink.vue'
 import { uploadController } from '../store'
 import { domData } from '../domData'
 import { useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../store'
-import DirectoryItem from './directory-item.vue'
 const { t } = useTranslate()
 const toast = useToast()
 const fileInput = ref(null)
@@ -91,18 +77,79 @@ const errors = ref({
   shareName: null
 })
 
-const shareFormPassword = ref('')
-const shareFormPasswordConfirm = ref('')
-
 const sharePassword = ref('')
 const sharePasswordConfirm = ref('')
 
-const passwordFormErrors = ref({
-  password: null,
-  passwordConfirm: null
+const recipients = ref([])
+
+// The password is typed once, in plain sight on demand; the server still receives its confirmation
+const sharePasswordInput = ref('')
+const showPassword = ref(false)
+watch(sharePasswordInput, (value) => {
+  sharePassword.value = value
+  sharePasswordConfirm.value = value
 })
 
-const recipients = ref([])
+// Empty means no limit
+const downloadLimit = ref('')
+const downloadLimitOptions = [1, 3, 5, 10, 25, 50]
+
+// Recipients are typed as addresses; the name an e-mail greets them with is the address itself
+const recipientInput = ref('')
+const recipientError = ref('')
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const addRecipientFromInput = () => {
+  const addresses = recipientInput.value.split(/[\s,;]+/).filter(Boolean)
+  if (addresses.length === 0) {
+    recipientError.value = ''
+    return
+  }
+  const invalid = addresses.find((address) => !EMAIL.test(address))
+  if (invalid) {
+    recipientError.value = t.value('send.recipient_invalid', { address: invalid })
+    return
+  }
+  for (const address of addresses) {
+    if (!recipients.value.some((recipient) => recipient.email.toLowerCase() === address.toLowerCase())) {
+      recipients.value.push({ id: simpleUUID(), name: address, email: address })
+    }
+  }
+  recipientInput.value = ''
+  recipientError.value = ''
+}
+const onRecipientKeydown = (event) => {
+  if (['Enter', ',', ';'].includes(event.key)) {
+    event.preventDefault()
+    addRecipientFromInput()
+  } else if (event.key === 'Backspace' && recipientInput.value === '' && recipients.value.length > 0) {
+    recipients.value.pop()
+  }
+}
+
+// The figures above the form: what the person has online right now
+const myShares = ref([])
+const loadMyShares = async () => {
+  if (store.isGuest()) return
+  try {
+    myShares.value = await getMyShares()
+  } catch (error) {
+    console.error('Failed to load the shares', error)
+  }
+}
+const summary = computed(() => sendSummary(myShares.value))
+
+// One row per top-level file and per folder, with the progress of its upload
+const rows = computed(() =>
+  basketRows(uploadBasket.value, {
+    completed: completedFiles.value,
+    currentPath: currentFilePath.value,
+    currentProgress: currentFileProgress.value
+  })
+)
+const removeRow = (row) => {
+  const removed = new Set(row.files)
+  uploadBasket.value = uploadBasket.value.filter((file) => !removed.has(file))
+}
 
 // Interrupted upload detection
 const UPLOAD_STATE_KEY = 'erugo_upload_in_progress'
@@ -179,6 +226,8 @@ onMounted(async () => {
   // Check for interrupted upload
   checkForInterruptedUpload()
 })
+
+onMounted(loadMyShares)
 
 const showFilePicker = () => {
   fileInput.value.webkitdirectory = false
@@ -466,6 +515,16 @@ const doTusUpload = async (uploadId) => {
           thankGuestForUpload()
         } else {
           showSharePanel(createShareURL(result.data.share.long_id))
+          if (downloadLimit.value) {
+            setDownloadLimit(result.data.share.id, Number(downloadLimit.value)).catch((error) => {
+              console.error('Failed to set the download limit', error)
+              toast.error(t.value('send.limit_failed'))
+            })
+          }
+          recipients.value = []
+          sharePasswordInput.value = ''
+          downloadLimit.value = ''
+          setTimeout(loadMyShares, 1500)
         }
         uploadBasket.value = []
         shareName.value = ''
@@ -517,20 +576,18 @@ const resetUploadState = () => {
   }, 1000)
 }
 
-const createShareURL = (longId) => {
-  const currentUrl = window.location.href
-  const baseUrl = currentUrl.split('/').slice(0, -1).join('/')
-  return `${baseUrl}/shares/${longId}`
-}
+const createShareURL = (longId) => `${window.location.origin}/shares/${longId}`
 
 const thankGuestForUpload = () => {
   logout()
   store.setMode('thank_guest_for_upload')
 }
 
+const shareUrlField = ref(null)
 const showSharePanel = (url) => {
   sharePanelVisible.value = true
   shareUrl.value = url
+  nextTick(() => shareUrlField.value?.focus())
 }
 
 const showCopySuccess = ref(false)
@@ -546,15 +603,6 @@ const copyShareUrl = () => {
 const removeRecipient = (recipient) => {
   console.log('remove recipient', recipient)
   recipients.value = recipients.value.filter((item) => item.email !== recipient.email)
-}
-
-const addRecipient = () => {
-  const recipient = {
-    email: null,
-    name: null,
-    showPopover: true
-  }
-  recipients.value.push(recipient)
 }
 
 const togglePause = () => {
@@ -670,62 +718,6 @@ const canExpireInYears = computed(() => {
   return maxExpiryTime.value >= 365
 })
 
-const showPasswordForm = ref(false)
-const passwordFormClickOutside = (e) => {
-  if (!e.target.closest('.user-form')) {
-    showPasswordForm.value = false
-  }
-}
-
-const passwordProtected = computed(() => {
-  return (
-    sharePassword.value.length > 0 &&
-    sharePasswordConfirm.value.length > 0 &&
-    sharePassword.value === sharePasswordConfirm.value
-  )
-})
-
-const setPassword = () => {
-  passwordFormErrors.value.password = null
-  passwordFormErrors.value.passwordConfirm = null
-
-  if (shareFormPassword.value.length === 0) {
-    passwordFormErrors.value.password = t.value('uploader.password_required')
-    return
-  }
-
-  if (shareFormPasswordConfirm.value.length === 0) {
-    passwordFormErrors.value.passwordConfirm = t.value('uploader.password_confirmation_required')
-    return
-  }
-
-  if (shareFormPassword.value !== shareFormPasswordConfirm.value) {
-    passwordFormErrors.value.passwordConfirm = t.value('uploader.password_mismatch')
-    return
-  }
-
-  sharePassword.value = shareFormPassword.value
-  sharePasswordConfirm.value = shareFormPasswordConfirm.value
-  showPasswordForm.value = false
-}
-
-const removePassword = () => {
-  sharePassword.value = ''
-  sharePasswordConfirm.value = ''
-  passwordFormErrors.value.password = null
-  passwordFormErrors.value.passwordConfirm = null
-  shareFormPassword.value = ''
-  shareFormPasswordConfirm.value = ''
-  showPasswordForm.value = false
-}
-
-const passwordInput = ref(null)
-watch(showPasswordForm, (newVal) => {
-  if (newVal) {
-    passwordInput.value.focus()
-  }
-})
-
 const handleDragOver = (e) => {
   e.preventDefault()
   e.stopPropagation()
@@ -804,15 +796,50 @@ const filesByDirectory = computed(() => {
 
 <template>
   <div class="send">
-    <section class="send-card send-files">
-      <header class="send-card-head">
-        <h2>{{ $t('uploader.files_title') }}</h2>
-        <span class="max-size-label">{{ niceFileSize(totalSize) }} / {{ niceFileSize(maxShareSize) }}</span>
-      </header>
+    <div class="send-stats" v-if="!store.isGuest()">
+      <div class="ot-card ot-card--tight ot-stat">
+        <h2 class="ot-card-title">{{ $t('send.stats.active') }}</h2>
+        <div class="ot-stat-value">
+          <span class="ot-figure">{{ summary.active }}</span>
+          <span class="ot-stat-sub">
+            {{
+              summary.endingWithinADay > 0
+                ? $t('send.stats.ending', { count: summary.endingWithinADay })
+                : $t('send.stats.none_ending')
+            }}
+          </span>
+        </div>
+      </div>
+      <div class="ot-card ot-card--tight ot-stat">
+        <h2 class="ot-card-title">{{ $t('send.stats.online') }}</h2>
+        <div class="ot-stat-value">
+          <span class="ot-figure is-accent">{{ niceFileSize(summary.onlineBytes) }}</span>
+          <span class="ot-stat-sub">{{ $t('send.stats.online_sub') }}</span>
+        </div>
+      </div>
+      <div class="ot-card ot-card--tight ot-stat">
+        <h2 class="ot-card-title">{{ $t('send.stats.downloads') }}</h2>
+        <div class="ot-stat-value">
+          <span class="ot-figure is-accent">{{ summary.downloads }}</span>
+          <span class="ot-stat-sub">
+            {{
+              summary.neverOpened > 0
+                ? $t('send.stats.never_opened', { count: summary.neverOpened })
+                : summary.active > 0
+                  ? $t('send.stats.all_opened')
+                  : $t('send.stats.no_share')
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
 
-      <div class="upload-basket">
+    <div class="send-columns">
+      <section class="ot-card send-files" aria-labelledby="h-files">
+        <h2 class="ot-card-title" id="h-files">{{ $t('uploader.files_title') }}</h2>
+
         <div
-          class="basket-items dropzone"
+          class="dropzone"
           @drop="handleDrop"
           @dragenter="handleDragOver"
           @dragover.prevent.stop
@@ -820,170 +847,199 @@ const filesByDirectory = computed(() => {
           @click="handleDropzoneClick"
           ref="dropzone"
         >
-          <template v-if="uploadBasket.length > 0">
-            <directory-item
-              :structure="filesByDirectory"
-              :is-root="true"
-              @remove-file="removeFile"
-              :is-uploading="currentlyUploading"
-              :current-uploading-file="currentFilePath"
-              :current-file-progress="currentFileProgress"
-              :completed-files="completedFiles"
-            />
-          </template>
-
-          <div class="upload-basket-empty" v-else>
-            <Upload />
-            <div class="upload-basket-empty-text">{{ $t('uploader.drop_hint') }}</div>
+          <Upload class="dropzone-icon" aria-hidden="true" />
+          <div class="dropzone-title">{{ $t('send.drop_title') }}</div>
+          <div class="dropzone-sub">{{ $t('send.drop_sub', { size: niceFileSize(maxShareSize) }) }}</div>
+          <div class="dropzone-actions">
+            <button type="button" @click.stop="showFilePicker" :disabled="currentlyUploading">
+              {{ $t('send.browse') }}
+            </button>
+            <button type="button" class="ghost" @click.stop="showFolderPicker" :disabled="currentlyUploading">
+              {{ $t('send.choose_folder') }}
+            </button>
           </div>
         </div>
-      </div>
 
-      <div class="buttons">
-        <button class="upload-files" @click="showFilePicker" :disabled="currentlyUploading">
-          <FilePlus />
-          {{ $t('Add Files') }}
-        </button>
-        <button class="upload-folder secondary" @click="showFolderPicker" :disabled="currentlyUploading">
-          <FolderPlus />
-          {{ $t('Add Folders') }}
-        </button>
-      </div>
+        <ul class="basket" v-if="rows.length > 0" :aria-label="$t('uploader.files_title')">
+          <li v-for="row in rows" :key="row.key" class="basket-row" :class="`is-${row.state}`">
+            <div class="basket-row-main">
+              <div class="basket-row-name">
+                {{ row.kind === 'folder' ? $t('send.folder_row', { name: row.name, count: row.count }) : row.name }}
+              </div>
+              <div class="basket-row-meta">
+                {{ niceFileSize(row.size) }} ·
+                {{ row.kind === 'folder' ? $t('send.folder') : niceFileType(row.type) || $t('send.file') }}
+              </div>
+              <div
+                class="basket-progress"
+                role="progressbar"
+                :aria-label="$t('send.progress_label', { name: row.name })"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                :aria-valuenow="row.progress"
+              >
+                <div class="basket-progress-fill" :style="{ width: `${row.progress}%` }"></div>
+              </div>
+            </div>
+            <span class="basket-row-status" v-if="currentlyUploading || row.state === 'done'">
+              <Check v-if="row.state === 'done'" :aria-label="$t('send.sent')" />
+              <template v-else>{{ row.progress }}%</template>
+            </span>
+            <button
+              v-if="!currentlyUploading"
+              type="button"
+              class="ot-act icon-only"
+              :aria-label="$t('send.remove', { name: row.name })"
+              :title="$t('send.remove', { name: row.name })"
+              @click="removeRow(row)"
+            >
+              <X aria-hidden="true" />
+            </button>
+          </li>
+        </ul>
 
-      <div class="progress-bar-container" :class="{ visible: currentlyUploading }">
-        <div class="progress-bar-text">
-          <template v-if="uploadProgress < 100">
-            <div class="progress-item percentage-text">
-              {{ Math.round(uploadProgress) }}%
-            </div>
-            <div class="progress-item upload-speed-text ">
-              {{ niceFileSize(uploadSpeed) }}/s
-            </div>
-            <div class="progress-item time-remaining-text">
-              {{ Math.round(timeRemaining) }}{{ $t('uploader.time_remaining_suffix', 's') }} {{ t('uploader.time_remaining_text', 'remaining') }}
-            </div>
-
-            <div v-if="currentFileName" class="progress-item file-name-text">
-              {{ currentFileIndex }} / {{ totalFiles }}
-            </div>
-          </template>
-          <template v-else>
-            {{ $t('Processing uploaded files') }}
+        <div class="send-files-foot" v-if="rows.length > 0 || currentlyUploading">
+          <span class="send-total">
+            {{ $t('send.total', { count: uploadBasket.length, size: niceFileSize(totalSize), max: niceFileSize(maxShareSize) }) }}
+          </span>
+          <template v-if="currentlyUploading">
+            <span class="send-progress-text" aria-live="polite">
+              <template v-if="uploadProgress < 100">
+                <strong>{{ Math.round(uploadProgress) }}%</strong>
+                · {{ niceFileSize(uploadSpeed) }}/s ·
+                {{ Math.round(timeRemaining) }}{{ $t('uploader.time_remaining_suffix', 's') }}
+                {{ t('uploader.time_remaining_text', 'remaining') }}
+              </template>
+              <template v-else>{{ $t('Processing uploaded files') }}</template>
+            </span>
+            <button
+              type="button"
+              class="ot-act icon-only"
+              @click="togglePause"
+              :aria-label="isPaused ? $t('send.resume') : $t('send.pause')"
+              :title="isPaused ? $t('send.resume') : $t('send.pause')"
+            >
+              <Play v-if="isPaused" aria-hidden="true" />
+              <Pause v-else aria-hidden="true" />
+            </button>
           </template>
         </div>
+      </section>
 
-        <div class="progress-bar-row">
-          <div class="progress-bar">
-            <div class="progress-bar-fill" :style="{ width: `${uploadProgress}%` }"></div>
+      <section class="ot-card send-access" aria-labelledby="h-access">
+        <h2 class="ot-card-title" id="h-access">{{ $t('uploader.access_title') }}</h2>
+
+        <div class="input-container" v-if="!store.isGuest()">
+          <label for="share-name">{{ $t('Share Name') }}</label>
+          <input
+            type="text"
+            v-model="shareName"
+            required
+            :class="{ error: errors.shareName }"
+            id="share-name"
+            name="share-name"
+            autocomplete="off"
+          />
+          <div class="error-message" v-if="errors.shareName">{{ errors.shareName }}</div>
+        </div>
+
+        <div class="input-container" v-if="!store.isGuest()">
+          <label for="share-description">{{ $t('send.message') }}</label>
+          <textarea v-model="shareDescription" rows="3" id="share-description" />
+        </div>
+
+        <div class="send-access-pair">
+          <div class="input-container">
+            <label for="share-expiry">{{ $t('send.expires_in') }}</label>
+            <div class="field-group">
+              <input type="number" v-model="expiryValue" id="share-expiry" min="1" inputmode="numeric" />
+              <select v-model="expiryUnit" :aria-label="$t('send.expiry_unit')">
+                <option value="days">{{ $t('uploader.expiry_unit.days') }}</option>
+                <option value="weeks" v-if="canExpireInWeeks">{{ $t('uploader.expiry_unit.weeks') }}</option>
+                <option value="months" v-if="canExpireInMonths">{{ $t('uploader.expiry_unit.months') }}</option>
+                <option value="years" v-if="canExpireInYears">{{ $t('uploader.expiry_unit.years') }}</option>
+              </select>
+            </div>
           </div>
-          <button class="pause-button icon-only secondary" @click="togglePause">
-            <Pause v-if="!isPaused" />
-            <Play v-else />
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section class="send-card send-access">
-      <header class="send-card-head">
-        <h2>{{ $t('uploader.access_title') }}</h2>
-      </header>
-
-      <div class="input-container" v-if="!store.isGuest()">
-        <label for="share-name">{{ $t('Share Name') }}</label>
-        <input
-          type="text"
-          v-model="shareName"
-          required
-          :class="{ error: errors.shareName }"
-          id="share-name"
-          name="share-name"
-          autocomplete="share-name"
-        />
-        <div class="error-message" v-if="errors.shareName">
-          {{ errors.shareName }}
-        </div>
-      </div>
-
-      <div class="input-container" v-if="!store.isGuest()">
-        <label for="share-description">{{ $t('Message to share recipients (optional)') }}</label>
-        <textarea
-          v-model="shareDescription"
-          required
-          :class="{ error: errors.shareDescription }"
-          rows="2"
-          id="share-description"
-        />
-        <div class="error-message" v-if="errors.shareDescription">
-          {{ errors.shareDescription }}
-        </div>
-      </div>
-
-      <div class="input-container expiry-settings-container">
-        <label for="share-expiry">{{ $t('uploader.expiry_title') }}</label>
-        <div class="expiry-settings">
-          <input type="number" v-model="expiryValue" id="share-expiry" min="1" />
-          <select v-model="expiryUnit" :aria-label="$t('uploader.expiry_title')">
-            <option value="days">{{ $t('uploader.expiry_unit.days') }}</option>
-            <option value="weeks" v-if="canExpireInWeeks">{{ $t('uploader.expiry_unit.weeks') }}</option>
-            <option value="months" v-if="canExpireInMonths">{{ $t('uploader.expiry_unit.months') }}</option>
-            <option value="years" v-if="canExpireInYears">{{ $t('uploader.expiry_unit.years') }}</option>
-          </select>
+          <div class="input-container" v-if="!store.isGuest()">
+            <label for="share-limit">{{ $t('send.downloads') }}</label>
+            <select id="share-limit" v-model="downloadLimit">
+              <option value="">{{ $t('send.unlimited') }}</option>
+              <option v-for="limit in downloadLimitOptions" :key="limit" :value="String(limit)">{{ limit }}</option>
+            </select>
+          </div>
         </div>
         <p class="help-text" v-if="maxExpiryTimeInSelectedUnit != null">
           {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
         </p>
-      </div>
 
-      <div class="input-container recipients" v-if="!store.isGuest()">
-        <label>{{ $t('uploader.recipients_title') }}</label>
-        <div class="recipient-list">
-          <Recipient
-            v-for="recipient in recipients"
-            :key="recipient.id"
-            :recipient="recipient"
-            @remove="removeRecipient"
-            :ref="`recipient-${recipient.email}`"
-          />
-          <button class="secondary add-recipient" @click="addRecipient">
-            <Plus />
-            {{ $t('Add Recipient') }}
-          </button>
+        <div class="input-container">
+          <label for="share-password">{{ $t('send.password') }}</label>
+          <div class="field-with-action">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="share-password"
+              v-model="sharePasswordInput"
+              autocomplete="new-password"
+              aria-describedby="share-password-help"
+            />
+            <button
+              type="button"
+              class="field-action"
+              @click="showPassword = !showPassword"
+              :aria-label="showPassword ? $t('send.hide_password') : $t('send.show_password')"
+              :aria-pressed="showPassword"
+            >
+              <EyeOff v-if="showPassword" aria-hidden="true" />
+              <Eye v-else aria-hidden="true" />
+            </button>
+          </div>
+          <p class="help-text" id="share-password-help">{{ $t('send.password_help') }}</p>
         </div>
-        <p class="help-text" v-if="recipients.length === 0">
-          {{ $t('No recipients') }} {{ $t("We'll provide you with a link instead.") }}
-        </p>
-      </div>
 
-      <button
-        class="secondary block password-toggle"
-        :class="{ protected: passwordProtected }"
-        @click="showPasswordForm = !showPasswordForm"
-      >
-        <Lock v-if="passwordProtected" />
-        <LockOpen v-else />
-        {{ passwordProtected ? $t('uploader.password_set') : $t('settings.title.share.password_protect') }}
-      </button>
-
-      <button
-        class="upload-button block"
-        :disabled="uploadBasket.length === 0 || currentlyUploading"
-        @click="uploadFiles"
-        :class="{ uploading: currentlyUploading }"
-      >
-        <div class="loader" v-if="currentlyUploading">
-          <Loader />
+        <div class="input-container" v-if="!store.isGuest()">
+          <label for="share-recipient">{{ $t('send.send_to') }}</label>
+          <div class="recipients-field" :class="{ error: recipientError }" @click="$refs.recipientField.focus()">
+            <span class="recipient-chip" v-for="recipient in recipients" :key="recipient.id">
+              {{ recipient.email }}
+              <button
+                type="button"
+                @click.stop="removeRecipient(recipient)"
+                :aria-label="$t('send.remove_recipient', { address: recipient.email })"
+              >
+                <X aria-hidden="true" />
+              </button>
+            </span>
+            <input
+              ref="recipientField"
+              type="email"
+              id="share-recipient"
+              v-model="recipientInput"
+              @keydown="onRecipientKeydown"
+              @blur="addRecipientFromInput"
+              autocomplete="email"
+              aria-describedby="share-recipient-help"
+            />
+          </div>
+          <p class="help-text is-error" v-if="recipientError" role="alert">{{ recipientError }}</p>
+          <p class="help-text" id="share-recipient-help" v-else>
+            {{ recipients.length > 0 ? $t('send.send_to_help_some') : $t('send.send_to_help_none') }}
+          </p>
         </div>
-        <Upload v-else />
-        <template v-if="uploadBasket.length > 0 && currentlyUploading">
-          {{ $t('uploading.files', 'Uploading {value} files', { value: uploadBasket.length }) }}
-        </template>
-        <template v-if="uploadBasket.length > 0 && !currentlyUploading">
-          {{ $t('upload.files', 'Upload {value} files', { value: uploadBasket.length }) }}
-        </template>
-        <template v-if="uploadBasket.length === 0">{{ $t('No files added yet') }}</template>
-      </button>
-    </section>
+
+        <button
+          type="button"
+          class="upload-button block"
+          :disabled="uploadBasket.length === 0 || currentlyUploading"
+          @click="uploadFiles"
+        >
+          <Loader class="spin" v-if="currentlyUploading" aria-hidden="true" />
+          <template v-if="currentlyUploading">{{ $t('send.creating', { progress: Math.round(uploadProgress) }) }}</template>
+          <template v-else-if="uploadBasket.length === 0">{{ $t('send.add_files_first') }}</template>
+          <template v-else>{{ $t('send.create') }}</template>
+        </button>
+      </section>
+    </div>
   </div>
 
   <input
@@ -995,74 +1051,23 @@ const filesByDirectory = computed(() => {
     ref="fileInput"
     multiple
   />
-  <div class="sharePanel" :class="{ visible: sharePanelVisible }">
-    <div class="sharePanel-content">
-      <div class="sharePanel-close" @click="sharePanelVisible = false">
-        <X />
+  <div class="share-created" v-if="sharePanelVisible" @click.self="sharePanelVisible = false" @keydown.esc="sharePanelVisible = false">
+    <section class="ot-card share-created-card" role="dialog" aria-modal="true" aria-labelledby="h-share-created">
+      <h2 class="ot-card-title" id="h-share-created">{{ $t('send.created_title') }}</h2>
+      <p>{{ $t('send.created_text') }}</p>
+      <div class="field-with-action">
+        <input type="text" readonly :value="shareUrl" :aria-label="$t('Share URL')" @focus="$event.target.select()" ref="shareUrlField" />
       </div>
-      <div class="sharePanel-title">{{ $t('Share URL') }}</div>
-      <div class="sharePanel-url">
-        {{ shareUrl }}
-        <button class="sharePanel-copy-button icon-only" @click="copyShareUrl">
-          <Check v-if="showCopySuccess" />
-          <Copy v-else />
+      <div class="share-created-actions">
+        <button type="button" @click="copyShareUrl">
+          <Check v-if="showCopySuccess" aria-hidden="true" />
+          <Copy v-else aria-hidden="true" />
+          {{ showCopySuccess ? $t('send.copied') : $t('send.copy_link') }}
         </button>
+        <AppLink to="/my-shares" class="button-secondary" @click="sharePanelVisible = false">{{ $t('nav.my_shares') }}</AppLink>
+        <button type="button" class="ghost" @click="sharePanelVisible = false">{{ $t('send.close') }}</button>
       </div>
-    </div>
-  </div>
-
-  <div class="user-form-overlay" :class="{ active: showPasswordForm }" @click="passwordFormClickOutside">
-    <div class="user-form">
-      <h2>
-        <Lock />
-        {{ $t('settings.title.share.password_protect') }}
-      </h2>
-      <p>{{ $t('settings.share.password_protect_description') }}</p>
-      <div class="input-container">
-        <label for="edit_share_password">{{ $t('settings.share.password') }}</label>
-        <input
-          type="password"
-          v-model="shareFormPassword"
-          id="edit_share_password"
-          :placeholder="$t('settings.share.password')"
-          required
-          :class="{ error: passwordFormErrors.password }"
-          @keyup.enter="setPassword"
-          ref="passwordInput"
-        />
-        <div class="error-message" v-if="passwordFormErrors.password">
-          {{ passwordFormErrors.password }}
-        </div>
-      </div>
-
-      <div class="input-container">
-        <label for="edit_share_password_confirm">{{ $t('settings.share.password_confirm') }}</label>
-        <input
-          type="password"
-          v-model="shareFormPasswordConfirm"
-          id="edit_share_password_confirm"
-          :placeholder="$t('settings.share.password_confirm')"
-          required
-          :class="{ error: passwordFormErrors.passwordConfirm }"
-          @keyup.enter="setPassword"
-        />
-
-        <div class="error-message" v-if="passwordFormErrors.passwordConfirm">
-          {{ passwordFormErrors.passwordConfirm }}
-        </div>
-      </div>
-
-      <div class="button-bar">
-        <button @click="setPassword">
-          <Lock />
-          {{ $t('button.share.password_protect') }}
-        </button>
-        <button class="secondary close-button" @click="removePassword">
-          <LockOpen />
-          {{ $t('settings.share.remove_password') }}
-        </button>
-      </div>
-    </div>
+    </section>
   </div>
 
   <!-- Interrupted Upload Panel -->
