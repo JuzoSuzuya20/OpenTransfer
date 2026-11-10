@@ -257,56 +257,45 @@ body {
   }
 }
 
+// What an invited guest sees once the files are sent: a confirmation, nothing more to do
 .thank-guest-for-upload {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: var(--panel-background-color);
-  backdrop-filter: blur(10px);
-  opacity: 0.9;
-  padding: 40px;
-  border-radius: var(--panel-border-radius);
-  width: 100%;
-  height: 100%;
+  gap: 12px;
+  padding: 48px 24px 51px;
+  text-align: center;
+  background: var(--ot-card);
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+  overflow: hidden;
 
-  svg {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 20px;
-    stroke: url(#gradient);
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--ot-success);
+  }
+
+  > svg {
+    width: 44px;
+    height: 44px;
+    color: var(--ot-success);
   }
   h1 {
-    color: var(--panel-text-color);
+    margin: 0;
     font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-weight: 800;
+    color: var(--ot-heading);
   }
   p {
-    color: var(--panel-text-color);
-    font-size: 0.8rem;
-    margin-bottom: 10px;
-    text-align: center;
-
-    &.success-message {
-      font-size: 2rem;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      font-weight: bold;
-      background: linear-gradient(to right, var(--link-color), var(--link-color-hover));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-
-  #gradientDefs {
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
+    margin: 0;
+    max-width: 48ch;
+    color: var(--ot-muted);
   }
 }
 
