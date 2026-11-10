@@ -168,6 +168,7 @@ class OIDCAuthProvider extends BaseAuthProvider
       'client_id' => ['required', 'string'],
       'client_secret' => ['required', 'string'],
       'base_url' => ['required', 'url'],
+      'logout_at_provider' => ['sometimes', 'boolean'],
     ]);
   }
 

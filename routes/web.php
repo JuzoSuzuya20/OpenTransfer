@@ -25,7 +25,7 @@ Route::get('/requests', $appPage);
 Route::get('/stats', $appPage);
 Route::get('/profile', $appPage);
 Route::get('/about', $appPage);
-Route::get('/admin/{section?}', $appPage)->whereIn('section', ['system', 'branding', 'email-templates', 'users', 'all-shares']);
+Route::get('/admin/{section?}', $appPage)->whereIn('section', ['system', 'sso', 'branding', 'email-templates', 'users', 'all-shares']);
 
 Route::get('/reset-password/{token}', function ($token) {
     $indexedSettings = getSettings();

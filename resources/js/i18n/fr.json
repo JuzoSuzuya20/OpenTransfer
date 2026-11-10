@@ -107,7 +107,9 @@
     "welcome": "Bienvenue",
     "organisation_account": "Compte de l'organisation",
     "local_account": "Identifiant et mot de passe",
-    "forgot_password_question": "Mot de passe oublié ?"
+    "forgot_password_question": "Mot de passe oublié ?",
+    "sso_required": "Votre organisation vous connecte par son compte : utilisez le bouton ci-dessus.",
+    "sso_domain_note": "Les comptes @{domain} se connectent avec le compte de l'organisation, ci-dessus. Seuls les administrateurs utilisent ce formulaire."
   },
   "button": {
     "reverse_share_invite": "Créer une demande de partage inversé",
@@ -1299,5 +1301,81 @@
     "received": "Reçus via des demandes",
     "none": "Rien reçu pour l'instant.",
     "see_all": "Les voir dans Mes partages"
+  },
+  "sso": {
+    "title": "Connexion (SSO)",
+    "description": "Les fournisseurs d'identité de l'organisation, et les comptes qui doivent les utiliser.",
+    "moved": "Les fournisseurs d'identité et le SSO obligatoire se règlent dans",
+    "load_failed": "Les réglages de connexion n'ont pas pu être chargés",
+    "saved": "Réglages de connexion enregistrés",
+    "save_failed": "Les réglages de connexion n'ont pas pu être enregistrés",
+    "domains_invalid": "Ce n'est pas un nom de domaine : {domains}",
+    "providers_invalid": "Il manque une valeur à un fournisseur, ou elle est fausse : vérifiez ses champs",
+    "provider_deleted": "Fournisseur supprimé",
+    "provider_delete_failed": "Le fournisseur n'a pas pu être supprimé",
+    "required_title": "SSO obligatoire",
+    "required_label": "Domaines e-mail qui doivent se connecter par SSO",
+    "required_placeholder": "entreprise.fr, mairie.fr",
+    "required_help": "Les comptes dont l'adresse est dans ces domaines se connectent uniquement par un fournisseur d'identité ci-dessous : ni mot de passe, ni lien de réinitialisation, ni inscription, ni passkey seule.",
+    "required_help_admins": "Les administrateurs de ces domaines gardent leur mot de passe pour réparer un SSO en panne, avec la double authentification obligatoire.",
+    "lockout_risk": "Aucun fournisseur n'est activé : les comptes de ces domaines ne pourraient plus se connecter.",
+    "providers_title": "Fournisseurs d'identité",
+    "no_provider": "Aucun fournisseur pour l'instant. Ajoutez-en un ci-dessous.",
+    "collapse": "Fermer",
+    "add_provider": "Ajouter le fournisseur",
+    "copy": "Copier",
+    "field": {
+      "name": "Nom sur le bouton de connexion",
+      "name_help": "Ce que voient les personnes, par exemple « Compte de l'organisation ».",
+      "server_url": "Adresse du serveur Keycloak",
+      "realm": "Realm",
+      "client_id": "Identifiant du client",
+      "client_secret": "Secret du client",
+      "base_url": "Adresse de l'émetteur"
+    },
+    "placeholder": {
+      "server_url": "https://sso.entreprise.fr",
+      "realm": "entreprise",
+      "client_id": "opentransfer",
+      "base_url": "https://idp.entreprise.fr"
+    },
+    "hint": {
+      "Keycloak": {
+        "server_url": "L'adresse avec laquelle vous ouvrez la console Keycloak, sans /realms/…",
+        "realm": "Le realm des comptes, tel que nommé dans la console.",
+        "client_id": "Clients → votre client → Client ID.",
+        "client_secret": "Clients → votre client → onglet Credentials."
+      },
+      "OIDC": {
+        "base_url": "L'adresse sous laquelle le fournisseur publie /.well-known/openid-configuration."
+      }
+    },
+    "option": {
+      "enabled": "Proposer ce fournisseur sur l'écran de connexion",
+      "trust_email": "Faire confiance à l'adresse donnée par le fournisseur",
+      "trust_email_help": "Un compte existant à la même adresse est rattaché à sa première connexion SSO. Seulement pour un fournisseur qui vérifie les adresses.",
+      "allow_registration": "Créer le compte à la première connexion",
+      "logout_at_provider": "Se déconnecter ferme aussi la session {name}"
+    },
+    "test": {
+      "button": "Tester la connexion",
+      "running": "Test en cours…",
+      "invalid_config": "Une valeur manque ou est fausse : remplissez chaque champ.",
+      "discovery_ok": "Le serveur répond : {issuer}",
+      "discovery_failed": "Pas de réponse à cette adresse : vérifiez le serveur et le realm.",
+      "discovery_issuer_mismatch": "Le serveur répond sous le nom {issuer} : vérifiez l'adresse.",
+      "client_ok": "Le client et son secret sont reconnus.",
+      "client_invalid": "L'identifiant du client ou son secret est refusé.",
+      "client_unknown": "Le client n'a pas pu être vérifié : essayez une connexion.",
+      "logout_yes": "La déconnexion peut fermer la session du fournisseur.",
+      "logout_no": "Le fournisseur ne propose pas de fermer sa session."
+    },
+    "declare_title": "À déclarer dans {name}",
+    "declare": {
+      "keycloak_client": "Créez un client OpenID Connect avec l'authentification du client activée.",
+      "redirect_uri": "Valid redirect URI :",
+      "post_logout_uri": "Valid post logout redirect URI :",
+      "keycloak_secret": "Copiez le secret de l'onglet Credentials dans le champ en face."
+    }
   }
 }

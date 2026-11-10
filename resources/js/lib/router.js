@@ -1,6 +1,6 @@
 // The addresses of the application. Pure functions: App.vue holds the current route and the history.
 
-export const ADMIN_SECTIONS = ['system', 'branding', 'email-templates', 'users', 'all-shares']
+export const ADMIN_SECTIONS = ['system', 'sso', 'branding', 'email-templates', 'users', 'all-shares']
 
 const STATIC_PAGES = {
   '/': 'send',

@@ -19,7 +19,7 @@ class AppPagesTest extends TestCase
         return [
             ['/my-shares'], ['/requests'], ['/stats'], ['/profile'], ['/about'],
             ['/admin'], ['/admin/system'], ['/admin/branding'], ['/admin/email-templates'],
-            ['/admin/users'], ['/admin/all-shares'],
+            ['/admin/users'], ['/admin/all-shares'], ['/admin/sso'],
         ];
     }
 

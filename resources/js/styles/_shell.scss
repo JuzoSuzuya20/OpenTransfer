@@ -462,3 +462,13 @@
     }
   }
 }
+
+.sso-moved {
+  margin: 8px 0 0;
+  color: var(--ot-muted);
+  font-size: 0.875rem;
+
+  a {
+    font-weight: 700;
+  }
+}

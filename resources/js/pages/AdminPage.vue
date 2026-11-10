@@ -5,6 +5,7 @@ import { Save, UserPlus, Info } from 'lucide-vue-next'
 import PageHead from '../components/layout/PageHead.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import SystemSettings from '../components/settings/system.vue'
+import SsoSettings from '../components/settings/SsoSettings.vue'
 import BrandingSettings from '../components/settings/branding.vue'
 import EmailTemplates from '../components/settings/emailTemplates.vue'
 import Users from '../components/settings/users.vue'
@@ -21,6 +22,7 @@ const navigate = inject('navigate')
 const scrollToAnchor = inject('scrollToAnchor')
 
 const systemSettings = ref(null)
+const ssoSettings = ref(null)
 const brandingSettings = ref(null)
 const emailTemplates = ref(null)
 const usersPanel = ref(null)
@@ -30,6 +32,7 @@ const { value: selfRegistrationEnabled } = useSetting('self_registration_enabled
 
 const sections = computed(() => [
   { id: 'system', label: t.value('settings.title.system'), description: t.value('settings.description.system') },
+  { id: 'sso', label: t.value('sso.title'), description: t.value('sso.description') },
   { id: 'branding', label: t.value('settings.title.branding'), description: t.value('settings.description.branding') },
   {
     id: 'email-templates',
@@ -109,6 +112,10 @@ onMounted(() => {
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
         </button>
+        <button v-else-if="section === 'sso'" @click="ssoSettings.save()">
+          <Save aria-hidden="true" />
+          {{ t('admin.save') }}
+        </button>
         <button v-else-if="section === 'branding'" @click="brandingSettings.saveSettings()">
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
@@ -161,6 +168,7 @@ onMounted(() => {
     <p class="page-description" v-if="current">{{ current.description }}</p>
 
     <SystemSettings v-if="section === 'system'" ref="systemSettings" @navItemClicked="onSection" />
+    <SsoSettings v-else-if="section === 'sso'" ref="ssoSettings" />
     <BrandingSettings v-else-if="section === 'branding'" ref="brandingSettings" />
     <EmailTemplates v-else-if="section === 'email-templates'" ref="emailTemplates" @navItemClicked="onSection" />
     <Users v-else-if="section === 'users'" ref="usersPanel" @viewUserShares="viewUserShares" />

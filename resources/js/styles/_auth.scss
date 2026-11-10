@@ -174,3 +174,12 @@
     font-weight: 700;
   }
 }
+
+.auth-sso-note {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: var(--ot-radius);
+  background: var(--ot-accent-soft);
+  color: var(--ot-heading);
+  font-size: 0.8125rem;
+}

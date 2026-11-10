@@ -6,6 +6,7 @@ import { domData } from '../domData'
 import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck, ChevronRight } from 'lucide-vue-next'
 import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
 import BrandMark from './layout/BrandMark.vue'
+import { ssoDomainOf } from '../lib/ssoDomains'
 import { passkeysSupported, passkeyCancelled, getPasskeyAssertion } from '../webauthn'
 import { store } from '../store'
 import {
@@ -38,7 +39,8 @@ const LOGIN_REFUSALS = {
   too_many_attempts: 'auth.too_many_login_attempts',
   email_not_verified: 'auth.email_not_verified',
   account_disabled: 'auth.account_disabled',
-  altcha_invalid: 'auth.altcha_failed'
+  altcha_invalid: 'auth.altcha_failed',
+  sso_required: 'auth.sso_required'
 }
 
 const apiUrl = getApiUrl()
@@ -51,6 +53,8 @@ const verificationCode = ref('')
 const passwordInput = ref(null)
 const loginMessage = domData().login_message
 const applicationName = domData().application_name
+// The accounts of these domains sign in through the identity provider: the screen says so as they type
+const ssoDomain = computed(() => ssoDomainOf(email.value, domData().sso_required_domains))
 const defaultLogo = domData().default_logo !== false
 const logoWidth = domData().logo_width
 const logoUrl = `/images/logo.png?t=${Date.now()}`
@@ -578,7 +582,10 @@ const switchToLogin = () => {
           <h2 class="ot-card-title" id="h-local">{{ $t('auth.local_account') }}</h2>
           <div class="input-container">
             <label for="email">{{ $t('auth.email') }}</label>
-            <input type="email" id="email" v-model="email" autocomplete="username" @keyup.enter="moveToPassword" />
+            <input type="email" id="email" v-model="email" autocomplete="username" @keyup.enter="moveToPassword" aria-describedby="sso-domain-note" />
+            <p class="auth-sso-note" id="sso-domain-note" v-if="ssoDomain" role="status">
+              {{ $t('auth.sso_domain_note', { domain: ssoDomain }) }}
+            </p>
           </div>
           <div class="input-container">
             <label for="password">{{ $t('auth.password') }}</label>

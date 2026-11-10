@@ -86,7 +86,9 @@
     "welcome": "Bem-vindo",
     "organisation_account": "Conta da organização",
     "local_account": "E-mail e palavra-passe",
-    "forgot_password_question": "Esqueceu-se da palavra-passe?"
+    "forgot_password_question": "Esqueceu-se da palavra-passe?",
+    "sso_required": "A sua organização liga-o com a conta dela: use o botão acima.",
+    "sso_domain_note": "As contas @{domain} entram com a conta da organização, acima. Só os administradores usam este formulário."
   },
   "button": {
     "reverse_share_invite": "Enviar um pedido de partilha",
@@ -1270,5 +1272,81 @@
     "received": "Recebidos através de pedidos",
     "none": "Ainda nada recebido.",
     "see_all": "Vê-los em As minhas partilhas"
+  },
+  "sso": {
+    "title": "Início de sessão (SSO)",
+    "description": "Os fornecedores de identidade da organização e as contas que os devem usar.",
+    "moved": "Os fornecedores de identidade e o SSO obrigatório configuram-se em",
+    "load_failed": "Não foi possível carregar as definições de início de sessão",
+    "saved": "Definições de início de sessão guardadas",
+    "save_failed": "Não foi possível guardar as definições de início de sessão",
+    "domains_invalid": "Não é um nome de domínio: {domains}",
+    "providers_invalid": "Falta um valor a um fornecedor, ou está errado: verifique os campos",
+    "provider_deleted": "Fornecedor eliminado",
+    "provider_delete_failed": "Não foi possível eliminar o fornecedor",
+    "required_title": "SSO obrigatório",
+    "required_label": "Domínios de e-mail que devem entrar por SSO",
+    "required_placeholder": "exemplo.pt, camara.pt",
+    "required_help": "As contas com um endereço destes domínios só entram através de um fornecedor de identidade abaixo: sem palavra-passe, ligação de reposição, registo ou passkey sozinha.",
+    "required_help_admins": "Os administradores destes domínios mantêm a palavra-passe para reparar um SSO avariado, com a autenticação de dois fatores obrigatória.",
+    "lockout_risk": "Nenhum fornecedor está ativo: as contas destes domínios deixariam de conseguir entrar.",
+    "providers_title": "Fornecedores de identidade",
+    "no_provider": "Ainda nenhum fornecedor. Adicione um abaixo.",
+    "collapse": "Fechar",
+    "add_provider": "Adicionar o fornecedor",
+    "copy": "Copiar",
+    "field": {
+      "name": "Nome no botão de início de sessão",
+      "name_help": "O que as pessoas veem, por exemplo «Conta da organização».",
+      "server_url": "Endereço do servidor Keycloak",
+      "realm": "Realm",
+      "client_id": "ID do cliente",
+      "client_secret": "Segredo do cliente",
+      "base_url": "Endereço do emissor"
+    },
+    "placeholder": {
+      "server_url": "https://sso.example.org",
+      "realm": "example",
+      "client_id": "opentransfer",
+      "base_url": "https://idp.example.org"
+    },
+    "hint": {
+      "Keycloak": {
+        "server_url": "O endereço com que abre a consola Keycloak, sem /realms/…",
+        "realm": "O realm das contas, tal como nomeado na consola.",
+        "client_id": "Clients → o seu cliente → Client ID.",
+        "client_secret": "Clients → o seu cliente → separador Credentials."
+      },
+      "OIDC": {
+        "base_url": "O endereço sob o qual o fornecedor publica /.well-known/openid-configuration."
+      }
+    },
+    "option": {
+      "enabled": "Mostrar este fornecedor no ecrã de início de sessão",
+      "trust_email": "Confiar no endereço dado pelo fornecedor",
+      "trust_email_help": "Uma conta existente com o mesmo endereço é ligada no primeiro início de sessão SSO. Só para um fornecedor que verifica os endereços.",
+      "allow_registration": "Criar a conta no primeiro início de sessão",
+      "logout_at_provider": "Terminar a sessão também fecha a sessão {name}"
+    },
+    "test": {
+      "button": "Testar a ligação",
+      "running": "A testar…",
+      "invalid_config": "Falta um valor ou está errado: preencha cada campo.",
+      "discovery_ok": "O servidor responde: {issuer}",
+      "discovery_failed": "Sem resposta neste endereço: verifique o servidor e o realm.",
+      "discovery_issuer_mismatch": "O servidor responde como {issuer}: verifique o endereço.",
+      "client_ok": "O cliente e o segredo são reconhecidos.",
+      "client_invalid": "O ID do cliente ou o segredo é recusado.",
+      "client_unknown": "Não foi possível verificar o cliente: experimente um início de sessão.",
+      "logout_yes": "Terminar a sessão pode fechar a sessão do fornecedor.",
+      "logout_no": "O fornecedor não permite fechar a sua sessão."
+    },
+    "declare_title": "A declarar em {name}",
+    "declare": {
+      "keycloak_client": "Crie um cliente OpenID Connect com a autenticação do cliente ativada.",
+      "redirect_uri": "Valid redirect URI:",
+      "post_logout_uri": "Valid post logout redirect URI:",
+      "keycloak_secret": "Copie o segredo do separador Credentials para o campo em frente."
+    }
   }
 }

@@ -100,6 +100,8 @@ class KeycloakSsoTest extends TestCase
 
         $listed = $this->actingAs($admin, 'api')->getJson('/api/auth-providers')->assertOk()->json('data.authProviders.0');
         $this->assertFalse($listed['trust_email']);
+        // What the admin declares in Keycloak, next to the callback URL
+        $this->assertSame(\App\Services\SsoSessions::returnAddress(), $listed['post_logout_redirect_uri']);
 
         $listed['trust_email'] = true;
         $this->actingAs($admin, 'api')->putJson('/api/auth-providers/bulk-update', ['providers' => [$listed]])->assertOk();

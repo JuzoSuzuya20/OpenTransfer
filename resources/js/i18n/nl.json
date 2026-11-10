@@ -107,7 +107,9 @@
     "welcome": "Welkom",
     "organisation_account": "Account van de organisatie",
     "local_account": "E-mail en wachtwoord",
-    "forgot_password_question": "Wachtwoord vergeten?"
+    "forgot_password_question": "Wachtwoord vergeten?",
+    "sso_required": "Je organisatie meldt je aan met haar account: gebruik de knop hierboven.",
+    "sso_domain_note": "De accounts @{domain} melden zich aan met het account van de organisatie, hierboven. Alleen beheerders gebruiken dit formulier."
   },
   "button": {
     "reverse_share_invite": "Een verzoek tot omgekeerd delen maken",
@@ -1299,5 +1301,81 @@
     "received": "Ontvangen via verzoeken",
     "none": "Nog niets ontvangen.",
     "see_all": "Bekijk ze in Mijn shares"
+  },
+  "sso": {
+    "title": "Aanmelden (SSO)",
+    "description": "De identiteitsproviders van de organisatie, en de accounts die ze moeten gebruiken.",
+    "moved": "Identiteitsproviders en verplichte SSO stel je in bij",
+    "load_failed": "De aanmeldinstellingen konden niet worden geladen",
+    "saved": "Aanmeldinstellingen opgeslagen",
+    "save_failed": "De aanmeldinstellingen konden niet worden opgeslagen",
+    "domains_invalid": "Geen domeinnaam: {domains}",
+    "providers_invalid": "Bij een provider ontbreekt een waarde of is die fout: controleer de velden",
+    "provider_deleted": "Provider verwijderd",
+    "provider_delete_failed": "De provider kon niet worden verwijderd",
+    "required_title": "Verplichte SSO",
+    "required_label": "E-maildomeinen die via SSO moeten aanmelden",
+    "required_placeholder": "voorbeeld.nl, gemeente.nl",
+    "required_help": "Accounts met een adres in deze domeinen melden zich alleen aan via een identiteitsprovider hieronder: geen wachtwoord, resetlink, registratie of passkey alleen.",
+    "required_help_admins": "Beheerders van deze domeinen houden hun wachtwoord om een defecte SSO te herstellen, met verplichte tweestapsverificatie.",
+    "lockout_risk": "Geen provider is ingeschakeld: de accounts van deze domeinen zouden niet meer kunnen aanmelden.",
+    "providers_title": "Identiteitsproviders",
+    "no_provider": "Nog geen provider. Voeg er hieronder een toe.",
+    "collapse": "Sluiten",
+    "add_provider": "Provider toevoegen",
+    "copy": "Kopiëren",
+    "field": {
+      "name": "Naam op de aanmeldknop",
+      "name_help": "Wat mensen zien, bijvoorbeeld „Account van de organisatie”.",
+      "server_url": "Adres van de Keycloak-server",
+      "realm": "Realm",
+      "client_id": "Client-ID",
+      "client_secret": "Clientgeheim",
+      "base_url": "Adres van de uitgever"
+    },
+    "placeholder": {
+      "server_url": "https://sso.example.org",
+      "realm": "example",
+      "client_id": "opentransfer",
+      "base_url": "https://idp.example.org"
+    },
+    "hint": {
+      "Keycloak": {
+        "server_url": "Het adres waarmee je de Keycloak-console opent, zonder /realms/…",
+        "realm": "De realm van de accounts, zoals genoemd in de console.",
+        "client_id": "Clients → je client → Client ID.",
+        "client_secret": "Clients → je client → tabblad Credentials."
+      },
+      "OIDC": {
+        "base_url": "Het adres waaronder de provider /.well-known/openid-configuration publiceert."
+      }
+    },
+    "option": {
+      "enabled": "Deze provider tonen op het aanmeldscherm",
+      "trust_email": "Het adres van de provider vertrouwen",
+      "trust_email_help": "Een bestaand account met hetzelfde adres wordt bij de eerste SSO-aanmelding gekoppeld. Alleen voor een provider die adressen controleert.",
+      "allow_registration": "Het account maken bij de eerste aanmelding",
+      "logout_at_provider": "Afmelden sluit ook de sessie bij {name}"
+    },
+    "test": {
+      "button": "Verbinding testen",
+      "running": "Bezig met testen…",
+      "invalid_config": "Een waarde ontbreekt of is fout: vul elk veld in.",
+      "discovery_ok": "De server antwoordt: {issuer}",
+      "discovery_failed": "Geen antwoord op dit adres: controleer de server en de realm.",
+      "discovery_issuer_mismatch": "De server antwoordt als {issuer}: controleer het adres.",
+      "client_ok": "De client en het geheim worden herkend.",
+      "client_invalid": "De client-ID of het geheim wordt geweigerd.",
+      "client_unknown": "De client kon niet worden gecontroleerd: probeer een aanmelding.",
+      "logout_yes": "Afmelden kan de sessie bij de provider sluiten.",
+      "logout_no": "De provider biedt niet aan zijn sessie te sluiten."
+    },
+    "declare_title": "In te stellen in {name}",
+    "declare": {
+      "keycloak_client": "Maak een OpenID Connect-client met clientauthenticatie ingeschakeld.",
+      "redirect_uri": "Valid redirect URI:",
+      "post_logout_uri": "Valid post logout redirect URI:",
+      "keycloak_secret": "Kopieer het geheim van het tabblad Credentials naar het veld hiernaast."
+    }
   }
 }

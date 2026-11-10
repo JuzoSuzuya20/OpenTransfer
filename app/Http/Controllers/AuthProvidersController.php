@@ -70,7 +70,8 @@ class AuthProvidersController extends Controller
         'icon' => $class::getIcon(),
         'information_url' => $class::getInformationUrl(),
         'uuid' => $authProvider->uuid,
-        'callback_url' => $this->buildCallbackUrl($authProvider->uuid)
+        'callback_url' => $this->buildCallbackUrl($authProvider->uuid),
+        'post_logout_redirect_uri' => \App\Services\SsoSessions::returnAddress()
       ];
     });
 

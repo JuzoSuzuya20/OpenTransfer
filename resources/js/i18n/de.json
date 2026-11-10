@@ -107,7 +107,9 @@
     "welcome": "Willkommen",
     "organisation_account": "Konto der Organisation",
     "local_account": "E-Mail und Passwort",
-    "forgot_password_question": "Passwort vergessen?"
+    "forgot_password_question": "Passwort vergessen?",
+    "sso_required": "Ihre Organisation meldet Sie über ihr Konto an: Nutzen Sie die Schaltfläche oben.",
+    "sso_domain_note": "Die Konten @{domain} melden sich mit dem Konto der Organisation oben an. Nur Administratoren nutzen dieses Formular."
   },
   "button": {
     "reverse_share_invite": "Erstellen Sie eine umgekehrte Freigabeanforderung",
@@ -1299,5 +1301,81 @@
     "received": "Über Anfragen erhalten",
     "none": "Noch nichts erhalten.",
     "see_all": "In Meine Freigaben ansehen"
+  },
+  "sso": {
+    "title": "Anmeldung (SSO)",
+    "description": "Die Identitätsanbieter der Organisation und die Konten, die sie nutzen müssen.",
+    "moved": "Identitätsanbieter und Pflicht-SSO werden eingerichtet unter",
+    "load_failed": "Die Anmeldeeinstellungen konnten nicht geladen werden",
+    "saved": "Anmeldeeinstellungen gespeichert",
+    "save_failed": "Die Anmeldeeinstellungen konnten nicht gespeichert werden",
+    "domains_invalid": "Kein Domainname: {domains}",
+    "providers_invalid": "Einem Anbieter fehlt ein Wert oder er ist falsch: Prüfen Sie seine Felder",
+    "provider_deleted": "Anbieter gelöscht",
+    "provider_delete_failed": "Der Anbieter konnte nicht gelöscht werden",
+    "required_title": "Pflicht-SSO",
+    "required_label": "E-Mail-Domains, die sich per SSO anmelden müssen",
+    "required_placeholder": "beispiel.de, stadt.de",
+    "required_help": "Konten mit einer Adresse dieser Domains melden sich nur über einen Identitätsanbieter unten an: kein Passwort, kein Rücksetzlink, keine Registrierung, kein Passkey allein.",
+    "required_help_admins": "Administratoren dieser Domains behalten ihr Passwort, um ein defektes SSO zu reparieren, mit verpflichtender Zwei-Faktor-Authentifizierung.",
+    "lockout_risk": "Kein Anbieter ist aktiviert: Die Konten dieser Domains könnten sich nicht mehr anmelden.",
+    "providers_title": "Identitätsanbieter",
+    "no_provider": "Noch kein Anbieter. Fügen Sie unten einen hinzu.",
+    "collapse": "Schließen",
+    "add_provider": "Anbieter hinzufügen",
+    "copy": "Kopieren",
+    "field": {
+      "name": "Name auf der Anmeldeschaltfläche",
+      "name_help": "Was die Personen sehen, zum Beispiel „Konto der Organisation“.",
+      "server_url": "Adresse des Keycloak-Servers",
+      "realm": "Realm",
+      "client_id": "Client-ID",
+      "client_secret": "Client-Secret",
+      "base_url": "Adresse des Ausstellers"
+    },
+    "placeholder": {
+      "server_url": "https://sso.example.org",
+      "realm": "example",
+      "client_id": "opentransfer",
+      "base_url": "https://idp.example.org"
+    },
+    "hint": {
+      "Keycloak": {
+        "server_url": "Die Adresse, mit der Sie die Keycloak-Konsole öffnen, ohne /realms/…",
+        "realm": "Der Realm der Konten, wie in der Konsole benannt.",
+        "client_id": "Clients → Ihr Client → Client ID.",
+        "client_secret": "Clients → Ihr Client → Reiter Credentials."
+      },
+      "OIDC": {
+        "base_url": "Die Adresse, unter der der Anbieter /.well-known/openid-configuration veröffentlicht."
+      }
+    },
+    "option": {
+      "enabled": "Diesen Anbieter auf dem Anmeldebildschirm anbieten",
+      "trust_email": "Der vom Anbieter gelieferten Adresse vertrauen",
+      "trust_email_help": "Ein bestehendes Konto mit derselben Adresse wird bei seiner ersten SSO-Anmeldung verknüpft. Nur für einen Anbieter, der Adressen prüft.",
+      "allow_registration": "Konto bei der ersten Anmeldung anlegen",
+      "logout_at_provider": "Abmelden beendet auch die Sitzung bei {name}"
+    },
+    "test": {
+      "button": "Verbindung testen",
+      "running": "Test läuft…",
+      "invalid_config": "Ein Wert fehlt oder ist falsch: Füllen Sie jedes Feld aus.",
+      "discovery_ok": "Der Server antwortet: {issuer}",
+      "discovery_failed": "Keine Antwort unter dieser Adresse: Prüfen Sie Server und Realm.",
+      "discovery_issuer_mismatch": "Der Server antwortet als {issuer}: Prüfen Sie die Adresse.",
+      "client_ok": "Client und Secret werden erkannt.",
+      "client_invalid": "Client-ID oder Secret wird abgelehnt.",
+      "client_unknown": "Der Client konnte nicht geprüft werden: Versuchen Sie eine Anmeldung.",
+      "logout_yes": "Abmelden kann die Sitzung beim Anbieter beenden.",
+      "logout_no": "Der Anbieter bietet nicht an, seine Sitzung zu beenden."
+    },
+    "declare_title": "In {name} einzutragen",
+    "declare": {
+      "keycloak_client": "Legen Sie einen OpenID-Connect-Client mit aktivierter Client-Authentifizierung an.",
+      "redirect_uri": "Valid redirect URI:",
+      "post_logout_uri": "Valid post logout redirect URI:",
+      "keycloak_secret": "Kopieren Sie das Secret aus dem Reiter Credentials in das Feld gegenüber."
+    }
   }
 }

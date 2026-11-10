@@ -107,7 +107,9 @@
     "welcome": "Welcome",
     "organisation_account": "Account of the organisation",
     "local_account": "Email and password",
-    "forgot_password_question": "Forgot your password?"
+    "forgot_password_question": "Forgot your password?",
+    "sso_required": "Your organisation signs you in through its account: use the button above.",
+    "sso_domain_note": "The @{domain} accounts sign in with the account of the organisation, above. Only administrators use this form."
   },
   "button": {
     "reverse_share_invite": "Create a reverse share request",
@@ -1320,5 +1322,81 @@
     "received": "Received through requests",
     "none": "Nothing received yet.",
     "see_all": "See them in My shares"
+  },
+  "sso": {
+    "title": "Sign-in (SSO)",
+    "description": "The identity providers of the organisation, and the accounts that must use them.",
+    "moved": "Identity providers and mandatory SSO are set up in",
+    "load_failed": "The sign-in settings could not be loaded",
+    "saved": "Sign-in settings saved",
+    "save_failed": "The sign-in settings could not be saved",
+    "domains_invalid": "Not a domain name: {domains}",
+    "providers_invalid": "A provider is missing a value or has a wrong one: check its fields",
+    "provider_deleted": "Provider deleted",
+    "provider_delete_failed": "The provider could not be deleted",
+    "required_title": "Mandatory SSO",
+    "required_label": "Email domains that must sign in through SSO",
+    "required_placeholder": "example.org, example.com",
+    "required_help": "Accounts with an address in these domains sign in only through an identity provider below: no password, reset link, sign-up or passkey alone.",
+    "required_help_admins": "Administrators of these domains keep their password to repair a broken SSO, with two-factor authentication required.",
+    "lockout_risk": "No provider is enabled: the accounts of these domains could not sign in any more.",
+    "providers_title": "Identity providers",
+    "no_provider": "No provider yet. Add one below.",
+    "collapse": "Close",
+    "add_provider": "Add the provider",
+    "copy": "Copy",
+    "field": {
+      "name": "Name on the sign-in button",
+      "name_help": "What people see, for example “Account of the organisation”.",
+      "server_url": "Address of the Keycloak server",
+      "realm": "Realm",
+      "client_id": "Client ID",
+      "client_secret": "Client secret",
+      "base_url": "Issuer address"
+    },
+    "placeholder": {
+      "server_url": "https://sso.example.org",
+      "realm": "example",
+      "client_id": "opentransfer",
+      "base_url": "https://idp.example.org"
+    },
+    "hint": {
+      "Keycloak": {
+        "server_url": "The address you open the Keycloak console with, without /realms/…",
+        "realm": "The realm of the accounts, as named in the console.",
+        "client_id": "Clients → your client → Client ID.",
+        "client_secret": "Clients → your client → Credentials tab."
+      },
+      "OIDC": {
+        "base_url": "The address under which the provider publishes /.well-known/openid-configuration."
+      }
+    },
+    "option": {
+      "enabled": "Show this provider on the sign-in screen",
+      "trust_email": "Trust the address the provider gives",
+      "trust_email_help": "An existing account with the same address is linked at its first SSO sign-in. Only for a provider that verifies addresses.",
+      "allow_registration": "Create the account at the first sign-in",
+      "logout_at_provider": "Signing out also closes the {name} session"
+    },
+    "test": {
+      "button": "Test the connection",
+      "running": "Testing…",
+      "invalid_config": "A value is missing or wrong: fill in every field.",
+      "discovery_ok": "The server answers: {issuer}",
+      "discovery_failed": "No answer at this address: check the server and the realm.",
+      "discovery_issuer_mismatch": "The server answers as {issuer}: check the address.",
+      "client_ok": "The client and its secret are recognised.",
+      "client_invalid": "The client ID or its secret is refused.",
+      "client_unknown": "The client could not be checked: try a sign-in.",
+      "logout_yes": "Signing out can close the provider session.",
+      "logout_no": "The provider does not offer to close its session."
+    },
+    "declare_title": "To declare in {name}",
+    "declare": {
+      "keycloak_client": "Create an OpenID Connect client with client authentication turned on.",
+      "redirect_uri": "Valid redirect URI:",
+      "post_logout_uri": "Valid post logout redirect URI:",
+      "keycloak_secret": "Copy the secret of the Credentials tab into the field opposite."
+    }
   }
 }

@@ -107,7 +107,9 @@
     "welcome": "Benvenuto",
     "organisation_account": "Account dell'organizzazione",
     "local_account": "E-mail e password",
-    "forgot_password_question": "Password dimenticata?"
+    "forgot_password_question": "Password dimenticata?",
+    "sso_required": "La tua organizzazione ti fa accedere con il suo account: usa il pulsante qui sopra.",
+    "sso_domain_note": "Gli account @{domain} accedono con l'account dell'organizzazione, qui sopra. Solo gli amministratori usano questo modulo."
   },
   "button": {
     "reverse_share_invite": "Creare una richiesta di condivisione inversa",
@@ -1299,5 +1301,81 @@
     "received": "Ricevuti tramite richieste",
     "none": "Ancora niente ricevuto.",
     "see_all": "Vedili in Le mie condivisioni"
+  },
+  "sso": {
+    "title": "Accesso (SSO)",
+    "description": "I fornitori di identità dell'organizzazione e gli account che devono usarli.",
+    "moved": "I fornitori di identità e l'SSO obbligatorio si configurano in",
+    "load_failed": "Le impostazioni di accesso non sono state caricate",
+    "saved": "Impostazioni di accesso salvate",
+    "save_failed": "Le impostazioni di accesso non sono state salvate",
+    "domains_invalid": "Non è un nome di dominio: {domains}",
+    "providers_invalid": "A un fornitore manca un valore o è errato: controlla i suoi campi",
+    "provider_deleted": "Fornitore eliminato",
+    "provider_delete_failed": "Il fornitore non è stato eliminato",
+    "required_title": "SSO obbligatorio",
+    "required_label": "Domini e-mail che devono accedere tramite SSO",
+    "required_placeholder": "esempio.it, comune.it",
+    "required_help": "Gli account con un indirizzo di questi domini accedono solo tramite un fornitore di identità qui sotto: niente password, link di reimpostazione, registrazione o passkey da sola.",
+    "required_help_admins": "Gli amministratori di questi domini mantengono la password per riparare un SSO guasto, con l'autenticazione a due fattori obbligatoria.",
+    "lockout_risk": "Nessun fornitore è attivo: gli account di questi domini non potrebbero più accedere.",
+    "providers_title": "Fornitori di identità",
+    "no_provider": "Ancora nessun fornitore. Aggiungine uno qui sotto.",
+    "collapse": "Chiudi",
+    "add_provider": "Aggiungi il fornitore",
+    "copy": "Copia",
+    "field": {
+      "name": "Nome sul pulsante di accesso",
+      "name_help": "Ciò che vedono le persone, ad esempio «Account dell'organizzazione».",
+      "server_url": "Indirizzo del server Keycloak",
+      "realm": "Realm",
+      "client_id": "ID client",
+      "client_secret": "Segreto del client",
+      "base_url": "Indirizzo dell'emittente"
+    },
+    "placeholder": {
+      "server_url": "https://sso.example.org",
+      "realm": "example",
+      "client_id": "opentransfer",
+      "base_url": "https://idp.example.org"
+    },
+    "hint": {
+      "Keycloak": {
+        "server_url": "L'indirizzo con cui apri la console Keycloak, senza /realms/…",
+        "realm": "Il realm degli account, come chiamato nella console.",
+        "client_id": "Clients → il tuo client → Client ID.",
+        "client_secret": "Clients → il tuo client → scheda Credentials."
+      },
+      "OIDC": {
+        "base_url": "L'indirizzo sotto cui il fornitore pubblica /.well-known/openid-configuration."
+      }
+    },
+    "option": {
+      "enabled": "Proporre questo fornitore nella schermata di accesso",
+      "trust_email": "Fidarsi dell'indirizzo fornito",
+      "trust_email_help": "Un account esistente con lo stesso indirizzo viene collegato al suo primo accesso SSO. Solo per un fornitore che verifica gli indirizzi.",
+      "allow_registration": "Creare l'account al primo accesso",
+      "logout_at_provider": "Disconnettersi chiude anche la sessione {name}"
+    },
+    "test": {
+      "button": "Prova la connessione",
+      "running": "Prova in corso…",
+      "invalid_config": "Un valore manca o è errato: compila ogni campo.",
+      "discovery_ok": "Il server risponde: {issuer}",
+      "discovery_failed": "Nessuna risposta a questo indirizzo: controlla il server e il realm.",
+      "discovery_issuer_mismatch": "Il server risponde come {issuer}: controlla l'indirizzo.",
+      "client_ok": "Il client e il suo segreto sono riconosciuti.",
+      "client_invalid": "L'ID client o il segreto è rifiutato.",
+      "client_unknown": "Il client non è stato verificato: prova un accesso.",
+      "logout_yes": "La disconnessione può chiudere la sessione del fornitore.",
+      "logout_no": "Il fornitore non permette di chiudere la sua sessione."
+    },
+    "declare_title": "Da dichiarare in {name}",
+    "declare": {
+      "keycloak_client": "Crea un client OpenID Connect con l'autenticazione del client attivata.",
+      "redirect_uri": "Valid redirect URI:",
+      "post_logout_uri": "Valid post logout redirect URI:",
+      "keycloak_secret": "Copia il segreto della scheda Credentials nel campo a fianco."
+    }
   }
 }

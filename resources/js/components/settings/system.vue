@@ -22,11 +22,6 @@ import {
 import {
   getSettingsByGroup,
   saveSettingsById,
-  getAuthProviders,
-  bulkUpdateAuthProviders,
-  getAvailableProviderTypes,
-  deleteAuthProvider,
-  getCallbackUrl,
   getBackups,
   createBackup,
   downloadBackup,
@@ -35,6 +30,7 @@ import {
   getStorageEncryptionStatus
 } from '../../api'
 import HelpTip from '../helpTip.vue'
+import AppLink from '../layout/AppLink.vue'
 
 import { useToast } from 'vue-toastification'
 import { mapSettings } from '../../utils'
@@ -46,12 +42,8 @@ import { useTranslate } from '@tolgee/vue'
 const { t } = useTranslate()
 
 const showHelpTip = inject('showHelpTip')
-const activateNewProviderForm = ref(false)
-const newProviderType = ref(null)
-const availableProviderTypes = ref([])
 const toast = useToast()
 const confirmDialog = useConfirmDialog()
-const onLocalhost = ref(false)
 
 const clientIp = ref(null)
 const storageEncryption = ref({ key_configured: false, misconfigured: false })
@@ -244,7 +236,6 @@ const handlePresetChange = () => {
 
 const settingsLoaded = ref(false)
 const saving = ref(false)
-const authProviders = ref([])
 
 // Backup state
 const backups = ref([])
@@ -257,9 +248,7 @@ const emit = defineEmits(['navItemClicked'])
 
 onMounted(async () => {
   await loadSettings()
-  await loadAuthProviders()
   await loadBackups()
-  onLocalhost.value = window.location.hostname === 'localhost'
   try {
     clientIp.value = await getClientIp()
     storageEncryption.value = await getStorageEncryptionStatus()
@@ -299,19 +288,6 @@ const loadSettings = async () => {
     settingsLoaded.value = true
   } catch (error) {
     toast.error(t.value('settings.failedToLoadSettings'))
-    console.error(error)
-  }
-}
-
-const loadAuthProviders = async () => {
-  try {
-    authProviders.value = await getAuthProviders()
-    authProviders.value.forEach((authProvider) => {
-      Object.keys(authProvider.provider_config).forEach((configKey) => {
-        hideSecrets.value[`${authProvider.id}_${configKey}`] = mightBeSecret(configKey)
-      })
-    })
-  } catch (error) {
     console.error(error)
   }
 }
@@ -390,23 +366,6 @@ const formatBackupDate = (dateString) => {
   }).format(date)
 }
 
-const saveAuthProviders = async () => {
-  console.log('saving auth providers')
-  saving.value = true
-  try {
-    await bulkUpdateAuthProviders(authProviders.value)
-    saving.value = false
-    toast.success(t.value('settings.authProvidersSavedSuccessfully'))
-    if (!onLocalhost.value) {
-      await loadAuthProviders()
-    }
-  } catch (error) {
-    saving.value = false
-    toast.error(t.value('settings.failedToSaveAuthProviders'))
-    console.error(error)
-  }
-}
-
 const saveSettings = async () => {
   console.log('saving settings')
 
@@ -424,8 +383,6 @@ const saveSettings = async () => {
     await saveSettingsById({
       ...settings.value
     })
-
-    await saveAuthProviders()
 
     saving.value = false
     toast.success(t.value('settings.settingsSavedSuccessfully'))
@@ -453,84 +410,6 @@ defineExpose({
   saveSettings
 })
 
-const mightBeSecret = (key) => {
-  return /secret|token|password|key/.test(key)
-}
-
-const hideSecrets = ref({})
-
-const togglePasswordVisibility = (authProvider, configKey) => {
-  hideSecrets.value[`${authProvider.id}_${configKey}`] = !hideSecrets.value[`${authProvider.id}_${configKey}`]
-}
-
-const newProviderButton = ref(null)
-
-const handleNewProviderButtonClicked = async () => {
-  //if the new provider type is not set, show the form
-  if (!newProviderType.value) {
-    availableProviderTypes.value = await getAvailableProviderTypes()
-    activateNewProviderForm.value = true
-  } else {
-    const uuid = generateUUID()
-    const newProvider = {
-      name: newProviderType.value.name,
-      description: newProviderType.value.description,
-      icon: newProviderType.value.icon,
-      class: newProviderType.value.class,
-      provider_config: newProviderType.value.provider_config,
-      uuid: uuid,
-      enabled: false,
-      editing: true,
-      callback_url: await handleGetCallbackUrl(uuid)
-    }
-    authProviders.value.push(newProvider)
-    newProviderType.value = null
-    activateNewProviderForm.value = false
-    await nextTick()
-    handleNavItemClicked('new-provider')
-  }
-}
-
-const handleGetCallbackUrl = async (uuid) => {
-  const callbackUrl = await getCallbackUrl(uuid)
-  return callbackUrl
-}
-
-const generateUUID = () => {
-  //are we in a secure context?
-  if (typeof window !== 'undefined' && window.crypto) {
-    return window.crypto.randomUUID()
-  }
-  //fallback to a simple uuid
-  return uuidv4()
-}
-
-const uuidv4 = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
-
-const disableNewProviderButton = computed(() => {
-  return activateNewProviderForm.value && !newProviderType.value
-})
-
-const handleDeleteAuthProvider = async (id) => {
-  if (!confirm(t.value('settings.system.delete_auth_provider_confirmation'))) {
-    return
-  }
-
-  try {
-    await deleteAuthProvider(id)
-    toast.success('Auth provider deleted successfully')
-    await loadAuthProviders()
-  } catch (error) {
-    toast.error('Failed to delete auth provider')
-    console.error(error)
-  }
-}
 </script>
 <template>
   <div class="container-fluid">
@@ -981,14 +860,7 @@ const handleDeleteAuthProvider = async (id) => {
                 </h3>
               </div>
 
-              <svg id="gradientDefs">
-                <linearGradient id="icon-gradient">
-                  <stop offset="0%" style="stop-color: var(--link-color); stop-opacity: 1" />
-                  <stop offset="100%" style="stop-color: var(--link-color-hover); stop-opacity: 1" />
-                </linearGradient>
-              </svg>
-
-              <div class="setting-group-body">
+                          <div class="setting-group-body">
                 <!-- Self Registration Settings -->
                 <h5 id="self_registration" class="mb-3">{{ $t('settings.system.self_registration') }}</h5>
                 <div class="setting-group-body-item">
@@ -1032,173 +904,10 @@ const handleDeleteAuthProvider = async (id) => {
                   </div>
                 </div>
 
-                <hr class="my-4" />
-
-                <h5 id="auth_providers" class="mb-4">{{ $t('settings.system.your_auth_providers') }}</h5>
-                <div
-                  class="setting-group-body-item auth-provider"
-                  v-for="authProvider in authProviders"
-                  :key="authProvider.id"
-                >
-                  <HelpTip
-                    :id="`auth-provider-${authProvider.id}-help-tip`"
-                    :header="$t('settings.help.auth_provider.title')"
-                  >
-                    <p>{{ authProvider.provider_description }}</p>
-                  </HelpTip>
-
-                  <div class="provider-type" :class="{ open: authProvider.editing }">
-                    <div class="row w-100 align-items-center">
-                      <div class="col-auto">
-                        <div class="icon">
-                          <Fingerprint v-if="!authProvider.icon" />
-                          <svg v-else v-html="authProvider.icon" class="custom"></svg>
-                        </div>
-                      </div>
-                      <div class="col">
-                        <small>{{ authProvider.provider_name }}</small>
-                        <h6 @click.stop="showHelpTip($event, `#auth-provider-${authProvider.id}-help-tip`)">
-                          {{ authProvider.name }}
-                        </h6>
-                      </div>
-                      <div class="col pe-0" style="font-size: 0.8rem; font-weight: 300">
-                        <ShieldCheck v-if="authProvider.enabled" style="margin-top: -2px; width: 15px; height: 15px" />
-                        <ShieldBan v-else style="margin-top: -2px; width: 15px; height: 15px" />
-                        {{ authProvider.enabled ? $t('settings.system.enabled') : $t('settings.system.disabled') }}
-                      </div>
-                      <div class="col-auto">
-                        <button @click="authProvider.editing = !authProvider.editing">
-                          <template v-if="!onLocalhost">
-                            {{ $t('settings.provider.edit') }}
-                          </template>
-                          <template v-else>
-                            {{ $t('settings.provider.view') }}
-                          </template>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="provider-settings" :class="{ open: authProvider.editing }">
-                    <div class="setting-group-body">
-                      <div class="row align-items-start mb-0">
-                        <div class="col">
-                          <div class="checkbox-container">
-                            <input
-                              type="checkbox"
-                              :id="`auth_provider_enabled_${authProvider.id}`"
-                              v-model="authProvider.enabled"
-                              :disabled="onLocalhost"
-                            />
-                            <label :for="`auth_provider_enabled_${authProvider.id}`">
-                              {{ $t('settings.system.auth_provider_enabled') }}
-                            </label>
-                          </div>
-                          <div class="checkbox-container">
-                            <input
-                              type="checkbox"
-                              :id="`auth_provider_allow_registration_${authProvider.id}`"
-                              v-model="authProvider.allow_registration"
-                              :disabled="onLocalhost"
-                            />
-                            <label :for="`auth_provider_allow_registration_${authProvider.id}`">
-                              {{ $t('settings.system.auth_provider_allow_registration') }}
-                            </label>
-                          </div>
-                        </div>
-                        <div class="col-auto" v-if="authProvider.information_url">
-                          <a :href="authProvider.information_url" target="_blank" class="provider-info-link">
-                            <ExternalLink />
-                            {{ t('settings.system_auth_provider_info_link', { name: authProvider.provider_name }) }}
-                          </a>
-                        </div>
-                      </div>
-
-                      <div class="setting-group-body-item">
-                        <label :for="`auth_provider_name_${authProvider.id}`">
-                          {{ $t('settings.system.auth_provider_name') }}
-                        </label>
-                        <input
-                          type="text"
-                          :id="`auth_provider_name_${authProvider.id}`"
-                          v-model="authProvider.name"
-                          :readonly="onLocalhost"
-                        />
-                      </div>
-
-                      <div
-                        class="setting-group-body-item"
-                        v-for="(configValue, configKey) in authProvider.provider_config"
-                        :key="configKey"
-                      >
-                        <label :for="`auth_provider_config_${authProvider.id}_${configKey}`">
-                          {{ $t(`settings.system.auth_provider_config_${configKey}`) }}
-                        </label>
-                        <div class="input-group">
-                          <input
-                            :type="hideSecrets[`${authProvider.id}_${configKey}`] ? 'password' : 'text'"
-                            :id="`auth_provider_config_${authProvider.id}_${configKey}`"
-                            v-model="authProvider.provider_config[configKey]"
-                            :readonly="onLocalhost"
-                          />
-
-                          <button
-                            class="icon-only"
-                            @click="togglePasswordVisibility(authProvider, configKey)"
-                            v-if="mightBeSecret(configKey)"
-                          >
-                            <Eye v-if="hideSecrets[`${authProvider.id}_${configKey}`]" />
-                            <EyeOff v-else />
-                          </button>
-                        </div>
-                      </div>
-                      <hr v-if="!onLocalhost" />
-                      <div class="setting-group-body-item" v-if="!onLocalhost">
-                        <label for="callback_url">{{ $t('settings.system.callback_url') }}</label>
-                        <textarea
-                          :id="`callback_url_${authProvider.id}`"
-                          :value="authProvider.callback_url"
-                          readonly
-                        ></textarea>
-                        <p class="help-text">{{ $t('settings.system.callback_url_description') }}</p>
-                      </div>
-                      <hr v-if="!onLocalhost" />
-                      <a
-                        href="#"
-                        class="delete-auth-provider"
-                        @click.prevent="handleDeleteAuthProvider(authProvider.id)"
-                        v-if="authProvider.id && !onLocalhost"
-                      >
-                        <Trash />
-                        {{ $t('settings.system.delete_auth_provider') }}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div class="setting-group-body-item auth-provider" id="new-provider" v-if="!onLocalhost">
-                  <div class="provider-type">
-                    <div class="new-provider-form" :class="{ active: activateNewProviderForm }">
-                      <select v-model="newProviderType">
-                        <option :value="null">{{ $t('settings.system.select_auth_provider') }}</option>
-                        <option v-for="provider in availableProviderTypes" :value="provider">
-                          {{ provider.name }}
-                        </option>
-                      </select>
-                      <button
-                        class="new-provider-button icon-only"
-                        @click="handleNewProviderButtonClicked"
-                        ref="newProviderButton"
-                        :disabled="disableNewProviderButton"
-                      >
-                        <Plus />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="setting-group-body-item p-3 help-text text-small" id="new-provider" v-else>
-                  <p style="font-size: 0.8rem; opacity: 0.5">
-                    {{ $t('settings.system.auth_providers_description_localhost') }}
-                  </p>
-                </div>
+                <p class="sso-moved">
+                  {{ $t('sso.moved') }}
+                  <AppLink to="/admin/sso">{{ $t('sso.title') }}</AppLink>
+                </p>
               </div>
             </div>
           </div>
@@ -1208,12 +917,6 @@ const handleDeleteAuthProvider = async (id) => {
               <p>{{ $t('settings.system.self_registration_description') }}</p>
               <h6>{{ $t('settings.system.self_registration_allowed_domains') }}</h6>
               <p>{{ $t('settings.system.self_registration_allowed_domains_description') }}</p>
-              <h6>{{ $t('settings.system.auth_providers') }}</h6>
-              <p>{{ $t('settings.system.auth_providers_description') }}</p>
-              <h6>{{ $t('settings.system.auth_provider_allow_registration') }}</h6>
-              <p>{{ $t('settings.system.auth_provider_allow_registration_description') }}</p>
-              <h6>{{ $t('settings.system.provider_trust_warning') }}</h6>
-              <p>{{ $t('settings.system.provider_trust_warning_description') }}</p>
             </div>
           </div>
         </div>

@@ -24,6 +24,7 @@ test('a trailing slash does not change the page', () => {
 test('the administration opens on the system settings', () => {
   assert.deepEqual(resolveRoute('/admin'), { name: 'admin', params: { section: 'system' } })
   assert.deepEqual(resolveRoute('/admin/users'), { name: 'admin', params: { section: 'users' } })
+  assert.deepEqual(resolveRoute('/admin/sso'), { name: 'admin', params: { section: 'sso' } })
 })
 
 test('an unknown administration section is not found', () => {

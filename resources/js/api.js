@@ -1232,6 +1232,7 @@ export const bulkUpdateAuthProviders = async (providers) => {
       class: provider.class,
       enabled: provider.enabled,
       allow_registration: provider.allow_registration,
+      trust_email: provider.trust_email,
       uuid: provider.uuid
     }))
   }
@@ -1244,7 +1245,23 @@ export const bulkUpdateAuthProviders = async (providers) => {
   })
   const data = await response.json()
   if (!response.ok) {
-    throw new Error(data.message)
+    throw apiError(data)
+  }
+  return data.data
+}
+
+// Does the provider answer at this address, and does it recognise the client? Before saving.
+export const testAuthProvider = async (providerClass, providerConfig) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/auth-providers/test`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    },
+    body: JSON.stringify({ class: providerClass, provider_config: providerConfig })
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
   }
   return data.data
 }
