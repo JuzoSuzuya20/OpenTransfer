@@ -31,10 +31,10 @@ class DatabaseSeeder extends Seeder
             Theme::where('name', 'Erugo 2026')->update(['active' => false]);
         }
 
-        // Set default theme for fresh installs only
-        // If no theme is currently active, set Erugo 2026 as the default
+        // Set default theme for fresh installs only: an instance that already has an
+        // active theme, the former default included, keeps it
         if (!Theme::where('active', true)->exists()) {
-            Theme::where('name', 'Erugo 2026')->update(['active' => true]);
+            Theme::where('name', 'OpenTransfer')->update(['active' => true]);
         }
     }
 }

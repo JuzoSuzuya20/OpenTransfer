@@ -2918,6 +2918,210 @@ VALUES
     '2025-02-28 21:16:29',
     'Dark',
     '1'
+  ),
+  (
+    '35',
+    'OpenTransfer',
+    '{
+  "links": {
+    "default": "#8585f6",
+    "hover": "#b1b1f9",
+    "active": "#c6c6fb",
+    "disabled": "#6a6a6a"
+  },
+  "buttons": {
+    "primary": {
+      "default": {
+        "background": "#6a6af4",
+        "text": "#ffffff"
+      },
+      "hover": {
+        "background": "#7c7cf6",
+        "text": "#ffffff"
+      },
+      "active": {
+        "background": "#5b5be6",
+        "text": "#ffffff"
+      },
+      "disabled": {
+        "background": "#2a2a2a",
+        "text": "#6a6a6a"
+      }
+    },
+    "secondary": {
+      "default": {
+        "background": "#2a2a2a",
+        "text": "#cecece"
+      },
+      "hover": {
+        "background": "#353535",
+        "text": "#ffffff"
+      },
+      "active": {
+        "background": "#3a3a3a",
+        "text": "#ffffff"
+      },
+      "disabled": {
+        "background": "#242424",
+        "text": "#6a6a6a"
+      }
+    }
+  },
+  "uploader": {
+    "background": "#1e1e1e",
+    "text": "#cecece",
+    "header": {
+      "background": "#1e1e1e",
+      "text": "#ffffff"
+    },
+    "item": {
+      "background": "#242424",
+      "text": "#cecece"
+    }
+  },
+  "panel": {
+    "background": "#1e1e1e",
+    "text": "#cecece",
+    "item": {
+      "background": "#242424",
+      "text": "#cecece",
+      "hover": {
+        "background": "#2a2a2a",
+        "text": "#ffffff"
+      },
+      "action": {
+        "hover": {
+          "backgroundFrom": "rgba(42, 42, 42, 0)",
+          "backgroundTo": "#2a2a2a"
+        }
+      }
+    },
+    "header": {
+      "background": "#1e1e1e",
+      "text": "#ffffff"
+    },
+    "textAlt": "#929292",
+    "subheader": {
+      "background": "#242424",
+      "text": "#cecece"
+    },
+    "nav": {
+      "item": {
+        "background": "#1e1e1e",
+        "text": "#929292",
+        "hover": {
+          "background": "#2a2a2a",
+          "text": "#ffffff"
+        }
+      }
+    },
+    "section": {
+      "background": "#242424",
+      "text": "#cecece",
+      "alt": {
+        "background": "#2a2a2a",
+        "text": "#cecece"
+      }
+    }
+  },
+  "tabs": {
+    "bar": {
+      "background": "#1e1e1e"
+    },
+    "tab": {
+      "background": "#1e1e1e",
+      "text": "#929292",
+      "hover": {
+        "background": "#2a2a2a",
+        "text": "#ffffff"
+      },
+      "active": {
+        "background": "#353535",
+        "text": "#ffffff"
+      }
+    }
+  },
+  "table": {
+    "background": "#1e1e1e",
+    "text": "#cecece",
+    "header": {
+      "background": "#242424",
+      "text": "#929292"
+    },
+    "row": {
+      "background": "#1e1e1e",
+      "text": "#cecece",
+      "alt": {
+        "background": "#242424",
+        "text": "#cecece"
+      }
+    }
+  },
+  "input": {
+    "background": "#242424",
+    "text": "#cecece",
+    "border": {
+      "default": "#3a3a3a",
+      "hover": "#6a6a6a",
+      "focus": "#6a6af4"
+    },
+    "placeholder": "#929292"
+  },
+  "checkbox": {
+    "background": "#242424",
+    "checked": {
+      "background": "#6a6af4",
+      "check": "#ffffff"
+    }
+  },
+  "label": {
+    "text": "#cecece"
+  },
+  "progressBar": {
+    "background": "#2a2a2a",
+    "fill": "#6a6af4",
+    "text": "#ffffff"
+  },
+  "overlay": {
+    "background": "rgba(22, 22, 22, 0.8)"
+  },
+  "scrollbars": {
+    "track": "#1e1e1e",
+    "thumb": "#3a3a3a",
+    "thumbHover": "#6a6a6a",
+    "width": "6px",
+    "borderRadius": "3px"
+  },
+  "status": {
+    "success": "#27a658",
+    "warning": "#fc5d00",
+    "danger": "#ff5655"
+  },
+  "dimensions": {
+    "button": {
+      "height": "44px",
+      "width": "100%",
+      "iconOnlyWidth": "44px",
+      "borderRadius": "6px"
+    },
+    "panel": {
+      "borderRadius": "6px"
+    },
+    "tabs": {
+      "borderRadius": "6px 6px 0 0"
+    },
+    "settings": {
+      "width": "100vw",
+      "height": "100vh"
+    }
+  }
+}
+',
+    '0',
+    '2026-11-10 00:00:00',
+    NULL,
+    'Dark',
+    '1'
   ) ON CONFLICT(id) DO
 UPDATE
 SET
