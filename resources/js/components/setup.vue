@@ -6,6 +6,7 @@ import { createFirstUser, saveFirstRunSettings, login } from '../api'
 import { useToast } from 'vue-toastification'
 import { store } from '../store'
 import FileInput from './fileInput.vue'
+import BrandMark from './layout/BrandMark.vue'
 
 import { useTranslate } from '@tolgee/vue'
 
@@ -59,7 +60,7 @@ const logoPreview = computed(() => {
 onMounted(() => {
   emailInput.value.focus()
   //set the title
-  document.title = 'Erugo First Run Setup'
+  document.title = 'OpenTransfer'
 })
 
 // Step 1: Create the admin account
@@ -145,7 +146,8 @@ const skipAndLogin = async () => {
   <div class="setup-container">
     <div class="setup-inner">
       <div class="setup-logo-container">
-        <img :src="'/images/logo.png'" alt="Erugo" class="setup-logo" />
+        <BrandMark :size="48" :with-name="false" />
+        <h1 class="setup-title">OpenTransfer</h1>
       </div>
 
       <!-- Step indicator -->
@@ -312,61 +314,58 @@ const skipAndLogin = async () => {
 </template>
 
 <style scoped lang="scss">
+// The first run: one card in the column of the sign-in screen
 .setup-container {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  z-index: 230;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // backdrop-filter: blur(10px);
-  pointer-events: none;
-  overflow-y: auto;
-  padding: 20px 0;
 
   .setup-inner {
-    background: var(--panel-background-color);
-    padding: 20px;
-    border-radius: var(--panel-border-radius);
-    width: 30%;
-    min-width: 350px;
-    max-width: 500px;
-    pointer-events: auto;
-    h1 {
-      font-size: 24px;
-      color: var(--panel-text-color);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      svg {
-        font-size: 24px;
-        margin-right: 5px;
-        margin-top: -1px;
-      }
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px 24px 27px;
+    background: var(--ot-card);
+    color: var(--ot-text);
+    border: 1px solid var(--ot-line);
+    border-radius: var(--ot-radius);
+    overflow: hidden;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      background: var(--ot-accent);
+    }
+
+    p {
+      margin: 0;
+      color: var(--ot-muted);
     }
   }
 }
 
 button {
-  display: block;
   width: 100%;
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+  margin: 8px 0 0;
 }
 
-.setup-logo {
-  width: 100px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+.setup-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  .setup-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ot-heading);
+  }
 }
 
 .step-indicator {
@@ -391,14 +390,14 @@ button {
     opacity: 0.5;
 
     &.active {
-      background: var(--button-background-color);
-      color: var(--button-text-color);
+      background: var(--ot-accent);
+      color: var(--ot-on-accent);
       opacity: 1;
     }
 
     &.completed {
-      background: var(--button-background-color);
-      color: var(--button-text-color);
+      background: var(--ot-accent);
+      color: var(--ot-on-accent);
       opacity: 0.7;
     }
   }
@@ -410,7 +409,7 @@ button {
     transition: background 0.3s ease;
 
     &.completed {
-      background: var(--button-background-color);
+      background: var(--ot-accent);
     }
   }
 }
