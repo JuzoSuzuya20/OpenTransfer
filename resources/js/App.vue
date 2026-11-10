@@ -38,6 +38,7 @@ const logoUrl = computed(() => `/images/logo.png?t=${logoTimestamp.value}`)
 
 const commandPalette = ref(null)
 const userName = ref('')
+const userAvatarSeed = ref('')
 
 // --- Addresses -------------------------------------------------------------------------------
 const route = ref(resolveRoute(location.pathname))
@@ -140,10 +141,13 @@ watch(
   async (signedIn) => {
     if (!signedIn) {
       userName.value = ''
+      userAvatarSeed.value = ''
       return
     }
     try {
-      userName.value = (await getMyProfile()).name ?? ''
+      const profile = await getMyProfile()
+      userName.value = profile.name ?? ''
+      userAvatarSeed.value = profile.avatar_seed ?? ''
     } catch (error) {
       console.error('Failed to load the profile', error)
     }
@@ -216,6 +220,7 @@ onBeforeUnmount(() => {
       :variant="headerVariant"
       :route-name="route.name"
       :user-name="userName"
+      :user-avatar-seed="userAvatarSeed"
       :is-admin="store.isAdmin()"
       :allow-file-requests="allowFileRequests"
       :default-logo="defaultLogo"

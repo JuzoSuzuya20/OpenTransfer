@@ -4,10 +4,12 @@ import { useTranslate } from '@tolgee/vue'
 import { ChevronDown, User, Info, LogOut } from 'lucide-vue-next'
 import AppLink from './AppLink.vue'
 import LanguageSelector from '../languageSelector.vue'
-import initials, { shortName } from '../../lib/initials'
+import { shortName } from '../../lib/initials'
+import UserAvatar from './UserAvatar.vue'
 
 defineProps({
-  name: { type: String, default: '' }
+  name: { type: String, default: '' },
+  avatarSeed: { type: String, default: '' }
 })
 const emit = defineEmits(['logout'])
 const { t } = useTranslate()
@@ -63,13 +65,16 @@ onBeforeUnmount(() => {
       :aria-label="t('nav.account')"
       @click="toggle"
     >
-      <span class="avatar" aria-hidden="true">{{ initials(name) }}</span>
+      <UserAvatar :seed="avatarSeed" :name="name" :size="24" />
       <span class="account-name">{{ shortName(name) }}</span>
       <ChevronDown class="chevron" aria-hidden="true" />
     </button>
 
     <div class="account-menu-panel" v-show="open">
-      <div class="account-menu-who" v-if="name">{{ name }}</div>
+      <div class="account-menu-who" v-if="name">
+        <UserAvatar :seed="avatarSeed" :name="name" :size="36" />
+        <span>{{ name }}</span>
+      </div>
       <AppLink to="/profile" class="account-menu-item" @click="close()">
         <User aria-hidden="true" />
         {{ t('nav.profile') }}

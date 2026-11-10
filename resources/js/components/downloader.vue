@@ -7,7 +7,7 @@ import { domError } from '../domData'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
 import DirectoryItem from './directory-item.vue'
-import initials from '../lib/initials'
+import UserAvatar from './layout/UserAvatar.vue'
 
 // How long the share stays online, in its largest unit: 6 d, 4 h, 12 min
 const expiresInShort = computed(() => {
@@ -174,7 +174,7 @@ const filesByDirectory = computed(() => {
     <template v-if="share">
       <div class="download-head">
         <div class="download-sender" v-if="share.user?.name">
-          <span class="avatar" aria-hidden="true">{{ initials(share.user.name) }}</span>
+          <UserAvatar :seed="share.user.avatar_seed ?? ''" :name="share.user.name" :size="28" />
           {{ $t('downloader.sent_by', { name: share.user.name }) }}
         </div>
         <h1 class="share-name">{{ share.name }}</h1>

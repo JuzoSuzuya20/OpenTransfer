@@ -12,6 +12,7 @@ const props = defineProps({
   variant: { type: String, required: true },
   routeName: { type: String, default: '' },
   userName: { type: String, default: '' },
+  userAvatarSeed: { type: String, default: '' },
   isAdmin: { type: Boolean, default: false },
   allowFileRequests: { type: Boolean, default: false },
   defaultLogo: { type: Boolean, default: true },
@@ -51,7 +52,7 @@ const navItems = computed(() =>
           <Plus aria-hidden="true" />
           <span>{{ t('nav.new_share') }}</span>
         </AppLink>
-        <AccountMenu :name="userName" @logout="emit('logout')" />
+        <AccountMenu :name="userName" :avatar-seed="userAvatarSeed" @logout="emit('logout')" />
       </template>
 
       <div class="app-header-end" v-else>

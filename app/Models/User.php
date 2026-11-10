@@ -37,6 +37,21 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var list<string>
      */
+    /**
+     * The seed of the drawn avatar: derived from the identifier and the key of the application, so
+     * that it reveals neither the account nor its address, and nobody chooses it.
+     */
+    protected $appends = ['avatar_seed'];
+
+    public function getAvatarSeedAttribute(): ?string
+    {
+        if (!$this->getKey()) {
+            return null;
+        }
+
+        return substr(hash_hmac('sha256', 'avatar:' . $this->getKey(), (string) config('app.key')), 0, 20);
+    }
+
     protected $hidden = [
         'password',
         'remember_token',

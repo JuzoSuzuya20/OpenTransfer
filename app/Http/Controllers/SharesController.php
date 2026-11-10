@@ -127,6 +127,7 @@ class SharesController extends Controller
       }),
       'user' => [
         'name' => $share->user ? $share->user->name : 'Guest User',
+        'avatar_seed' => $share->user?->avatar_seed,
       ],
       'password_protected' => $share->password ? true : false
     ];

@@ -5,6 +5,7 @@ import { UserPen, Trash, UserPlus, CircleX, UserRoundCheck, FolderOpen, KeyRound
 import { store } from '../../store'
 import { useToast } from 'vue-toastification'
 import { niceDate } from '../../utils'
+import UserAvatar from '../layout/UserAvatar.vue'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 import { useSetting } from '../../composables/useSetting'
 
@@ -222,7 +223,12 @@ const confirmForceResetPassword = () => {
               </span>
             </div>
           </td>
-          <td>{{ user.name }}</td>
+          <td>
+            <span class="user-cell">
+              <UserAvatar :seed="user.avatar_seed ?? ''" :name="user.name" :size="24" />
+              {{ user.name }}
+            </span>
+          </td>
           <td>
             <template v-if="user.admin">
               {{ $t('settings.users.admin') }}
@@ -407,6 +413,12 @@ const confirmForceResetPassword = () => {
 </template>
 
 <style lang="scss" scoped>
+.user-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .tags {
   display: flex;
   gap: 5px;
