@@ -11,6 +11,8 @@ class AuthProviderUser
   public $email;
   public $avatar;
   public $verified;
+  // The ID token of the provider, when it sends one: it lets the logout close the provider session
+  public ?string $idToken = null;
 
   public function __construct($user)
   {

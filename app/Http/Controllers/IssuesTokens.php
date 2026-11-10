@@ -13,7 +13,7 @@ trait IssuesTokens
      * @param string $amr how the session was opened ("pwd", "passkey" or "sso"), kept across
      *                    renewals: the second factor policy only covers passwords
      */
-    protected function respondWithToken($user, string $amr = 'pwd')
+    protected function respondWithToken($user, string $amr = 'pwd', ?string $sid = null)
     {
         $token = Auth::login($user);
 
@@ -25,7 +25,7 @@ trait IssuesTokens
         }
 
         $twentyFourHours = 60 * 60 * 24;
-        $refreshToken = Auth::claims(['amr' => $amr])->setTTL($twentyFourHours)->tokenById($user->id);
+        $refreshToken = Auth::claims(array_filter(['amr' => $amr, 'sid' => $sid]))->setTTL($twentyFourHours)->tokenById($user->id);
 
         $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, false, true);
 

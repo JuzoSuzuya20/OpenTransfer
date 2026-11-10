@@ -112,7 +112,38 @@ class OIDCAuthProvider extends BaseAuthProvider
     $userInfo = $oidc->requestUserInfo();
 
 
-    return static::userFromClaims($userInfo);
+    $user = static::userFromClaims($userInfo);
+    $user->idToken = $oidc->getIdToken() ?: null;
+
+    return $user;
+  }
+
+  // RP-initiated logout, when the admin turned it on and the provider publishes an end session endpoint
+  public function logoutUrl(?string $idToken, string $redirectTo): ?string
+  {
+    if (empty($this->provider->provider_config->logout_at_provider) || !$this->base_url) {
+      return null;
+    }
+
+    try {
+      $response = \Illuminate\Support\Facades\Http::timeout(3)->withoutRedirecting()->acceptJson()
+        ->get(rtrim($this->base_url, '/') . '/.well-known/openid-configuration');
+    } catch (\Throwable) {
+      return null;
+    }
+
+    $endpoint = $response->successful() ? $response->json('end_session_endpoint') : null;
+    if (!is_string($endpoint) || !in_array(parse_url($endpoint, PHP_URL_SCHEME), ['http', 'https'], true)) {
+      return null;
+    }
+
+    $query = array_filter([
+      'client_id' => $this->client_id,
+      'post_logout_redirect_uri' => $redirectTo,
+      'id_token_hint' => $idToken,
+    ]);
+
+    return $endpoint . (str_contains($endpoint, '?') ? '&' : '?') . http_build_query($query);
   }
 
 

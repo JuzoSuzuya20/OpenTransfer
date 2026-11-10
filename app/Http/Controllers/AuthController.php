@@ -17,6 +17,7 @@ use App\Models\ReverseShareInvite;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Services\SsoPolicy;
+use App\Services\SsoSessions;
 use App\Services\TwoFactor;
 
 
@@ -159,20 +160,26 @@ class AuthController extends Controller
             ], 401);
         }
 
-        return $this->respondWithToken($user, $amr);
+        $sid = $amr === 'sso' ? rescue(fn () => Auth::getPayload()->get('sid'), null, false) : null;
+
+        return $this->respondWithToken($user, $amr, is_string($sid) ? $sid : null);
     }
 
     //logout the user
     public function logout()
     {
+        // The session at the identity provider, if it was opened there and asked to be closed too
+        $logoutUrl = SsoSessions::logoutUrl(request()->cookie('refresh_token'));
+
         //invalidate the token
-        Auth::logout();
+        rescue(fn () => Auth::logout(), null, false);
 
         //clear the refresh_token cookie
         $cookie = cookie('refresh_token', '', 0, null, null, false, true);
         return response()->json([
             'status' => 'success',
-            'message' => 'Logout successful'
+            'message' => 'Logout successful',
+            'data' => ['logout_url' => $logoutUrl],
         ])->withCookie($cookie);
     }
 

@@ -28,6 +28,15 @@ class BaseAuthProvider implements AuthProviderInterface
         throw new \Exception('Not implemented');
     }
 
+    /**
+     * Where to send the browser so that the provider closes its own session, or null when it
+     * does not, or the admin did not ask for it.
+     */
+    public function logoutUrl(?string $idToken, string $redirectTo): ?string
+    {
+        return null;
+    }
+
     protected function throwMissingDataException()
     {
         throw new AuthProviderMissingDataException('Missing required data');

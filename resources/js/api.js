@@ -600,13 +600,20 @@ export const refresh = async () => {
 }
 
 export const logout = async () => {
+  // An SSO session can also be closed at the identity provider, which then sends the browser back here
+  let logoutUrl = null
   try {
-    await fetch(`${apiUrl}/api/auth/logout`, {
+    const response = await fetch(`${apiUrl}/api/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     })
+    logoutUrl = (await response.json())?.data?.logout_url ?? null
   } catch (error) {
     // ignore
+  }
+
+  if (logoutUrl) {
+    window.location.assign(logoutUrl)
   }
 
   store.setMultiple({
