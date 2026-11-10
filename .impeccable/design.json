@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T00:00:00Z",
+  "title": "Design System: OpenTransfer",
+  "extensions": {
+    "colorMeta": {
+      "accent": { "role": "primary", "displayName": "Bleu de l'accent (sombre)" },
+      "accent-light": { "role": "primary", "displayName": "Bleu de l'accent (clair)" },
+      "page": { "role": "neutral", "displayName": "Fond de page" },
+      "card": { "role": "neutral", "displayName": "Fond de carte" },
+      "success": { "role": "status", "displayName": "Succès" },
+      "warning": { "role": "status", "displayName": "Avertissement" },
+      "danger": { "role": "status", "displayName": "Erreur" }
+    },
+    "typographyMeta": {
+      "figure": { "displayName": "Chiffre", "purpose": "Les nombres qui comptent : partages, volumes, téléchargements." },
+      "card-title": { "displayName": "Titre de carte", "purpose": "Nomme le contenu d'une carte, en capitales d'accent." }
+    },
+    "shadows": [
+      { "name": "float", "value": "0 8px 24px rgb(0 0 0 / 0.45)", "purpose": "Menus et fenêtres au-dessus de la page (sombre) ; 0.12 en clair." }
+    ],
+    "motion": [
+      { "name": "state", "value": "0.12s ease", "purpose": "Changements de fond et de couleur des contrôles ; coupés sous prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "600px" },
+      { "name": "header-compact", "value": "720px" },
+      { "name": "two-columns", "value": "960px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "L'action principale d'un écran.",
+      "html": "<button class=\"ds-btn\">Parcourir</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 1px solid transparent; border-radius: 4px; background: #6a6af4; color: #fff; font: 700 13.5px 'Plus Jakarta Sans', system-ui, sans-serif; cursor: pointer; } .ds-btn:hover { background: #7c7cf6; }"
+    },
+    {
+      "name": "Bouton secondaire",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Une action à côté de l'action principale.",
+      "html": "<button class=\"ds-btn-2\">Mes partages</button>",
+      "css": ".ds-btn-2 { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border: 0; border-radius: 4px; background: #2a2a2a; color: #cecece; font: 700 13.5px 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-btn-2:hover { background: #353535; color: #fff; }"
+    },
+    {
+      "name": "Action principale d'un formulaire",
+      "kind": "button",
+      "refersTo": "button-cta",
+      "description": "Créer le partage, se connecter, déverrouiller.",
+      "html": "<button class=\"ds-cta\">Créer le partage</button>",
+      "css": ".ds-cta { width: 100%; height: 42px; border: 0; border-radius: 4px; background: #6a6af4; color: #fff; font: 800 13px 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Carte",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Le conteneur de tout contenu, avec son titre et sa barre d'accent.",
+      "html": "<section class=\"ds-card\"><h2 class=\"ds-card-title\">Partages actifs</h2><div class=\"ds-figure\">4</div></section>",
+      "css": ".ds-card { position: relative; padding: 20px 20px 23px; background: #1e1e1e; border: 1px solid #353535; border-radius: 6px; overflow: hidden; color: #cecece; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-card::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #6a6af4; } .ds-card-title { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8585f6; } .ds-figure { font-size: 30px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Champ",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Un champ de formulaire, son libellé au-dessus.",
+      "html": "<label class=\"ds-label\">Nom du partage<input class=\"ds-input\" value=\"Dossier marché travaux\"></label>",
+      "css": ".ds-label { display: block; font: 600 13px 'Plus Jakarta Sans', system-ui, sans-serif; color: #cecece; } .ds-input { display: block; width: 100%; box-sizing: border-box; height: 40px; margin-top: 6px; padding: 8px 14px; border: 1px solid #3a3a3a; border-radius: 6px; background: #242424; color: #cecece; font: 400 14px 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-input:focus { outline: 2px solid #6a6af4; outline-offset: -1px; border-color: #6a6af4; }"
+    },
+    {
+      "name": "Filtres segmentés",
+      "kind": "nav",
+      "refersTo": "segmented",
+      "description": "Changer ce qu'une liste montre.",
+      "html": "<div class=\"ds-seg\"><button aria-selected=\"true\">Tous</button><button>Actifs</button><button>Expirés</button></div>",
+      "css": ".ds-seg { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid #353535; border-radius: 6px; background: #242424; } .ds-seg button { height: 28px; padding: 0 12px; border: 1px solid transparent; border-radius: 4px; background: none; color: #929292; font: 600 13px 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-seg button[aria-selected='true'] { background: #23233f; border-color: rgba(106,106,244,0.45); color: #fff; }"
+    },
+    {
+      "name": "Pastille d'état",
+      "kind": "chip",
+      "refersTo": "pill-success",
+      "description": "L'état d'un partage.",
+      "html": "<span class=\"ds-pill\">Actif</span>",
+      "css": ".ds-pill { display: inline-block; padding: 1px 6px; border-radius: 3px; background: #19271d; color: #27a658; font: 700 11.5px 'Plus Jakarta Sans', system-ui, sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le bordereau numérique",
+    "overview": "Chaque écran se lit comme un bordereau de transmission : qui envoie quoi, combien, jusqu'à quand, et où en est l'envoi. Structure et contrôles de DPM.lol, plus sobres, aux couleurs du DSFR, sans rien d'officiel.",
+    "keyCharacteristics": [
+      "Une identité, sombre ou claire selon le système",
+      "Titre de carte en petites capitales d'accent et barre d'accent de 3 px au pied",
+      "Chiffres en 800 à chasse fixe colorés selon l'état",
+      "Contrôles compacts et nets, coins de 4 px"
+    ],
+    "rules": [
+      { "name": "Des chiffres vrais", "body": "Un chiffre affiché vient des données de l'application, jamais d'une estimation.", "section": "colors" },
+      { "name": "Rien de caché", "body": "Aucune action n'apparaît au survol ; les réglages d'un envoi sont dans le formulaire.", "section": "elevation" }
+    ],
+    "dos": ["Passer par les jetons --ot-*", "Écrire chaque texte dans les six langues", "Donner une adresse à chaque section"],
+    "donts": ["Réintroduire des thèmes", "Flou, dégradés décoratifs, tuiles à icône", "Tout ce qui évoque l'État"]
+  }
+}

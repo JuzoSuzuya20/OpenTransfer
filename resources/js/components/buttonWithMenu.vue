@@ -114,14 +114,12 @@ const handleItemClick = (item) => {
   border-radius: 5px;
   z-index: 100;
   opacity: 0;
-  filter: blur(10px);
   transition: all 0.3s ease-in-out;
   transform: translateY(-10px);
   pointer-events: none;
 
   &.visible {
     opacity: 1;
-    filter: blur(0px);
     transform: translateY(0px);
     pointer-events: auto;
   }

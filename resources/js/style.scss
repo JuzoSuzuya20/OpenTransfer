@@ -306,7 +306,6 @@ body {
   width: 100%;
   height: 100%;
   background: var(--overlay-background-color);
-  backdrop-filter: blur(10px);
   z-index: 101;
   opacity: 0;
   pointer-events: none;
@@ -715,28 +714,27 @@ body {
   }
 }
 
+// A short explanation next to a setting: a small card, no blur, no skew
 .help-tip {
   position: fixed;
   z-index: 150;
-  padding: 0px;
-  border-radius: 10px;
-  font-size: 0.8rem;
-  color: var(--panel-text-color);
   width: 300px;
-  backdrop-filter: blur(20px);
   overflow: hidden;
+  font-size: 0.8125rem;
+  color: var(--ot-text);
+  background: var(--ot-card);
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+  box-shadow: var(--ot-shadow);
   opacity: 0;
   pointer-events: none;
-  transition: all 0.5s ease-in-out;
-  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1);
-  transform: skewX(-2deg);
-  filter: blur(10px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+
   &.no-transition {
     transition: none;
   }
   &.shifted-up {
     transform: translateY(-15px);
-    filter: blur(0px);
   }
   &.visible {
     opacity: 1;
@@ -744,29 +742,29 @@ body {
   }
   .help-tip-header {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
-    background: var(--panel-section-background-color-alt);
+    gap: 8px;
+    padding: 10px 14px 0;
+
     h6 {
-      font-size: 1rem;
-      font-weight: bold;
-      color: var(--panel-section-text-color);
       margin: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ot-accent-text);
     }
     .help-tip-close {
+      width: 16px;
+      height: 16px;
       cursor: pointer;
-      width: 20px;
-      height: 20px;
-      margin-top: 0px;
-      color: var(--panel-section-text-color);
+      color: var(--ot-muted);
     }
   }
   .help-tip-content {
-    padding: 10px 20px;
-    background: var(--panel-section-background-color-alt);
-    color: var(--panel-section-text-color);
+    padding: 8px 14px 12px;
+    color: var(--ot-text);
   }
 }
 

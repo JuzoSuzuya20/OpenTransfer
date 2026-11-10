@@ -41,7 +41,6 @@ const handleClickOutside = (event) => {
   width: 100%;
   height: 100%;
   background: var(--overlay-background-color);
-  backdrop-filter: blur(10px);
   z-index: 230;
   opacity: 0;
   pointer-events: none;

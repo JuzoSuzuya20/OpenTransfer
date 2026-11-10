@@ -106,8 +106,6 @@ export function useSettingsNavigation() {
    * @param {boolean} options.updateUrl - Whether to update the URL hash (default: true)
    */
   const navigateTo = (path, options = {}) => {
-    const { updateUrl = true } = options
-
     const parsed = parseSettingsPath(path)
 
     if (!parsed.tab || !VALID_TABS.includes(parsed.tab)) {
@@ -123,10 +121,7 @@ export function useSettingsNavigation() {
       path
     })
 
-    // Update URL hash if requested
-    if (updateUrl) {
-      updateUrlHash(path)
-    }
+    // The address is the one of the page App.vue opens for this tab
   }
 
   return {

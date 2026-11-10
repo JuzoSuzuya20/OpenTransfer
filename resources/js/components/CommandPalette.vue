@@ -274,7 +274,6 @@ defineExpose({ open, close })
   right: 0;
   bottom: 0;
   background: var(--overlay-background-color, rgba(0, 0, 0, 0.5));
-  backdrop-filter: blur(4px);
   z-index: 999;
   display: flex;
   align-items: flex-start;
