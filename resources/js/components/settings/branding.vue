@@ -1,4 +1,5 @@
 <script setup>
+import { emitter } from '../../store'
 import { ref, onMounted, watch, defineExpose, onBeforeUnmount, computed } from 'vue'
 import { Pipette, Image, Ruler, Tag, X, Dice5, Images, FileDown, Trash, FileUp, Clock8, RotateCcw   } from 'lucide-vue-next'
 import injectThemeVariables from '../../lib/injectThemeVariables'
@@ -203,6 +204,7 @@ const saveSettings = async () => {
       logoTimestamp.value = Date.now()
       // Update the logo in the browser by forcing a cache refresh
       updateBrowserLogo()
+      emitter.emit('logoChanged', false)
       // Clear the File object after successful upload
       settings.value.logo = settings.value.logo.name
     }
@@ -331,6 +333,7 @@ const handleResetLogo = async () => {
       toast.success(t.value('settings.branding.logo_reset_success'))
       // Update the logo in the browser by forcing a refresh
       updateBrowserLogo()
+      emitter.emit('logoChanged', true)
     })
     .catch((error) => {
       toast.error(t.value('settings.branding.logo_reset_failed'))

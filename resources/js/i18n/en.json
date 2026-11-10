@@ -1176,5 +1176,16 @@
     "how_to_fix": "How to fix",
     "tusd_help_title": "Upload Service Unavailable",
     "tusd_unavailable": "Upload service unavailable. The tusd service is not running. File uploads will not work until this is resolved."
+  },
+  "nav": {
+    "administration": "Administration",
+    "file_requests": "File requests",
+    "home": "Home",
+    "main": "Main navigation",
+    "my_shares": "My shares",
+    "profile": "My profile",
+    "search": "Search",
+    "send": "Send",
+    "statistics": "Statistics"
   }
 }

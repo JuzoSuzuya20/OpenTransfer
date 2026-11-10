@@ -1155,5 +1155,16 @@
     "how_to_fix": "Hoe repareren",
     "tusd_help_title": "Uploaddienst niet beschikbaar",
     "tusd_unavailable": "Uploaddienst niet beschikbaar. De tusd-service wordt niet uitgevoerd. Het uploaden van bestanden werkt niet totdat dit is opgelost."
+  },
+  "nav": {
+    "administration": "Beheer",
+    "file_requests": "Bestandsverzoeken",
+    "home": "Home",
+    "main": "Hoofdnavigatie",
+    "my_shares": "Mijn shares",
+    "profile": "Mijn profiel",
+    "search": "Zoeken",
+    "send": "Verzenden",
+    "statistics": "Statistieken"
   }
 }

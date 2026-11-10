@@ -1155,5 +1155,16 @@
     "how_to_fix": "Comment réparer",
     "tusd_help_title": "Service de téléchargement indisponible",
     "tusd_unavailable": "Service d’envoi de fichiers indisponible. Le service tusd n’est pas en cours d’exécution. Les téléversements de fichiers ne fonctionneront pas tant que ce problème ne sera pas résolu. »"
+  },
+  "nav": {
+    "administration": "Administration",
+    "file_requests": "Demandes de fichiers",
+    "home": "Accueil",
+    "main": "Navigation principale",
+    "my_shares": "Mes partages",
+    "profile": "Mon profil",
+    "search": "Rechercher",
+    "send": "Envoyer",
+    "statistics": "Statistiques"
   }
 }

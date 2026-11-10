@@ -77,67 +77,50 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .language-selector {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+  position: relative;
   z-index: 200;
-  background: var(--primary-button-background-color);
-  color: var(--primary-button-text-color);
-  width: var(--icon-only-button-width);
-  height: var(--button-height);
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
   border-radius: var(--button-border-radius);
+  background: var(--secondary-button-background-color);
+  color: var(--secondary-button-text-color);
   cursor: pointer;
 
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  opacity: 0.4;
-  transition: all 0.3s ease-in-out;
-  transform-origin: top right;
-  transform: scale(0.8);
-
-  @media (max-width: 900px) {
-    top: 5px;
-    right: 5px;
-    transform: scale(1);
-  }
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    background: var(--primary-button-background-color-hover);
-    color: var(--primary-button-text-color-hover);
-    opacity: 1;
-    transform: scale(1);
+    background: var(--secondary-button-background-color-hover);
+    color: var(--secondary-button-text-color-hover);
   }
 
   svg {
     width: 20px;
     height: 20px;
-    margin-top: -2px;
-    color: var(--primary-button-text-color);
   }
   .language-selector-dropdown {
     position: absolute;
     top: calc(100% + 5px);
     right: 0;
     background: var(--panel-item-background-color);
-    padding: 5px 10px;
+    border: 1px solid var(--border-color);
+    padding: 5px;
     display: flex;
     flex-direction: column;
     gap: 5px;
-    border-radius: 5px;
+    border-radius: var(--button-border-radius);
     z-index: 100;
     opacity: 0;
-    filter: blur(10px);
-    transition: all 0.3s ease-in-out;
-    transform: translateY(-10px);
+    transition: opacity 0.15s ease;
     pointer-events: none;
 
     &.visible {
       opacity: 1;
-      filter: blur(0px);
-      transform: translateY(0px);
       pointer-events: auto;
     }
 

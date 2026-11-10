@@ -8,6 +8,8 @@ const VIDEO_EXTENSIONS = ['mp4', 'webm']
 
 const slideshowSpeed = ref(30)
 const useMyBackgrounds = ref(false)
+// A theme with its own page background shows it: the default image only dresses the others
+const themeHasPageBackground = ref(false)
 const backgroundFiles = ref([])
 const interval = ref(null)
 const currentBackgroundIndex = ref(0)
@@ -24,6 +26,7 @@ const isActive = (index) => {
 onMounted(() => {
   slideshowSpeed.value = domData().background_slideshow_speed
   useMyBackgrounds.value = domData().use_my_backgrounds
+  themeHasPageBackground.value = domData().theme_page_background === true
   
   if (useMyBackgrounds.value) {
     //remove the interval if it exists
@@ -48,6 +51,7 @@ const changeBackground = () => {
 <template>
   <div class="backgrounds" v-if="!useMyBackgrounds">
     <div
+      v-if="!themeHasPageBackground"
       class="backgrounds-item active"
       :style="{
         backgroundImage: `url(/images/default-background.jpg)`

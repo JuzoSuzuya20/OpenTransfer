@@ -16,7 +16,7 @@ import ConfirmDialog from './components/ConfirmDialog.vue'
 import CommandPalette from './components/CommandPalette.vue'
 
 //3rd party
-import { LogOut, Settings as SettingsIcon, MailPlus } from 'lucide-vue-next'
+import { LogOut, Settings as SettingsIcon, Search } from 'lucide-vue-next'
 import { TolgeeProvider } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
@@ -38,6 +38,8 @@ const allowReverseShares = ref(false)
 const logoWidth = ref(0)
 const showPoweredBy = ref(false)
 const setupNeeded = ref(false)
+const defaultLogo = ref(true)
+const applicationName = ref('')
 
 //reactive data
 const auth = ref(null)
@@ -45,6 +47,10 @@ const downloadShareCode = ref('')
 const settingsPanel = ref(null)
 const toast = useToast()
 const reverseInvite = ref(null)
+const commandPalette = ref(null)
+
+// The navigation belongs to people with an account: guests only upload what they were asked for
+const showNavigation = computed(() => store.isLoggedIn() && !store.isGuest())
 
 onMounted(() => {
 
@@ -52,6 +58,14 @@ onMounted(() => {
   logoWidth.value = domData().logo_width
   showPoweredBy.value = domData().show_powered_by
   setupNeeded.value = domData().setup_needed
+  defaultLogo.value = domData().default_logo !== false
+  applicationName.value = domData().application_name
+
+  // The branding settings uploaded a logo, or went back to the default one
+  emitter.on('logoChanged', (isDefault) => {
+    defaultLogo.value = isDefault
+    logoTimestamp.value = Date.now()
+  })
 
   if (domError().length > 0) {
     console.log('error', domError())
@@ -134,6 +148,14 @@ const openSettings = () => {
   store.setSettingsOpen(true)
 }
 
+const openSettingsTab = (tab) => {
+  handleSettingsNavigate({ tab, section: null, subSection: null })
+}
+
+const openCommandPalette = () => {
+  commandPalette.value?.open()
+}
+
 const openReverseShareInvite = () => {
   reverseInvite.value.showReverseInviteForm()
 }
@@ -206,11 +228,76 @@ watch(
 <template>
   <TolgeeProvider>
     <Background />
-    <LanguageSelector />
-    <div class="logo-container" v-if="store.mode !== 'setup'">
-      <a href="/"><img :src="logoUrl" alt="Erugo" id="logo" :style="{ width: `${logoWidth}px` }" /></a>
-    </div>
-    <div class="main">
+    <header class="app-header">
+      <div class="app-header-bar">
+        <a class="brand" href="/" :aria-label="t('nav.home')">
+          <!-- no custom logo: the OpenTransfer mark, drawn in the colours of the theme -->
+          <template v-if="defaultLogo">
+            <svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true">
+              <rect width="28" height="28" rx="7" />
+              <path d="M8 15l6-6 6 6M14 9v11" />
+            </svg>
+            <span class="brand-name">OpenTransfer</span>
+          </template>
+          <img v-else :src="logoUrl" :alt="applicationName" id="logo" :style="{ width: `${logoWidth}px` }" />
+        </a>
+
+        <button class="header-search secondary" v-if="showNavigation" @click="openCommandPalette">
+          <Search />
+          <span class="header-search-label">{{ t('nav.search') }}</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+
+        <div class="app-header-actions">
+          <LanguageSelector />
+          <button
+            class="settings-button secondary icon-only"
+            @click="openSettings"
+            v-if="showNavigation"
+            :title="t('settings.title.manage')"
+            :aria-label="t('settings.title.manage')"
+          >
+            <SettingsIcon />
+          </button>
+          <button
+            class="logout icon-only secondary"
+            @click="handleLogoutClick"
+            v-if="store.isLoggedIn()"
+            :title="store.isGuest() ? t('auth.end_guest_session') : t('auth.logout')"
+            :aria-label="store.isGuest() ? t('auth.end_guest_session') : t('auth.logout')"
+          >
+            <LogOut />
+          </button>
+        </div>
+      </div>
+
+      <!-- every entry leads to a screen that already exists: the settings panel opens on its tab -->
+      <nav class="app-nav" v-if="showNavigation" :aria-label="t('nav.main')">
+        <a
+          class="app-nav-item"
+          href="/"
+          :class="{ active: store.mode === 'upload' }"
+          :aria-current="store.mode === 'upload' ? 'page' : null"
+        >
+          {{ t('nav.send') }}
+        </a>
+        <button class="app-nav-item" @click="openSettingsTab('myShares')">{{ t('nav.my_shares') }}</button>
+        <button class="app-nav-item" @click="openReverseShareInvite" v-if="allowReverseShares">
+          {{ t('nav.file_requests') }}
+        </button>
+        <button class="app-nav-item" @click="openSettingsTab('stats')" v-if="store.isAdmin()">
+          {{ t('nav.statistics') }}
+        </button>
+        <button class="app-nav-item" @click="openSettingsTab('system')" v-if="store.isAdmin()">
+          {{ t('nav.administration') }}
+        </button>
+        <button class="app-nav-item" @click="openSettingsTab('myProfile')" v-else>
+          {{ t('nav.profile') }}
+        </button>
+      </nav>
+    </header>
+
+    <main class="main" :class="`main-${store.mode}`">
       <!-- auth: shows if user is not logged in and the mode is upload -->
       <Auth v-show="!store.isLoggedIn() && store.mode === 'upload'" ref="auth" />
 
@@ -225,36 +312,12 @@ watch(
 
       <!-- thank guest for upload: shows if mode is thank_guest_for_upload -->
       <ThankGuestForUpload v-if="store.mode === 'thank_guest_for_upload'" />
-    </div>
+    </main>
 
     <footer>
-      <!-- version info: shows if show_powered_by is true -->
       <div class="powered-by" v-if="showPoweredBy">
         {{ $t('Powered by') }}
-        <a href="https://erugo.app"><img :src="'/icon.svg'" alt="Erugo" class="erugo-icon" /> Erugo</a>
-      </div>
-      <!-- main menu: shows if user is logged in -->
-      <div class="main-menu" v-if="store.isLoggedIn()">
-        <button
-          class="reverse-share-invite-button secondary icon-only"
-          :title="t('button.reverse_share_invite')"
-          @click="openReverseShareInvite"
-          v-if="!store.isGuest() && allowReverseShares"
-        >
-          <MailPlus />
-        </button>
-
-        <button class="settings-button secondary icon-only" @click="openSettings" v-if="!store.isGuest()">
-          <SettingsIcon />
-        </button>
-
-        <button
-          class="logout icon-only secondary"
-          @click="handleLogoutClick"
-          :title="store.isGuest() ? t('auth.end_guest_session') : t('auth.logout')"
-        >
-          <LogOut />
-        </button>
+        <a href="https://github.com/JuzoSuzuya20/OpenTransfer" rel="noopener">OpenTransfer</a>
       </div>
     </footer>
 
@@ -268,16 +331,6 @@ watch(
     <ConfirmDialog />
 
     <!-- command palette: available when logged in -->
-    <CommandPalette v-if="store.isLoggedIn()" />
+    <CommandPalette ref="commandPalette" v-if="store.isLoggedIn()" />
   </TolgeeProvider>
 </template>
-
-
-<style scoped>
-.erugo-icon {
-  width: 20px;
-  height: 20px;
-  margin-top: -5px;
-  margin-left: -5px;
-}
-</style>

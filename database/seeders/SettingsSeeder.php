@@ -16,8 +16,8 @@ class SettingsSeeder extends Seeder
 
             [
                 'key' => 'application_name',
-                'value' => 'Erugo File Sharing',
-                'previous_value' => 'Erugo File Sharing',
+                'value' => 'OpenTransfer',
+                'previous_value' => 'OpenTransfer',
                 'group' => 'ui.strings',
                 'created_at' => now(),
                 'updated_at' => now()

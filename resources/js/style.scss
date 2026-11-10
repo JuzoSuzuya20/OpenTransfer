@@ -6,7 +6,7 @@
 @use "./styles/toasts";
 @use "./styles/uploader";
 @use "./styles/downloader";
-@use "./styles/footer";
+@use "./styles/shell";
 
 
 :root {
@@ -184,49 +184,6 @@ body {
     &:hover {
       color: var(--link-color-hover);
     }
-  }
-}
-
-#app {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  @media (min-width: 900px) {
-    padding: 20px;
-  }
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  overflow: hidden;
-  width: min(500px, 100%);
-  margin-bottom: 20px;
-  @media (min-width: 900px) {
-    margin-bottom: -60px;
-  }
-}
-
-.logo-container {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  width: 100%;
-
-  @media (max-width: 900px) {
-    justify-content: center;
-    padding-top: 10px;
-  }
-
-  #logo {
-    z-index: 200;
-    padding-bottom: 20px;
-    padding-top: 10px;
   }
 }
 

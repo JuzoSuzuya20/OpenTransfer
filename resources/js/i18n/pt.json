@@ -1126,5 +1126,16 @@
     "how_to_fix": "Como corrigir",
     "tusd_help_title": "Serviço de carregamento indisponível",
     "tusd_unavailable": "Serviço de carregamento indisponível. O serviço tusd não está a funcionar. Os carregamentos de ficheiros não funcionarão até que isto seja resolvido."
+  },
+  "nav": {
+    "administration": "Administração",
+    "file_requests": "Pedidos de ficheiros",
+    "home": "Início",
+    "main": "Navegação principal",
+    "my_shares": "As minhas partilhas",
+    "profile": "O meu perfil",
+    "search": "Pesquisar",
+    "send": "Enviar",
+    "statistics": "Estatísticas"
   }
 }

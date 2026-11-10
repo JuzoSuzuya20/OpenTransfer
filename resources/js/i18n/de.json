@@ -1155,5 +1155,16 @@
     "how_to_fix": "Wie beheben",
     "tusd_help_title": "Upload-Dienst nicht verfügbar",
     "tusd_unavailable": "Der Upload-Dienst ist nicht verfügbar. Der tusd-Dienst läuft nicht. Datei-Uploads funktionieren nicht, bis das Problem behoben ist."
+  },
+  "nav": {
+    "administration": "Verwaltung",
+    "file_requests": "Dateianfragen",
+    "home": "Startseite",
+    "main": "Hauptnavigation",
+    "my_shares": "Meine Freigaben",
+    "profile": "Mein Profil",
+    "search": "Suchen",
+    "send": "Senden",
+    "statistics": "Statistiken"
   }
 }

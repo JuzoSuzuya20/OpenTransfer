@@ -1155,5 +1155,16 @@
     "how_to_fix": "Come risolvere",
     "tusd_help_title": "Servizio di caricamento non disponibile",
     "tusd_unavailable": "Servizio di caricamento non disponibile. Il servizio tusd non è in esecuzione. Il caricamento dei file non funzionerà finché non sarà risolto."
+  },
+  "nav": {
+    "administration": "Amministrazione",
+    "file_requests": "Richieste di file",
+    "home": "Home",
+    "main": "Navigazione principale",
+    "my_shares": "Le mie condivisioni",
+    "profile": "Il mio profilo",
+    "search": "Cerca",
+    "send": "Invia",
+    "statistics": "Statistiche"
   }
 }
