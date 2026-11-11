@@ -87,8 +87,14 @@ button {
 
   // The main action of a form: larger, set in small capitals
   &.cta {
-    height: var(--ot-control-lg);
-    padding: 0 18px;
+    // A long label ("Añada archivos para crear el envío") wraps instead of running out of the button
+    height: auto;
+    min-height: var(--ot-control-lg);
+    padding: 10px 18px;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+    text-wrap: balance;
     font-size: 0.8125rem;
     font-weight: 800;
     letter-spacing: 0.04em;

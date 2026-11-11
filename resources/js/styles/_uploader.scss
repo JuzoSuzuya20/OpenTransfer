@@ -216,12 +216,9 @@
 // --- Access
 .send-access-pair {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  // Side by side only when the unit ("Semaine(s)", "Settimana/e") still fits: otherwise one per row
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   gap: 12px;
-
-  @media (max-width: 420px) {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 // A number and its unit in one field

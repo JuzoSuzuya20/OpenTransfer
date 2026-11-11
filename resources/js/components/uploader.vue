@@ -952,7 +952,14 @@ const filesByDirectory = computed(() => {
           <div class="input-container">
             <label for="share-expiry">{{ $t('send.expires_in') }}</label>
             <div class="field-group">
-              <input type="number" v-model="expiryValue" id="share-expiry" min="1" inputmode="numeric" />
+              <input
+                type="number"
+                v-model="expiryValue"
+                id="share-expiry"
+                min="1"
+                inputmode="numeric"
+                :aria-describedby="maxExpiryTimeInSelectedUnit != null ? 'share-expiry-max' : undefined"
+              />
               <select v-model="expiryUnit" :aria-label="$t('send.expiry_unit')">
                 <option value="days">{{ $t('uploader.expiry_unit.days') }}</option>
                 <option value="weeks" v-if="canExpireInWeeks">{{ $t('uploader.expiry_unit.weeks') }}</option>
@@ -960,6 +967,10 @@ const filesByDirectory = computed(() => {
                 <option value="years" v-if="canExpireInYears">{{ $t('uploader.expiry_unit.years') }}</option>
               </select>
             </div>
+            <!-- The maximum belongs to the expiry: under the downloads it would read as a download limit -->
+            <p class="help-text" id="share-expiry-max" v-if="maxExpiryTimeInSelectedUnit != null">
+              {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
+            </p>
           </div>
           <div class="input-container" v-if="!store.isGuest()">
             <label for="share-limit">{{ $t('send.downloads') }}</label>
@@ -969,9 +980,6 @@ const filesByDirectory = computed(() => {
             </select>
           </div>
         </div>
-        <p class="help-text" v-if="maxExpiryTimeInSelectedUnit != null">
-          {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
-        </p>
 
         <div class="input-container">
           <label for="share-password">{{ $t('send.password') }}</label>
