@@ -24,6 +24,25 @@ final class EmailTexts
     // What the seeder ships: a different value was written by an admin, for the default language
     private const SHIPPED_FALLBACK = "If you're having trouble with the button above, copy and paste the URL below into your web browser.";
 
+    // The English subjects the seeder ships: another value was written by an admin
+    private const SHIPPED_SUBJECTS = [
+        'accountCreatedMail' => 'Account Created! Set your password',
+        'passwordResetMail' => 'Reset your password',
+        'reverseShareInviteMailV2' => 'You have been invited to share files',
+        'shareCreatedMail' => 'Files have been shared with you',
+        'shareDeletedWarningMail' => 'Your share has been deleted',
+        'shareDeletionWarningMail' => 'Your share will be deleted soon',
+        'shareDownloadedMail' => 'Your share has been downloaded',
+        'shareExpiredWarningMail' => 'Your share has expired',
+        'shareExpiryWarningMail' => 'Your share will expire soon',
+        'emailVerificationMail' => 'Verify your email address',
+    ];
+
+    public static function shippedSubject(string $name): ?string
+    {
+        return self::SHIPPED_SUBJECTS[$name] ?? null;
+    }
+
     public static function layout(string $locale): array
     {
         $texts = self::LAYOUT[$locale] ?? self::LAYOUT['en'];

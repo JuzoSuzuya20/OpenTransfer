@@ -205,6 +205,7 @@ Route::group([], function ($router) {
     Route::group(['prefix' => 'email-templates', 'middleware' => ['auth', Admin::class]], function ($router) {
         Route::get('/', [EmailTemplatesController::class, 'index'])->name('email-templates.index');
         Route::put('/', [EmailTemplatesController::class, 'update'])->name('email-templates.update');
+        Route::delete('/{locale}/{name}', [EmailTemplatesController::class, 'reset'])->name('email-templates.reset');
     });
 
     //manage database backups [auth, admin]

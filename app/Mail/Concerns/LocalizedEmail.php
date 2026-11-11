@@ -25,20 +25,6 @@ trait LocalizedEmail
 
     abstract protected function templateName(): string;
 
-    // The English subjects the seeder ships: another value was written by an admin
-    private const SHIPPED_SUBJECTS = [
-        'accountCreatedMail' => 'Account Created! Set your password',
-        'passwordResetMail' => 'Reset your password',
-        'reverseShareInviteMailV2' => 'You have been invited to share files',
-        'shareCreatedMail' => 'Files have been shared with you',
-        'shareDeletedWarningMail' => 'Your share has been deleted',
-        'shareDeletionWarningMail' => 'Your share will be deleted soon',
-        'shareDownloadedMail' => 'Your share has been downloaded',
-        'shareExpiredWarningMail' => 'Your share has expired',
-        'shareExpiryWarningMail' => 'Your share will expire soon',
-        'emailVerificationMail' => 'Verify your email address',
-    ];
-
     protected function speak(?string $locale): void
     {
         $this->emailLocale = Locales::isSupported($locale) ? $locale : 'en';
@@ -63,6 +49,9 @@ trait LocalizedEmail
     public function templateView(): string
     {
         $name = $this->templateName();
+        if (file_exists($this->rewrittenPath())) {
+            return "email-overrides::{$this->emailLocale}.$name";
+        }
         if ($this->usesLegacyTemplate()) {
             return "emails.$name";
         }
@@ -84,7 +73,7 @@ trait LocalizedEmail
     {
         $name = $this->templateName();
         $former = Setting::where('key', "email_subject_{$name}.twig")->value('value');
-        $formerWasRewritten = is_string($former) && trim($former) !== '' && $former !== (self::SHIPPED_SUBJECTS[$name] ?? null);
+        $formerWasRewritten = is_string($former) && trim($former) !== '' && $former !== EmailTexts::shippedSubject($name);
 
         if ($this->usesLegacyTemplate() || ($formerWasRewritten && $this->emailLocale === Locales::default() && !file_exists($this->rewrittenPath()))) {
             return (string) $former;

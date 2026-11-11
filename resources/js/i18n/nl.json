@@ -1377,5 +1377,19 @@
       "post_logout_uri": "Valid post logout redirect URI:",
       "keycloak_secret": "Kopieer het geheim van het tabblad Credentials naar het veld hiernaast."
     }
+  },
+  "emails": {
+    "admin": {
+      "language_title": "Taal van de e-mails",
+      "language_label": "Te bewerken taal",
+      "language_help": "Elke e-mail gaat uit in de taal van de lezer: die van zijn account, anders de standaardtaal van de instantie. Herschrijf elke taal apart; de andere houden hun eigen tekst.",
+      "customised": "Herschreven",
+      "shipped": "Origineel",
+      "reset": "Terug naar de originele tekst",
+      "reset_confirm": "Terug naar de originele tekst van „{name}” in deze taal? Wat ervoor geschreven is, wordt verwijderd.",
+      "reset_done": "Originele tekst hersteld",
+      "reset_failed": "De originele tekst kon niet worden hersteld",
+      "unsaved": "Er zijn niet-opgeslagen wijzigingen. Toch van taal wisselen?"
+    }
   }
 }

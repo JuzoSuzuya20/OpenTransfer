@@ -1,7 +1,8 @@
 <script setup>
 import { ref, onMounted, defineExpose, inject, computed } from 'vue'
-import { Check, X } from 'lucide-vue-next'
-import { getEmailTemplates, updateEmailTemplates, getSettingById, saveSettingsById } from '../../api'
+import { Check, X, RotateCcw } from 'lucide-vue-next'
+import { getEmailTemplates, updateEmailTemplates, resetEmailTemplate, getSettingById, saveSettingsById } from '../../api'
+import { domData } from '../../domData'
 
 import { useToast } from 'vue-toastification'
 import { mapSettings } from '../../utils'
@@ -23,31 +24,64 @@ const originalFallbackText = ref('')
 
 const emit = defineEmits(['navItemClicked'])
 
-onMounted(async () => {
+// Each email is written in the language of its reader: the admin rewrites one language at a time
+const defaultLanguage = domData().default_language || 'en'
+const locale = ref(defaultLanguage)
+const LANGUAGES = [
+  { code: 'en', name: 'English' },
+  { code: 'fr', name: 'Français' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'es', name: 'Español' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'nl', name: 'Nederlands' },
+  { code: 'pt', name: 'Português' }
+]
+
+const loadTemplates = async () => {
   try {
-    const templates = await getEmailTemplates()
-    console.log(templates)
+    const templates = await getEmailTemplates(locale.value)
+    emailTemplates.value = []
+    originalTemplates.value = {}
     templates.forEach((template) => {
-      const templateData = {
+      emailTemplates.value.push({
         name: tidyTemplateName(template.name),
         id: template.id,
         content: template.content,
         variables: template.variables,
         subject: template.subject,
+        customised: template.customised,
         requiredVariables: template.requiredVariables || []
-      }
-      emailTemplates.value.push(templateData)
-      // Store original state for dirty checking
-      originalTemplates.value[template.id] = JSON.stringify({
-        subject: template.subject,
-        variables: template.variables
       })
+      originalTemplates.value[template.id] = JSON.stringify({ subject: template.subject, variables: template.variables })
     })
   } catch (error) {
     console.error(error)
     toast.error(t.value('settings.emailTemplates.error_loading_templates'))
   }
+}
 
+const changeLanguage = async (event) => {
+  if (emailTemplates.value.some(isTemplateDirty) && !confirm(t.value('emails.admin.unsaved'))) {
+    event.target.value = locale.value
+    return
+  }
+  locale.value = event.target.value
+  await loadTemplates()
+}
+
+const resetTemplate = async (template) => {
+  if (!confirm(t.value('emails.admin.reset_confirm', { name: template.name }))) return
+  try {
+    await resetEmailTemplate(locale.value, template.id)
+    toast.success(t.value('emails.admin.reset_done'))
+    await loadTemplates()
+  } catch (error) {
+    toast.error(t.value('emails.admin.reset_failed'))
+  }
+}
+
+onMounted(async () => {
+  await loadTemplates()
   try {
     const text = await getSettingById('email_template_fallback_text')
     fallbackText.value = text.value
@@ -134,13 +168,14 @@ const saveEmailTemplates = async () => {
   // Save dirty templates
   if (dirtyTemplates.length > 0) {
     try {
-      await updateEmailTemplates(dirtyTemplates)
+      await updateEmailTemplates({ locale: locale.value, templates: dirtyTemplates })
       // Update original state after successful save
       for (const template of dirtyTemplates) {
         originalTemplates.value[template.id] = JSON.stringify({
           subject: template.subject,
           variables: template.variables
         })
+        template.customised = true
       }
       toast.success(t.value('settings.emailTemplates.success'))
     } catch (error) {
@@ -208,6 +243,28 @@ defineExpose({
       <div class="col-12 col-md-10 pt-5">
         <div class="row mb-5">
           <div class="col-12 col-md-8 pe-0 ps-0 ps-md-3">
+            <div class="setting-group" id="emailLanguage">
+              <div class="setting-group-header">
+                <h3>{{ $t('emails.admin.language_title') }}</h3>
+              </div>
+              <div class="setting-group-body">
+                <div class="setting-group-body-item">
+                  <label for="email-language">{{ $t('emails.admin.language_label') }}</label>
+                  <select id="email-language" :value="locale" @change="changeLanguage">
+                    <option v-for="language in LANGUAGES" :key="language.code" :value="language.code" :lang="language.code">{{ language.name }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-none d-md-block col ps-0">
+            <div class="section-help">
+              <p>{{ $t('emails.admin.language_help') }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-5" v-if="locale === defaultLanguage">
+          <div class="col-12 col-md-8 pe-0 ps-0 ps-md-3">
             <div class="setting-group" id="baseTemplate">
               <div class="setting-group-header">
                 <h3>
@@ -235,13 +292,20 @@ defineExpose({
         <div class="row mb-5" v-for="template in emailTemplates" :key="template.id">
           <div class="col-12 col-md-8 pe-0 ps-0 ps-md-3">
             <div class="setting-group" :id="template.id">
-              <div class="setting-group-header">
+              <div class="setting-group-header email-template-head">
                 <h3>
                   {{ $t(template.name) }}
                 </h3>
+                <span class="ot-pill" :class="{ 'is-warning': template.customised }">
+                  {{ template.customised ? $t('emails.admin.customised') : $t('emails.admin.shipped') }}
+                </span>
               </div>
 
               <div class="setting-group-body">
+                <button type="button" class="ot-act email-template-reset" v-if="template.customised" @click="resetTemplate(template)">
+                  <RotateCcw aria-hidden="true" />
+                  {{ $t('emails.admin.reset') }}
+                </button>
                 <EmailTemplateEditor :model-value="template" @update:model-value="updateTemplate($event, template)" />
               </div>
             </div>
@@ -269,6 +333,16 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
+.email-template-head {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between;
+  gap: 12px;
+}
+.email-template-reset {
+  align-self: flex-start;
+}
+
 .auth-provider {
   margin-bottom: 8px;
   .icon {

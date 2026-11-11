@@ -2,190 +2,188 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Mail\Concerns\EmailTexts;
 use App\Models\Setting;
+use App\Support\Locales;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Utils\FileHelper;
+use Illuminate\Validation\Rule;
 
+/**
+ * The emails, one language at a time. The shipped version of each language lives in
+ * resources/views/emails/{locale}/; what an admin writes for a language goes to
+ * storage/templates/emails/{locale}/ and can be reset. A template an admin wrote before emails
+ * had languages (storage/templates/emails/) still serves the default language.
+ */
 class EmailTemplatesController extends Controller
 {
-  public function index()
+  private const BLOCKS = ['subject', 'header', 'content', 'action_url', 'action_text'];
+
+  public function index(Request $request)
   {
-    //get all email templates (all .twig file in /resources/views/emails)
-    $template_files = glob(resource_path('views/emails/*.twig'));
-    //load the content of each file
+    $locale = $request->query('locale', Locales::default());
+    if (!Locales::isSupported($locale)) {
+      return $this->invalidLocale();
+    }
+
     $templates = [];
-    foreach ($template_files as $template_file) {
-      $templateName = basename($template_file, '.twig');
-      //skip 'layout.twig'
-      if ($templateName === 'layout') {
-        continue;
-      }
-      // Strip version suffix (e.g., V2, V3) from display name
-      $displayName = preg_replace('/V\d+$/', '', $templateName);
-      
-      // Get required variables from the original template (not customized)
-      $originalContent = file_get_contents($template_file);
-      $originalBlocks = $this->extractVariables($originalContent);
-      $requiredVariables = array_merge(['subject'], array_keys($originalBlocks));
-      
+    foreach ($this->names() as $name) {
+      $shippedBlocks = $this->blocks(file_get_contents($this->shippedPath($locale, $name)));
+      [$source, $customised, $legacy] = $this->source($locale, $name);
+      $blocks = $this->blocks($source);
+
       $templates[] = [
-        'name' => $displayName,
-        'id' => $templateName,
-        'content' => $this->getTemplateContent($template_file),
-        'variables' => $this->extractVariables($this->getTemplateContent($template_file)),
-        'subject' => $this->getSubject($templateName . '.twig'),
-        'requiredVariables' => $requiredVariables
+        'name' => preg_replace('/V\d+$/', '', $name),
+        'id' => $name,
+        'content' => $source,
+        // The subject of a template written before languages was a setting
+        'subject' => $legacy ? (string) Setting::where('key', "email_subject_{$name}.twig")->value('value') : ($blocks['subject'] ?? ''),
+        'variables' => array_diff_key($blocks, ['subject' => true]),
+        'requiredVariables' => array_keys($shippedBlocks),
+        'customised' => $customised,
       ];
     }
+
     return response()->json([
       'status' => 'success',
       'message' => 'Email templates fetched successfully',
-      'data' => [
-        'templates' => $templates
-      ]
+      'data' => ['locale' => $locale, 'templates' => $templates],
     ]);
-  }
-
-  private function getTemplateContent($template_file)
-  {
-    //first see if we have the same filename in storage/templates/emails
-    $template_file_path = storage_path('templates/emails/' . basename($template_file));
-    if (file_exists($template_file_path)) {
-      return file_get_contents($template_file_path);
-    }
-    return file_get_contents($template_file);
-  }
-
-  private function extractVariables($content)
-  {
-    $variables = [];
-    //find content inside blocks like {% block name %}, extract the name and the content
-    preg_match_all('/{% block (.*?) %}(.*?){% endblock %}/s', $content, $matches);
-    foreach ($matches[1] as $key => $match) {
-      $variables[$match] = $this->treatContent($matches[2][$key], $match);
-    }
-    return $variables;
-  }
-
-  private function getSubject($name)
-  {
-    $setting =  Setting::where('key', 'email_subject_' . $name)->first();
-    if ($setting) {
-      return $setting->value;
-    }
-    return null;
-  }
-
-  private function treatContent($content, $name)
-  {
-    if ($name == 'header' || $name == 'action_text' || $name == 'action_url') {
-      $content = str_replace("\n", "", $content);
-      $content = trim($content);
-    }
-
-    if ($name == 'content') {
-      //remove leading and trailing newlines
-      $content = trim($content, "\n");
-    }
-    return $content;
   }
 
   public function update(Request $request)
   {
-    $templates = $request->all();
+    $locale = $request->input('locale');
+    if (!Locales::isSupported($locale)) {
+      return $this->invalidLocale();
+    }
+
+    $templates = (array) $request->input('templates', []);
     foreach ($templates as $template) {
-      // Validate template ID to prevent path traversal attacks
-      $templateId = $template['id'] ?? '';
-      if (!preg_match('/^[a-zA-Z0-9_-]+$/', $templateId)) {
-        return response()->json([
-          'status' => 'error',
-          'message' => 'Invalid template ID',
-          'data' => []
-        ], 400);
+      $name = $template['id'] ?? '';
+      if (!is_string($name) || !preg_match('/^[a-zA-Z0-9_-]+$/', $name)) {
+        return response()->json(['status' => 'error', 'message' => 'Invalid template ID', 'data' => []], 400);
       }
-      
-      // Build dynamic validation rules based on original template
-      $originalPath = resource_path('views/emails/' . $templateId . '.twig');
-      if (!file_exists($originalPath)) {
-        return response()->json([
-          'status' => 'error',
-          'message' => 'Template not found: ' . $templateId,
-          'data' => []
-        ], 404);
+      if (!in_array($name, $this->names(), true)) {
+        return response()->json(['status' => 'error', 'message' => 'Template not found: ' . $name, 'data' => []], 404);
       }
-      $originalContent = file_get_contents($originalPath);
-      $originalBlocks = $this->extractVariables($originalContent);
 
-      $rules = [
-        'content' => 'required|string',
-        'id' => 'required|string',
-        'subject' => 'required|string',
-      ];
-
-      // Only require blocks that exist in the original template
-      foreach (['header', 'content', 'action_text', 'action_url'] as $block) {
-        if (array_key_exists($block, $originalBlocks)) {
-          $rules["variables.$block"] = 'required|string';
+      // Every block the shipped email has must still be there: no email without its link
+      $rules = ['subject' => ['required', 'string']];
+      foreach (array_keys($this->blocks(file_get_contents($this->shippedPath($locale, $name)))) as $block) {
+        if ($block !== 'subject') {
+          $rules["variables.$block"] = ['required', 'string'];
         }
       }
-
       $validator = Validator::make($template, $rules);
-
       if ($validator->fails()) {
-        return response()->json([
-          'status' => 'error',
-          'message' => 'Invalid template',
-          'data' => $validator->errors()
-        ], 422);
+        return response()->json(['status' => 'error', 'message' => 'Invalid template', 'data' => $validator->errors()], 422);
       }
-
     }
 
     foreach ($templates as $template) {
-      $this->updateTemplate($template);
+      $this->write($locale, $template);
     }
 
-    return response()->json([
-      'status' => 'success',
-      'message' => 'Email templates updated successfully',
-      'data' => $templates
-    ]);
+    return response()->json(['status' => 'success', 'message' => 'Email templates updated successfully', 'data' => $templates]);
   }
 
-  private function updateTemplate($template)
+  // Back to the shipped version of that language
+  public function reset(string $locale, string $name)
   {
-    // Template ID should already be validated by update() method
-    // but add basename() as defense-in-depth
-    $safeId = basename($template['id']);
-    
-    $template_file_path = storage_path('templates/emails/' . $safeId . '.twig');
-    Setting::updateOrCreate(
-      ['key' => 'email_subject_' . $safeId . '.twig'],
-      ['value' => $template['subject'], 'group' => 'system.emails.subjects']
-    );
-    if (!file_exists(dirname($template_file_path))) {
-      mkdir(dirname($template_file_path), 0755, true);
+    if (!Locales::isSupported($locale)) {
+      return $this->invalidLocale();
     }
-    $date = date('Y-m-d H:i:s');
+    if (!in_array($name, $this->names(), true)) {
+      return response()->json(['status' => 'error', 'message' => 'Template not found', 'data' => []], 404);
+    }
 
-    // Conditionally build block strings - only include if they exist in the template
-    $actionUrlBlock = isset($template['variables']['action_url'])
-      ? "{% block action_url %}{$template['variables']['action_url']}{% endblock %}"
-      : '';
-    $actionTextBlock = isset($template['variables']['action_text'])
-      ? "{% block action_text %}{$template['variables']['action_text']}{% endblock %}"
-      : '';
+    @unlink($this->rewrittenPath($locale, $name));
+    if ($locale === Locales::default()) {
+      // The template and subject written before languages served this language: they go too
+      @unlink($this->legacyPath($name));
+      $shipped = EmailTexts::shippedSubject($name);
+      if ($shipped !== null) {
+        Setting::where('key', "email_subject_{$name}.twig")->update(['value' => $shipped]);
+      }
+    }
 
-    $template_twig = <<<TWIG
-      {% extends 'emails/layout' %}
-      {% block header %}{$template['variables']['header']}{% endblock %}
-      {% block content %}{$template['variables']['content']}{% endblock %}
-      {$actionUrlBlock}
-      {$actionTextBlock}
-      {# file generated at {$date} #}
-    TWIG;
+    return response()->json(['status' => 'success', 'message' => 'Email template reset']);
+  }
 
-    file_put_contents($template_file_path, $template_twig);
+  /** @return string[] the emails, named after their shipped English templates */
+  private function names(): array
+  {
+    $names = array_map(fn ($path) => basename($path, '.twig'), glob(resource_path('views/emails/en/*.twig')));
+    sort($names);
+
+    return $names;
+  }
+
+  /** @return array{0: string, 1: bool, 2: bool} the template, whether an admin wrote it, whether it predates languages */
+  private function source(string $locale, string $name): array
+  {
+    if (file_exists($this->rewrittenPath($locale, $name))) {
+      return [file_get_contents($this->rewrittenPath($locale, $name)), true, false];
+    }
+    if ($locale === Locales::default() && file_exists($this->legacyPath($name))) {
+      return [file_get_contents($this->legacyPath($name)), true, true];
+    }
+
+    return [file_get_contents($this->shippedPath($locale, $name)), false, false];
+  }
+
+  private function write(string $locale, array $template): void
+  {
+    $path = $this->rewrittenPath($locale, $template['id']);
+    if (!is_dir(dirname($path))) {
+      mkdir(dirname($path), 0755, true);
+    }
+
+    $twig = "{% extends 'emails/layout' %}\n\n{% block subject %}{$template['subject']}{% endblock %}\n";
+    foreach (['header', 'content', 'action_url', 'action_text'] as $block) {
+      if (isset($template['variables'][$block])) {
+        $twig .= "\n{% block {$block} %}{$template['variables'][$block]}{% endblock %}\n";
+      }
+    }
+    $twig .= "\n{# written by an admin on " . date('Y-m-d H:i:s') . " #}\n";
+
+    file_put_contents($path, $twig);
+  }
+
+  /** @return array<string, string> */
+  private function blocks(string $content): array
+  {
+    preg_match_all('/{% block (\w+) %}(.*?){% endblock %}/s', $content, $matches);
+    $blocks = [];
+    foreach ($matches[1] as $index => $block) {
+      if (in_array($block, self::BLOCKS, true)) {
+        $blocks[$block] = $block === 'content' ? trim($matches[2][$index], "\n") : trim(str_replace("\n", '', $matches[2][$index]));
+      }
+    }
+
+    return $blocks;
+  }
+
+  private function shippedPath(string $locale, string $name): string
+  {
+    $path = resource_path("views/emails/{$locale}/{$name}.twig");
+
+    return file_exists($path) ? $path : resource_path("views/emails/en/{$name}.twig");
+  }
+
+  private function rewrittenPath(string $locale, string $name): string
+  {
+    return storage_path("templates/emails/{$locale}/{$name}.twig");
+  }
+
+  private function legacyPath(string $name): string
+  {
+    return storage_path("templates/emails/{$name}.twig");
+  }
+
+  private function invalidLocale()
+  {
+    return response()->json(['status' => 'error', 'message' => 'Unknown language', 'data' => ['supported' => Locales::SUPPORTED]], 422);
   }
 }

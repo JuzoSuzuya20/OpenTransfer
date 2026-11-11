@@ -1348,5 +1348,19 @@
       "post_logout_uri": "Valid post logout redirect URI:",
       "keycloak_secret": "Copie o segredo do separador Credentials para o campo em frente."
     }
+  },
+  "emails": {
+    "admin": {
+      "language_title": "Idioma dos e-mails",
+      "language_label": "Idioma a modificar",
+      "language_help": "Cada e-mail sai no idioma do seu leitor: o da sua conta ou, se não, o idioma predefinido da instância. Reescreva cada idioma separadamente; os outros mantêm o seu texto.",
+      "customised": "Reescrito",
+      "shipped": "Original",
+      "reset": "Voltar ao texto original",
+      "reset_confirm": "Voltar ao texto original de «{name}» neste idioma? O que foi escrito para ele é eliminado.",
+      "reset_done": "Texto original reposto",
+      "reset_failed": "Não foi possível repor o texto original",
+      "unsaved": "Há alterações por guardar. Mudar de idioma mesmo assim?"
+    }
   }
 }

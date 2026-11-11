@@ -40,5 +40,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::prependLocation(storage_path('templates'));
+        View::addNamespace('email-overrides', storage_path('templates/emails'));
     }
 }

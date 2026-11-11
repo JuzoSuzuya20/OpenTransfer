@@ -1398,5 +1398,19 @@
       "post_logout_uri": "Valid post logout redirect URI:",
       "keycloak_secret": "Copy the secret of the Credentials tab into the field opposite."
     }
+  },
+  "emails": {
+    "admin": {
+      "language_title": "Language of the emails",
+      "language_label": "Language to edit",
+      "language_help": "Each email goes out in the language of its reader: the language of their account, otherwise the default language of the instance. Rewrite each language separately; the others keep their own text.",
+      "customised": "Rewritten",
+      "shipped": "Original",
+      "reset": "Go back to the original text",
+      "reset_confirm": "Go back to the original text of “{name}” in this language? What was written for it is deleted.",
+      "reset_done": "Original text restored",
+      "reset_failed": "The original text could not be restored",
+      "unsaved": "Changes are not saved. Change the language anyway?"
+    }
   }
 }

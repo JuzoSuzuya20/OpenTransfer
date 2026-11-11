@@ -1348,8 +1348,9 @@ export const createFirstUser = async (user) => {
   return data.data
 }
 
-export const getEmailTemplates = async () => {
-  const response = await fetchWithAuth(`${apiUrl}/api/email-templates`, {
+export const getEmailTemplates = async (locale) => {
+  const query = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+  const response = await fetchWithAuth(`${apiUrl}/api/email-templates${query}`, {
     method: 'GET',
     headers: {
       ...addJsonHeader()
@@ -1375,6 +1376,21 @@ export const getSystemStats = async (days = 30) => {
     throw new Error(data.message)
   }
   return data.data
+}
+
+// Back to the shipped text of one email in one language
+export const resetEmailTemplate = async (locale, id) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/email-templates/${encodeURIComponent(locale)}/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: {
+      ...addJsonHeader()
+    }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
+  }
+  return data
 }
 
 export const updateEmailTemplates = async (templates) => {
