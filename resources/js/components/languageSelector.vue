@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { useTolgee, useTranslate } from '@tolgee/vue'
 import { Languages as LanguageIcon } from 'lucide-vue-next'
 import { domData } from '../domData'
+import { store } from '../store'
+import { updateMyProfile } from '../api'
 
 const tolgee = useTolgee(['language'])
 const { t } = useTranslate()
@@ -24,6 +26,10 @@ const currentLanguage = computed(() => tolgee.value.getLanguage())
 const setLanguage = (event) => {
   tolgee.value.changeLanguage(event.target.value)
   localStorage.setItem('language', event.target.value)
+  // An account gets its emails in its language: the server keeps it
+  if (store.isLoggedIn() && !store.isGuest()) {
+    updateMyProfile({ language: event.target.value }).catch((error) => console.error('Failed to save the language', error))
+  }
 }
 </script>
 

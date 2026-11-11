@@ -21,7 +21,7 @@ import NotFoundPage from './pages/NotFoundPage.vue'
 
 import { domData, domError, domSuccess } from './domData'
 import { emitter, store } from './store'
-import { logout, getMyProfile } from './api'
+import { logout, getMyProfile, updateMyProfile } from './api'
 import { resolveRoute, settingsTabToPath, legacyHashToPath } from './lib/router'
 
 const { t } = useTranslate()
@@ -148,6 +148,11 @@ watch(
       const profile = await getMyProfile()
       userName.value = profile.name ?? ''
       userAvatarSeed.value = profile.avatar_seed ?? ''
+      // An account that never chose keeps the language of the screen for its emails
+      const screenLanguage = localStorage.getItem('language')
+      if (!profile.language && screenLanguage) {
+        updateMyProfile({ language: screenLanguage }).catch(() => {})
+      }
     } catch (error) {
       console.error('Failed to load the profile', error)
     }

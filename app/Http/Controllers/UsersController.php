@@ -117,6 +117,7 @@ class UsersController extends Controller
       ],
       'email' => ['email', 'unique:users,email,' . $user->id],
       'name' => ['string', 'max:255'],
+      'language' => ['nullable', \Illuminate\Validation\Rule::in(\App\Support\Locales::SUPPORTED)],
     ]);
 
     $unsetMustChangePassword = false;

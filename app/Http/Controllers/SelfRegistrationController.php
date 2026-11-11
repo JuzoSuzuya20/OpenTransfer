@@ -88,6 +88,8 @@ class SelfRegistrationController extends Controller
                 'must_change_password' => false,
                 'email_verification_code' => $code,
                 'email_verification_code_expires_at' => $expiresAt,
+                // The language of the screen they signed up on, for the emails they will receive
+                'language' => \App\Support\Locales::isSupported($request->input('language')) ? $request->input('language') : null,
             ]);
             $user->save();
 

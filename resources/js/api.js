@@ -398,7 +398,8 @@ export const registerUser = async (name, email, password, password_confirmation)
     headers: {
       ...addJsonHeader()
     },
-    body: JSON.stringify(await withAltcha({ name, email, password, password_confirmation }))
+    // The language of the screen: the emails of the account will be written in it
+    body: JSON.stringify(await withAltcha({ name, email, password, password_confirmation, language: localStorage.getItem('language') || undefined }))
   })
   const data = await response.json()
   if (!response.ok) {
