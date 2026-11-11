@@ -723,7 +723,10 @@
       "totp_description": "Use an app such as Aegis, 2FAS, Google Authenticator, Microsoft Authenticator or a password manager.",
       "totp_disabled": "Authenticator app removed.",
       "totp_enabled": "Authenticator app activated.",
-      "wrong_password": "Incorrect password."
+      "wrong_password": "Incorrect password.",
+      "on": "On",
+      "off": "Off",
+      "passkeys_count": "{count, plural, one {# passkey} other {# passkeys}}"
     },
     "users": {
       "account": "Account Type",

@@ -35,24 +35,42 @@ const downloadCodes = () => {
       <li v-for="code in codes" :key="code"><code>{{ code }}</code></li>
     </ul>
     <div class="actions">
-      <button class="secondary" @click="copyCodes"><Copy />{{ $t('settings.two_factor.copy') }}</button>
-      <button class="secondary" @click="downloadCodes"><Download />{{ $t('settings.two_factor.download') }}</button>
+      <button type="button" class="ot-act" @click="copyCodes"><Copy aria-hidden="true" />{{ $t('settings.two_factor.copy') }}</button>
+      <button type="button" class="ot-act" @click="downloadCodes"><Download aria-hidden="true" />{{ $t('settings.two_factor.download') }}</button>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.recovery-codes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  p {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--ot-text);
+  }
+}
+/* The codes are data to copy: fixed-width figures, two columns, on the ground of a field */
 .recovery-codes ul {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.25rem 1rem;
-  padding-left: 0;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 12px 14px;
   list-style: none;
-  font-family: monospace;
+  background: var(--ot-page);
+  border: 1px solid var(--ot-line-soft);
+  border-radius: var(--ot-radius-sm);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  color: var(--ot-heading);
 }
 .actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-wrap: wrap;
 }
 </style>

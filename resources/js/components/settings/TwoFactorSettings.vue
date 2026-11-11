@@ -148,154 +148,278 @@ const confirmSetup = async (code) => {
 </script>
 
 <template>
-  <div class="setting-group" id="two_factor">
-    <div class="setting-group-header">
-      <h3>
-        <ShieldCheck />
-        {{ $t('settings.two_factor.title') }}
-      </h3>
+  <section class="ot-card two-factor" id="two_factor" aria-labelledby="h-two-factor">
+    <div class="card-head">
+      <h2 class="ot-card-title" id="h-two-factor">{{ $t('settings.two_factor.title') }}</h2>
+      <span v-if="status" class="ot-pill" :class="{ 'is-success': status.enabled }">
+        {{ status.enabled ? $t('settings.two_factor.on') : $t('settings.two_factor.off') }}
+      </span>
     </div>
+    <p class="card-description">{{ $t('settings.two_factor.help') }}</p>
 
-    <div class="setting-group-body" v-if="status">
-      <p>{{ status.enabled ? $t('settings.two_factor.status_on') : $t('settings.two_factor.status_off') }}</p>
-      <p v-if="status.required">{{ $t('settings.two_factor.required') }}</p>
+    <template v-if="status">
+      <p class="two-factor-required" v-if="status.required">{{ $t('settings.two_factor.required') }}</p>
 
-      <div class="panel" v-if="recoveryCodes">
-        <h5>{{ $t('settings.two_factor.recovery_codes') }}</h5>
+      <!-- Shown once, right after they are made: only their hashes are kept -->
+      <div class="two-factor-panel is-codes" v-if="recoveryCodes">
+        <h3>{{ $t('settings.two_factor.recovery_codes') }}</h3>
         <RecoveryCodes :codes="recoveryCodes" />
-        <button class="mt-2" @click="recoveryCodes = null">{{ $t('settings.two_factor.codes_saved') }}</button>
+        <button type="button" @click="recoveryCodes = null">{{ $t('settings.two_factor.codes_saved') }}</button>
       </div>
 
-      <div class="panel" v-if="pendingAction">
+      <!-- Every change asks for the current password first -->
+      <form class="two-factor-panel" v-if="pendingAction" @submit.prevent="submitPassword">
         <div class="input-container">
           <label for="two_factor_password">{{ $t('settings.two_factor.confirm_password') }}</label>
-          <input
-            id="two_factor_password"
-            ref="passwordInput"
-            type="password"
-            autocomplete="current-password"
-            v-model="password"
-            @keyup.enter="submitPassword"
-          />
+          <input id="two_factor_password" ref="passwordInput" type="password" autocomplete="current-password" v-model="password" />
         </div>
-        <div class="actions">
-          <button :disabled="busy || !password" @click="submitPassword">{{ $t('settings.two_factor.continue') }}</button>
-          <button class="secondary" @click="cancelPassword">{{ $t('settings.two_factor.cancel') }}</button>
+        <div class="factor-actions">
+          <button type="submit" :disabled="busy || !password">{{ $t('settings.two_factor.continue') }}</button>
+          <button type="button" class="secondary" @click="cancelPassword">{{ $t('settings.two_factor.cancel') }}</button>
         </div>
-      </div>
+      </form>
 
-      <h5 class="mt-3"><Smartphone class="inline-icon" /> {{ $t('settings.two_factor.authenticator_app') }}</h5>
-
-      <div v-if="setup">
-        <TotpSetup :setup="setup" :busy="busy" @confirm="confirmSetup" />
-        <button class="secondary mt-2" @click="setup = null">{{ $t('settings.two_factor.cancel') }}</button>
-      </div>
-
-      <template v-else-if="status.totp_enabled">
-        <p>{{ $t('settings.two_factor.totp_active') }}</p>
-        <div class="actions">
-          <button class="secondary" :disabled="busy" @click="askPassword('setup')">
-            <RefreshCw />
-            {{ $t('settings.two_factor.replace_app') }}
-          </button>
-          <button class="secondary" v-if="canRemoveTotp" :disabled="busy" @click="askPassword('disable')">
-            <Trash />
-            {{ $t('settings.two_factor.disable') }}
-          </button>
+      <div class="factor">
+        <div class="factor-head">
+          <Smartphone aria-hidden="true" />
+          <h3>{{ $t('settings.two_factor.authenticator_app') }}</h3>
+          <span class="ot-pill" :class="{ 'is-success': status.totp_enabled }">
+            {{ status.totp_enabled ? $t('settings.two_factor.on') : $t('settings.two_factor.off') }}
+          </span>
         </div>
-      </template>
-
-      <template v-else>
-        <p>{{ $t('settings.two_factor.totp_description') }}</p>
-        <button :disabled="busy" @click="askPassword('setup')">
-          <Plus />
-          {{ $t('settings.two_factor.set_up_app') }}
-        </button>
-      </template>
-
-      <h5 class="mt-4"><Fingerprint class="inline-icon" /> {{ $t('settings.two_factor.passkeys') }}</h5>
-      <p>{{ $t('settings.two_factor.passkeys_description') }}</p>
-      <ul class="passkeys" v-if="status.passkeys.length">
-        <li v-for="passkey in status.passkeys" :key="passkey.id">
-          <div>
-            <strong>{{ passkey.name }}</strong>
-            <small>
-              {{ $t('settings.two_factor.added_on', { date: formatDate(passkey.created_at) }) }} ·
-              {{ $t('settings.two_factor.last_used', { date: formatDate(passkey.last_used_at) }) }}
-            </small>
+        <div v-if="setup" class="factor-body">
+          <TotpSetup :setup="setup" :busy="busy" @confirm="confirmSetup" />
+          <button type="button" class="ghost" @click="setup = null">{{ $t('settings.two_factor.cancel') }}</button>
+        </div>
+        <div v-else-if="status.totp_enabled" class="factor-body">
+          <p class="factor-text">{{ $t('settings.two_factor.totp_active') }}</p>
+          <div class="factor-actions">
+            <button type="button" class="ot-act" :disabled="busy" @click="askPassword('setup')">
+              <RefreshCw aria-hidden="true" />
+              {{ $t('settings.two_factor.replace_app') }}
+            </button>
+            <button type="button" class="ot-act" v-if="canRemoveTotp" :disabled="busy" @click="askPassword('disable')">
+              <Trash aria-hidden="true" />
+              {{ $t('settings.two_factor.disable') }}
+            </button>
           </div>
-          <button
-            class="secondary icon-only"
-            v-if="canRemovePasskey"
-            :disabled="busy"
-            :title="$t('settings.two_factor.disable')"
-            @click="askToRemovePasskey(passkey)"
-          >
-            <Trash />
-          </button>
-        </li>
-      </ul>
-      <template v-if="canUsePasskeys">
-        <div class="input-container">
-          <label for="passkey_name">{{ $t('settings.two_factor.passkey_name') }}</label>
-          <input
-            id="passkey_name"
-            type="text"
-            maxlength="100"
-            v-model="passkeyName"
-            :placeholder="$t('settings.two_factor.passkey_name_placeholder')"
-          />
         </div>
-        <button class="mt-2" :disabled="busy" @click="askPassword('addPasskey')">
-          <Plus />
-          {{ $t('settings.two_factor.add_passkey') }}
-        </button>
-      </template>
-      <p v-else>{{ $t('settings.two_factor.passkeys_unsupported') }}</p>
+        <div v-else class="factor-body">
+          <p class="factor-text">{{ $t('settings.two_factor.totp_description') }}</p>
+          <div class="factor-actions">
+            <button type="button" :disabled="busy" @click="askPassword('setup')">
+              <Plus aria-hidden="true" />
+              {{ $t('settings.two_factor.set_up_app') }}
+            </button>
+          </div>
+        </div>
+      </div>
 
-      <template v-if="status.enabled">
-        <h5 class="mt-4"><KeyRound class="inline-icon" /> {{ $t('settings.two_factor.recovery_codes') }}</h5>
-        <p>{{ $t('settings.two_factor.recovery_codes_remaining', { count: status.recovery_codes_remaining }) }}</p>
-        <button class="secondary" :disabled="busy" @click="askPassword('regenerate')">
-          <KeyRound />
-          {{ $t('settings.two_factor.regenerate_codes') }}
-        </button>
-      </template>
-    </div>
-  </div>
+      <div class="factor">
+        <div class="factor-head">
+          <Fingerprint aria-hidden="true" />
+          <h3>{{ $t('settings.two_factor.passkeys') }}</h3>
+          <span class="ot-pill" :class="{ 'is-success': status.passkeys.length > 0 }">
+            {{ $t('settings.two_factor.passkeys_count', { count: status.passkeys.length }) }}
+          </span>
+        </div>
+        <div class="factor-body">
+          <p class="factor-text">{{ $t('settings.two_factor.passkeys_description') }}</p>
+          <ul class="passkeys" v-if="status.passkeys.length">
+            <li v-for="passkey in status.passkeys" :key="passkey.id">
+              <div class="passkey-main">
+                <strong>{{ passkey.name }}</strong>
+                <small>
+                  {{ $t('settings.two_factor.added_on', { date: formatDate(passkey.created_at) }) }} ·
+                  {{ $t('settings.two_factor.last_used', { date: formatDate(passkey.last_used_at) }) }}
+                </small>
+              </div>
+              <button
+                type="button"
+                class="ot-act icon-only"
+                v-if="canRemovePasskey"
+                :disabled="busy"
+                :aria-label="`${$t('settings.two_factor.disable')} ${passkey.name}`"
+                :title="$t('settings.two_factor.disable')"
+                @click="askToRemovePasskey(passkey)"
+              >
+                <Trash aria-hidden="true" />
+              </button>
+            </li>
+          </ul>
+          <form v-if="canUsePasskeys" class="passkey-add" @submit.prevent="askPassword('addPasskey')">
+            <div class="input-container">
+              <label for="passkey_name">{{ $t('settings.two_factor.passkey_name') }}</label>
+              <input
+                id="passkey_name"
+                type="text"
+                maxlength="100"
+                v-model="passkeyName"
+                :placeholder="$t('settings.two_factor.passkey_name_placeholder')"
+              />
+            </div>
+            <button type="submit" class="secondary" :disabled="busy">
+              <Plus aria-hidden="true" />
+              {{ $t('settings.two_factor.add_passkey') }}
+            </button>
+          </form>
+          <p v-else class="factor-text">{{ $t('settings.two_factor.passkeys_unsupported') }}</p>
+        </div>
+      </div>
+
+      <div class="factor" v-if="status.enabled">
+        <div class="factor-head">
+          <KeyRound aria-hidden="true" />
+          <h3>{{ $t('settings.two_factor.recovery_codes') }}</h3>
+          <span class="ot-pill" :class="{ 'is-warning': status.recovery_codes_remaining <= 2 }">
+            {{ status.recovery_codes_remaining }}
+          </span>
+        </div>
+        <div class="factor-body">
+          <p class="factor-text">{{ $t('settings.two_factor.recovery_codes_remaining', { count: status.recovery_codes_remaining }) }}</p>
+          <div class="factor-actions">
+            <button type="button" class="ot-act" :disabled="busy" @click="askPassword('regenerate')">
+              <KeyRound aria-hidden="true" />
+              {{ $t('settings.two_factor.regenerate_codes') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+  </section>
 </template>
 
-<style scoped>
-.inline-icon {
-  width: 18px;
-  height: 18px;
-  margin-top: -3px;
-}
-.panel {
-  border: 1px solid var(--panel-border-color, rgba(0, 0, 0, 0.15));
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-.actions {
+<style scoped lang="scss">
+.two-factor {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 14px;
 }
-.passkeys {
-  list-style: none;
-  padding-left: 0;
-}
-.passkeys li {
+.card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--panel-border-color, rgba(0, 0, 0, 0.1));
+  gap: 12px;
 }
-.passkeys small {
-  display: block;
-  opacity: 0.75;
+.card-description,
+.factor-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+}
+.two-factor-required {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--ot-radius-sm);
+  background: var(--ot-accent-soft);
+  color: var(--ot-accent-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.two-factor-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+  background: var(--ot-field);
+
+  h3 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--ot-heading);
+  }
+  .input-container {
+    margin: 0;
+  }
+}
+// One factor: a heading with its state, what it does, then its actions
+.factor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ot-line-soft);
+}
+.factor-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--ot-accent-text);
+  }
+  h3 {
+    flex: 1;
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--ot-heading);
+  }
+}
+.factor-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+.factor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  button {
+    margin: 0;
+  }
+}
+.passkeys {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 10px;
+    background: var(--ot-field);
+    border: 1px solid var(--ot-line-soft);
+    border-radius: var(--ot-radius-sm);
+  }
+  strong {
+    color: var(--ot-heading);
+  }
+  small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--ot-muted);
+  }
+}
+.passkey-add {
+  align-self: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+
+  .input-container {
+    flex: 1 1 200px;
+    margin: 0;
+  }
+  // As tall as the field beside it
+  button {
+    height: var(--ot-field-height);
+    margin: 0;
+  }
 }
 </style>

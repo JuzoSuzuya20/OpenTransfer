@@ -29,7 +29,7 @@ const confirm = () => {
 </script>
 
 <template>
-  <div>
+  <div class="totp-setup">
     <p>{{ $t('settings.two_factor.scan_qr') }}</p>
     <div class="qr" v-html="qrSvg"></div>
     <p>
@@ -49,21 +49,41 @@ const confirm = () => {
         @keyup.enter="confirm"
       />
     </div>
-    <button class="mt-2" :disabled="busy || !code" @click="confirm">
-      <ShieldCheck />
+    <button type="button" :disabled="busy || !code" @click="confirm">
+      <ShieldCheck aria-hidden="true" />
       {{ $t('settings.two_factor.activate') }}
     </button>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.totp-setup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+
+  p {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--ot-text);
+  }
+  .input-container {
+    align-self: stretch;
+    max-width: 260px;
+    margin: 0;
+  }
+  button {
+    margin: 0;
+  }
+}
+/* The code is read by a phone camera: always dark on white, whatever the scheme */
 .qr {
-  width: 200px;
+  width: 184px;
   max-width: 100%;
+  padding: 8px;
   background: #fff;
-  border-radius: 8px;
-  padding: 6px;
-  margin-bottom: 0.75rem;
+  border-radius: var(--ot-radius);
 }
 .qr :deep(svg) {
   display: block;
@@ -71,6 +91,10 @@ const confirm = () => {
   height: auto;
 }
 .secret {
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--ot-field);
+  color: var(--ot-heading);
   word-break: break-all;
   user-select: all;
 }

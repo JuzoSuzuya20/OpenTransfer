@@ -723,7 +723,10 @@
       "totp_description": "Gebruik een app zoals Aegis, 2FAS, Google Authenticator, Microsoft Authenticator of een wachtwoordbeheerder.",
       "totp_disabled": "Authenticator-app verwijderd.",
       "totp_enabled": "Authenticator-app geactiveerd.",
-      "wrong_password": "Onjuist wachtwoord."
+      "wrong_password": "Onjuist wachtwoord.",
+      "on": "Aan",
+      "off": "Uit",
+      "passkeys_count": "{count, plural, one {# passkey} other {# passkeys}}"
     },
     "users": {
       "account": "Gebruikersrol",

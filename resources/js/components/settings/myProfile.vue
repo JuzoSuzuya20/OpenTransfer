@@ -1,7 +1,8 @@
 <script setup>
 import { ref, onMounted, defineExpose, nextTick } from 'vue'
 import { getMyProfile, updateMyProfile, getAvailableAuthProviders, unlinkProvider } from '../../api'
-import { User, CircleX, UserRoundCheck, UserRoundPen, Fingerprint, Link, Unlink, ShieldCheck } from 'lucide-vue-next'
+import { CircleX, UserRoundCheck, UserRoundPen, Fingerprint, Link, Unlink, Save } from 'lucide-vue-next'
+import UserAvatar from '../layout/UserAvatar.vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../../store'
 import TwoFactorSettings from './TwoFactorSettings.vue'
@@ -162,149 +163,67 @@ const handleUnlinkProvider = async (provider) => {
 </script>
 
 <template>
-  <div class="container-fluid" v-if="profile">
-    <div class="row mb-5">
-      <div class="col-2 d-none d-md-block">
-        <ul class="settings-nav pt-5">
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('my_account')">
-              <User />
-              {{ $t('settings.title.myProfile') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('linked_accounts')">
-              <Link />
-              {{ $t('settings.title.linked_accounts') }}
-            </a>
-          </li>
-          <li v-if="!store.guest">
-            <a href="#" @click.prevent="handleNavItemClicked('two_factor')">
-              <ShieldCheck />
-              {{ $t('settings.two_factor.title') }}
-            </a>
+  <div class="profile-layout" v-if="profile">
+    <div class="profile-column">
+      <section class="ot-card profile-card" id="my_account" aria-labelledby="h-my-account">
+        <h2 class="ot-card-title" id="h-my-account">{{ $t('settings.title.myProfile') }}</h2>
+        <div class="profile-identity">
+          <UserAvatar :seed="profile.avatar_seed ?? ''" :name="profile.name" :size="48" />
+          <div>
+            <div class="profile-name">{{ profile.name }}</div>
+            <div class="profile-email">{{ profile.email }}</div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label for="email">{{ $t('settings.account.email') }}</label>
+          <input type="email" id="email" autocomplete="email" v-model="profile.email" :class="{ error: errors.email }" />
+          <div class="error-message" v-if="errors.email">{{ Array.isArray(errors.email) ? errors.email[0] : errors.email }}</div>
+        </div>
+        <div class="input-container">
+          <label for="name">{{ $t('settings.account.name') }}</label>
+          <input type="text" id="name" autocomplete="name" v-model="profile.name" :class="{ error: errors.name }" />
+          <div class="error-message" v-if="errors.name">{{ Array.isArray(errors.name) ? errors.name[0] : errors.name }}</div>
+        </div>
+        <div class="profile-actions">
+          <button type="button" @click="saveUser">
+            <Save aria-hidden="true" />
+            {{ $t('admin.save') }}
+          </button>
+          <button type="button" class="secondary" @click="editUserFormActive = true">
+            <UserRoundPen aria-hidden="true" />
+            {{ $t('settings.account.change_password') }}
+          </button>
+        </div>
+      </section>
+
+      <section class="ot-card profile-card" id="linked_accounts" aria-labelledby="h-linked" v-if="availableAuthProviders.length > 0">
+        <h2 class="ot-card-title" id="h-linked">{{ $t('settings.title.linked_accounts') }}</h2>
+        <p class="card-description">{{ $t('settings.account.linked_accounts_description') }}</p>
+        <ul class="providers">
+          <li v-for="provider in availableAuthProviders" :key="provider.id" class="provider-row">
+            <span class="provider-icon" aria-hidden="true" v-if="provider.icon" v-html="provider.icon"></span>
+            <span class="provider-icon" aria-hidden="true" v-else><Fingerprint /></span>
+            <div class="provider-main">
+              <strong>{{ provider.name }}</strong>
+              <span class="ot-pill" :class="{ 'is-success': provider.is_linked }">
+                {{ provider.is_linked ? t('settings.users.linked') : t('settings.users.not_linked') }}
+              </span>
+            </div>
+            <button type="button" class="ot-act" v-if="!provider.is_linked" @click="handleLinkProvider(provider)">
+              <Link aria-hidden="true" />
+              {{ $t('settings.account.create_link') }}
+            </button>
+            <button type="button" class="ot-act" v-else @click="handleUnlinkProvider(provider)">
+              <Unlink aria-hidden="true" />
+              {{ $t('settings.account.unlink') }}
+            </button>
           </li>
         </ul>
-      </div>
-      <div class="col-12 col-md-8 pt-5">
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="my_account">
-              <div class="setting-group-header">
-                <h3>
-                  <User />
-                  {{ $t('settings.title.myProfile') }}
-                </h3>
-              </div>
+      </section>
+    </div>
 
-              <div class="setting-group-body">
-                <div class="setting-group-body-item">
-                  <label for="email">{{ $t('settings.account.email') }}</label>
-                  <input type="text" id="email" v-model="profile.email" />
-                </div>
-
-                <div class="setting-group-body-item">
-                  <label for="name">{{ $t('settings.account.name') }}</label>
-                  <input type="text" id="name" v-model="profile.name" />
-                </div>
-
-                <div class="setting-group-body-item mt-3">
-                  <button class="secondary" @click="editUserFormActive = true">
-                    <UserRoundPen />
-                    {{ $t('settings.account.change_password') }}
-                  </button>
-                </div>
-
-                <!--
-                <div class="setting-group-body-item">
-                  <label for="default_language">{{ $t('settings.system.default_language') }}</label>
-                  <select id="default_language" v-model="settings.default_language">
-                    <option value="en">{{ t('settings.system.languages.english') }}</option>
-                    <option value="de">{{ t('settings.system.languages.german') }}</option>
-                    <option value="fr">{{ t('settings.system.languages.french') }}</option>
-                    <option value="it">{{ t('settings.system.languages.italian') }}</option>
-                    <option value="nl">{{ t('settings.system.languages.dutch') }}</option>
-                  </select>
-                </div>
-                -->
-              </div>
-            </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.title.myProfile') }}</h6>
-              <p>{{ $t('settings.account.myProfile_description') }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="linked_accounts">
-              <div class="setting-group-header">
-                <h3>
-                  <Link />
-                  {{ $t('settings.title.linked_accounts') }}
-                </h3>
-              </div>
-              <div class="setting-group-body" v-if="availableAuthProviders.length > 0 && profile">
-                <svg id="gradientDefs">
-                  <linearGradient id="icon-gradient">
-                    <stop offset="0%" style="stop-color: var(--link-color); stop-opacity: 1" />
-                    <stop offset="100%" style="stop-color: var(--link-color-hover); stop-opacity: 1" />
-                  </linearGradient>
-                </svg>
-                <div class="provider" v-for="provider in availableAuthProviders" :key="provider.id">
-                  <div class="row w-100 align-items-center">
-                    <div class="col-auto">
-                      <div class="icon">
-                        <Fingerprint v-if="!provider.icon" />
-                        <svg v-else v-html="provider.icon" class="custom"></svg>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <small>
-                        {{ provider.is_linked ? t('settings.users.linked') : t('settings.users.not_linked') }}
-                      </small>
-                      <h6>
-                        {{ provider.name }}
-                      </h6>
-                    </div>
-                    <div class="col-5">
-                      <button class="block" @click="handleLinkProvider(provider)" v-if="!provider.is_linked">
-                        <Link />
-                        {{ $t('settings.account.create_link') }}
-                      </button>
-                      <button class="secondary block" @click="handleUnlinkProvider(provider)" v-if="provider.is_linked">
-                        <Unlink />
-                        {{ $t('settings.account.unlink') }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.title.linked_accounts') }}</h6>
-              <p>{{ $t('settings.account.linked_accounts_description') }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-5" v-if="!store.guest">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <TwoFactorSettings />
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.two_factor.title') }}</h6>
-              <p>{{ $t('settings.two_factor.help') }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="profile-column is-wide" v-if="!store.guest">
+      <TwoFactorSettings />
     </div>
   </div>
 
@@ -370,144 +289,98 @@ const handleUnlinkProvider = async (provider) => {
 </template>
 
 <style lang="scss" scoped>
-.profile-card {
-  width: 450px;
-  border-radius: 10px;
-  background: var(--panel-item-background-color);
-
-  .profile-card-header {
-    background: var(--panel-header-background-color);
-    border-radius: 8px 8px 0 0;
-    padding-left: 20px;
-    padding-right: 20px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    h1 {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--panel-text-color);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      svg {
-        width: 24px;
-        height: 24px;
-        color: var(--panel-text-color);
-      }
-    }
-  }
-
-  .profile-card-tags {
-    padding: 20px;
-    background: var(--panel-item-background-color);
-    border-radius: 8px 8px 0 0;
-    margin-bottom: 0px;
-    margin-right: 5px;
-    margin-left: 5px;
-    margin-top: -10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    .profile-card-tag {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--panel-text-color);
-      background: var(--panel-background-color);
-      padding: 5px 10px;
-      border-radius: 5px;
-    }
-  }
-
-  .profile-card-profile-item {
-    padding: 10px 20px;
-    background: var(--panel-background-color);
-    h2 {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--panel-text-color);
-    }
-    p {
-      font-size: 19px;
-      font-weight: 400;
-      color: var(--panel-text-color);
-      padding: 0;
-      margin: 0;
-    }
-
-    &:last-child {
-      border-radius: 0 0 8px 8px;
-      border-bottom: none;
-    }
-  }
-
-  .profile-card-footer {
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    button {
-      display: block;
-      width: 100%;
-    }
-  }
+// Two supple columns: the account on one side, its second factor on the other
+.profile-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
 }
-
-
-.provider {
-  margin-bottom: 8px;
-  .icon {
-    svg {
-      width: 2rem;
-      height: 2rem;
-      stroke: url(#icon-gradient);
-      &.custom {
-        fill: url(#icon-gradient);
-      }
-    }
-  }
-}
-
-.provider {
-  background: var(--panel-section-background-color-alt);
-  height: 80px;
+.profile-column {
+  flex: 1 1 360px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--panel-border-radius);
+  gap: 20px;
 
-  h6 {
-    margin-top: -4px;
-  }
-
-  small {
-    font-size: 0.7rem;
-    color: var(--panel-text-color-alt);
-    margin-bottom: 0;
-  }
-
-  .checkbox-container {
-    margin-top: 25px;
-    label {
-      margin-bottom: 0;
-      font-weight: 400;
-    }
-  }
-
-  &.open {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+  &.is-wide {
+    flex: 1.3 1 440px;
   }
 }
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 
-#gradientDefs {
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
+  .input-container {
+    margin: 0;
+  }
+}
+.profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-name {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: var(--ot-heading);
+}
+.profile-email {
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+  overflow-wrap: anywhere;
+}
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  button {
+    margin: 0;
+  }
+}
+.card-description {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+}
+.providers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.provider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--ot-field);
+  border: 1px solid var(--ot-line-soft);
+  border-radius: var(--ot-radius);
+}
+.provider-icon {
+  display: inline-flex;
+  color: var(--ot-accent-text);
+
+  :deep(svg) {
+    width: 22px;
+    height: 22px;
+  }
+}
+.provider-main {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+
+  strong {
+    color: var(--ot-heading);
+  }
 }
 </style>
