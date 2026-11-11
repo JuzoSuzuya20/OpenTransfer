@@ -47,6 +47,15 @@ test('a deleted share stays deleted, a failed one failed', () => {
   assert.equal(shareState(share({ status: 'failed' }), now), 'failed')
 })
 
+test('a share whose archive is still being built says so, until it expires', () => {
+  assert.equal(shareState(share({ status: 'pending' }), now), 'pending')
+  assert.equal(shareState(share({ status: 'pending', expires_at: new Date(now.getTime() - 1000).toISOString() }), now), 'expired')
+})
+
+test('a share being built is online', () => {
+  assert.equal(sendSummary([share({ status: 'pending' })], now).active, 1)
+})
+
 test('the send screen counts the shares still online and what they hold', () => {
   const summary = sendSummary(
     [

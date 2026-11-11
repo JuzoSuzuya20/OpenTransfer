@@ -1,43 +1,27 @@
-<!doctype html>
-<html lang="en">
+@extends('shares.status')
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ $settings['application_name'] }}</title>
-  @vite('resources/js/app.js')
+{{-- Without a password, the page asks again on its own: the download starts once the archive
+     exists. With one, a reload would come back without it: the share page asks for it again. --}}
+@section('head')
+  @unless ($share->password)
+    <meta http-equiv="refresh" content="10" />
+  @endunless
+@endsection
 
-  <script src="/js/share-pending.js" defer></script>
+@section('title', __('shares.pending_title', [], $locale))
+@section('icon-class', 'is-working')
+@section('icon')
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+@endsection
 
-</head>
+@section('text')
+  {{ __($share->password ? 'shares.pending_text_protected' : 'shares.pending_text', ['name' => $share->name], $locale) }}
+@endsection
 
-<body data-settings='{!! htmlspecialchars(json_encode($settings)) !!}'>
-  <style id="erugo-css-variables">
-    :root {
-      --primary-color: {{ $settings['css_primary_color'] }};
-      --secondary-color: {{ $settings['css_secondary_color'] }};
-      --accent-color: {{ $settings['css_accent_color'] }};
-      --accent-color-light: {{ $settings['css_accent_color_light'] }};
-    }
-  </style>
-  <div class="share-not-ready">
-    <div class="share-status-inner">
-      <h1><svg class="lucide lucide-circle-dashed" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <path d="M10.1 2.182a10 10 0 0 1 3.8 0" />
-          <path d="M13.9 21.818a10 10 0 0 1-3.8 0" />
-          <path d="M17.609 3.721a10 10 0 0 1 2.69 2.7" />
-          <path d="M2.182 13.9a10 10 0 0 1 0-3.8" />
-          <path d="M20.279 17.609a10 10 0 0 1-2.7 2.69" />
-          <path d="M21.818 10.1a10 10 0 0 1 0 3.8" />
-          <path d="M3.721 6.391a10 10 0 0 1 2.7-2.69" />
-          <path d="M6.391 20.279a10 10 0 0 1-2.69-2.7" />
-        </svg>Share is being processed</h1>
-      <p>Try again in a few moments.</p>
-      <button type="button" data-reload>Try again now</button>
-    </div>
-  </div>
-</body>
-
-</html>
+@section('actions')
+  @if ($share->password)
+    <a class="button-link" href="/shares/{{ $share->long_id }}">{{ __('shares.back', [], $locale) }}</a>
+  @else
+    <button type="button" class="secondary" data-reload>{{ __('shares.retry', [], $locale) }}</button>
+  @endif
+@endsection

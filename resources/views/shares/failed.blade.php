@@ -1,29 +1,15 @@
-<!doctype html>
-<html lang="en">
+@extends('shares.status')
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ $settings['application_name'] }}</title>
-  @vite('resources/js/app.js')
+@section('title', __('shares.failed_title', [], $locale))
+@section('icon-class', 'is-failed')
+@section('icon')
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+@endsection
 
-</head>
+@section('text')
+  {{ __('shares.failed_text', ['name' => $share->name], $locale) }}
+@endsection
 
-<body data-settings='{!! htmlspecialchars(json_encode($settings)) !!}'>
-  <style id="erugo-css-variables">
-    :root {
-      --primary-color: {{ $settings['css_primary_color'] }};
-      --secondary-color: {{ $settings['css_secondary_color'] }};
-      --accent-color: {{ $settings['css_accent_color'] }};
-      --accent-color-light: {{ $settings['css_accent_color_light'] }};
-    }
-  </style>
-  <div class="share-not-ready">
-    <div class="share-status-inner">
-      <h1>Bad Error</h1>
-      <p>Something went horribly wrong with this share. <br><small>Please ask the sender to try again.</small></p>
-    </div>
-  </div>
-</body>
-
-</html>
+@section('actions')
+  <a class="button-link secondary" href="/shares/{{ $share->long_id }}">{{ __('shares.back', [], $locale) }}</a>
+@endsection

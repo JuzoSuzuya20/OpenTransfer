@@ -217,11 +217,23 @@ a.button-secondary {
   }
 }
 a.button-link {
-  background: var(--ot-accent);
+  background: var(--ot-accent-fill);
   color: var(--ot-on-accent);
 
   &:hover {
-    background: var(--ot-accent-hover);
+    background: var(--ot-accent-fill-hover);
     color: var(--ot-on-accent);
   }
 }
+
+// A link that leads back, drawn as a secondary button
+a.button-link.secondary {
+  background: var(--secondary-button-background-color);
+  color: var(--secondary-button-text-color);
+
+  &:hover {
+    background: var(--secondary-button-background-color-hover);
+    color: var(--secondary-button-text-color-hover);
+  }
+}
+

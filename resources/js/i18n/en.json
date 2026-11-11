@@ -659,7 +659,7 @@
     "title": {
       "about": "About",
       "allShares": "All Shares",
-      "branding": "Branding & UI",
+      "branding": "Branding",
       "cloudConnect": "Erugo Connect",
       "emailTemplates": "Email templates",
       "linked_accounts": "Linked Accounts",
@@ -671,7 +671,7 @@
         "password_protect": "Password protect share"
       },
       "stats": "System Stats",
-      "system": "System settings",
+      "system": "System",
       "users": "Users",
       "users.edit": "Edit {name}"
     },
@@ -998,6 +998,7 @@
     "group_summary": "{count, plural, one {# share} other {# shares}} · {downloads, plural, one {# download} other {# downloads}}",
     "state": {
       "active": "Active",
+      "pending": "Preparing",
       "ending": "Ending soon",
       "expired": "Expired",
       "deleted": "Deleted",

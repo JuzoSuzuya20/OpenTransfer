@@ -13,7 +13,7 @@
   z-index: 1000;
   padding: 8px 14px;
   border-radius: var(--ot-radius);
-  background: var(--ot-accent);
+  background: var(--ot-accent-fill);
   color: var(--ot-on-accent);
   font-weight: 700;
   transform: translateY(-200%);
@@ -146,13 +146,13 @@
   flex-shrink: 0;
   border-radius: var(--ot-btn-radius);
   font-size: 0.84375rem;
-  background: var(--ot-accent);
+  background: var(--ot-accent-fill);
   color: var(--ot-on-accent);
   font-weight: 700;
   transition: background-color 0.15s ease;
 
   &:hover {
-    background: var(--ot-accent-hover);
+    background: var(--ot-accent-fill-hover);
     color: var(--ot-on-accent);
   }
   svg {

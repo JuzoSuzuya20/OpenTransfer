@@ -659,9 +659,9 @@
     "title": {
       "about": "A propos de",
       "allShares": "Tous les partages",
-      "branding": "Identité visuelle et interface utilisateur",
+      "branding": "Marque",
       "cloudConnect": "Erugo Connect",
-      "emailTemplates": "Modèles de mails",
+      "emailTemplates": "Modèles d’e-mails",
       "linked_accounts": "Comptes liés",
       "manage": "Gérer",
       "myProfile": "Mon profil",
@@ -671,7 +671,7 @@
         "password_protect": "Protéger le partage par un mot de passe"
       },
       "stats": "Statistiques du système",
-      "system": "Paramètres du système",
+      "system": "Système",
       "users": "Utilisateurs",
       "users.edit": "Modifier {name}"
     },
@@ -998,6 +998,7 @@
     "group_summary": "{count, plural, one {# partage} other {# partages}} · {downloads, plural, one {# téléchargement} other {# téléchargements}}",
     "state": {
       "active": "Actif",
+      "pending": "En préparation",
       "ending": "Expire bientôt",
       "expired": "Expiré",
       "deleted": "Supprimé",

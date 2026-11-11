@@ -659,7 +659,7 @@
     "title": {
       "about": "Acerca de",
       "allShares": "Todos los envíos",
-      "branding": "Marca e interfaz",
+      "branding": "Marca",
       "cloudConnect": "Erugo Connect",
       "emailTemplates": "Plantillas de correo",
       "linked_accounts": "Cuentas vinculadas",
@@ -671,7 +671,7 @@
         "password_protect": "Proteger el envío con contraseña"
       },
       "stats": "Estadísticas del sistema",
-      "system": "Ajustes del sistema",
+      "system": "Sistema",
       "users": "Usuarios",
       "users.edit": "Editar a {name}"
     },
@@ -998,6 +998,7 @@
     "group_summary": "{count, plural, one {# envío} other {# envíos}} · {downloads, plural, one {# descarga} other {# descargas}}",
     "state": {
       "active": "Activo",
+      "pending": "En preparación",
       "ending": "Termina pronto",
       "expired": "Caducado",
       "deleted": "Eliminado",

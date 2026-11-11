@@ -11,13 +11,13 @@
   "Powered by": "Powered by",
   "Processing uploaded files": "Processando os ficheiros carregados",
   "Reverse Share": "Pedir Transferência",
-  "Reverse Share Invite": "Convite para a emissão de acções invertidas",
+  "Reverse Share Invite": "Convite para um pedido de ficheiros",
   "Share Created": "Partilhar criado",
   "Share Deleted Warning": "Partilhar Aviso apagado",
   "Share Deletion Warning": "Partilhar Aviso de eliminação",
   "Share Downloaded": "Partilhar Descarregado",
   "Share Expired Warning": "Partilhar Aviso de expiração",
-  "Share Expiry Warning": "Aviso de expiração de acções",
+  "Share Expiry Warning": "Aviso de expiração da partilha",
   "Share Name": "Nome de partilha",
   "Share URL": "Endereço de partilha",
   "We'll provide you with a link instead": {
@@ -194,7 +194,7 @@
     "allShares": {
       "allUsers": "Todos os utilizadores",
       "filterByUser": "Filtrar por utilizador",
-      "noShares": "Não há acções para mostrar",
+      "noShares": "Não há partilhas para mostrar",
       "owner": "Proprietário"
     },
     "authProvidersSavedSuccessfully": "Fornecedores de autenticação alterados com sucesso",
@@ -366,7 +366,7 @@
         "downloads_in_period": "Descargas ({days} dias)",
         "time_period": "Período de tempo:",
         "title": "Descarregar atividade",
-        "top_shares": "Acções mais descarregadas",
+        "top_shares": "Partilhas mais transferidas",
         "unique_downloaders": "Descarregadores únicos"
       },
       "error_loading": "Falha ao carregar as estatísticas do sistema",
@@ -390,13 +390,13 @@
         "categories_title": "Categorias",
         "disk_usage_description": "Mostra a utilização total do espaço em disco. Considere a limpeza de partilhas antigas se a utilização for elevada.",
         "disk_usage_title": "Utilização do disco",
-        "downloads_description": "Acompanhe a atividade de transferência em todas as acções durante o período de tempo selecionado.",
+        "downloads_description": "Acompanhe a atividade de transferência de todas as partilhas durante o período selecionado.",
         "downloads_title": "Descarregar atividade",
         "file_types_description": "Repartição dos ficheiros por categoria em todas as partilhas.",
         "file_types_title": "Distribuição do tipo de ficheiro",
         "guest_users_description": "Utilizadores criados através de convites de partilha inversa.",
         "guest_users_title": "Utilizadores convidados",
-        "shares_description": "Visão geral de todas as acções no sistema, incluindo o seu estado atual.",
+        "shares_description": "Visão geral de todas as partilhas do sistema, incluindo o seu estado atual.",
         "shares_title": "Partilhar estatísticas",
         "storage_description": "Monitorize a utilização do disco do seu servidor e o espaço consumido pelas partilhas.",
         "storage_title": "Visão geral do armazenamento",
@@ -415,7 +415,7 @@
       },
       "refresh": "Atualizar",
       "shares": {
-        "active_shares": "Acções Activas",
+        "active_shares": "Partilhas ativas",
         "deleted": "Eliminado",
         "expired": "Expirado",
         "last_7_days": "Últimos 7 dias",
@@ -423,7 +423,7 @@
         "protected": "Protegido",
         "title": "Partilhar estatísticas",
         "total_files": "Total de ficheiros",
-        "total_shares": "Total de acções"
+        "total_shares": "Total de partilhas"
       },
       "storage": {
         "available_space": "Espaço disponível",
@@ -439,11 +439,11 @@
         "active": "Ativar",
         "admins": "Administradores",
         "guests": "Convidados",
-        "shares": "acções",
+        "shares": "partilhas",
         "title": "Estatísticas dos utilizadores",
         "top_users": "Utilizadores mais activos",
         "total_users": "Total de utilizadores",
-        "with_shares": "Utilizadores com acções"
+        "with_shares": "Utilizadores com partilhas"
       }
     },
     "success": {
@@ -547,7 +547,7 @@
       "pattern_token_uppercase": "Letra maiúscula (A-Z)",
       "provider_trust_warning": "Aviso: Confiança no fornecedor de autenticação",
       "provider_trust_warning_description": "Certifique-se de que configura e ativa apenas os fornecedores de autenticação em que confia. Os fornecedores de autenticação têm privilégios de acesso elevados à sua aplicação e aos dados do utilizador. A adição de fornecedores não confiáveis ou comprometidos pode levar a acessos não autorizados, fugas de informação ou aquisição de contas.",
-      "reverse_shares": "Acções reversíveis",
+      "reverse_shares": "Pedidos de ficheiros",
       "security": {
         "add_your_ip": "Adicionar à lista",
         "altcha": "Verificação anti-robô",
@@ -658,10 +658,10 @@
     },
     "title": {
       "about": "Sobre",
-      "allShares": "Todas as acções",
-      "branding": "Marca & Interface",
+      "allShares": "Todas as partilhas",
+      "branding": "Marca",
       "cloudConnect": "Erugo Connect",
-      "emailTemplates": "Modelos de correio eletrónico",
+      "emailTemplates": "Modelos de e-mail",
       "linked_accounts": "Contas Conectadas",
       "manage": "Gerir",
       "myProfile": "A Minha Conta",
@@ -671,7 +671,7 @@
         "password_protect": "Proteger a partilha com palavra-passe"
       },
       "stats": "Estatísticas do sistema",
-      "system": "Definições de Sistema",
+      "system": "Sistema",
       "users": "Utilizadores",
       "users.edit": "Editar {name}"
     },
@@ -784,7 +784,7 @@
       "user_created_successfully": "Utilizador criado com sucesso",
       "user_deleted_successfully": "Utilizador eliminado com sucesso",
       "user_updated_successfully": "Utilizador atualizado com sucesso",
-      "view_shares": "Ver acções",
+      "view_shares": "Ver partilhas",
       "you": "Você"
     }
   },
@@ -998,6 +998,7 @@
     "group_summary": "{count, plural, one {# partilha} other {# partilhas}} · {downloads, plural, one {# transferência} other {# transferências}}",
     "state": {
       "active": "Ativa",
+      "pending": "Em preparação",
       "ending": "Expira em breve",
       "expired": "Expirada",
       "deleted": "Eliminada",

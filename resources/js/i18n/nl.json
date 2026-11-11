@@ -11,13 +11,13 @@
   "Powered by": "Aangedreven door",
   "Processing uploaded files": "Verwerken van geüploade bestanden",
   "Reverse Share": "Omgekeerd delen",
-  "Reverse Share Invite": "Omgekeerde aandelenuitnodiging",
+  "Reverse Share Invite": "Uitnodiging voor een bestandsverzoek",
   "Share Created": "Deel Gemaakt",
   "Share Deleted Warning": "Deel Verwijderde Waarschuwing",
   "Share Deletion Warning": "Waarschuwing voor schrapping",
   "Share Downloaded": "Gedownload aandeel",
   "Share Expired Warning": "Deel Waarschuwing verlopen",
-  "Share Expiry Warning": "Waarschuwing voor verlopen aandelen",
+  "Share Expiry Warning": "Waarschuwing: share verloopt",
   "Share Name": "Naam",
   "Share URL": "Gedeelde link",
   "We'll provide you with a link instead": {
@@ -194,7 +194,7 @@
     "allShares": {
       "allUsers": "Alle gebruikers",
       "filterByUser": "Filter op gebruiker",
-      "noShares": "Er zijn geen aandelen om te laten zien",
+      "noShares": "Er zijn geen shares om te tonen",
       "owner": "Eigenaar"
     },
     "authProvidersSavedSuccessfully": "Auth providers succesvol opgeslagen",
@@ -274,7 +274,7 @@
       },
       "myShares": {
         "create": "Gedeelde link aanmaken",
-        "pruneExpired": "Vervallen aandelen verwijderen"
+        "pruneExpired": "Verlopen shares verwijderen"
       },
       "system": {
         "save": "Bewaar systeem instellingen"
@@ -285,11 +285,11 @@
     },
     "close": "Sluit",
     "confirm": {
-      "pruneExpiredShares": "Weet je zeker dat je verlopen aandelen wilt verwijderen? Het is niet mogelijk om deze bewerking ongedaan te maken."
+      "pruneExpiredShares": "Weet je zeker dat je je verlopen shares wilt verwijderen? Dit kan niet ongedaan worden gemaakt."
     },
     "description": {
       "about": "Informatie over uw OpenTransfer installatie",
-      "allShares": "Aandelen van alle gebruikers bekijken en beheren",
+      "allShares": "Shares van alle gebruikers bekijken en beheren",
       "branding": "Pas de UI van je OpenTransfer instantie aan en voeg je eigen branding toe.",
       "cloudConnect": "Verbind je instantie met Erugo Cloud voor eenvoudige domeinroutering",
       "emailTemplates": "E-mailsjablonen beheren",
@@ -324,7 +324,7 @@
       "validation_error": "{template}: Verplichte velden ontbreken ({fields})"
     },
     "error": {
-      "pruneExpiredShares": "Kan verwijdering van verlopen aandelen niet plannen!",
+      "pruneExpiredShares": "Het verwijderen van verlopen shares kon niet worden ingepland!",
       "shareExpired": "Delen niet verlopen",
       "shareExtended": "Niet gelukt om aandeel uit te breiden"
     },
@@ -341,8 +341,8 @@
     "invite": {
       "message": "Bericht (optioneel)"
     },
-    "loading": "Aandelen uploaden...",
-    "noShares": "Er zijn geen aandelen. Maak er een!",
+    "loading": "Shares laden...",
+    "noShares": "Je hebt geen shares. Maak er een!",
     "provider": {
       "edit": "Bewerk",
       "view": "Bekijk"
@@ -366,7 +366,7 @@
         "downloads_in_period": "Downloads ({days} dagen)",
         "time_period": "Periode:",
         "title": "Activiteit downloaden",
-        "top_shares": "Meest gedownloade aandelen",
+        "top_shares": "Meest gedownloade shares",
         "unique_downloaders": "Unieke downloaders"
       },
       "error_loading": "Kan systeemstatistieken niet laden",
@@ -390,17 +390,17 @@
         "categories_title": "Categorieën",
         "disk_usage_description": "Toont het totale gebruik van schijfruimte. Overweeg om oude shares op te ruimen als het gebruik hoog is.",
         "disk_usage_title": "Schijfgebruik",
-        "downloads_description": "Volg de downloadactiviteit van alle aandelen over de door jou geselecteerde periode.",
+        "downloads_description": "Volg de downloadactiviteit van alle shares over de gekozen periode.",
         "downloads_title": "Activiteit downloaden",
         "file_types_description": "Indeling van bestanden per categorie op alle shares.",
         "file_types_title": "Bestandstype Distributie",
         "guest_users_description": "Gebruikers die zijn aangemaakt via omgekeerde uitnodigingen voor delen.",
         "guest_users_title": "Gastgebruikers",
-        "shares_description": "Overzicht van alle aandelen in het systeem, inclusief hun huidige status.",
+        "shares_description": "Overzicht van alle shares in het systeem, met hun huidige status.",
         "shares_title": "Statistieken delen",
         "storage_description": "Controleer het schijfgebruik van je server en de ruimte die shares innemen.",
         "storage_title": "Overzicht opslag",
-        "unique_downloaders_description": "Aantal unieke IP-adressen die aandelen hebben gedownload.",
+        "unique_downloaders_description": "Aantal unieke IP-adressen die shares hebben gedownload.",
         "unique_downloaders_title": "Unieke downloaders",
         "users_description": "Overzicht van gebruikersaccounts en hun activiteitsniveaus.",
         "users_title": "Gebruikersstatistieken"
@@ -415,7 +415,7 @@
       },
       "refresh": "Vernieuw",
       "shares": {
-        "active_shares": "Actieve aandelen",
+        "active_shares": "Actieve shares",
         "deleted": "Verwijderd",
         "expired": "Verlopen",
         "last_7_days": "Laatste 7 dagen",
@@ -423,7 +423,7 @@
         "protected": "Beschermd",
         "title": "Statistieken delen",
         "total_files": "Totaal Bestanden",
-        "total_shares": "Totaal aandelen"
+        "total_shares": "Totaal aantal shares"
       },
       "storage": {
         "available_space": "Beschikbare ruimte",
@@ -439,15 +439,15 @@
         "active": "Actief",
         "admins": "Admins",
         "guests": "Gasten",
-        "shares": "aandelen",
+        "shares": "shares",
         "title": "Gebruikersstatistieken",
         "top_users": "Meest actieve gebruikers",
         "total_users": "Totaal gebruikers",
-        "with_shares": "Gebruikers met aandelen"
+        "with_shares": "Gebruikers met shares"
       }
     },
     "success": {
-      "pruneExpiredShares": "Vervallen aandelen zijn gemarkeerd voor verwijdering en worden op de achtergrond verwerkt.",
+      "pruneExpiredShares": "Verlopen shares zijn ingepland voor verwijdering en worden op de achtergrond verwerkt.",
       "shareExpired": "Aandeel verlopen",
       "shareExtended": "Aandeel uitgebreid"
     },
@@ -547,7 +547,7 @@
       "pattern_token_uppercase": "Hoofdletter (A-Z)",
       "provider_trust_warning": "Waarschuwing: Auth Provider Vertrouwen",
       "provider_trust_warning_description": "Zorg ervoor dat je alleen auth providers configureert en inschakelt die je vertrouwt. Authenticatieproviders hebben verhoogde toegangsrechten tot je applicatie en gebruikersgegevens. Het toevoegen van niet-vertrouwde of gecompromitteerde providers kan leiden tot onbevoegde toegang, gegevenslekken of accountovername.",
-      "reverse_shares": "Omgekeerde Aandelen",
+      "reverse_shares": "Bestandsverzoeken",
       "security": {
         "add_your_ip": "Toevoegen aan de lijst",
         "altcha": "Robotcontrole",
@@ -599,7 +599,7 @@
       "share_downloaded_emails_description": "Stel link-eigenaars op de hoogte wanneer hun gedeelde content voor het eerst wordt gedownload. Dit helpt gebruikers bij te houden wanneer ontvangers toegang krijgen tot hun gedeelde bestanden.",
       "share_expired_warning_emails": "\"Waarschuwingsmails \"Delen verlopen",
       "share_expired_warning_emails_description": "Waarschuw gebruikers wanneer hun links de vervaldatum hebben bereikt en niet langer toegankelijk zijn voor ontvangers. Helpt gebruikers zich bewust te blijven van hun deelstatus.",
-      "share_expiry_warning_emails": "\"Waarschuwingsmails \"Vervallen aandelen",
+      "share_expiry_warning_emails": "Waarschuwingsmails “share verloopt”",
       "share_expiry_warning_emails_description": "Stuur proactieve meldingen naar gebruikers wanneer hun links bijna verlopen. Dit geeft hen de mogelijkheid om de toegang te verlengen als dat nodig is.",
       "share_url_generation": "URL delen genereren",
       "share_url_mode": "Modus URL genereren",
@@ -626,7 +626,7 @@
       "share_url_random_uppercase": "Hoofdletters A-Z",
       "share_url_shortcode_length": "Lengte korte code",
       "shares": "Gedeelde Bestanden",
-      "show_deleted_shares": "Verwijderde aandelen weergeven",
+      "show_deleted_shares": "Verwijderde shares tonen",
       "show_language_selector": "Taalkeuze tonen",
       "show_language_selector_description": "Schakel de zichtbaarheid van het taalkeuzemenu in de rechterbovenhoek van de applicatie in. Als deze optie is ingeschakeld, kunnen gebruikers snel schakelen tussen de beschikbare interfacetalen.",
       "smtp": "SMTP",
@@ -658,10 +658,10 @@
     },
     "title": {
       "about": "Over",
-      "allShares": "Alle Aandelen",
-      "branding": "Branding & UI",
+      "allShares": "Alle shares",
+      "branding": "Huisstijl",
       "cloudConnect": "OpenTransfer aansluiten",
-      "emailTemplates": "E-mail sjablonen",
+      "emailTemplates": "E-mailsjablonen",
       "linked_accounts": "Verwante accounts",
       "manage": "Beheer",
       "myProfile": "Mijn profiel",
@@ -671,7 +671,7 @@
         "password_protect": "Gedeelde link beveiligen met een wachtwoord"
       },
       "stats": "Systeemgegevens",
-      "system": "Systeem Instellingen",
+      "system": "Systeem",
       "users": "Gebruikers",
       "users.edit": "Bewerk {name}"
     },
@@ -784,7 +784,7 @@
       "user_created_successfully": "Gebruiker succesvol aangemaakt",
       "user_deleted_successfully": "Gebruiker is succesvol verwijderd",
       "user_updated_successfully": "Gebruiker succesvol bijgewerkt",
-      "view_shares": "Aandelen bekijken",
+      "view_shares": "Shares bekijken",
       "you": "U"
     }
   },
@@ -998,6 +998,7 @@
     "group_summary": "{count, plural, one {# share} other {# shares}} · {downloads, plural, one {# download} other {# downloads}}",
     "state": {
       "active": "Actief",
+      "pending": "Wordt voorbereid",
       "ending": "Verloopt binnenkort",
       "expired": "Verlopen",
       "deleted": "Verwijderd",

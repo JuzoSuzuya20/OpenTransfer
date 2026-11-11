@@ -14,10 +14,10 @@
   "Reverse Share Invite": "Reverse Share Invite",
   "Share Created": "Teilen Erstellt",
   "Share Deleted Warning": "Gelöschte Warnung teilen",
-  "Share Deletion Warning": "Warnung vor der Löschung von Aktien",
+  "Share Deletion Warning": "Warnung vor dem Löschen einer Freigabe",
   "Share Downloaded": "Heruntergeladene Freigabe",
   "Share Expired Warning": "Anteil Abgelaufene Warnung",
-  "Share Expiry Warning": "Warnung vor dem Verfall von Aktien",
+  "Share Expiry Warning": "Warnung vor dem Ablauf einer Freigabe",
   "Share Name": "Name der Freigabe",
   "Share URL": "URL teilen",
   "We'll provide you with a link instead": {
@@ -194,7 +194,7 @@
     "allShares": {
       "allUsers": "Alle Benutzer",
       "filterByUser": "Filter nach Benutzer",
-      "noShares": "Es gibt keine Aktien zu zeigen",
+      "noShares": "Es gibt keine Freigaben anzuzeigen",
       "owner": "Eigentümer"
     },
     "authProvidersSavedSuccessfully": "Auth-Provider erfolgreich gespeichert",
@@ -366,7 +366,7 @@
         "downloads_in_period": "Downloads ({days} Tage)",
         "time_period": "Zeitspanne:",
         "title": "Aktivität herunterladen",
-        "top_shares": "Meist heruntergeladene Aktien",
+        "top_shares": "Am häufigsten heruntergeladene Freigaben",
         "unique_downloaders": "Einzigartige Downloader"
       },
       "error_loading": "Systemstatistiken konnten nicht geladen werden",
@@ -396,11 +396,11 @@
         "file_types_title": "Dateityp Verteilung",
         "guest_users_description": "Benutzer, die über umgekehrte Einladungen zur gemeinsamen Nutzung erstellt wurden.",
         "guest_users_title": "Gast-Benutzer",
-        "shares_description": "Übersicht über alle Aktien im System, einschließlich ihres aktuellen Status.",
+        "shares_description": "Übersicht über alle Freigaben im System, einschließlich ihres aktuellen Status.",
         "shares_title": "Statistik teilen",
         "storage_description": "Überwachen Sie die Festplattennutzung Ihres Servers und den von den Freigaben verbrauchten Speicherplatz.",
         "storage_title": "Überblick über die Speicherung",
-        "unique_downloaders_description": "Anzahl der eindeutigen IP-Adressen, die Aktien heruntergeladen haben.",
+        "unique_downloaders_description": "Anzahl der eindeutigen IP-Adressen, die Freigaben heruntergeladen haben.",
         "unique_downloaders_title": "Einzigartige Downloader",
         "users_description": "Überblick über die Benutzerkonten und deren Aktivitätsniveau.",
         "users_title": "Benutzer-Statistik"
@@ -415,11 +415,11 @@
       },
       "refresh": "Auffrischen",
       "shares": {
-        "active_shares": "Aktive Aktien",
+        "active_shares": "Aktive Freigaben",
         "deleted": "Gelöscht",
         "expired": "Abgelaufen",
         "last_7_days": "Letzte 7 Tage",
-        "per_share": "pro Aktie",
+        "per_share": "pro Freigabe",
         "protected": "Geschützt",
         "title": "Statistik teilen",
         "total_files": "Dateien insgesamt",
@@ -439,7 +439,7 @@
         "active": "Aktiv",
         "admins": "Admins",
         "guests": "Gäste",
-        "shares": "Aktien",
+        "shares": "Freigaben",
         "title": "Benutzer-Statistik",
         "top_users": "Aktivste Benutzer",
         "total_users": "Benutzer insgesamt",
@@ -547,7 +547,7 @@
       "pattern_token_uppercase": "Großbuchstabe (A-Z)",
       "provider_trust_warning": "Warnung: Vertrauen in Auth Provider ",
       "provider_trust_warning_description": "Stellen Sie sicher, dass Sie nur Authentifizierungsanbieter konfigurieren und aktivieren, denen Sie vertrauen. Authentifizierungsanbieter verfügen über erweiterte Zugriffsrechte auf Ihre Anwendungs- und Benutzerdaten. Das Hinzufügen von nicht vertrauenswürdigen oder gefährdeten Anbietern kann zu unbefugtem Zugriff, Datenverletzungen oder Kontoübernahmen führen.",
-      "reverse_shares": "Reverse-Aktien",
+      "reverse_shares": "Dateianfragen",
       "security": {
         "add_your_ip": "Zur Liste hinzufügen",
         "altcha": "Roboter-Prüfung",
@@ -658,8 +658,8 @@
     },
     "title": {
       "about": "Über",
-      "allShares": "Alle Aktien",
-      "branding": "Branding & Benutzeroberfläche",
+      "allShares": "Alle Freigaben",
+      "branding": "Marke",
       "cloudConnect": "OpenTransfer Verbinden",
       "emailTemplates": "E-Mail-Vorlagen",
       "linked_accounts": "Verwandte Konten",
@@ -671,7 +671,7 @@
         "password_protect": "Freigabe mit Passwort schützen"
       },
       "stats": "System-Statistiken",
-      "system": "Systemeinstellungen",
+      "system": "System",
       "users": "Benutzer",
       "users.edit": "Bearbeiten {name}"
     },
@@ -784,7 +784,7 @@
       "user_created_successfully": "Benutzer erfolgreich angelegt",
       "user_deleted_successfully": "Benutzer wurde erfolgreich gelöscht",
       "user_updated_successfully": "Benutzer erfolgreich aktualisiert",
-      "view_shares": "Aktien ansehen",
+      "view_shares": "Freigaben ansehen",
       "you": "Sie"
     }
   },
@@ -837,7 +837,7 @@
       "count": "{value, plural, one {# Datei} other {# Dateien}}",
       "including": "einschließlich:"
     },
-    "not_found": "Die von Ihnen gesuchte Aktie wurde nicht gefunden. Möglicherweise müssen Sie sich anmelden, um sie zu sehen.",
+    "not_found": "Die gesuchte Freigabe wurde nicht gefunden. Möglicherweise müssen Sie sich anmelden, um sie zu sehen.",
     "passwordNotProtected": "Öffnen Sie",
     "passwordProtected": "Passwort geschützt"
   },
@@ -851,7 +851,7 @@
       "chunked": "Chunked-Loading-Modus",
       "direct": "Direkter Upload-Modus"
     },
-    "expiry_label": "Die Aktie verfällt am {value} {unit} (Änderung)",
+    "expiry_label": "Die Freigabe läuft in {value} {unit} ab (ändern)",
     "expiry_max_value": "Max: {value}",
     "expiry_too_long": "Die von Ihnen eingegebene Verfallszeit überschreitet die Höchstgrenze. Wir haben sie automatisch auf den längsten zulässigen Zeitraum angepasst.",
     "expiry_unit": {
@@ -998,6 +998,7 @@
     "group_summary": "{count, plural, one {# Freigabe} other {# Freigaben}} · {downloads, plural, one {# Download} other {# Downloads}}",
     "state": {
       "active": "Aktiv",
+      "pending": "Wird vorbereitet",
       "ending": "Läuft bald ab",
       "expired": "Abgelaufen",
       "deleted": "Gelöscht",

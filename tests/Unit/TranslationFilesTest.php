@@ -65,6 +65,25 @@ class TranslationFilesTest extends TestCase
         $this->assertSame([], $empty);
     }
 
+    #[DataProvider('languages')]
+    public function test_each_supported_language_has_the_server_texts_of_english(string $code): void
+    {
+        $base = dirname(__DIR__, 2) . '/lang';
+        foreach (glob("$base/en/*.php") as $file) {
+            $name = basename($file);
+            $this->assertFileExists("$base/$code/$name", "No $name for '$code'");
+            $english = require $file;
+            $texts = require "$base/$code/$name";
+            $this->assertSame(array_keys($english), array_keys($texts), "Keys of lang/$code/$name");
+            foreach ($english as $key => $text) {
+                preg_match_all('/:([a-z_]+)/', $text, $expected);
+                preg_match_all('/:([a-z_]+)/', $texts[$key], $found);
+                $this->assertSame($expected[1], $found[1], "Placeholders of $key in lang/$code/$name");
+                $this->assertNotSame('', trim($texts[$key]), "Empty $key in lang/$code/$name");
+            }
+        }
+    }
+
     private static function path(string $code): string
     {
         return dirname(__DIR__, 2) . "/resources/js/i18n/$code.json";

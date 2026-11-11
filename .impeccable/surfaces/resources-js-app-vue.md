@@ -10,7 +10,7 @@ related_targets: ["resources/js/components/uploader.vue","resources/js/component
 Mode : Operate. Public : salariés qui envoient, destinataires extérieurs, déposants invités, admins.
 Tâches : envoyer un partage, le suivre, télécharger un partage reçu, déposer sur invitation, administrer.
 Contraintes : logique d'authentification et URL de callback SSO inchangées ; aucune ressource externe ;
-six langues ; sombre et clair selon le système ; données d'une instance Erugo conservées.
+sept langues ; sombre et clair selon le système ; données d'une instance Erugo conservées.
 
 ## Direction contract
 

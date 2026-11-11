@@ -17,6 +17,8 @@ colors:
   faint: "#6a6a6a"
   accent: "#6a6af4"
   accent-hover: "#7c7cf6"
+  accent-fill: "#6262ee"
+  accent-fill-hover: "#5b5be6"
   accent-text: "#8585f6"
   on-accent: "#ffffff"
   accent-soft: "#23233f"
@@ -93,7 +95,7 @@ spacing:
   page: "32px"
 components:
   button-primary:
-    backgroundColor: "{colors.accent}"
+    backgroundColor: "{colors.accent-fill}"
     textColor: "{colors.on-accent}"
     typography: "{typography.button}"
     rounded: "{rounded.button}"
@@ -114,7 +116,7 @@ components:
     rounded: "{rounded.button}"
     height: "36px"
   button-cta:
-    backgroundColor: "{colors.accent}"
+    backgroundColor: "{colors.accent-fill}"
     textColor: "{colors.on-accent}"
     rounded: "{rounded.button}"
     padding: "0 18px"
@@ -180,6 +182,8 @@ Des fonds neutres en paliers, un seul accent bleu, trois couleurs d'état sur fo
 - **Paliers de fond** : page, carte, champ, élevé, actif, du plus profond au plus clair (sombre) ou du gris au blanc (clair).
 - **Accent** : bouton principal, onglet actif (soulignement), option choisie des filtres, anneau de focus, barres de progression.
   Le texte d'accent (`accent-text`) sert aux titres de carte et aux liens, car l'accent plein est trop peu contrasté pour du texte.
+  Ce qui porte du texte blanc (boutons principaux, bouton de l'en-tête) prend l'accent plein (`accent-fill`, `#6262ee` en sombre) :
+  `#6a6af4` ne donne au blanc que 4,2:1, `#6262ee` atteint 4,67:1. L'accent garde les liserés, onglets et barres.
 - **États** : succès (envoyé, actif), avertissement (expire bientôt, durée restante), erreur (expiré, mot de passe refusé).
   Chacun a sa couleur, un fond teinté et une ligne ; la couleur ne porte jamais seule l'information, un libellé l'accompagne.
 - Les couleurs vivent en jetons `--ot-*` dans `resources/js/style.scss`, redéfinis sous `prefers-color-scheme: dark`.
@@ -230,7 +234,8 @@ zone de dépôt et aux champs en lecture seule.
 
 - Do : montrer des chiffres que l'application connaît vraiment ; un chiffre qui n'existe pas n'est pas estimé.
 - Do : garder chaque action visible ; un bouton n'apparaît pas au survol.
-- Do : écrire tout nouveau texte dans les six langues (`resources/js/i18n/*.json`).
+- Do : écrire tout nouveau texte dans les sept langues (`resources/js/i18n/*.json`, et `lang/` pour les pages rendues
+  par le serveur) ; `TranslationFilesTest` refuse une langue incomplète.
 - Do : passer par les jetons `--ot-*` ; les anciens noms de variables ne servent qu'aux écrans pas encore refaits.
 - Don't : réintroduire des thèmes ou des couleurs personnalisables ; l'identité est unique.
 - Don't : flou, dégradés décoratifs, texte en dégradé, tuiles à icône à la place d'un chiffre.

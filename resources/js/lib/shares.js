@@ -4,7 +4,8 @@
 const HOUR = 3600 * 1000
 const ENDING_WITHIN = 48 * HOUR
 
-// active, ending (within two days, or one download from its limit), expired, deleted or failed
+// active, ending (within two days, or one download from its limit), expired, deleted, failed, or
+// pending while the archive of its files is being built
 export const shareState = (share, now = new Date()) => {
   if (share.status === 'deleted') return 'deleted'
   if (share.status === 'failed') return 'failed'
@@ -12,11 +13,12 @@ export const shareState = (share, now = new Date()) => {
   const left = new Date(share.expires_at).getTime() - now.getTime()
   const limit = share.download_limit
   if (left <= 0 || (limit && share.download_count >= limit)) return 'expired'
+  if (share.status === 'pending') return 'pending'
   if (left < ENDING_WITHIN || (limit && limit - share.download_count <= 1)) return 'ending'
   return 'active'
 }
 
-const isOnline = (share, now) => ['active', 'ending'].includes(shareState(share, now))
+const isOnline = (share, now) => ['active', 'ending', 'pending'].includes(shareState(share, now))
 const ownShares = (shares) => shares.filter((share) => !share.shared_with_me)
 
 // The figures above the send form: what the person has online right now

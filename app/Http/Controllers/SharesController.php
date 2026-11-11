@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\Locales;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Share;
@@ -244,10 +246,7 @@ class SharesController extends Controller
 
     //otherise let's check the status: pending, ready, or failed
     if ($share->status == 'pending') {
-      return view('shares.pending', [
-        'share' => $share,
-        'settings' => $this->getSettings()
-      ]);
+      return $this->statusPage('pending', $share);
     }
 
     //if the share is ready, download the zip file
@@ -264,26 +263,17 @@ class SharesController extends Controller
         );
       } else {
         //something went wrong, show the failed view
-        return view('shares.failed', [
-          'share' => $share,
-          'settings' => $this->getSettings()
-        ]);
+        return $this->statusPage('failed', $share);
       }
     }
 
     //if the share is failed, show the failed view
     if ($share->status == 'failed') {
-      return view('shares.failed', [
-        'share' => $share,
-        'settings' => $this->getSettings()
-      ]);
+      return $this->statusPage('failed', $share);
     }
 
     //if we got here we have no idea what to do so let's show the failed view
-    return view('shares.failed', [
-      'share' => $share,
-      'settings' => $this->getSettings()
-    ]);
+    return $this->statusPage('failed', $share);
   }
 
   /**
@@ -703,6 +693,18 @@ class SharesController extends Controller
     return $generator->generate($pattern);
   }
 
+  // The page a recipient meets while the archive of a share is being built, or when it could not be:
+  // in the default language of the instance, like the emails of someone without an account
+  private function statusPage(string $view, Share $share)
+  {
+    return view('shares.' . $view, [
+      'share' => $share,
+      'settings' => $this->getSettings(),
+      'locale' => Locales::default(),
+      'defaultLogo' => usesDefaultLogo(),
+    ]);
+  }
+
   private function getSettings()
   {
     $settings = Setting::whereLike('group', 'ui%')->get();
@@ -733,10 +735,7 @@ class SharesController extends Controller
     } catch (\RuntimeException $e) {
       \Log::critical('Cannot read a stored share file: ' . $e->getMessage());
 
-      return view('shares.failed', [
-        'share' => $share,
-        'settings' => $this->getSettings()
-      ]);
+      return $this->statusPage('failed', $share);
     }
 
     $this->createDownloadRecord($share);

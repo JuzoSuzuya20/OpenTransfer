@@ -390,17 +390,17 @@
         "categories_title": "Categorie",
         "disk_usage_description": "Mostra l'utilizzo totale dello spazio su disco. Considerate la possibilità di ripulire le vecchie condivisioni se l'utilizzo è elevato.",
         "disk_usage_title": "Utilizzo del disco",
-        "downloads_description": "Traccia l'attività di download di tutte le azioni nel periodo di tempo selezionato.",
+        "downloads_description": "Segui l'attività di download di tutte le condivisioni nel periodo selezionato.",
         "downloads_title": "Scarica l'attività",
         "file_types_description": "Ripartizione dei file per categoria in tutte le condivisioni.",
         "file_types_title": "Tipo di file Distribuzione",
         "guest_users_description": "Utenti creati tramite inviti di condivisione inversa.",
         "guest_users_title": "Utenti ospiti",
-        "shares_description": "Panoramica di tutte le azioni presenti nel sistema, compreso il loro stato attuale.",
+        "shares_description": "Panoramica di tutte le condivisioni presenti nel sistema, con il loro stato attuale.",
         "shares_title": "Statistiche di condivisione",
         "storage_description": "Monitorare l'utilizzo del disco del server e lo spazio consumato dalle condivisioni.",
         "storage_title": "Panoramica sull'archiviazione",
-        "unique_downloaders_description": "Conteggio degli indirizzi IP unici che hanno scaricato le azioni.",
+        "unique_downloaders_description": "Numero di indirizzi IP unici che hanno scaricato condivisioni.",
         "unique_downloaders_title": "Scaricatori unici",
         "users_description": "Panoramica degli account utente e dei loro livelli di attività.",
         "users_title": "Statistiche degli utenti"
@@ -409,21 +409,21 @@
       "nav": {
         "downloads": "Download",
         "file_types": "Tipi di file",
-        "shares": "Azioni",
+        "shares": "Condivisioni",
         "storage": "Immagazzinamento",
         "users": "Utenti"
       },
       "refresh": "Aggiornare",
       "shares": {
-        "active_shares": "Azioni attive",
+        "active_shares": "Condivisioni attive",
         "deleted": "Soppresso",
         "expired": "Scaduto",
         "last_7_days": "Ultimi 7 giorni",
-        "per_share": "per azione",
+        "per_share": "per condivisione",
         "protected": "Protetto",
         "title": "Statistiche di condivisione",
         "total_files": "Totale file",
-        "total_shares": "Totale azioni"
+        "total_shares": "Totale condivisioni"
       },
       "storage": {
         "available_space": "Spazio disponibile",
@@ -439,11 +439,11 @@
         "active": "Attivo",
         "admins": "Amministratori",
         "guests": "Ospiti",
-        "shares": "azioni",
+        "shares": "condivisioni",
         "title": "Statistiche degli utenti",
         "top_users": "Utenti più attivi",
         "total_users": "Utenti totali",
-        "with_shares": "Utenti con azioni"
+        "with_shares": "Utenti con condivisioni"
       }
     },
     "success": {
@@ -535,8 +535,8 @@
       "login_message": "Messaggio di accesso",
       "login_message_description": "Aggiungere un messaggio o un annuncio personalizzato che verrà visualizzato nella schermata di accesso. Può essere utilizzato per messaggi di benvenuto, notifiche importanti o annunci temporanei.",
       "max_expiry_time": "Tempo di scadenza massimo",
-      "max_expiry_time_description": "Impostare il numero massimo di giorni che un utente può selezionare per la scadenza delle azioni al momento della creazione. Svuotare il valore per consentire una scadenza illimitata.",
-      "max_share_size": "Dimensione massima delle azioni",
+      "max_expiry_time_description": "Imposta il numero massimo di giorni che un utente può scegliere per la scadenza di una condivisione al momento della creazione. Lascia vuoto per non limitarla.",
+      "max_share_size": "Dimensione massima di una condivisione",
       "max_share_size_description": "Imposta la dimensione massima di una condivisione che un utente può creare. Il valore è espresso in megabyte o gigabyte.",
       "pattern_token_alphanumeric": "Alfanumerico (0-9, A-Z, a-z)",
       "pattern_token_digit": "Cifra (0-9)",
@@ -547,7 +547,7 @@
       "pattern_token_uppercase": "Lettera maiuscola (A-Z)",
       "provider_trust_warning": "Attenzione: Fiducia del fornitore di autorizzazioni",
       "provider_trust_warning_description": "Assicurarsi di configurare e abilitare solo i provider di autenticazione di cui ci si fida. I provider di autenticazione hanno privilegi di accesso elevati all'applicazione e ai dati degli utenti. L'aggiunta di provider non affidabili o compromessi potrebbe portare ad accessi non autorizzati, violazioni dei dati o acquisizione di account.",
-      "reverse_shares": "Azioni inverse",
+      "reverse_shares": "Richieste di file",
       "security": {
         "add_your_ip": "Aggiungilo alla lista",
         "altcha": "Verifica anti-robot",
@@ -599,8 +599,8 @@
       "share_downloaded_emails_description": "Notifica ai proprietari delle condivisioni quando i loro contenuti condivisi vengono scaricati per la prima volta. Questo aiuta gli utenti a tenere traccia di quando i destinatari accedono ai loro file condivisi.",
       "share_expired_warning_emails": "\"Email di avviso \"Condivisione scaduta",
       "share_expired_warning_emails_description": "Avvisare gli utenti quando le loro condivisioni hanno raggiunto la data di scadenza e non sono più accessibili ai destinatari. Aiuta gli utenti a mantenere la consapevolezza del loro stato di condivisione.",
-      "share_expiry_warning_emails": "\"Email di avviso di \"scadenza delle azioni",
-      "share_expiry_warning_emails_description": "Inviate notifiche proattive agli utenti quando le loro azioni si stanno avvicinando alla scadenza. In questo modo hanno la possibilità di estendere l'accesso, se necessario.",
+      "share_expiry_warning_emails": "Email di avviso “scadenza della condivisione”",
+      "share_expiry_warning_emails_description": "Avvisa gli utenti quando le loro condivisioni stanno per scadere, così possono prolungarne l’accesso se serve.",
       "share_url_generation": "Generazione dell'URL di condivisione",
       "share_url_mode": "Modalità di generazione dell'URL",
       "share_url_mode_description": "Scegliete come generare gli URL di condivisione. Haiku crea combinazioni di parole memorabili (ad esempio, \"autunno-brezza-silenzio-luna\"). La modalità Pattern consente di definire un formato personalizzato utilizzando la sintassi Pattern di OpenTransfer.",
@@ -625,8 +625,8 @@
       "share_url_random_special": "Caratteri speciali",
       "share_url_random_uppercase": "Maiuscole A-Z",
       "share_url_shortcode_length": "Lunghezza del codice breve",
-      "shares": "Azioni",
-      "show_deleted_shares": "Mostra le azioni eliminate",
+      "shares": "Condivisioni",
+      "show_deleted_shares": "Mostra le condivisioni eliminate",
       "show_language_selector": "Mostra il selettore della lingua",
       "show_language_selector_description": "Alterna la visibilità della tendina di selezione della lingua nell'angolo in alto a destra dell'applicazione. Se attivata, gli utenti possono passare rapidamente da una lingua all'altra dell'interfaccia.",
       "smtp": "SMTP",
@@ -658,10 +658,10 @@
     },
     "title": {
       "about": "Circa",
-      "allShares": "Tutte le azioni",
-      "branding": "Branding ed interfaccia utente ",
+      "allShares": "Tutte le condivisioni",
+      "branding": "Marchio",
       "cloudConnect": "Erugo Connect",
-      "emailTemplates": "Template di email",
+      "emailTemplates": "Modelli di email",
       "linked_accounts": "Account collegati",
       "manage": "Gestire",
       "myProfile": "Il mio account",
@@ -671,7 +671,7 @@
         "password_protect": "Protezione con password della condivisione"
       },
       "stats": "Statistiche del sistema",
-      "system": "Impostazioni del sistema",
+      "system": "Sistema",
       "users": "Utenti",
       "users.edit": "Modifica {name}"
     },
@@ -784,7 +784,7 @@
       "user_created_successfully": "Utente creato con successo",
       "user_deleted_successfully": "L'utente è stato eliminato con successo",
       "user_updated_successfully": "Utente aggiornato con successo",
-      "view_shares": "Visualizza le azioni",
+      "view_shares": "Visualizza le condivisioni",
       "you": "Tu"
     }
   },
@@ -851,7 +851,7 @@
       "chunked": "Modalità di caricamento chunked",
       "direct": "Modalità di caricamento diretto"
     },
-    "expiry_label": "L'azione scadrà nel {value} {unit} (modifica)",
+    "expiry_label": "La condivisione scadrà tra {value} {unit} (modifica)",
     "expiry_max_value": "Max: {value}",
     "expiry_too_long": "Il tempo di scadenza inserito supera il limite massimo. L'abbiamo adattato automaticamente al periodo più lungo consentito.",
     "expiry_unit": {
@@ -998,6 +998,7 @@
     "group_summary": "{count, plural, one {# condivisione} other {# condivisioni}} · {downloads, plural, one {# download} other {# download}}",
     "state": {
       "active": "Attiva",
+      "pending": "In preparazione",
       "ending": "Scade presto",
       "expired": "Scaduta",
       "deleted": "Eliminata",

@@ -34,7 +34,7 @@ const stateOf = (share) => shareState(share, now.value)
 
 const FILTERS = {
   all: () => true,
-  active: (share) => ['active', 'ending'].includes(stateOf(share)),
+  active: (share) => ['active', 'ending', 'pending'].includes(stateOf(share)),
   expired: (share) => ['expired', 'deleted', 'failed'].includes(stateOf(share))
 }
 const filtered = computed(() => shares.value.filter(FILTERS[filter.value]))
@@ -59,7 +59,7 @@ const groupSummary = (group) => {
   return t.value('shares.group_summary', { count: group.shares.length, downloads })
 }
 
-const STATE_PILL = { active: 'is-success', ending: 'is-warning', expired: 'is-danger', failed: 'is-danger', deleted: '' }
+const STATE_PILL = { active: 'is-success', pending: '', ending: 'is-warning', expired: 'is-danger', failed: 'is-danger', deleted: '' }
 const stateLabel = (share) => t.value(`shares.state.${stateOf(share)}`)
 
 const shareMeta = (share) => {
@@ -116,7 +116,7 @@ const run = async (promise, success, failure) => {
 
 const menuItems = (share) => {
   const state = stateOf(share)
-  const online = state === 'active' || state === 'ending'
+  const online = state === 'active' || state === 'ending' || state === 'pending'
   return [
     { label: t.value('shares.open_page'), icon: SquareArrowOutUpRight, action: () => window.open(shareUrl(share), '_blank', 'noopener') },
     { label: t.value('shares.download'), icon: HardDriveDownload, disabled: !online, action: () => (window.location.href = `/api/shares/${share.long_id}/download`) },

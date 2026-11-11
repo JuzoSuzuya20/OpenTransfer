@@ -390,13 +390,13 @@ button {
     opacity: 0.5;
 
     &.active {
-      background: var(--ot-accent);
+      background: var(--ot-accent-fill);
       color: var(--ot-on-accent);
       opacity: 1;
     }
 
     &.completed {
-      background: var(--ot-accent);
+      background: var(--ot-accent-fill);
       color: var(--ot-on-accent);
       opacity: 0.7;
     }

@@ -36,7 +36,8 @@ export default defineConfig({
   },
   plugins: [
     laravel({
-      input: ['resources/js/app.js'],
+      // status.js: the pages of resources/views/shares, which need the styles but not the application
+      input: ['resources/js/app.js', 'resources/js/status.js'],
       refresh: true
     }),
     vue(),
