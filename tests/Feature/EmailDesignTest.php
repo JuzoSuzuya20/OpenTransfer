@@ -85,6 +85,17 @@ class EmailDesignTest extends TestCase
         $this->assertStringNotContainsString('brand-mark.png', $html);
     }
 
+    public function test_the_mark_and_the_logo_sit_in_the_middle_of_the_head(): void
+    {
+        $mark = (new passwordResetMail('token', User::factory()->create()))->render();
+        Storage::disk('public')->put('images/logo.png', 'logo of the organisation');
+        $logo = (new passwordResetMail('token', User::factory()->create()))->render();
+
+        $this->assertMatchesRegularExpression('/<td class="ot-brand" align="center"[^>]*>/', $mark);
+        $this->assertMatchesRegularExpression('/<table role="presentation" align="center"[^>]*>\s*<tr>\s*<td width="28"/', $mark);
+        $this->assertMatchesRegularExpression('/<img src="https:\/\/files\.example\.test\/images\/logo\.png"[^>]*margin:0 auto/', $logo);
+    }
+
     public function test_a_share_is_announced_as_its_download_page_shows_it(): void
     {
         $html = $this->shareEmail("Bonjour,\nvoici les pièces.");

@@ -46,12 +46,12 @@
     <td align="center" style="padding:28px 16px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
         <tr>
-          <td style="padding:0 0 20px;">
-            <a href="{{ settings.application_url }}" style="text-decoration:none;">
+          <td class="ot-brand" align="center" style="padding:0 0 20px;text-align:center;">
+            <a href="{{ settings.application_url }}" style="display:inline-block;text-decoration:none;">
             {% if brand.custom_logo|default(false) %}
-              <img src="{{ settings.application_url }}/images/logo.png" width="{{ brand.logo_width }}" alt="{{ settings.application_name }}" style="display:block;width:{{ brand.logo_width }}px;max-width:100%;height:auto;max-height:40px;border:0;">
+              <img src="{{ settings.application_url }}/images/logo.png" width="{{ brand.logo_width }}" alt="{{ settings.application_name }}" style="display:block;margin:0 auto;width:{{ brand.logo_width }}px;max-width:100%;height:auto;max-height:40px;border:0;">
             {% else %}
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
                 <tr>
                   <td width="28" style="width:28px;"><img src="{{ settings.application_url }}/build/email/brand-mark.png" width="28" height="28" alt="" style="display:block;width:28px;height:28px;border:0;"></td>
                   <td style="padding-left:10px;font-size:19px;line-height:28px;font-weight:800;letter-spacing:0.02em;text-transform:uppercase;color:#ffffff;">{{ settings.application_name }}</td>
