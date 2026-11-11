@@ -15,6 +15,7 @@ import { domData } from './domData'
 //import languages
 import en from './i18n/en.json'
 import de from './i18n/de.json'
+import es from './i18n/es.json'
 import fr from './i18n/fr.json'
 import it from './i18n/it.json'
 import nl from './i18n/nl.json'
@@ -113,6 +114,8 @@ observer.observe(document.body, { childList: true, subtree: true })
 
 const tolgee = Tolgee().use(DevTools()).use(FormatIcu()).init({
   language: localStorage.getItem('language') || domData().default_language || 'en',
+  // a key missing from a translation shows the English text, never the raw key
+  fallbackLanguage: 'en',
 
   // for development
   apiUrl:  import.meta.env.VITE_APP_TOLGEE_API_URL,
@@ -122,6 +125,7 @@ const tolgee = Tolgee().use(DevTools()).use(FormatIcu()).init({
   staticData: {
     en,
     de,
+    es,
     fr,
     it,
     nl,

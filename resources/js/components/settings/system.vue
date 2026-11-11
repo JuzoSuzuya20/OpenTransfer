@@ -499,6 +499,8 @@ defineExpose({
                     <option value="en">{{ t('settings.system.languages.english') }}</option>
                     <!-- German-->
                     <option value="de">{{ t('settings.system.languages.german') }}</option>
+                    <!-- Spanish-->
+                    <option value="es">{{ t('settings.system.languages.spanish') }}</option>
                     <!-- French-->
                     <option value="fr">{{ t('settings.system.languages.french') }}</option>
                     <!-- Italian-->

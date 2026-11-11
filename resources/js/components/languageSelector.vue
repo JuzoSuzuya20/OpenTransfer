@@ -15,6 +15,7 @@ const showLanguageSelector = computed(() => domData().show_language_selector ===
 const languages = [
   { code: 'en', name: 'English' },
   { code: 'de', name: 'Deutsch' },
+  { code: 'es', name: 'Español' },
   { code: 'fr', name: 'Français' },
   { code: 'it', name: 'Italiano' },
   { code: 'nl', name: 'Nederlands' },
