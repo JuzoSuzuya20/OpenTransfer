@@ -785,7 +785,12 @@
       "user_deleted_successfully": "L'utente è stato eliminato con successo",
       "user_updated_successfully": "Utente aggiornato con successo",
       "view_shares": "Visualizza le condivisioni",
-      "you": "Tu"
+      "you": "Tu",
+      "count": "{count, plural, one {# account} other {# account}}",
+      "created_on": "creato il {date}",
+      "self_registration_on": "Registrazione autonoma: attiva",
+      "self_registration_off": "Registrazione autonoma: disattiva",
+      "two_factor_on": "Autenticazione a due fattori attiva"
     }
   },
   "setup": {

@@ -785,7 +785,12 @@
       "user_deleted_successfully": "User was deleted successfully",
       "user_updated_successfully": "User updated successfully",
       "view_shares": "View shares",
-      "you": "You"
+      "you": "You",
+      "count": "{count, plural, one {# account} other {# accounts}}",
+      "created_on": "created on {date}",
+      "self_registration_on": "Self sign-up: on",
+      "self_registration_off": "Self sign-up: off",
+      "two_factor_on": "Two-factor authentication is on"
     }
   },
   "setup": {

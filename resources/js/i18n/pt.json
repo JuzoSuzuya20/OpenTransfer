@@ -785,7 +785,12 @@
       "user_deleted_successfully": "Utilizador eliminado com sucesso",
       "user_updated_successfully": "Utilizador atualizado com sucesso",
       "view_shares": "Ver partilhas",
-      "you": "Você"
+      "you": "Você",
+      "count": "{count, plural, one {# conta} other {# contas}}",
+      "created_on": "criado em {date}",
+      "self_registration_on": "Registo autónomo: ativo",
+      "self_registration_off": "Registo autónomo: inativo",
+      "two_factor_on": "Autenticação de dois fatores ativa"
     }
   },
   "setup": {

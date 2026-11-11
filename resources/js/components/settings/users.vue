@@ -2,6 +2,8 @@
 import { ref, onMounted, defineEmits } from 'vue'
 import { getUsers, createUser, deleteUser, updateUser, forceResetPassword, resetUserTwoFactor } from '../../api'
 import { UserPen, Trash, UserPlus, CircleX, UserRoundCheck, FolderOpen, KeyRound, ShieldOff } from 'lucide-vue-next'
+import RowMenu from '../layout/RowMenu.vue'
+import AppLink from '../layout/AppLink.vue'
 import { store } from '../../store'
 import { useToast } from 'vue-toastification'
 import { niceDate } from '../../utils'
@@ -170,6 +172,19 @@ const handleResetTwoFactor = async (user) => {
   }
 }
 
+const isSelf = (user) => user.id === store.userId
+const hasSecondFactor = (user) => Boolean(user.totp_enabled_at || user.passkeys_exists)
+
+// Everything but editing goes in the menu of the row: one visible action per account
+const menuItems = (user) => [
+  { label: t.value('settings.users.view_shares'), icon: FolderOpen, action: () => handleViewUserShares(user) },
+  { label: t.value('settings.users.force_reset_password'), icon: KeyRound, disabled: isSelf(user), action: () => handleForceResetPassword(user) },
+  ...(hasSecondFactor(user)
+    ? [{ label: t.value('settings.users.reset_two_factor'), icon: ShieldOff, disabled: isSelf(user), action: () => handleResetTwoFactor(user) }]
+    : []),
+  { label: t.value('settings.users.delete'), icon: Trash, danger: true, disabled: isSelf(user), action: () => handleDeleteUserClick(user.id) }
+]
+
 const handleForceResetPassword = (user) => {
   if (user.id === store.userId) {
     toast.error(t.value('settings.users.cannot_force_reset_own_password'))
@@ -198,77 +213,40 @@ const confirmForceResetPassword = () => {
 </script>
 
 <template>
-  <div>
-    <table>
-      <thead>
-        <tr>
-          <th>{{ $t('settings.users.id') }}</th>
-          <th>{{ $t('settings.users.email') }}</th>
-          <th>{{ $t('settings.users.name') }}</th>
-          <th>{{ $t('settings.users.account') }}</th>
-          <th>{{ $t('settings.users.created') }}</th>
-          <th>{{ $t('settings.users.actions') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="user in users" :key="user.id">
-          <td width="1" style="white-space: nowrap">{{ user.id }}</td>
-          <td>
-            {{ user.email }}
-            <div class="tags" v-if="user.id === store.userId || user.admin || user.must_change_password">
-              <span v-if="user.id === store.userId" class="you-tag">{{ $t('settings.users.you') }}</span>
-              <span v-if="user.admin" class="admin-tag">{{ $t('settings.users.admin') }}</span>
-              <span v-if="user.must_change_password" class="must-change-password-tag">
-                {{ $t('settings.users.must_change_password') }}
-              </span>
-            </div>
-          </td>
-          <td>
-            <span class="user-cell">
-              <UserAvatar :seed="user.avatar_seed ?? ''" :name="user.name" :size="24" />
-              {{ user.name }}
-            </span>
-          </td>
-          <td>
-            <template v-if="user.admin">
-              {{ $t('settings.users.admin') }}
-            </template>
-            <template v-else>
-              {{ $t('settings.users.user') }}
-            </template>
-          </td>
-          <td>{{ niceDate(user.created_at) }}</td>
-          <td width="1" style="white-space: nowrap">
-            <button :disabled="user.id === store.userId" @click="handleEditUserClick(user)">
-              <UserPen />
-              {{ $t('settings.users.edit') }}
-            </button>
-            <button class="secondary" @click="handleViewUserShares(user)">
-              <FolderOpen />
-              {{ $t('settings.users.view_shares') }}
-            </button>
-            <button class="secondary" :disabled="user.id === store.userId" @click="handleForceResetPassword(user)">
-              <KeyRound />
-              {{ $t('settings.users.force_reset_password') }}
-            </button>
-            <button
-              class="secondary"
-              v-if="user.totp_enabled_at || user.passkeys_exists"
-              :disabled="user.id === store.userId"
-              @click="handleResetTwoFactor(user)"
-            >
-              <ShieldOff />
-              {{ $t('settings.users.reset_two_factor') }}
-            </button>
-            <button class="secondary" :disabled="user.id === store.userId" @click="handleDeleteUserClick(user.id)">
-              <Trash />
-              {{ $t('settings.users.delete') }}
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <section class="ot-card users-card" aria-labelledby="h-users">
+    <div class="users-head">
+      <h2 class="ot-card-title" id="h-users">{{ $t('settings.title.users') }}</h2>
+      <span class="ot-pill">{{ $t('settings.users.count', { count: users.length }) }}</span>
+    </div>
+    <ul class="user-list">
+      <li v-for="user in users" :key="user.id" class="user-row">
+        <UserAvatar :seed="user.avatar_seed ?? ''" :name="user.name" :size="32" />
+        <div class="user-row-main">
+          <div class="user-row-name">
+            {{ user.name }}
+            <span v-if="isSelf(user)" class="ot-pill is-accent">{{ $t('settings.users.you') }}</span>
+          </div>
+          <div class="user-row-meta">{{ user.email }} · {{ $t('settings.users.created_on', { date: niceDate(user.created_at) }) }}</div>
+        </div>
+        <div class="user-row-tags">
+          <span v-if="user.admin" class="ot-pill">{{ $t('settings.users.admin') }}</span>
+          <span v-if="hasSecondFactor(user)" class="ot-pill is-success" :title="$t('settings.users.two_factor_on')">2FA</span>
+          <span v-if="user.must_change_password" class="ot-pill is-warning">{{ $t('settings.users.must_change_password') }}</span>
+        </div>
+        <div class="user-row-actions">
+          <AppLink v-if="isSelf(user)" to="/profile" class="ot-act">
+            <UserPen aria-hidden="true" />
+            {{ $t('settings.users.edit_my_profile') }}
+          </AppLink>
+          <button v-else type="button" class="ot-act" @click="handleEditUserClick(user)">
+            <UserPen aria-hidden="true" />
+            {{ $t('settings.users.edit') }}
+          </button>
+          <RowMenu :label="$t('shares.more_actions', { name: user.name })" :items="menuItems(user)" />
+        </div>
+      </li>
+    </ul>
+  </section>
 
   <div class="user-form-overlay" :class="{ active: newUserFormActive }" @click="newUserFormClickOutside">
     <div class="user-form">
@@ -362,7 +340,7 @@ const confirmForceResetPassword = () => {
           :class="{ error: errors.name }"
         />
         <div class="error-message" v-if="errors.name">
-          {{ errors.name }}c
+          {{ errors.name }}
         </div>
       </div>
 
@@ -413,35 +391,61 @@ const confirmForceResetPassword = () => {
 </template>
 
 <style lang="scss" scoped>
-.user-cell {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tags {
+.users-card {
   display: flex;
-  gap: 5px;
-  margin-top: 5px;
+  flex-direction: column;
+  gap: 16px;
 }
-.you-tag {
-  display: inline-block;
-  background: var(--primary-button-background-color);
-  color: var(--primary-button-text-color);
-  font-size: 12px;
-  padding: 2px 5px;
-  border-radius: 5px;
-  transform: translateY(-1px);
+.users-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
-
-.admin-tag {
-  display: inline-block;
-  background: var(--secondary-button-background-color);
-  color: var(--secondary-button-text-color);
-  font-size: 12px;
-  padding: 2px 5px;
-  border-radius: 5px;
-  transform: translateY(-1px);
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-
+.user-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 10px 12px;
+  background: var(--ot-field);
+  border: 1px solid var(--ot-line-soft);
+  border-radius: var(--ot-radius);
+}
+.user-row-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.user-row-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--ot-heading);
+}
+.user-row-meta {
+  font-size: 0.75rem;
+  color: var(--ot-muted);
+  overflow-wrap: anywhere;
+}
+.user-row-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.user-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
 </style>

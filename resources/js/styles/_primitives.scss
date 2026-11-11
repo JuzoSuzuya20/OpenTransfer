@@ -114,6 +114,11 @@
     background: var(--ot-danger-soft);
     color: var(--ot-danger);
   }
+  // A marker of the reader themselves ("You")
+  &.is-accent {
+    background: var(--ot-accent-soft);
+    color: var(--ot-accent-text);
+  }
 }
 
 // Filters that switch what a list shows

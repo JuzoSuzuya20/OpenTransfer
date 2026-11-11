@@ -127,11 +127,7 @@ onMounted(() => {
         <template v-else-if="section === 'users'">
           <AppLink class="admin-tip" to="/admin/system#self_registration">
             <Info aria-hidden="true" />
-            {{
-              selfRegistrationEnabled
-                ? t('settings.users.add_user_self_registration_tip_on_short')
-                : t('settings.users.add_user_self_registration_tip_off_short')
-            }}
+            {{ selfRegistrationEnabled ? t('settings.users.self_registration_on') : t('settings.users.self_registration_off') }}
           </AppLink>
           <button @click="usersPanel.addUser">
             <UserPlus aria-hidden="true" />

@@ -489,9 +489,11 @@ class SharesController extends Controller
           if ($share->invite && $share->invite->user) {
             $formatted->user_name = $share->invite->user->name;
             $formatted->user_email = $share->invite->user->email;
+            $formatted->user_avatar_seed = $share->invite->user->avatar_seed;
           } else {
             $formatted->user_name = $share->user ? $share->user->name : 'Unknown User';
             $formatted->user_email = $share->user ? $share->user->email : '';
+            $formatted->user_avatar_seed = $share->user?->avatar_seed;
           }
           return $formatted;
         })

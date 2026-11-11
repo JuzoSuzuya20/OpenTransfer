@@ -785,7 +785,12 @@
       "user_deleted_successfully": "Usuario eliminado",
       "user_updated_successfully": "Usuario actualizado",
       "view_shares": "Ver los envíos",
-      "you": "Usted"
+      "you": "Usted",
+      "count": "{count, plural, one {# cuenta} other {# cuentas}}",
+      "created_on": "creado el {date}",
+      "self_registration_on": "Autorregistro: activado",
+      "self_registration_off": "Autorregistro: desactivado",
+      "two_factor_on": "Autenticación de dos factores activada"
     }
   },
   "setup": {

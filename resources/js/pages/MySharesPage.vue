@@ -2,10 +2,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
-import { SquareArrowOutUpRight, HardDriveDownload, CalendarPlus, CalendarX2, Gauge, Copy, Check, Trash2 } from 'lucide-vue-next'
-import RowMenu from '../components/layout/RowMenu.vue'
+import { Trash2 } from 'lucide-vue-next'
+import ShareRow from '../components/layout/ShareRow.vue'
 import AppLink from '../components/layout/AppLink.vue'
-import { getMyShares, expireShare, extendShare, setDownloadLimit, pruneExpiredShares } from '../api'
+import { getMyShares, pruneExpiredShares } from '../api'
 import { niceFileSize } from '../utils'
 import { shareState, monthSummary, groupByWeek } from '../lib/shares'
 
@@ -45,7 +45,6 @@ const openedPercent = computed(() => (month.value.created === 0 ? 0 : Math.round
 const RING = 2 * Math.PI * 15
 
 // --- Wording
-const dateFormat = computed(() => new Intl.DateTimeFormat(tolgee.value.getLanguage(), { day: 'numeric', month: 'short' }))
 const monthFormat = computed(() => new Intl.DateTimeFormat(tolgee.value.getLanguage(), { month: 'long', year: 'numeric' }))
 
 const groupTitle = (group) => {
@@ -59,51 +58,6 @@ const groupSummary = (group) => {
   return t.value('shares.group_summary', { count: group.shares.length, downloads })
 }
 
-const STATE_PILL = { active: 'is-success', pending: '', ending: 'is-warning', expired: 'is-danger', failed: 'is-danger', deleted: '' }
-const stateLabel = (share) => t.value(`shares.state.${stateOf(share)}`)
-
-const shareMeta = (share) => {
-  const parts = [t.value('shares.items', { count: share.file_count }), niceFileSize(share.size)]
-  if (share.shared_with_me) parts.push(t.value('shares.received'))
-  if (share.password_protected) parts.push(t.value('shares.password'))
-  if (share.download_limit) parts.push(t.value('shares.limit', { count: share.download_limit }))
-  const date = dateFormat.value.format(new Date(share.expires_at))
-  parts.push(new Date(share.expires_at) > now.value ? t.value('shares.expires_on', { date }) : t.value('shares.expired_on', { date }))
-  return parts.join(' · ')
-}
-const downloadsLabel = (share) => (share.download_limit ? `${share.download_count}/${share.download_limit}` : share.download_count)
-
-// --- Actions
-const shareUrl = (share) => `${window.location.origin}/shares/${share.long_id}`
-const copied = ref(null)
-const copyLink = async (share) => {
-  try {
-    await navigator.clipboard.writeText(shareUrl(share))
-    copied.value = share.id
-    setTimeout(() => (copied.value = copied.value === share.id ? null : copied.value), 1500)
-  } catch (error) {
-    toast.error(t.value('shares.copy_failed'))
-  }
-}
-
-const editingLimit = ref(null)
-const limitValue = ref('')
-const LIMITS = [1, 3, 5, 10, 25, 50, 100]
-const startLimit = (share) => {
-  editingLimit.value = share.id
-  limitValue.value = share.download_limit ? String(share.download_limit) : ''
-}
-const saveLimit = async (share) => {
-  try {
-    await setDownloadLimit(share.id, limitValue.value ? Number(limitValue.value) : -1)
-    toast.success(t.value('shares.limit_saved'))
-    editingLimit.value = null
-    load()
-  } catch (error) {
-    toast.error(t.value('shares.limit_failed'))
-  }
-}
-
 const run = async (promise, success, failure) => {
   try {
     await promise
@@ -112,18 +66,6 @@ const run = async (promise, success, failure) => {
   } catch (error) {
     toast.error(t.value(failure))
   }
-}
-
-const menuItems = (share) => {
-  const state = stateOf(share)
-  const online = state === 'active' || state === 'ending' || state === 'pending'
-  return [
-    { label: t.value('shares.open_page'), icon: SquareArrowOutUpRight, action: () => window.open(shareUrl(share), '_blank', 'noopener') },
-    { label: t.value('shares.download'), icon: HardDriveDownload, disabled: !online, action: () => (window.location.href = `/api/shares/${share.long_id}/download`) },
-    { label: t.value('shares.extend'), icon: CalendarPlus, disabled: state === 'deleted', action: () => run(extendShare(share.id), 'settings.success.shareExtended', 'settings.error.shareExtended') },
-    { label: t.value('shares.set_limit'), icon: Gauge, disabled: state === 'deleted', action: () => startLimit(share) },
-    { label: t.value('shares.expire_now'), icon: CalendarX2, danger: true, disabled: !online, action: () => run(expireShare(share.id), 'settings.success.shareExpired', 'settings.error.shareExpired') }
-  ]
 }
 
 const toggleDeleted = (event) => {
@@ -209,35 +151,7 @@ const prune = async () => {
           <span class="ot-pill">{{ groupSummary(group) }}</span>
         </div>
 
-        <article v-for="share in group.shares" :key="share.id" class="share-row" :class="`is-${stateOf(share)}`">
-          <div class="share-row-main">
-            <h3 class="share-row-name">{{ share.name }}</h3>
-            <div class="share-row-meta">{{ shareMeta(share) }}</div>
-          </div>
-          <span class="ot-pill" :class="STATE_PILL[stateOf(share)]">{{ stateLabel(share) }}</span>
-          <div class="share-row-downloads">
-            <div class="share-row-count">{{ downloadsLabel(share) }}</div>
-            <div class="share-row-count-label">{{ t('shares.downloads_label', { count: share.download_count }) }}</div>
-          </div>
-          <div class="share-row-actions">
-            <button type="button" class="ot-act" @click="copyLink(share)" :disabled="stateOf(share) === 'deleted'">
-              <Check v-if="copied === share.id" aria-hidden="true" />
-              <Copy v-else aria-hidden="true" />
-              {{ copied === share.id ? t('send.copied') : t('send.copy_link') }}
-            </button>
-            <RowMenu :label="t('shares.more_actions', { name: share.name })" :items="menuItems(share)" />
-          </div>
-
-          <form class="share-row-limit" v-if="editingLimit === share.id" @submit.prevent="saveLimit(share)">
-            <label :for="`limit-${share.id}`">{{ t('send.downloads') }}</label>
-            <select :id="`limit-${share.id}`" v-model="limitValue">
-              <option value="">{{ t('send.unlimited') }}</option>
-              <option v-for="limit in LIMITS" :key="limit" :value="String(limit)">{{ limit }}</option>
-            </select>
-            <button type="submit">{{ t('admin.save') }}</button>
-            <button type="button" class="ghost" @click="editingLimit = null">{{ t('send.close') }}</button>
-          </form>
-        </article>
+        <ShareRow v-for="share in group.shares" :key="share.id" :share="share" :now="now" @changed="load" />
       </div>
 
       <div class="ot-card share-empty" v-if="loaded && groups.length === 0">

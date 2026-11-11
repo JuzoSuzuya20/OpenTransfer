@@ -746,7 +746,7 @@
       "current_password": "Mot de passe actuel",
       "current_password_required": "Le mot de passe actuel est requis",
       "delete": "Supprimer",
-      "edit": "Editer",
+      "edit": "Modifier",
       "edit_my_profile": "Modifier mon profil",
       "email": "Mail",
       "failed_to_create_user": "Échec de la création de l'utilisateur",
@@ -785,7 +785,12 @@
       "user_deleted_successfully": "L'utilisateur a été supprimé avec succès",
       "user_updated_successfully": "Mise à jour de l'utilisateur réussie",
       "view_shares": "Voir les partages",
-      "you": "Vous"
+      "you": "Vous",
+      "count": "{count, plural, one {# compte} other {# comptes}}",
+      "created_on": "créé le {date}",
+      "self_registration_on": "Inscription libre : activée",
+      "self_registration_off": "Inscription libre : désactivée",
+      "two_factor_on": "Double authentification activée"
     }
   },
   "setup": {

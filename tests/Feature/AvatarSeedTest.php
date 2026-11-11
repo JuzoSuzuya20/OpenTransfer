@@ -82,4 +82,19 @@ class AvatarSeedTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.share.user.avatar_seed', $seed);
     }
+
+    public function test_an_admin_sees_the_avatar_of_the_owner_in_the_list_of_all_shares(): void
+    {
+        $owner = $this->user();
+        $admin = $this->user(['admin' => true]);
+        $share = Share::create([
+            'user_id' => $owner->id, 'name' => 'Dossier', 'path' => "{$owner->id}/admin-list", 'long_id' => 'admin-'.Str::lower(Str::random(8)),
+            'size' => 1, 'file_count' => 1, 'expires_at' => now()->addDay(), 'status' => 'ready',
+        ]);
+        File::create(['name' => 'a.pdf', 'original_name' => 'a.pdf', 'size' => 1, 'type' => 'application/pdf', 'share_id' => $share->id]);
+
+        $this->actingAs($admin, 'api')->getJson('/api/shares/all')
+            ->assertOk()
+            ->assertJsonPath('data.shares.0.user_avatar_seed', $owner->fresh()->avatar_seed);
+    }
 }

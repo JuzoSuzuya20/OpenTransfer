@@ -119,8 +119,20 @@ button {
   }
 }
 
-// The compact buttons of toolbars and list rows: a thin line on a transparent ground
-button.ot-act {
+// The compact buttons of toolbars and list rows: a thin line on a transparent ground.
+// A link that leads somewhere (to the profile, for one's own account) wears the same look.
+a.ot-act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  border-radius: var(--ot-btn-radius);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+}
+button.ot-act,
+a.ot-act {
   height: var(--ot-control-sm);
   margin: 0;
   padding: 0 10px;

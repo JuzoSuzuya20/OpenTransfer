@@ -746,7 +746,7 @@
       "current_password": "Huidig wachtwoord",
       "current_password_required": "Huidig wachtwoord is vereist",
       "delete": "Verwijder",
-      "edit": "Bewerk",
+      "edit": "Bewerken",
       "edit_my_profile": "Mijn profiel bewerken",
       "email": "E-mail",
       "failed_to_create_user": "Gebruiker niet aangemaakt",
@@ -785,7 +785,12 @@
       "user_deleted_successfully": "Gebruiker is succesvol verwijderd",
       "user_updated_successfully": "Gebruiker succesvol bijgewerkt",
       "view_shares": "Shares bekijken",
-      "you": "U"
+      "you": "U",
+      "count": "{count, plural, one {# account} other {# accounts}}",
+      "created_on": "aangemaakt op {date}",
+      "self_registration_on": "Zelfregistratie: aan",
+      "self_registration_off": "Zelfregistratie: uit",
+      "two_factor_on": "Tweestapsverificatie aan"
     }
   },
   "setup": {
