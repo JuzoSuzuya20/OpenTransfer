@@ -25,6 +25,12 @@ final class Locales
         return self::isSupported($locale) ? $locale : 'en';
     }
 
+    // Someone known by an address only: the language of the account with that address, if there is one
+    public static function forEmail(?string $email): string
+    {
+        return self::forUser($email ? User::where('email', $email)->first() : null);
+    }
+
     public static function forUser(?User $user): string
     {
         return $user && self::isSupported($user->language) ? $user->language : self::default();

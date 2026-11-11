@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Mail\Concerns\LocalizedEmail;
+use App\Support\Locales;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,7 +14,7 @@ use App\Models\Share;
 use App\Models\Setting;
 class shareDeletedWarningMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, LocalizedEmail;
 
     /**
      * Create a new message instance.
@@ -22,26 +24,12 @@ class shareDeletedWarningMail extends Mailable
     public function __construct(Share $share)
     {
         $this->share = $share;
+        $this->speak(Locales::forUser($share->user));
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    protected function templateName(): string
     {
-        return new Envelope(
-            subject: Setting::where('key', 'email_subject_shareDeletedWarningMail.twig')->first()->value,
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.shareDeletedWarningMail',
-        );
+        return 'shareDeletedWarningMail';
     }
 
     /**

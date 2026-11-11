@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Mail\Concerns\LocalizedEmail;
+use App\Support\Locales;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,7 +15,7 @@ use App\Models\Setting;
 
 class emailVerificationMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, LocalizedEmail;
 
     public $code;
     public $user;
@@ -25,26 +27,12 @@ class emailVerificationMail extends Mailable
     {
         $this->code = $code;
         $this->user = $user;
+        $this->speak(Locales::forUser($user));
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    protected function templateName(): string
     {
-        return new Envelope(
-            subject: Setting::where('key', 'email_subject_emailVerificationMail.twig')->first()->value,
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.emailVerificationMail',
-        );
+        return 'emailVerificationMail';
     }
 
     /**

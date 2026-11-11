@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Mail\Concerns\LocalizedEmail;
+use App\Support\Locales;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,7 +14,7 @@ use App\Models\User;
 use App\Models\Setting;
 class accountCreatedMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, LocalizedEmail;
 
     public $token;
     public $user;
@@ -24,26 +26,12 @@ class accountCreatedMail extends Mailable
     {
         $this->token = $token;
         $this->user = $user;
+        $this->speak(Locales::forUser($user));
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    protected function templateName(): string
     {
-        return new Envelope(
-            subject: Setting::where('key', 'email_subject_accountCreatedMail.twig')->first()->value,
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.accountCreatedMail',
-        );
+        return 'accountCreatedMail';
     }
 
     /**

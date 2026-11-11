@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Mail\Concerns\LocalizedEmail;
+use App\Support\Locales;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -14,7 +16,7 @@ use App\Models\Setting;
 
 class reverseShareInviteMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, LocalizedEmail;
 
     /**
      * Create a new message instance.
@@ -36,26 +38,12 @@ class reverseShareInviteMail extends Mailable
         $this->isExistingUser = $isExistingUser;
         $this->recipient_name = explode(' ', $invite->recipient_name)[0];
         $this->sender_name = explode(' ', $user->name)[0];
+        $this->speak(Locales::forEmail($invite->recipient_email));
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    protected function templateName(): string
     {
-        return new Envelope(
-            subject: Setting::where('key', 'email_subject_reverseShareInviteMail.twig')->first()->value,
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.reverseShareInviteMailV2',
-        );
+        return 'reverseShareInviteMailV2';
     }
 
     /**

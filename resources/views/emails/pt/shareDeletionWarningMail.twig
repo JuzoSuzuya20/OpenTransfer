@@ -1,0 +1,18 @@
+{% extends 'emails/layout' %}
+
+{% block subject %}A sua partilha vai ser eliminada em breve{% endblock %}
+
+{% block header %}Eliminação em breve{% endblock %}
+
+{% block content %}
+<h2 style="margin:0 0 12px;font-size:22px;line-height:1.3;font-weight:800;color:#ffffff;">Olá, {{ share.user.first_name }},</h2>
+<p style="margin:0 0 12px;">A sua partilha «{{ share.name }}» vai ser eliminada dentro de {{ deletes_in }}.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 4px;border-collapse:separate;border-spacing:0;">
+  <tr><td bgcolor="#242424" style="background:#242424;padding:10px 14px;font-size:12px;color:#929292;">Transferências</td><td bgcolor="#242424" align="right" style="background:#242424;padding:10px 14px;font-size:14px;font-weight:800;color:#ffffff;">{{ share.download_count }}</td></tr>
+</table>
+<p style="margin:0 0 12px;">Prolongue-a em As minhas partilhas para a manter.</p>
+{% endblock %}
+
+{% block action_url %}{{ settings.application_url }}/my-shares{% endblock %}
+
+{% block action_text %}Abrir As minhas partilhas{% endblock %}

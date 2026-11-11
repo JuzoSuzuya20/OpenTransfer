@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Mail\Concerns\LocalizedEmail;
+use App\Support\Locales;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,7 +15,7 @@ use App\Models\Share;
 use App\Models\Setting;
 class shareCreatedMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, LocalizedEmail;
 
     /**
      * Create a new message instance.
@@ -31,26 +33,12 @@ class shareCreatedMail extends Mailable
         $this->recipient = $recipient;
         $this->recipient_name = explode(' ', $recipient['name'])[0];
         $this->sender_name = explode(' ', $user->name)[0];
+        $this->speak(Locales::forEmail($recipient['email'] ?? null));
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    protected function templateName(): string
     {
-        return new Envelope(
-            subject: Setting::where('key', 'email_subject_shareCreatedMail.twig')->first()->value,
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.shareCreatedMail',
-        );
+        return 'shareCreatedMail';
     }
 
     /**
