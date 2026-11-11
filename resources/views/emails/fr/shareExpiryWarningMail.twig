@@ -5,9 +5,9 @@
 {% block header %}Expiration prochaine{% endblock %}
 
 {% block content %}
-<h2 style="margin:0 0 12px;font-size:22px;line-height:1.3;font-weight:800;color:#ffffff;">Bonjour {{ share.user.first_name }},</h2>
-<p style="margin:0 0 12px;">Votre partage « {{ share.name }} » expire dans {{ share_expires_in }}.</p>
-<p style="margin:0 0 12px;">Prolongez-le depuis Mes partages si besoin.</p>
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Bonjour {{ share.user.first_name }},</h2>
+<p style="margin:0 0 10px;">Votre partage « {{ share.name }} » expire dans {{ share_expires_in }}.</p>
+<p style="margin:0 0 10px;">Prolongez-le depuis Mes partages si besoin.</p>
 {% endblock %}
 
 {% block action_url %}{{ settings.application_url }}/my-shares{% endblock %}

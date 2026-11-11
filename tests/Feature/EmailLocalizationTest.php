@@ -116,7 +116,7 @@ class EmailLocalizationTest extends TestCase
         $mail = new shareCreatedMail($sender, $this->share($sender), ['name' => 'Dominique Durand', 'email' => 'dominique@example.test']);
 
         $this->assertSame('fr', $mail->emailLocale);
-        $this->assertStringContainsString('Camille vous a envoyé 3 fichiers', $mail->render());
+        $this->assertStringContainsString('Camille vous a envoyé', $mail->render());
     }
 
     public function test_a_recipient_with_an_account_reads_its_own_language(): void

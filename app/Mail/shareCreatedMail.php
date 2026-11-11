@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Mail\Concerns\LocalizedEmail;
+use App\Support\FileSize;
 use App\Support\Locales;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,6 +26,7 @@ class shareCreatedMail extends Mailable
     public $user;
     public $recipient_name;
     public $sender_name;
+    public $share_size;
 
     public function __construct(User $user, Share $share, $recipient)
     {
@@ -33,6 +35,7 @@ class shareCreatedMail extends Mailable
         $this->recipient = $recipient;
         $this->recipient_name = explode(' ', $recipient['name'])[0];
         $this->sender_name = explode(' ', $user->name)[0];
+        $this->share_size = FileSize::human($share->size);
         $this->speak(Locales::forEmail($recipient['email'] ?? null));
     }
 

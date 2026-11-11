@@ -23,12 +23,20 @@ trait LocalizedEmail
 
     public array $layout = [];
 
+    /** The head of the email: the mark of the application, or the logo an admin put in its place */
+    public array $brand = [];
+
     abstract protected function templateName(): string;
 
     protected function speak(?string $locale): void
     {
         $this->emailLocale = Locales::isSupported($locale) ? $locale : 'en';
         $this->layout = EmailTexts::layout($this->emailLocale);
+        $this->brand = [
+            'custom_logo' => !usesDefaultLogo(),
+            // As wide as in the header of the application, within the width of an email
+            'logo_width' => max(40, min(240, (int) (app(SettingsService::class)->get('logo_width') ?: 120))),
+        ];
     }
 
     private function rewrittenPath(): string

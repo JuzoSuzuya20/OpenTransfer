@@ -5,12 +5,12 @@
 {% block header %}Eliminazione imminente{% endblock %}
 
 {% block content %}
-<h2 style="margin:0 0 12px;font-size:22px;line-height:1.3;font-weight:800;color:#ffffff;">Ciao {{ share.user.first_name }},</h2>
-<p style="margin:0 0 12px;">La tua condivisione «{{ share.name }}» sarà eliminata tra {{ deletes_in }}.</p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 4px;border-collapse:separate;border-spacing:0;">
-  <tr><td bgcolor="#242424" style="background:#242424;padding:10px 14px;font-size:12px;color:#929292;">Download</td><td bgcolor="#242424" align="right" style="background:#242424;padding:10px 14px;font-size:14px;font-weight:800;color:#ffffff;">{{ share.download_count }}</td></tr>
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Ciao {{ share.user.first_name }},</h2>
+<p style="margin:0 0 10px;">La tua condivisione «{{ share.name }}» sarà eliminata tra {{ deletes_in }}.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-top:1px solid #2a2a2a;">
+  <tr><td style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#929292;">Download</td><td align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:#ffffff;">{{ share.download_count }}</td></tr>
 </table>
-<p style="margin:0 0 12px;">Prolungala da Le mie condivisioni per conservarla.</p>
+<p style="margin:0 0 10px;">Prolungala da Le mie condivisioni per conservarla.</p>
 {% endblock %}
 
 {% block action_url %}{{ settings.application_url }}/my-shares{% endblock %}

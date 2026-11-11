@@ -5,9 +5,9 @@
 {% block header %}Scadenza imminente{% endblock %}
 
 {% block content %}
-<h2 style="margin:0 0 12px;font-size:22px;line-height:1.3;font-weight:800;color:#ffffff;">Ciao {{ share.user.first_name }},</h2>
-<p style="margin:0 0 12px;">La tua condivisione «{{ share.name }}» scade tra {{ share_expires_in }}.</p>
-<p style="margin:0 0 12px;">Prolungala da Le mie condivisioni se necessario.</p>
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Ciao {{ share.user.first_name }},</h2>
+<p style="margin:0 0 10px;">La tua condivisione «{{ share.name }}» scade tra {{ share_expires_in }}.</p>
+<p style="margin:0 0 10px;">Prolungala da Le mie condivisioni se necessario.</p>
 {% endblock %}
 
 {% block action_url %}{{ settings.application_url }}/my-shares{% endblock %}
