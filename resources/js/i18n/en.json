@@ -323,12 +323,13 @@
         "action_url": "Action URL",
         "content": "Message content",
         "fallbackText": "Fallback link description text",
-        "fallbackTextDescription": "For email clients that cannot properly display action buttons, we include a fallback link at the bottom of the email. Use this option to customize the text that appears above this fallback link, helping recipients understand its purpose.",
+        "fallbackTextDescription": "The line above the link of every e-mail, for mail clients that do not show the button. Empty: the default line, in the reader's language.",
         "header": "Header content",
         "subject": "Subject"
       },
       "success": "Templates saved successfully",
-      "validation_error": "{template}: Missing required fields ({fields})"
+      "validation_error": "{template}: Missing required fields ({fields})",
+      "fallback_default": "If the button does not work, copy this address into your browser:"
     },
     "error": {
       "pruneExpiredShares": "Failed to schedule expired shares for deletion!",

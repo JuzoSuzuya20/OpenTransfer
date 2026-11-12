@@ -13,8 +13,6 @@
     "vite": "^6.0.0"
   },
   "dependencies": {
-    "@codemirror/lang-html": "^6.4.9",
-    "@codemirror/theme-one-dark": "^6.1.2",
     "@dicebear/core": "10.7.0",
     "@dicebear/styles": "10.6.0",
     "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
@@ -22,8 +20,6 @@
     "@tolgee/vue": "^6.2.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "bootstrap": "^5.3.3",
-    "codemirror": "^6.0.1",
-    "flag-icons": "^7.3.2",
     "jszip": "^3.10.1",
     "jwt-decode": "^4.0.0",
     "lucide-vue-next": "^0.474.0",
@@ -31,8 +27,6 @@
     "qrcode-generator": "^2.0.4",
     "tus-js-client": "^4.3.1",
     "vue": "^3.5.13",
-    "vue-codemirror": "^6.1.1",
-    "vue-color-kit": "^1.0.6",
     "vue-toastification": "^2.0.0-rc.5"
   },
   "tolgee": {

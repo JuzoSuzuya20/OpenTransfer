@@ -9,6 +9,10 @@
 
 .month-card {
   flex: 1 1 260px;
+  // On a narrow screen the page opens on its title and its shares; the month comes after
+  @media (max-width: 900px) {
+    order: 1;
+  }
   display: flex;
   flex-direction: column;
   gap: 16px;

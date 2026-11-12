@@ -13,6 +13,7 @@
 @use "./styles/status";
 @use "./styles/motion";
 @use "./styles/select";
+@use "./styles/utilities";
 
 
 /*
@@ -497,16 +498,6 @@ body {
 
 .setting-row .section-help {
   padding-left: 0;
-}
-
-// The settings pages were drawn for an overlay: the page gives them their room
-.page {
-  .pt-5 {
-    padding-top: 0 !important;
-  }
-  .row.mb-5 {
-    margin-bottom: 20px !important;
-  }
 }
 
 .admin-sections {

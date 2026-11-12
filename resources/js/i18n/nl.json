@@ -323,12 +323,13 @@
         "action_url": "Actie URL",
         "content": "Inhoud bericht",
         "fallbackText": "Fallback link beschrijvingstekst",
-        "fallbackTextDescription": "Voor e-mailclients die actieknoppen niet goed kunnen weergeven, voegen we een terugvallink toe onderaan de e-mail. Gebruik deze optie om de tekst aan te passen die boven deze terugvallink verschijnt, zodat ontvangers begrijpen wat het doel ervan is.",
+        "fallbackTextDescription": "De regel boven de link van elke e-mail, voor mailprogramma's die de knop niet tonen. Leeg: de standaardregel, in de taal van de lezer.",
         "header": "Inhoud koptekst",
         "subject": "Onderwerp"
       },
       "success": "Sjablonen succesvol opgeslagen",
-      "validation_error": "{template}: Verplichte velden ontbreken ({fields})"
+      "validation_error": "{template}: Verplichte velden ontbreken ({fields})",
+      "fallback_default": "Werkt de knop niet? Kopieer dit adres naar je browser:"
     },
     "error": {
       "pruneExpiredShares": "Het verwijderen van verlopen shares kon niet worden ingepland!",

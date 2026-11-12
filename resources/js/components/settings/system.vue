@@ -37,7 +37,7 @@ import OtNumber from '../layout/OtNumber.vue'
 import { SHIPPED_LOGIN_MESSAGE } from '../../lib/loginMessage'
 
 import { useToast } from 'vue-toastification'
-import { mapSettings } from '../../utils'
+import { mapSettings, niceFileSize } from '../../utils'
 import { notifySettingsChanged } from '../../composables/useSetting'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 
@@ -515,20 +515,15 @@ defineExpose({
                   <p class="help-text">{{ $t('settings.system.max_expiry_time_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
-                  <div class="row">
-                    <div class="col pe-0">
-                      <label for="max_share_size">{{ $t('settings.system.max_share_size') }}</label>
-                      <OtNumber id="max_share_size" v-model="settings.max_share_size" :min="1" />
-                    </div>
-                    <div class="col-auto ps-1">
-                      <label for="max_share_size_unit">&nbsp;</label>
-                      <OtSelect
-                        id="max_share_size_unit"
-                        v-model="settings.max_share_size_unit"
-                        :options="[{ value: 'MB', label: 'MB' }, { value: 'GB', label: 'GB' }]"
-                        :aria-label="$t('settings.system.max_share_size')"
-                      />
-                    </div>
+                  <label for="max_share_size">{{ $t('settings.system.max_share_size') }}</label>
+                  <div class="size-with-unit">
+                    <OtNumber id="max_share_size" v-model="settings.max_share_size" :min="1" />
+                    <OtSelect
+                      id="max_share_size_unit"
+                      v-model="settings.max_share_size_unit"
+                      :options="[{ value: 'MB', label: 'MB' }, { value: 'GB', label: 'GB' }]"
+                      :aria-label="$t('settings.system.max_share_size')"
+                    />
                   </div>
                   <p class="help-text">{{ $t('settings.system.max_share_size_description') }}</p>
                 </div>
@@ -972,7 +967,7 @@ defineExpose({
                         <tr v-for="backup in backups" :key="backup.filename">
                           <!-- <td class="backup-filename">{{ backup.filename }}</td> -->
                           <td>{{ formatBackupDate(backup.created_at) }}</td>
-                          <td>{{ backup.size_formatted }}</td>
+                          <td>{{ niceFileSize(backup.size) }}</td>
                           <td class="backup-actions-cell">
                             <button 
                               @click="handleDownloadBackup(backup.filename)"
@@ -1007,6 +1002,22 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
+// The size and its unit on one line, the unit as wide as its two letters need
+.size-with-unit {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  > :first-child {
+    flex: 1;
+    min-width: 0;
+  }
+
+  > :last-child {
+    flex: 0 0 6.5rem;
+  }
+}
+
 .auth-provider {
   margin-bottom: 8px;
   .icon {

@@ -323,12 +323,13 @@
         "action_url": "URL di azione",
         "content": "Contenuto del messaggio",
         "fallbackText": "Testo di descrizione del collegamento di ripiego",
-        "fallbackTextDescription": "Per i client di posta elettronica che non sono in grado di visualizzare correttamente i pulsanti di azione, includiamo un link di ripiego nella parte inferiore dell'email. Utilizza questa opzione per personalizzare il testo che appare sopra questo link di ripiego per aiutare i destinatari a comprenderne lo scopo.",
+        "fallbackTextDescription": "La riga sopra il link di ogni e-mail, per i client che non mostrano il pulsante. Vuoto: la riga predefinita, nella lingua di chi legge.",
         "header": "Contenuto dell'intestazione",
         "subject": "Oggetto"
       },
       "success": "Modelli salvati con successo",
-      "validation_error": "{template}: Campi obbligatori mancanti ({fields})"
+      "validation_error": "{template}: Campi obbligatori mancanti ({fields})",
+      "fallback_default": "Se il pulsante non funziona, copia questo indirizzo nel browser:"
     },
     "error": {
       "pruneExpiredShares": "Impossibile pianificare l'eliminazione delle condivisioni scadute!",

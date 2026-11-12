@@ -1,3 +1,4 @@
+import { formatFileSize } from './lib/fileSize'
 
 import {domData} from './domData.js'
 import { useTolgee } from '@tolgee/vue'
@@ -12,17 +13,12 @@ const simpleUUID = () => {
   });
 }
 
-const niceFileSize = size => {
-  //return in most readable format
-  if (size < 1024) return `${size} bytes`
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`
-  if (size < 1024 * 1024 * 1024) return `${(size / 1024 / 1024).toFixed(2)} MB`
-  return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
-}
+// In the language of the page (lib/fileSize.js): 486 Mo in French, 486 MB in English
+const niceFileSize = (size) => formatFileSize(size, document.documentElement.lang || 'en')
 
 const niceFileType = type => {
-  if (!type) return 'Unknown'
-  if(type == 'unknown') return 'Unknown'
+  // Nothing worth showing for a type the browser did not recognise
+  if (!type || type == 'unknown' || type === 'application/octet-stream' || !type.includes('/')) return ''
   let mimeType = type?.split('/')[1].split('+')[0]
   mimeType = mimeType.charAt(0).toUpperCase() + mimeType.slice(1)
   //split . and take the last part

@@ -10,6 +10,9 @@ import { mapSettings } from '../../utils'
 import { useTranslate } from '@tolgee/vue'
 import EmailTemplateEditor from '../emailTemplateEditor.vue'
 import OtSelect from '../layout/OtSelect.vue'
+
+// The line the seeder installs, replaced by its translation in every e-mail
+const SHIPPED_FALLBACK = "If you're having trouble with the button above, copy and paste the URL below into your web browser."
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 
 const { t } = useTranslate()
@@ -105,8 +108,11 @@ onMounted(async () => {
   await loadTemplates()
   try {
     const text = await getSettingById('email_template_fallback_text')
-    fallbackText.value = text.value
-    originalFallbackText.value = text.value
+    // The line installed with the app shows as empty: the field's placeholder is its translation,
+    // and the e-mails send the translation (EmailTexts::layout)
+    const value = text.value === SHIPPED_FALLBACK ? '' : text.value
+    fallbackText.value = value
+    originalFallbackText.value = value
   } catch (error) {
     console.error(error)
   }
@@ -280,7 +286,7 @@ defineExpose({
           <p class="card-description">{{ $t('settings.emailTemplates.baseTemplateDescription') }}</p>
           <div class="setting-group-body-item">
             <label for="baseTemplateFallbackText">{{ $t('settings.emailTemplates.sections.fallbackText') }}</label>
-            <input type="text" id="baseTemplateFallbackText" v-model="fallbackText" />
+            <input type="text" id="baseTemplateFallbackText" v-model="fallbackText" :placeholder="$t('settings.emailTemplates.fallback_default')" />
             <p class="help-text">{{ $t('settings.emailTemplates.sections.fallbackTextDescription') }}</p>
           </div>
         </div>

@@ -5,7 +5,6 @@ import { useToast } from 'vue-toastification'
 import debounce from './debounce'
 import * as tus from 'tus-js-client'
 import { watch } from 'vue'
-import JSZip from 'jszip'
 import { domData } from './domData'
 import { solveChallenge } from './proofOfWork'
 
@@ -46,6 +45,8 @@ const shouldBundleFiles = (files) => {
  * @returns {Promise<{blob: Blob, manifest: Object}>} The zip blob and manifest of files
  */
 const bundleFilesIntoZip = async (files, onProgress) => {
+  // Fetched only for an upload of many small files, not with every page
+  const { default: JSZip } = await import('jszip')
   const zip = new JSZip()
   const manifest = {
     version: 1,

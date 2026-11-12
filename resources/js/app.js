@@ -3,23 +3,18 @@ import { Tolgee, DevTools, VueTolgee } from '@tolgee/vue'
 import { FormatIcu } from '@tolgee/format-icu'
 
 // Served by the app itself: no visitor request goes to Google Fonts or a CDN
-import 'bootstrap/dist/css/bootstrap.min.css'
+// Bootstrap's base only (element defaults); the components were never used
+import 'bootstrap/dist/css/bootstrap-reboot.min.css'
 import '@fontsource-variable/plus-jakarta-sans'
 import './style.scss'
-import 'vue-color-kit/dist/vue-color-kit.css'
 import App from './App.vue'
 import Toast, { POSITION } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import { domData } from './domData'
 
-//import languages
-import en from './i18n/en.json'
-import de from './i18n/de.json'
-import es from './i18n/es.json'
-import fr from './i18n/fr.json'
-import it from './i18n/it.json'
-import nl from './i18n/nl.json'
-import pt from './i18n/pt.json'
+// The languages, each in a file of its own fetched when it is needed: the reader's, and English
+// for a missing key (fallbackLanguage), rather than all seven on every page
+const language = (load) => () => load().then((module) => module.default)
 let clickOutsideEvent = null
 
 const showHelpTip = (event, helpTipId) => {
@@ -123,14 +118,21 @@ const tolgee = Tolgee().use(DevTools()).use(FormatIcu()).init({
 
   // for production
   staticData: {
-    en,
-    de,
-    es,
-    fr,
-    it,
-    nl,
-    pt
+    en: language(() => import('./i18n/en.json')),
+    de: language(() => import('./i18n/de.json')),
+    es: language(() => import('./i18n/es.json')),
+    fr: language(() => import('./i18n/fr.json')),
+    it: language(() => import('./i18n/it.json')),
+    nl: language(() => import('./i18n/nl.json')),
+    pt: language(() => import('./i18n/pt.json'))
   }
+})
+
+// The page says which language it is in (screen readers pick their voice from it), and sizes
+// read in that language (lib/fileSize.js)
+document.documentElement.lang = tolgee.getLanguage() || 'en'
+tolgee.on('language', ({ value }) => {
+  document.documentElement.lang = value
 })
 
 

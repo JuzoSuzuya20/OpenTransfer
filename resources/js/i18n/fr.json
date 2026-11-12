@@ -323,12 +323,13 @@
         "action_url": "Action URL",
         "content": "Contenu du message",
         "fallbackText": "Texte de description du lien de secours",
-        "fallbackTextDescription": "Pour palier aux clients de messagerie qui n'afficheraient pas correctement les boutons d'actions, nous intégrons automatiquement un lien de secours à l'effet identique au bas de l'e-mail. Utilisez cette option pour personnaliser le texte explicatif apparaissant au dessus de ce lien de secours, afin d'aider le ou les destinataires à en comprendre l'utilité.",
+        "fallbackTextDescription": "La ligne au-dessus du lien de chaque e-mail, pour les messageries qui n'affichent pas le bouton. Vide : la ligne par défaut, dans la langue du lecteur.",
         "header": "Contenu de l'en-tête",
         "subject": "Sujet"
       },
       "success": "Modèles enregistrés avec succès",
-      "validation_error": "{template} : Champs obligatoires manquants ({fields})"
+      "validation_error": "{template} : Champs obligatoires manquants ({fields})",
+      "fallback_default": "Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :"
     },
     "error": {
       "pruneExpiredShares": "Impossible de planifier la suppression des partages expirés !",

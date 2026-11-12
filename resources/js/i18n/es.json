@@ -323,12 +323,13 @@
         "action_url": "URL de la acción",
         "content": "Contenido del mensaje",
         "fallbackText": "Texto que acompaña al enlace alternativo",
-        "fallbackTextDescription": "Para los clientes de correo que no muestran bien los botones de acción, incluimos un enlace alternativo al final del correo. Use esta opción para personalizar el texto que aparece encima de ese enlace, para que los destinatarios entiendan para qué sirve.",
+        "fallbackTextDescription": "La línea sobre el enlace de cada correo, para los clientes que no muestran el botón. Vacía: la línea por defecto, en el idioma del lector.",
         "header": "Contenido del encabezado",
         "subject": "Asunto"
       },
       "success": "Plantillas guardadas",
-      "validation_error": "{template}: faltan campos obligatorios ({fields})"
+      "validation_error": "{template}: faltan campos obligatorios ({fields})",
+      "fallback_default": "Si el botón no funciona, copie esta dirección en su navegador:"
     },
     "error": {
       "pruneExpiredShares": "¡No se pudo programar la eliminación de los envíos caducados!",

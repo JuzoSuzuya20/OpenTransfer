@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en">
+{{-- The language of the instance; the app then follows the one chosen by the reader (app.js) --}}
+<html lang="{{ preg_match('/^[a-z]{2}$/', (string) ($settings['default_language'] ?? '')) ? $settings['default_language'] : 'en' }}">
 
 <head>
   <meta charset="UTF-8" />

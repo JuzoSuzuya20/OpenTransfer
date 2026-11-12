@@ -110,16 +110,11 @@
 }
 // A page opens from the top: its title, then each of its blocks, 50 ms apart (capped). The same
 // for the sign-in screen, the setup, a share's page and the sections of the administration.
-.page > *,
-.admin-sections > *,
-.system-settings > *,
-.stats > *,
-.send > *,
-.download > *,
-.auth > *,
-.auth-container-inner.is-sign-in > *,
-.not-found > * {
-  animation: ot-rise-open 460ms var(--ot-ease-out) both;
+// The veils of the dialogs a page holds are left alone (an animation would show them), and the
+// animation does not stay on: each block then has its own styles back.
+:is(.page, .admin-sections, .system-settings, .stats, .send, .download, .auth, .auth-container-inner.is-sign-in, .not-found)
+  > *:not([class*="overlay"]):not(.share-created) {
+  animation: ot-rise-open 460ms var(--ot-ease-out) backwards;
 
   &:nth-child(2) {
     animation-delay: 50ms;

@@ -6,6 +6,8 @@ import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { getSystemStats } from '../../api'
 import UserAvatar from '../layout/UserAvatar.vue'
+// Sizes in the units of the screen's language (2,2 Go, 2.2 GB), like everywhere else
+import { niceFileSize } from '../../utils'
 
 const { t } = useTranslate()
 const tolgee = useTolgee(['language'])
@@ -71,9 +73,9 @@ const diskTone = computed(() => {
     <section class="ot-card stats-band" :aria-label="$t('settings.title.stats')">
       <div class="stats-band-item">
         <h2>{{ $t('settings.stats.nav.storage') }}</h2>
-        <span class="ot-figure is-accent">{{ stats.storage.used_formatted }}</span>
+        <span class="ot-figure is-accent">{{ niceFileSize(stats.storage.used_bytes) }}</span>
         <span class="ot-stat-sub">
-          {{ $t('settings.stats.figures.storage_sub', { percent: stats.storage.shares_usage_percent, free: stats.storage.disk_free_formatted }) }}
+          {{ $t('settings.stats.figures.storage_sub', { percent: stats.storage.shares_usage_percent, free: niceFileSize(stats.storage.disk_free_bytes) }) }}
         </span>
       </div>
       <div class="stats-band-item">
@@ -226,7 +228,7 @@ const diskTone = computed(() => {
           <div class="ot-stat">
             <div class="ot-stat-value">
               <span class="ot-figure" :class="diskTone">{{ stats.storage.disk_usage_percent }} %</span>
-              <span class="ot-stat-sub">{{ $t('settings.stats.storage.of') }} {{ stats.storage.disk_total_formatted }}</span>
+              <span class="ot-stat-sub">{{ $t('settings.stats.storage.of') }} {{ niceFileSize(stats.storage.disk_total_bytes) }}</span>
             </div>
           </div>
           <div
@@ -242,11 +244,11 @@ const diskTone = computed(() => {
           <dl class="month-figures">
             <div>
               <dt>{{ $t('settings.stats.storage.share_storage') }}</dt>
-              <dd class="is-accent">{{ stats.storage.used_formatted }}</dd>
+              <dd class="is-accent">{{ niceFileSize(stats.storage.used_bytes) }}</dd>
             </div>
             <div>
               <dt>{{ $t('settings.stats.storage.available_space') }}</dt>
-              <dd>{{ stats.storage.disk_free_formatted }}</dd>
+              <dd>{{ niceFileSize(stats.storage.disk_free_bytes) }}</dd>
             </div>
           </dl>
         </section>
@@ -263,7 +265,7 @@ const diskTone = computed(() => {
                 <span :style="{ width: `${Math.max(2, percentOf(category.count, totalFiles))}%` }"></span>
               </div>
               <div class="stats-category-sub">
-                {{ $t('settings.stats.figures.share_of_files', { percent: percentOf(category.count, totalFiles) }) }} · {{ category.total_size_formatted }}
+                {{ $t('settings.stats.figures.share_of_files', { percent: percentOf(category.count, totalFiles) }) }} · {{ niceFileSize(category.total_size) }}
               </div>
             </li>
           </ul>

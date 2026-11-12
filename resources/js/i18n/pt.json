@@ -323,12 +323,13 @@
         "action_url": "Ação URL",
         "content": "Conteúdo da mensagem",
         "fallbackText": "Texto de descrição da ligação de recurso",
-        "fallbackTextDescription": "Para os clientes de correio eletrónico que não conseguem apresentar corretamente os botões de ação, incluímos uma ligação de recurso na parte inferior do correio eletrónico. Utilize esta opção para personalizar o texto que aparece por cima desta ligação de recurso, ajudando os destinatários a compreender o seu objetivo.",
+        "fallbackTextDescription": "A linha acima da ligação de cada e-mail, para os clientes que não mostram o botão. Vazio: a linha predefinida, no idioma de quem lê.",
         "header": "Conteúdo do cabeçalho",
         "subject": "Assunto"
       },
       "success": "Modelos guardados com sucesso",
-      "validation_error": "{template}: Campos obrigatórios em falta ({fields})"
+      "validation_error": "{template}: Campos obrigatórios em falta ({fields})",
+      "fallback_default": "Se o botão não funcionar, copie este endereço para o navegador:"
     },
     "error": {
       "pruneExpiredShares": "Falha ao agendar a eliminação das transferências expiradas!",

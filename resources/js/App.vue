@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick, watch, computed, provide } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, watch, computed, provide, defineAsyncComponent } from 'vue'
 import { TolgeeProvider, useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 
@@ -9,23 +9,35 @@ import { X } from 'lucide-vue-next'
 import { handedOverFiles } from './lib/quickSendHandoff'
 import Downloader from './components/downloader.vue'
 import Auth from './components/auth.vue'
-import Setup from './components/setup.vue'
-import ThankGuestForUpload from './components/thankGuestForUpload.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
 import { useConfirmDialog } from './composables/useConfirmDialog'
 import CommandPalette from './components/CommandPalette.vue'
-import MySharesPage from './pages/MySharesPage.vue'
-import RequestsPage from './pages/RequestsPage.vue'
-import StatsPage from './pages/StatsPage.vue'
-import AdminPage from './pages/AdminPage.vue'
-import ProfilePage from './pages/ProfilePage.vue'
-import AboutPage from './pages/AboutPage.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
 
 import { domData, domError, domSuccess } from './domData'
 import { emitter, store } from './store'
 import { logout, getMyProfile, updateMyProfile } from './api'
 import { resolveRoute, settingsTabToPath, legacyHashToPath } from './lib/router'
+import { whenIdle } from './lib/idle'
+
+// What opens first stays in the main file (sign-in, sending, a share's page); every other page
+// is a file of its own, so that the visitor of a share never downloads the administration
+const signedInPages = {
+  myShares: () => import('./pages/MySharesPage.vue'),
+  requests: () => import('./pages/RequestsPage.vue'),
+  stats: () => import('./pages/StatsPage.vue'),
+  admin: () => import('./pages/AdminPage.vue'),
+  profile: () => import('./pages/ProfilePage.vue'),
+  about: () => import('./pages/AboutPage.vue')
+}
+const MySharesPage = defineAsyncComponent(signedInPages.myShares)
+const RequestsPage = defineAsyncComponent(signedInPages.requests)
+const StatsPage = defineAsyncComponent(signedInPages.stats)
+const AdminPage = defineAsyncComponent(signedInPages.admin)
+const ProfilePage = defineAsyncComponent(signedInPages.profile)
+const AboutPage = defineAsyncComponent(signedInPages.about)
+const Setup = defineAsyncComponent(() => import('./components/setup.vue'))
+const ThankGuestForUpload = defineAsyncComponent(() => import('./components/thankGuestForUpload.vue'))
 
 const { t } = useTranslate()
 const toast = useToast()
@@ -174,6 +186,9 @@ watch(
       userAvatarSeed.value = ''
       return
     }
+    // The other pages arrive while the browser has nothing else to do: opening one later does
+    // not wait for the network
+    whenIdle(() => Object.values(signedInPages).forEach((load) => load().catch(() => {})))
     try {
       const profile = await getMyProfile()
       userName.value = profile.name ?? ''

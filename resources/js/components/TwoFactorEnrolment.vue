@@ -1,14 +1,16 @@
 <script setup>
 // Mandatory setup during sign-in (admin policy). The session is only opened
 // once a second factor works, and the recovery codes are shown before going on.
-import { ref } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
 import { Smartphone, Fingerprint, ShieldCheck, ArrowLeft } from 'lucide-vue-next'
 import { enrolStartTotp, enrolConfirmTotp, enrolPasskeyOptions, enrolPasskey } from '../api'
 import { passkeysSupported, passkeyCancelled, createPasskey } from '../webauthn'
-import TotpSetup from './twoFactor/TotpSetup.vue'
 import RecoveryCodes from './twoFactor/RecoveryCodes.vue'
+
+// With its QR code generator, fetched only while an authenticator app is being paired
+const TotpSetup = defineAsyncComponent(() => import('./twoFactor/TotpSetup.vue'))
 
 const props = defineProps({ enrolToken: { type: String, required: true } })
 const emit = defineEmits(['done', 'cancel'])

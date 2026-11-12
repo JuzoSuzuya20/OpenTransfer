@@ -1,6 +1,6 @@
 <script setup>
 // The second factor of the account: authenticator app, passkeys and recovery codes.
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick, defineAsyncComponent } from 'vue'
 import OtPassword from '../layout/OtPassword.vue'
 import { pinLeaving } from '../../lib/motion'
 import { useToast } from 'vue-toastification'
@@ -17,8 +17,10 @@ import {
   deletePasskey
 } from '../../api'
 import { passkeysSupported, passkeyCancelled, createPasskey } from '../../webauthn'
-import TotpSetup from '../twoFactor/TotpSetup.vue'
 import RecoveryCodes from '../twoFactor/RecoveryCodes.vue'
+
+// With its QR code generator, fetched only while an authenticator app is being paired
+const TotpSetup = defineAsyncComponent(() => import('../twoFactor/TotpSetup.vue'))
 
 const { t } = useTranslate()
 const toast = useToast()

@@ -5,6 +5,7 @@ import { domData } from '../../domData'
 import { getSystemInfo } from '../../api'
 import { store } from '../../store'
 import { versionUrl, REPOSITORY } from '../../lib/version'
+import { niceFileSize } from '../../utils'
 
 const version = ref('unknown')
 const systemInfo = ref(null)
@@ -128,11 +129,11 @@ const databaseDisplayName = computed(() => {
           </div>
           <div>
             <dt>{{ $t('settings.about.max_upload') }}</dt>
-            <dd>{{ systemInfo.max_upload_size.formatted }}</dd>
+            <dd>{{ niceFileSize(systemInfo.max_upload_size.bytes) }}</dd>
           </div>
           <div>
             <dt>{{ $t('settings.about.storage') }}</dt>
-            <dd>{{ systemInfo.storage.used_formatted }} {{ $t('settings.about.of') }} {{ systemInfo.storage.disk_total_formatted }}</dd>
+            <dd>{{ niceFileSize(systemInfo.storage.used_bytes) }} {{ $t('settings.about.of') }} {{ niceFileSize(systemInfo.storage.disk_total_bytes) }}</dd>
           </div>
         </dl>
         <div

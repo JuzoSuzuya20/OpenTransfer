@@ -323,12 +323,13 @@
         "action_url": "Aktions-URL",
         "content": "Inhalt der Nachricht",
         "fallbackText": "Fallback-Link Beschreibungstext",
-        "fallbackTextDescription": "Für E-Mail-Clients, die Aktionsschaltflächen nicht richtig anzeigen können, fügen wir einen Ausweichlink am Ende der E-Mail ein. Mit dieser Option können Sie den Text, der über diesem Ausweichlink erscheint, anpassen, damit die Empfänger seinen Zweck verstehen.",
+        "fallbackTextDescription": "Die Zeile über dem Link jeder E-Mail, für Mailprogramme, die die Schaltfläche nicht anzeigen. Leer: die Standardzeile in der Sprache des Lesers.",
         "header": "Inhalt der Kopfzeile",
         "subject": "Thema"
       },
       "success": "Vorlagen erfolgreich gespeichert",
-      "validation_error": "{template}: Fehlende Pflichtfelder ({fields})"
+      "validation_error": "{template}: Fehlende Pflichtfelder ({fields})",
+      "fallback_default": "Falls die Schaltfläche nicht funktioniert, kopieren Sie diese Adresse in Ihren Browser:"
     },
     "error": {
       "pruneExpiredShares": "Abgelaufene geteilte Dateien konnten nicht zur Löschung eingeplant werden!",
