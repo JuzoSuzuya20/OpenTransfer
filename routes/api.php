@@ -231,7 +231,8 @@ Route::group([], function ($router) {
     //manage reverse shares [auth]
     //the guest of a file request never sends requests itself (MembersOnly)
     Route::group(['prefix' => 'reverse-shares', 'middleware' => ['auth', MembersOnly::class]], function ($router) {
-        Route::post('/invite', [ReverseSharesController::class, 'createInvite'])->name('reverse-shares.createInvite');
+        //each request is an e-mail from the organisation: a pace per account
+        Route::post('/invite', [ReverseSharesController::class, 'createInvite'])->name('reverse-shares.createInvite')->middleware('throttle:20,1');
         //the requests this account sent, and where each one is
         Route::get('/invites', [ReverseSharesController::class, 'listInvites'])->name('reverse-shares.listInvites');
         // Accept invite by ID (for existing users who must log in first)

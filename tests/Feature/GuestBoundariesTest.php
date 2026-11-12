@@ -90,6 +90,23 @@ class GuestBoundariesTest extends TestCase
         Queue::assertPushed(sendEmail::class);
     }
 
+    public function test_a_member_sends_twenty_requests_a_minute_at_most(): void
+    {
+        $member = User::factory()->create(['admin' => false, 'active' => true, 'must_change_password' => false, 'is_guest' => false]);
+
+        for ($i = 0; $i < 20; $i++) {
+            $this->postJson('/api/reverse-shares/invite', [
+                'recipient_name' => "Contact {$i}",
+                'recipient_email' => "contact{$i}@fournisseur.example",
+            ], $this->bearer($member))->assertOk();
+        }
+
+        $this->postJson('/api/reverse-shares/invite', [
+            'recipient_name' => 'Contact encore',
+            'recipient_email' => 'encore@fournisseur.example',
+        ], $this->bearer($member))->assertStatus(429);
+    }
+
     public function test_the_message_of_a_request_has_a_length_limit(): void
     {
         $member = User::factory()->create(['admin' => false, 'active' => true, 'must_change_password' => false, 'is_guest' => false]);
