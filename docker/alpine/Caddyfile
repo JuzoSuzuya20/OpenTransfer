@@ -25,10 +25,13 @@
     # Enable Gzip compression
     encode gzip
     
-    # Simplified logging
+    # Simplified logging, without the secrets an address may carry: the password of a share
+    # (command-line downloads), the token of a file request, the token of a password reset
     log {
         output file /var/www/html/storage/logs/caddy.log
-        format json
+        format filter {
+            request>uri regexp "(^/reset-password/)[^?]*|((?:password|token)=)[^&]*" "${1}${2}REDACTED"
+        }
     }
     
     # Provide security headers
