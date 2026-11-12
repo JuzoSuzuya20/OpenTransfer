@@ -42,11 +42,12 @@ class EmailTemplatesAdminTest extends TestCase
             ->keyBy('id')->all();
     }
 
-    public function test_the_ten_emails_are_listed_in_the_language_asked(): void
+    public function test_the_eleven_emails_are_listed_in_the_language_asked(): void
     {
         $templates = $this->templates('es');
 
-        $this->assertCount(10, $templates);
+        $this->assertCount(11, $templates);
+        $this->assertSame('Confirme su nueva dirección', $templates['emailChangeMail']['subject']);
         $this->assertSame('{{ sender_name }} le ha enviado archivos', $templates['shareCreatedMail']['subject']);
         $this->assertSame('Archivos para descargar', $templates['shareCreatedMail']['variables']['header']);
         $this->assertFalse($templates['shareCreatedMail']['customised']);

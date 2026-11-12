@@ -105,6 +105,15 @@ class UsersController extends Controller
       return \App\Services\SsoPolicy::refusal();
     }
 
+    // A new address is proved with a code sent to it (EmailChangeController), never set here
+    if ($request->filled('email') && strcasecmp($request->input('email'), $user->email) !== 0) {
+      return response()->json([
+        'status' => 'error',
+        'code' => 'email_change_needs_code',
+        'message' => 'A new address is confirmed with the code sent to it',
+      ], 409);
+    }
+
     $validator = Validator::make($request->all(), [
       'password' => ['sometimes', 'confirmed', Password::min(8)],
       'current_password' => [

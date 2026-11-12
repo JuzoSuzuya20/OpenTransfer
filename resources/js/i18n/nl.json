@@ -187,7 +187,23 @@
       "linked_accounts_description": "Koppel je account aan een externe provider om gemakkelijker in te loggen. Na de koppeling kun je direct inloggen door de knop van de provider te selecteren op het inlogscherm.",
       "myProfile_description": "Werk je e-mailadres bij of verander je naam. Je kunt je wachtwoord wijzigen door op de knop \"Wijzig mijn wachtwoord\" te klikken en de aanwijzingen te volgen.",
       "name": "Mijn volledige naam",
-      "unlink": "Ontkoppelen"
+      "unlink": "Ontkoppelen",
+      "email_change": {
+        "change": "Wijzigen",
+        "new": "Nieuw adres",
+        "send": "Code versturen",
+        "sent": "Er is een code naar {email} gestuurd. Voer die in om het nieuwe adres te bevestigen: tot dan houdt het account het huidige.",
+        "code": "Per e-mail ontvangen code",
+        "confirm": "Nieuw adres bevestigen",
+        "done": "Het account gebruikt nu {email}",
+        "invalid_code": "Verkeerde of verlopen code",
+        "too_many": "Te veel pogingen: vraag een nieuwe code aan",
+        "taken": "Dit adres hoort al bij een account",
+        "invalid_email": "Voer een geldig e-mailadres in",
+        "wrong_password": "Het huidige wachtwoord klopt niet",
+        "missing": "Voer het nieuwe adres en je huidige wachtwoord in",
+        "failed": "Het verzoek is niet gelukt"
+      }
     },
     "allShares": {
       "allUsers": "Alle gebruikers",
@@ -1227,5 +1243,6 @@
   "number": {
     "decrease": "Verlagen",
     "increase": "Verhogen"
-  }
+  },
+  "Email Change": "Adreswijziging"
 }

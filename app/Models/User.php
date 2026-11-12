@@ -61,6 +61,8 @@ class User extends Authenticatable implements JWTSubject
         'totp_secret',
         'totp_last_timestep',
         'two_factor_recovery_codes',
+        'pending_email_code',
+        'pending_email_expires_at',
     ];
 
     /**
@@ -73,6 +75,7 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'email_verification_code_expires_at' => 'datetime',
+            'pending_email_expires_at' => 'datetime',
             'password' => 'hashed',
             'totp_secret' => 'encrypted',
             'totp_enabled_at' => 'datetime',

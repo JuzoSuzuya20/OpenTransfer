@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailChangeController;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Middleware\AdminMiddleware as Admin;
@@ -84,6 +85,9 @@ Route::group([], function ($router) {
     Route::group(['prefix' => 'users/me', 'middleware' => ['auth']], function ($router) {
         Route::get('/', [UsersController::class, 'me'])->name('profile.view');
         Route::put('/', [UsersController::class, 'updateMe'])->name('profile.update');
+        //a new address, proved by the code sent to it
+        Route::post('/email', [EmailChangeController::class, 'request'])->name('profile.email.request')->middleware('throttle:6,1');
+        Route::post('/email/confirm', [EmailChangeController::class, 'confirm'])->name('profile.email.confirm');
         Route::delete('/providers/{providerId}', [UsersController::class, 'unlinkProvider'])->name('profile.unlinkProvider');
 
         //second factor

@@ -685,6 +685,40 @@ export const updateUser = async (user) => {
   return data.data
 }
 
+// A new address for the account: a code goes to it, and the address changes when it comes back
+const emailChangeFailure = async (response) => {
+  const body = await response.json().catch(() => ({}))
+  return { status: response.status, code: body.code, data: body.data, message: body.message }
+}
+
+export const requestEmailChange = async (email, currentPassword) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/users/me/email`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    },
+    body: JSON.stringify({ email, current_password: currentPassword })
+  })
+  if (!response.ok) {
+    return Promise.reject(await emailChangeFailure(response))
+  }
+  return (await response.json()).data.pending_email
+}
+
+export const confirmEmailChange = async (code) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/users/me/email/confirm`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    },
+    body: JSON.stringify({ code })
+  })
+  if (!response.ok) {
+    return Promise.reject(await emailChangeFailure(response))
+  }
+  return (await response.json()).data.user
+}
+
 export const updateMyProfile = async (user) => {
   //unset empty fields
   Object.keys(user).forEach((key) => {

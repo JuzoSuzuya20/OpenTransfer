@@ -36,6 +36,7 @@ final class EmailTexts
         'shareExpiredWarningMail' => 'Your share has expired',
         'shareExpiryWarningMail' => 'Your share will expire soon',
         'emailVerificationMail' => 'Verify your email address',
+        'emailChangeMail' => 'Confirm your new address',
     ];
 
     public static function shippedSubject(string $name): ?string

@@ -187,7 +187,23 @@
       "linked_accounts_description": "Associe a sua conta a um fornecedor externo para facilitar o início de sessão. Após a ligação, pode iniciar sessão diretamente selecionando o botão do fornecedor no ecrã de início de sessão.",
       "myProfile_description": "Atualize o seu endereço de e-mail ou altere o seu nome. Pode alterar a sua palavra-passe clicando no botão \"Alterar a minha palavra-passe\" e seguindo as instruções.",
       "name": "O meu nome completo",
-      "unlink": "Desassociar"
+      "unlink": "Desassociar",
+      "email_change": {
+        "change": "Alterar",
+        "new": "Novo endereço",
+        "send": "Enviar o código",
+        "sent": "Foi enviado um código para {email}. Introduza-o para confirmar o novo endereço: até lá, a conta mantém o atual.",
+        "code": "Código recebido por e-mail",
+        "confirm": "Confirmar o novo endereço",
+        "done": "A conta usa agora {email}",
+        "invalid_code": "Código errado ou expirado",
+        "too_many": "Demasiadas tentativas: peça um novo código",
+        "taken": "Este endereço já pertence a uma conta",
+        "invalid_email": "Introduza um endereço de e-mail válido",
+        "wrong_password": "A palavra-passe atual está errada",
+        "missing": "Introduza o novo endereço e a sua palavra-passe atual",
+        "failed": "O pedido não foi concluído"
+      }
     },
     "allShares": {
       "allUsers": "Todos os utilizadores",
@@ -1227,5 +1243,6 @@
   "number": {
     "decrease": "Diminuir",
     "increase": "Aumentar"
-  }
+  },
+  "Email Change": "Alteração de endereço"
 }

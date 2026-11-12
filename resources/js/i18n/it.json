@@ -187,7 +187,23 @@
       "linked_accounts_description": "Collega il tuo account a un provider esterno per facilitare l'accesso. Dopo il collegamento, è possibile accedere direttamente selezionando il pulsante del provider nella schermata di login.",
       "myProfile_description": "Aggiorna il tuo indirizzo email o cambia il nome. Puoi modificare la password facendo clic sul pulsante \"Cambia la mia password\" e seguendo le istruzioni.",
       "name": "Il mio nome completo",
-      "unlink": "Scollega"
+      "unlink": "Scollega",
+      "email_change": {
+        "change": "Cambia",
+        "new": "Nuovo indirizzo",
+        "send": "Invia il codice",
+        "sent": "Un codice è stato inviato a {email}. Inseriscilo per confermare il nuovo indirizzo: fino ad allora l’account mantiene quello attuale.",
+        "code": "Codice ricevuto per e-mail",
+        "confirm": "Conferma il nuovo indirizzo",
+        "done": "L’account ora usa {email}",
+        "invalid_code": "Codice errato o scaduto",
+        "too_many": "Troppi tentativi: chiedi un nuovo codice",
+        "taken": "Questo indirizzo appartiene già a un account",
+        "invalid_email": "Inserisci un indirizzo e-mail valido",
+        "wrong_password": "La password attuale non è corretta",
+        "missing": "Inserisci il nuovo indirizzo e la tua password attuale",
+        "failed": "La richiesta non è andata a buon fine"
+      }
     },
     "allShares": {
       "allUsers": "Tutti gli utenti",
@@ -1227,5 +1243,6 @@
   "number": {
     "decrease": "Diminuisci",
     "increase": "Aumenta"
-  }
+  },
+  "Email Change": "Cambio di indirizzo"
 }

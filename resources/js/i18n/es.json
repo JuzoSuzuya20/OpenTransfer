@@ -187,7 +187,23 @@
       "linked_accounts_description": "Vincule su cuenta con un proveedor externo para iniciar sesión más fácilmente. Después podrá iniciar sesión directamente con el botón del proveedor en la pantalla de inicio de sesión.",
       "myProfile_description": "Actualice su dirección de correo o cambie su nombre. Para cambiar su contraseña, haga clic en el botón «Cambiar mi contraseña» y siga los pasos.",
       "name": "Mi nombre completo",
-      "unlink": "Desvincular"
+      "unlink": "Desvincular",
+      "email_change": {
+        "change": "Cambiar",
+        "new": "Nueva dirección",
+        "send": "Enviar el código",
+        "sent": "Se ha enviado un código a {email}. Introdúzcalo para confirmar la nueva dirección: hasta entonces la cuenta conserva la actual.",
+        "code": "Código recibido por correo",
+        "confirm": "Confirmar la nueva dirección",
+        "done": "La cuenta usa ahora {email}",
+        "invalid_code": "Código incorrecto o caducado",
+        "too_many": "Demasiados intentos: pida un código nuevo",
+        "taken": "Esta dirección ya pertenece a una cuenta",
+        "invalid_email": "Introduzca una dirección de correo válida",
+        "wrong_password": "La contraseña actual no es correcta",
+        "missing": "Introduzca la nueva dirección y su contraseña actual",
+        "failed": "La solicitud no se ha completado"
+      }
     },
     "allShares": {
       "allUsers": "Todos los usuarios",
@@ -1227,5 +1243,6 @@
   "number": {
     "decrease": "Disminuir",
     "increase": "Aumentar"
-  }
+  },
+  "Email Change": "Cambio de dirección"
 }

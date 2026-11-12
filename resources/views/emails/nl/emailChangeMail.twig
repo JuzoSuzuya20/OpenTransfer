@@ -1,0 +1,14 @@
+{% extends 'emails/layout' %}
+
+{% block subject %}Bevestig je nieuwe adres{% endblock %}
+
+{% block header %}Nieuw adres{% endblock %}
+
+{% block content %}
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Hallo {{ user.name }},</h2>
+<p style="margin:0 0 10px;">Je hebt gevraagd dit adres te gebruiken voor je account bij {{ settings.application_name }}.</p>
+<p style="margin:0 0 10px;">Voer deze code in je profiel in om het te bevestigen:</p>
+<p style="margin:20px 0;"><span style="display:inline-block;padding:14px 22px;background:#242424;border:1px solid #3a3a3a;border-radius:4px;font-size:30px;line-height:1.15;font-weight:800;letter-spacing:8px;color:#ffffff;">{{ code }}</span></p>
+<p style="margin:0 0 10px;">Deze code verloopt over 15 minuten. Tot dan houdt je account zijn huidige adres.</p>
+<p style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#929292;">Heb je dit niet gevraagd? Negeer deze e-mail: er verandert niets.</p>
+{% endblock %}

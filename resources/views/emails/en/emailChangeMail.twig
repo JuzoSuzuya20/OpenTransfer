@@ -1,0 +1,14 @@
+{% extends 'emails/layout' %}
+
+{% block subject %}Confirm your new address{% endblock %}
+
+{% block header %}New address{% endblock %}
+
+{% block content %}
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Hello {{ user.name }},</h2>
+<p style="margin:0 0 10px;">You asked to use this address for your account on {{ settings.application_name }}.</p>
+<p style="margin:0 0 10px;">Enter this code in your profile to confirm it:</p>
+<p style="margin:20px 0;"><span style="display:inline-block;padding:14px 22px;background:#242424;border:1px solid #3a3a3a;border-radius:4px;font-size:30px;line-height:1.15;font-weight:800;letter-spacing:8px;color:#ffffff;">{{ code }}</span></p>
+<p style="margin:0 0 10px;">This code expires in 15 minutes. Until then, your account keeps its current address.</p>
+<p style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#929292;">You did not ask for this? Ignore this email: nothing changes.</p>
+{% endblock %}

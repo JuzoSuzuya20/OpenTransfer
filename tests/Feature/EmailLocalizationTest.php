@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Mail\accountCreatedMail;
+use App\Mail\emailChangeMail;
 use App\Mail\emailVerificationMail;
 use App\Mail\passwordResetMail;
 use App\Mail\reverseShareInviteMail;
@@ -82,6 +83,7 @@ class EmailLocalizationTest extends TestCase
         return [
             new accountCreatedMail('token-123', $owner),
             new emailVerificationMail('123456', $owner),
+            new emailChangeMail('123456', $owner),
             new passwordResetMail('token-123', $owner),
             new reverseShareInviteMail($owner, $invite, 'token-123', false),
             new shareCreatedMail($owner, $share, ['name' => 'Dominique Durand', 'email' => 'dominique@example.test']),

@@ -187,7 +187,23 @@
       "linked_accounts_description": "Liez votre compte à un fournisseur externe pour faciliter la connexion. Une fois le lien établi, vous pouvez vous connecter directement en sélectionnant le bouton du fournisseur sur l'écran de connexion.",
       "myProfile_description": "Mettez à jour votre adresse email ou changez votre nom. Vous pouvez modifier votre mot de passe en cliquant sur le bouton « Modifier mon mot de passe » et en suivant les instructions.",
       "name": "Mon nom complet",
-      "unlink": "Délier"
+      "unlink": "Délier",
+      "email_change": {
+        "change": "Changer",
+        "new": "Nouvelle adresse",
+        "send": "Envoyer le code",
+        "sent": "Un code est parti à {email}. Saisissez-le pour confirmer la nouvelle adresse : d’ici là, le compte garde l’actuelle.",
+        "code": "Code reçu par e-mail",
+        "confirm": "Confirmer la nouvelle adresse",
+        "done": "Le compte utilise maintenant {email}",
+        "invalid_code": "Code incorrect ou expiré",
+        "too_many": "Trop d’essais : demandez un nouveau code",
+        "taken": "Cette adresse est déjà celle d’un compte",
+        "invalid_email": "Saisissez une adresse e-mail valide",
+        "wrong_password": "Le mot de passe actuel est incorrect",
+        "missing": "Saisissez la nouvelle adresse et votre mot de passe actuel",
+        "failed": "La demande n’a pas abouti"
+      }
     },
     "allShares": {
       "allUsers": "Tous les utilisateurs",
@@ -1227,5 +1243,6 @@
   "number": {
     "decrease": "Diminuer",
     "increase": "Augmenter"
-  }
+  },
+  "Email Change": "Changement d’adresse"
 }

@@ -187,7 +187,23 @@
       "linked_accounts_description": "Link your account with an external provider for easier sign-in. After linking, you can log in directly by selecting the provider's button on the login screen.",
       "myProfile_description": "Update your email address or change your name. You can change you password by clicking the \"Change my password\" button and following the prompts.",
       "name": "My Full Name",
-      "unlink": "Unlink"
+      "unlink": "Unlink",
+      "email_change": {
+        "change": "Change",
+        "new": "New address",
+        "send": "Send the code",
+        "sent": "A code went to {email}. Enter it to confirm the new address: until then the account keeps its current one.",
+        "code": "Code received by email",
+        "confirm": "Confirm the new address",
+        "done": "The account now uses {email}",
+        "invalid_code": "Wrong or expired code",
+        "too_many": "Too many attempts: ask for a new code",
+        "taken": "This address already belongs to an account",
+        "invalid_email": "Enter a valid email address",
+        "wrong_password": "The current password is wrong",
+        "missing": "Enter the new address and your current password",
+        "failed": "The request did not go through"
+      }
     },
     "allShares": {
       "allUsers": "All users",
@@ -1227,5 +1243,6 @@
   "number": {
     "decrease": "Decrease",
     "increase": "Increase"
-  }
+  },
+  "Email Change": "Address Change"
 }

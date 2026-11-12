@@ -7,6 +7,7 @@ import UserAvatar from '../layout/UserAvatar.vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../../store'
 import TwoFactorSettings from './TwoFactorSettings.vue'
+import EmailChange from './EmailChange.vue'
 
 import { useTranslate } from '@tolgee/vue'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
@@ -76,9 +77,9 @@ const saveUser = async () => {
   }
 
   try {
+    // The address has its own step, with a code sent to the new one (EmailChange)
     const profileData = {
-      name: profile.value.name,
-      email: profile.value.email
+      name: profile.value.name
     }
     const updatedUser = await updateMyProfile(profileData)
     profile.value = updatedUser
@@ -189,11 +190,7 @@ const handleUnlinkProvider = async (provider) => {
             <div class="profile-email">{{ profile.email }}</div>
           </div>
         </div>
-        <div class="input-container">
-          <label for="email">{{ $t('settings.account.email') }}</label>
-          <input type="email" id="email" autocomplete="email" v-model="profile.email" :class="{ error: errors.email }" />
-          <div class="error-message" v-if="errors.email">{{ Array.isArray(errors.email) ? errors.email[0] : errors.email }}</div>
-        </div>
+        <EmailChange :email="profile.email" @changed="(user) => (profile.email = user.email)" />
         <div class="input-container">
           <label for="name">{{ $t('settings.account.name') }}</label>
           <input type="text" id="name" autocomplete="name" v-model="profile.name" :class="{ error: errors.name }" />
