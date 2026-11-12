@@ -120,13 +120,12 @@
   },
   "commandPalette": {
     "category": {
-      "branding": "Marca",
       "navigation": "Navegação",
-      "system": "Definições do sistema"
+      "system": "Definições do sistema",
+      "pages": "Páginas"
     },
     "navigate": "para navegar",
     "noResults": "Não foram encontrados resultados",
-    "placeholder": "Definições de pesquisa...",
     "select": "para selecionar"
   },
   "confirm_delete_user": "Tem a certeza de que pretende eliminar este utilizador?",
@@ -260,7 +259,8 @@
       "upload_background_image": "Transferir Imagem de Fundo",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Usar as Minhas Imagens de Fundo",
-      "use_my_backgrounds_description": "Usar as imagens de fundo que transferiu. Se não for selecionado, serão utilizadas as imagens de fundo de Unsplash."
+      "use_my_backgrounds_description": "Usar as imagens de fundo que transferiu. Se não for selecionado, serão utilizadas as imagens de fundo de Unsplash.",
+      "confirm_delete_favicon": "Eliminar o favicon personalizado? Volta o ícone do OpenTransfer."
     },
     "button": {
       "branding": {
@@ -657,7 +657,8 @@
       "self_registration_allowed_domains_help": "Introduza os domínios separados por vírgulas (por exemplo, empresa.com, parceiro.org)",
       "self_registration_allowed_domains_placeholder": "example.com, company.org",
       "self_registration_description": "Permitir que os utilizadores criem as suas próprias contas. Quando ativo, aparece a opção «Criar conta» na página de início de sessão. Os utilizadores têm de verificar o endereço de e-mail antes de poderem iniciar sessão.",
-      "self_registration_enabled": "Ativar o registo autónomo"
+      "self_registration_enabled": "Ativar o registo autónomo",
+      "delete_auth_provider_confirmation": "Eliminar este fornecedor de identidade? As suas definições perdem-se e ninguém poderá voltar a iniciar sessão com ele."
     },
     "system_auth_provider_info_link": "Sobre {name}",
     "table": {
@@ -904,7 +905,9 @@
     "expiry_title": "Expira após",
     "files_title": "Ficheiros a enviar",
     "password_set": "Protegido por palavra-passe",
-    "recipients_title": "Destinatários"
+    "recipients_title": "Destinatários",
+    "too_big": "Estes ficheiros têm {size}: uma partilha pode ter no máximo {max}.",
+    "upload_failed": "O envio falhou: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Transferindo # ficheiro} other {Transferindo # ficheiros} }"
@@ -1139,5 +1142,15 @@
       "reset_failed": "Não foi possível repor o texto original",
       "unsaved": "Há alterações por guardar. Mudar de idioma mesmo assim?"
     }
+  },
+  "dialog": {
+    "title": "Confirme",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "change_anyway": "Mudar mesmo assim"
+  },
+  "number": {
+    "decrease": "Diminuir",
+    "increase": "Aumentar"
   }
 }

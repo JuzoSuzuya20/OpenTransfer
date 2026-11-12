@@ -35,7 +35,7 @@ select {
     outline-offset: -1px;
   }
   &.error {
-    border-color: var(--color-danger);
+    border-color: var(--ot-danger);
   }
 }
 
@@ -43,7 +43,7 @@ input:read-only,
 textarea:read-only,
 select:disabled {
   // A tint of the text colour: it reads as inactive on light and dark panels alike
-  background: color-mix(in srgb, var(--panel-text-color) 4%, transparent);
+  background: color-mix(in srgb, var(--ot-text) 4%, transparent);
   cursor: not-allowed;
   border: 1px dashed var(--input-border-color);
   &:hover,
@@ -84,7 +84,7 @@ select {
   }
   .error-message {
     position: absolute;
-    color: var(--color-danger);
+    color: var(--ot-danger);
     font-size: 0.8rem;
     top: 40px;
     right: 10px;

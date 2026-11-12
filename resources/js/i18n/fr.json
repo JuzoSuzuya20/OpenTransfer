@@ -120,13 +120,12 @@
   },
   "commandPalette": {
     "category": {
-      "branding": "L'image de marque",
       "navigation": "Navigation",
-      "system": "Paramètres du système"
+      "system": "Réglages du système",
+      "pages": "Pages"
     },
     "navigate": "pour naviguer",
     "noResults": "Aucun résultat trouvé",
-    "placeholder": "Paramètres de recherche...",
     "select": "pour sélectionner"
   },
   "confirm_delete_user": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
@@ -260,7 +259,8 @@
       "upload_background_image": "Télécharger une image de fond",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Utiliser mes arrière-plans",
-      "use_my_backgrounds_description": "Utiliser les arrière-plans que vous avez téléchargés. Si la case n'est pas cochée, les arrière-plans Unsplash seront utilisés."
+      "use_my_backgrounds_description": "Utiliser les arrière-plans que vous avez téléchargés. Si la case n'est pas cochée, les arrière-plans Unsplash seront utilisés.",
+      "confirm_delete_favicon": "Supprimer le favicon personnalisé ? L’icône d’OpenTransfer revient."
     },
     "button": {
       "branding": {
@@ -657,7 +657,8 @@
       "smtp_username": "Nom d'utilisateur SMTP",
       "smtp_username_description": "Le nom d'utilisateur requis pour s'authentifier auprès de votre serveur SMTP. Il s'agit généralement de l'adresse mail ou du nom de compte associé à votre service de messagerie.",
       "upload_modes": "Modes de téléchargement",
-      "your_auth_providers": "Vos fournisseurs d'authentification"
+      "your_auth_providers": "Vos fournisseurs d'authentification",
+      "delete_auth_provider_confirmation": "Supprimer ce fournisseur d’identité ? Ses réglages sont perdus et plus personne ne peut se connecter avec."
     },
     "system_auth_provider_info_link": "À propos de {name}",
     "table": {
@@ -904,7 +905,9 @@
     "expiry_title": "Expire après",
     "files_title": "Fichiers à envoyer",
     "password_set": "Protégé par un mot de passe",
-    "recipients_title": "Destinataires"
+    "recipients_title": "Destinataires",
+    "too_big": "Ces fichiers pèsent {size} : un partage en contient {max} au plus.",
+    "upload_failed": "L’envoi a échoué : {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Téléchargement du fichier #.} other {Téléchargement des fichiers #.} }"
@@ -1139,5 +1142,15 @@
       "reset_failed": "Le texte d'origine n'a pas pu être rétabli",
       "unsaved": "Des modifications ne sont pas enregistrées. Changer de langue quand même ?"
     }
+  },
+  "dialog": {
+    "title": "Veuillez confirmer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "change_anyway": "Changer quand même"
+  },
+  "number": {
+    "decrease": "Diminuer",
+    "increase": "Augmenter"
   }
 }

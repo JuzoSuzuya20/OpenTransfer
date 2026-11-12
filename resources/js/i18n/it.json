@@ -120,13 +120,12 @@
   },
   "commandPalette": {
     "category": {
-      "branding": "Branding",
       "navigation": "Navigazione",
-      "system": "Impostazioni di sistema"
+      "system": "Impostazioni di sistema",
+      "pages": "Pagine"
     },
     "navigate": "per navigare",
     "noResults": "Nessun risultato trovato",
-    "placeholder": "Impostazioni di ricerca...",
     "select": "per selezionare"
   },
   "confirm_delete_user": "Sei sicuro di voler eliminare questo utente?",
@@ -260,7 +259,8 @@
       "upload_background_image": "Carica l'immagine di sfondo",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Usa i miei sfondi",
-      "use_my_backgrounds_description": "Usa gli sfondi che hai caricato. Se non è selezionata, verranno utilizzati gli sfondi di Unsplash."
+      "use_my_backgrounds_description": "Usa gli sfondi che hai caricato. Se non è selezionata, verranno utilizzati gli sfondi di Unsplash.",
+      "confirm_delete_favicon": "Eliminare la favicon personalizzata? Torna l’icona di OpenTransfer."
     },
     "button": {
       "branding": {
@@ -657,7 +657,8 @@
       "smtp_username": "Nome utente SMTP",
       "smtp_username_description": "Il nome utente richiesto per l'autenticazione con il server SMTP. In genere si tratta dell'indirizzo e-mail o del nome dell'account associato al servizio di posta elettronica.",
       "upload_modes": "Modalità di caricamento",
-      "your_auth_providers": "I vostri fornitori di autorizzazioni"
+      "your_auth_providers": "I vostri fornitori di autorizzazioni",
+      "delete_auth_provider_confirmation": "Eliminare questo provider di identità? Le sue impostazioni vanno perse e nessuno potrà più accedere tramite esso."
     },
     "system_auth_provider_info_link": "Informazioni su {name}",
     "table": {
@@ -792,7 +793,7 @@
       "reset_two_factor_success": "Secondo fattore rimosso.",
       "save_changes": "Salva le modifiche",
       "send_invite": "Invia la richiesta",
-      "unlink_provider_confirm": "Davvero avete scollegato il vostro account da questo provider?",
+      "unlink_provider_confirm": "Scollegare davvero il tuo account da questo provider?",
       "update_password": "Aggiornare la password",
       "user": "Utente",
       "user_created_successfully": "Utente creato con successo",
@@ -904,7 +905,9 @@
     "expiry_title": "Scade dopo",
     "files_title": "File da inviare",
     "password_set": "Protetto da una password",
-    "recipients_title": "Destinatari"
+    "recipients_title": "Destinatari",
+    "too_big": "Questi file pesano {size}: una condivisione può contenerne al massimo {max}.",
+    "upload_failed": "Il caricamento non è riuscito: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Caricamento del file} other {Caricamento di # file} }"
@@ -1139,5 +1142,15 @@
       "reset_failed": "Il testo originale non è stato ripristinato",
       "unsaved": "Ci sono modifiche non salvate. Cambiare lingua comunque?"
     }
+  },
+  "dialog": {
+    "title": "Conferma",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "change_anyway": "Cambia comunque"
+  },
+  "number": {
+    "decrease": "Diminuisci",
+    "increase": "Aumenta"
   }
 }

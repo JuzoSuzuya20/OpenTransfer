@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { pinLeaving } from '../lib/motion'
 import { Upload, Copy, X, Loader, Check, Pause, Play, Eye, EyeOff, Link as LinkIcon } from 'lucide-vue-next'
 import { niceFileSize, niceFileType, niceFileName, simpleUUID } from '../utils'
 import { getHealth, getMyProfile, uploadFilesInChunks, logout, getMyShares, setDownloadLimit } from '../api'
@@ -7,6 +8,7 @@ import { basketRows } from '../lib/basket'
 import { sendSummary } from '../lib/shares'
 import AppLink from './layout/AppLink.vue'
 import OtSelect from './layout/OtSelect.vue'
+import OtNumber from './layout/OtNumber.vue'
 import { uploadController } from '../store'
 import { domData } from '../domData'
 import { useTranslate } from '@tolgee/vue'
@@ -408,7 +410,7 @@ const uploadFiles = async () => {
   uploadController.resumeUpload()
 
   if (totalSize.value > maxShareSize.value) {
-    alert(`Total size of files is greater than the max share size of ${niceFileSize(maxShareSize.value)}`)
+    toast.error(t.value('uploader.too_big', { size: niceFileSize(totalSize.value), max: niceFileSize(maxShareSize.value) }))
     currentlyUploading.value = false
     return
   }
@@ -535,14 +537,14 @@ const doTusUpload = async (uploadId) => {
       },
       (error) => {
         console.error('Upload error:', error)
-        alert(`Upload failed: ${error.message}`)
+        toast.error(t.value('uploader.upload_failed', { error: error.message }))
         currentlyUploading.value = false
         resetUploadState()
       }
     )
   } catch (error) {
     console.error('Upload error:', error)
-    alert(`Upload failed: ${error.message}`)
+    toast.error(t.value('uploader.upload_failed', { error: error.message }))
     currentlyUploading.value = false
     resetUploadState()
   }
@@ -877,8 +879,8 @@ const filesByDirectory = computed(() => {
             </div>
           </div>
 
-          <ul class="basket" v-if="rows.length > 0" :aria-label="$t('uploader.files_title')">
-            <li v-for="row in rows" :key="row.key" class="basket-row" :class="`is-${row.state}`">
+          <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="basket ot-list-host" v-if="rows.length > 0" :aria-label="$t('uploader.files_title')">
+            <li v-for="(row, index) in rows" :key="row.key" class="basket-row" :class="`is-${row.state}`" :style="{ '--ot-i': index }">
               <div class="basket-row-main">
                 <div class="basket-row-name">
                   {{ row.kind === 'folder' ? $t('send.folder_row', { name: row.name, count: row.count }) : row.name }}
@@ -899,7 +901,7 @@ const filesByDirectory = computed(() => {
                 </div>
               </div>
               <span class="basket-row-status" v-if="currentlyUploading || row.state === 'done'">
-                <Check v-if="row.state === 'done'" :aria-label="$t('send.sent')" />
+                <Check v-if="row.state === 'done'" class="ot-check-pop" :aria-label="$t('send.sent')" />
                 <template v-else>{{ row.progress }}%</template>
               </span>
               <button
@@ -913,7 +915,7 @@ const filesByDirectory = computed(() => {
                 <X aria-hidden="true" />
               </button>
             </li>
-          </ul>
+          </TransitionGroup>
 
           <div class="send-files-foot" v-if="rows.length > 0 || currentlyUploading">
             <span class="send-total">
@@ -969,12 +971,11 @@ const filesByDirectory = computed(() => {
             <div class="input-container">
               <label for="share-expiry">{{ $t('send.expires_in') }}</label>
               <div class="field-group">
-                <input
-                  type="number"
+                <OtNumber
                   v-model="expiryValue"
                   id="share-expiry"
-                  min="1"
-                  inputmode="numeric"
+                  :min="1"
+                  :max="maxExpiryTimeInSelectedUnit != null ? Math.max(1, Math.floor(maxExpiryTimeInSelectedUnit)) : undefined"
                   :aria-describedby="maxExpiryTimeInSelectedUnit != null ? 'share-expiry-max' : undefined"
                 />
                 <OtSelect v-model="expiryUnit" :options="expiryUnitOptions" :aria-label="$t('send.expiry_unit')" />
@@ -1007,8 +1008,8 @@ const filesByDirectory = computed(() => {
                 :aria-label="showPassword ? $t('send.hide_password') : $t('send.show_password')"
                 :aria-pressed="showPassword"
               >
-                <EyeOff v-if="showPassword" aria-hidden="true" />
-                <Eye v-else aria-hidden="true" />
+                <EyeOff v-if="showPassword" class="ot-check-pop" aria-hidden="true" />
+                <Eye v-else class="ot-check-pop" aria-hidden="true" />
               </button>
             </div>
             <p class="help-text" id="share-password-help">{{ $t('send.password_help') }}</p>
@@ -1190,7 +1191,7 @@ const filesByDirectory = computed(() => {
     }
 
     .interrupted-upload-details {
-      background: var(--panel-item-background-color);
+      background: var(--ot-field);
       border-radius: 8px;
       padding: 12px 16px;
       margin-bottom: 16px;
@@ -1201,12 +1202,12 @@ const filesByDirectory = computed(() => {
         padding: 4px 0;
 
         strong {
-          color: var(--panel-text-color);
+          color: var(--ot-text);
           opacity: 0.8;
         }
 
         span {
-          color: var(--panel-text-color);
+          color: var(--ot-text);
         }
       }
     }

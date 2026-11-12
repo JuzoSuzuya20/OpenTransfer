@@ -136,7 +136,7 @@ const diskTone = computed(() => {
                 :class="{ 'is-hovered': hovered === index }"
                 @pointerenter="hovered = index"
               >
-                <div class="chart-bar" v-if="day.count > 0" :style="{ height: barHeight(day.count) }"></div>
+                <div class="chart-bar" v-if="day.count > 0" :style="{ height: barHeight(day.count), '--ot-i': index }"></div>
               </div>
               <div class="chart-tip" v-if="hovered !== null && days[hovered]" :style="{ left: `${((hovered + 0.5) / days.length) * 100}%` }" aria-hidden="true">
                 <strong>{{ days[hovered].count }}</strong>
@@ -407,12 +407,19 @@ const diskTone = computed(() => {
   justify-content: center;
   padding: 0 1px;
 }
+// The bars rise from the baseline once, one after the other; a new period reshapes them
 .chart-bar {
   width: 100%;
   max-width: 24px;
   min-height: 2px;
   border-radius: 4px 4px 0 0;
   background: var(--ot-accent);
+  transform-origin: bottom;
+  animation: ot-grow-y 560ms var(--ot-ease-out) both;
+  animation-delay: calc(min(var(--ot-i, 0), 40) * 8ms);
+  transition:
+    height var(--ot-dur-slow) var(--ot-ease-out),
+    background-color var(--ot-dur-fast) var(--ot-ease-out);
 }
 .chart-slot.is-hovered .chart-bar {
   background: var(--ot-accent-hover);
@@ -513,6 +520,9 @@ const diskTone = computed(() => {
     height: 100%;
     border-radius: 4px;
     background: var(--ot-accent);
+    transform-origin: left;
+    animation: ot-grow-x 700ms var(--ot-ease-out) both;
+    transition: width var(--ot-dur-slow) var(--ot-ease-out);
 
     &.is-warning {
       background: var(--ot-warning);

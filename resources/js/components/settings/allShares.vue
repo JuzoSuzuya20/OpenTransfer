@@ -2,6 +2,7 @@
 // Every share of the instance, for an admin: the rows of My shares, with their owner.
 // The page head (AdminPage) holds the owner filter and the "deleted shares" switch.
 import { ref, computed, onMounted } from 'vue'
+import { pinLeaving } from '../../lib/motion'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import ShareRow from '../layout/ShareRow.vue'
@@ -82,13 +83,25 @@ defineExpose({ setShowDeletedShares, loadShares, setUserFilter })
       </div>
     </div>
 
-    <div class="share-group" v-for="group in groups" :key="group.key">
-      <div class="share-group-head">
-        <h3>{{ groupTitle(group) }}</h3>
-        <span class="ot-pill">{{ groupSummary(group) }}</span>
+    <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="div" class="share-groups ot-list-host">
+      <div class="share-group" v-for="(group, groupIndex) in groups" :key="group.key" :style="{ '--ot-i': groupIndex }">
+        <div class="share-group-head">
+          <h3>{{ groupTitle(group) }}</h3>
+          <span class="ot-pill">{{ groupSummary(group) }}</span>
+        </div>
+        <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="div" class="share-group-rows ot-list-host">
+          <ShareRow
+            v-for="(share, index) in group.shares"
+            :key="share.id"
+            :share="share"
+            :now="now"
+            show-owner
+            :style="{ '--ot-i': index }"
+            @changed="loadShares"
+          />
+        </TransitionGroup>
       </div>
-      <ShareRow v-for="share in group.shares" :key="share.id" :share="share" :now="now" show-owner @changed="loadShares" />
-    </div>
+    </TransitionGroup>
 
     <div class="ot-card share-empty" v-if="loaded && groups.length === 0">
       <p>{{ shares.length === 0 ? t('settings.allShares.noShares') : t('shares.empty_filter') }}</p>

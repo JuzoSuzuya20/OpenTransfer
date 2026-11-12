@@ -10,6 +10,7 @@ import { mapSettings } from '../../utils'
 import { useTranslate } from '@tolgee/vue'
 import EmailTemplateEditor from '../emailTemplateEditor.vue'
 import OtSelect from '../layout/OtSelect.vue'
+import { useConfirmDialog } from '../../composables/useConfirmDialog'
 
 const { t } = useTranslate()
 
@@ -64,14 +65,33 @@ const loadTemplates = async () => {
 const languageOptions = LANGUAGES.map((language) => ({ value: language.code, label: language.name, lang: language.code }))
 
 // The select shows the language being edited until the change is confirmed
+const confirmDialog = useConfirmDialog()
 const changeLanguage = async (code) => {
-  if (emailTemplates.value.some(isTemplateDirty) && !confirm(t.value('emails.admin.unsaved'))) return
+  if (
+    emailTemplates.value.some(isTemplateDirty) &&
+    !(await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('emails.admin.unsaved'),
+    okText: t.value('dialog.change_anyway'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  }))
+  ) {
+    return
+  }
   locale.value = code
   await loadTemplates()
 }
 
 const resetTemplate = async (template) => {
-  if (!confirm(t.value('emails.admin.reset_confirm', { name: template.name }))) return
+  const sure = await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('emails.admin.reset_confirm', { name: template.name }),
+    okText: t.value('emails.admin.reset'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  })
+  if (!sure) return
   try {
     await resetEmailTemplate(locale.value, template.id)
     toast.success(t.value('emails.admin.reset_done'))
@@ -289,7 +309,7 @@ defineExpose({
                 :key="varName"
                 :class="{ valid: isVariableValid(template, varName), invalid: !isVariableValid(template, varName) }"
               >
-                <Check v-if="isVariableValid(template, varName)" class="status-icon" aria-hidden="true" />
+                <Check v-if="isVariableValid(template, varName)" class="status-icon ot-check-pop" aria-hidden="true" />
                 <X v-else class="status-icon" aria-hidden="true" />
                 {{ formatVariableName(varName) }}
               </li>

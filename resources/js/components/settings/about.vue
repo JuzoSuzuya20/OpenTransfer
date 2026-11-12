@@ -238,6 +238,8 @@ const databaseDisplayName = computed(() => {
     height: 100%;
     border-radius: 4px;
     background: var(--ot-accent);
+    transform-origin: left;
+    animation: ot-grow-x 700ms var(--ot-ease-out) both;
   }
 }
 </style>

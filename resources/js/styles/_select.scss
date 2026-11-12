@@ -153,3 +153,57 @@ button.ot-select-trigger {
   color: var(--ot-accent-text);
   animation: ot-check-pop var(--ot-dur-slow) var(--ot-ease-spring) both;
 }
+
+// The app's number field (components/layout/OtNumber.vue): no spin arrows from the browser
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.ot-number {
+  position: relative;
+  width: 100%;
+
+  &.has-steppers input {
+    padding-right: 72px;
+  }
+}
+.ot-number-steps {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 2px;
+  height: calc(var(--button-height) - 8px);
+}
+button.ot-number-step {
+  width: 30px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ot-btn-radius);
+  background: none;
+  color: var(--ot-muted);
+  touch-action: manipulation;
+
+  &:hover,
+  &:active {
+    background: var(--ot-raised);
+    color: var(--ot-heading);
+  }
+  &:disabled {
+    background: none;
+    color: var(--ot-faint);
+  }
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}

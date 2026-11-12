@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { pinLeaving } from '../lib/motion'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { Send } from 'lucide-vue-next'
@@ -72,15 +73,15 @@ const dateFormat = computed(() => new Intl.DateTimeFormat(tolgee.value.getLangua
 
       <section class="ot-card requests-received" aria-labelledby="h-received">
         <h2 class="ot-card-title" id="h-received">{{ t('requests.received') }}</h2>
-        <ul class="received-list" v-if="received.length > 0">
-          <li v-for="share in received" :key="share.id" class="received-row">
+        <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="received-list ot-list-host" v-if="received.length > 0">
+          <li v-for="(share, index) in received" :key="share.id" class="received-row" :style="{ '--ot-i': index }">
             <div class="received-name">{{ share.name }}</div>
             <div class="received-meta">
               {{ t('shares.items', { count: share.file_count }) }} · {{ niceFileSize(share.size) }} ·
               {{ dateFormat.format(new Date(share.created_at)) }}
             </div>
           </li>
-        </ul>
+        </TransitionGroup>
         <p class="received-empty" v-else-if="loaded">{{ t('requests.none') }}</p>
         <AppLink to="/my-shares" class="received-link" v-if="received.length > 0">{{ t('requests.see_all') }}</AppLink>
       </section>

@@ -14,6 +14,7 @@ import {
   getFaviconStatus
 } from '../../api'
 import FileInput from '../fileInput.vue'
+import OtNumber from '../layout/OtNumber.vue'
 import { useToast } from 'vue-toastification'
 import { niceFileName, mapSettings } from '../../utils'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
@@ -177,7 +178,13 @@ const saveSettings = async () => {
 }
 
 const handleDeleteFavicon = async () => {
-  const reallyDelete = confirm(t.value('settings.branding.confirm_delete_favicon'))
+  const reallyDelete = await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('settings.branding.confirm_delete_favicon'),
+    okText: t.value('dialog.delete'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  })
   if (!reallyDelete) {
     return
   }
@@ -199,7 +206,8 @@ const handleResetLogo = async () => {
     title: t.value('settings.branding.confirm'),
     message: t.value('settings.branding.confirm_reset_logo'),
     okText: t.value('settings.branding.reset'),
-    cancelText: t.value('settings.close')
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
   })
   if (!reallyReset) {
     return
@@ -223,7 +231,8 @@ const handleResetFavicon = async () => {
     title: t.value('settings.branding.confirm'),
     message: t.value('settings.branding.confirm_reset_favicon'),
     okText: t.value('settings.branding.reset'),
-    cancelText: t.value('settings.close')
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
   })
   if (!reallyReset) {
     return
@@ -328,7 +337,7 @@ defineExpose({
             {{ $t('settings.branding.logo_width') }}
             <small>({{ $t('settings.branding.in_pixels') }})</small>
           </label>
-          <input type="number" id="logoWidth" min="1" v-model="settings.logo_width" />
+          <OtNumber id="logoWidth" v-model="settings.logo_width" :min="1" :increment="10" />
         </div>
       </div>
     </section>
@@ -352,8 +361,8 @@ defineExpose({
   gap: 22px 40px;
   align-items: start;
 }
-.logo-width input {
-  max-width: 160px;
+.logo-width .ot-number {
+  max-width: 180px;
 }
 .help-text {
   margin: 6px 0 0;

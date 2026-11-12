@@ -1,212 +1,191 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
-import { Search, Settings, Palette, Users, User, Boxes, FolderOpen, BarChart3, Mail, Fingerprint, Share2, Send, AtSign, Database, Images, Image, Pipette } from 'lucide-vue-next'
-import { useSettingsNavigation } from '../composables/useSettingsNavigation'
+// Ctrl+K (or the search field of the header): every page and every settings section, found by
+// typing. The field is a combobox, the results a listbox: arrows move, Enter opens, Escape closes.
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch, inject, useId } from 'vue'
+import {
+  Search,
+  Settings,
+  Palette,
+  Users,
+  User,
+  Boxes,
+  FolderOpen,
+  BarChart3,
+  Mail,
+  Fingerprint,
+  Share2,
+  Send,
+  AtSign,
+  Database,
+  Upload,
+  Inbox,
+  Info,
+  ShieldCheck,
+  KeyRound,
+  Link2,
+  CornerDownLeft
+} from 'lucide-vue-next'
 import { store } from '../store'
-
+import { domData } from '../domData'
 import { useTranslate } from '@tolgee/vue'
 
 const { t } = useTranslate()
-const { navigateTo } = useSettingsNavigation()
+const navigate = inject('navigate')
+const uid = useId()
 
 const isOpen = ref(false)
 const searchQuery = ref('')
 const selectedIndex = ref(0)
 const searchInput = ref(null)
 
-// Define all available commands
+const GROUPS = ['pages', 'admin', 'system']
+
 const commands = computed(() => {
   const isAdmin = store.isAdmin()
-  
-  const allCommands = [
-    // Tabs (available to all users)
-    { id: 'myShares', label: t.value('settings.title.myShares'), keywords: 'my shares files uploads', path: 'myShares', icon: Boxes, category: 'navigation' },
-    { id: 'myProfile', label: t.value('settings.title.myProfile'), keywords: 'my profile account user settings', path: 'myProfile', icon: User, category: 'navigation' },
-    
-    // Admin-only tabs
-    { id: 'stats', label: t.value('settings.title.stats') || 'System Stats', keywords: 'stats statistics dashboard analytics monitor', path: 'stats', icon: BarChart3, category: 'navigation', adminOnly: true },
-    { id: 'branding', label: t.value('settings.title.branding'), keywords: 'branding theme logo colors colours appearance', path: 'branding', icon: Palette, category: 'navigation', adminOnly: true },
-    { id: 'system', label: t.value('settings.title.system'), keywords: 'system settings configuration', path: 'system', icon: Settings, category: 'navigation', adminOnly: true },
-    { id: 'emailTemplates', label: t.value('settings.title.emailTemplates'), keywords: 'email templates mail notifications', path: 'emailTemplates', icon: Mail, category: 'navigation', adminOnly: true },
-    { id: 'users', label: t.value('settings.title.users'), keywords: 'users accounts members admin', path: 'users', icon: Users, category: 'navigation', adminOnly: true },
-    { id: 'allShares', label: t.value('settings.title.allShares'), keywords: 'all shares files admin manage', path: 'allShares', icon: FolderOpen, category: 'navigation', adminOnly: true },
-    
-    // System Settings sections (admin only)
-    { id: 'system.general', label: t.value('settings.system.general'), keywords: 'general application name url language', path: 'system.general', icon: Settings, category: 'system', adminOnly: true },
-    { id: 'system.shares', label: t.value('settings.system.shares'), keywords: 'shares expiry size limits reverse', path: 'system.shares', icon: Share2, category: 'system', adminOnly: true },
-    { id: 'system.emails', label: t.value('settings.system.emails'), keywords: 'emails notifications download expiry warning', path: 'system.emails', icon: Send, category: 'system', adminOnly: true },
-    { id: 'system.smtp', label: t.value('settings.system.smtp'), keywords: 'smtp mail server host port encryption', path: 'system.smtp', icon: AtSign, category: 'system', adminOnly: true },
-    { id: 'system.auth', label: t.value('settings.system.auth'), keywords: 'auth authentication providers login sso oauth', path: 'system.auth', icon: Fingerprint, category: 'system', adminOnly: true },
-    { id: 'system.backups', label: t.value('settings.system.backups.title'), keywords: 'backups database backup restore', path: 'system.backups', icon: Database, category: 'system', adminOnly: true },
-    
-    // System sub-sections
-    { id: 'system.auth.self_registration', label: t.value('settings.system.self_registration'), keywords: 'self registration signup sign up new users', path: 'system.auth.self_registration', icon: Fingerprint, category: 'system', adminOnly: true },
-    { id: 'system.auth.auth_providers', label: t.value('settings.system.auth_providers') || 'Auth Providers', keywords: 'oauth sso google microsoft authentik oidc providers', path: 'system.auth.auth_providers', icon: Fingerprint, category: 'system', adminOnly: true },
-    { id: 'system.shares.reverse_shares', label: t.value('settings.system.reverse_shares'), keywords: 'reverse shares upload invite guest', path: 'system.shares.reverse_shares', icon: Share2, category: 'system', adminOnly: true },
-    { id: 'system.shares.share_url_generation', label: t.value('settings.system.share_url_generation'), keywords: 'url generation pattern haiku shortcode', path: 'system.shares.share_url_generation', icon: Share2, category: 'system', adminOnly: true },
-    
-    // Branding sections (admin only)
-    { id: 'branding.background-images', label: t.value('settings.branding.background_images') || 'Background Images', keywords: 'background images wallpaper slideshow', path: 'branding.background-images', icon: Images, category: 'branding', adminOnly: true },
-    { id: 'branding.logo-settings', label: t.value('settings.branding.logo') || 'Logo Settings', keywords: 'logo image brand icon favicon', path: 'branding.logo-settings', icon: Image, category: 'branding', adminOnly: true },
-    { id: 'branding.ui-colours', label: t.value('settings.branding.colours') || 'UI Colours', keywords: 'colors colours theme primary secondary accent', path: 'branding.ui-colours', icon: Pipette, category: 'branding', adminOnly: true },
+  const fileRequests = domData().allow_reverse_shares === true
+  const all = [
+    { id: 'send', label: t.value('nav.send'), keywords: 'send upload new share files envoyer', to: '/', icon: Upload, group: 'pages' },
+    { id: 'my-shares', label: t.value('nav.my_shares'), keywords: 'my shares files uploads', to: '/my-shares', icon: Boxes, group: 'pages' },
+    fileRequests && { id: 'requests', label: t.value('nav.file_requests'), keywords: 'file requests reverse guest invite', to: '/requests', icon: Inbox, group: 'pages' },
+    { id: 'profile', label: t.value('nav.profile'), keywords: 'my profile account password two factor passkey', to: '/profile', icon: User, group: 'pages' },
+    { id: 'about', label: t.value('settings.title.about'), keywords: 'about version license system information', to: '/about', icon: Info, group: 'pages' },
+    isAdmin && { id: 'stats', label: t.value('nav.statistics'), keywords: 'stats statistics dashboard analytics downloads storage', to: '/stats', icon: BarChart3, group: 'pages' },
+
+    isAdmin && { id: 'system', label: t.value('settings.title.system'), keywords: 'system settings configuration', to: '/admin/system', icon: Settings, group: 'admin' },
+    isAdmin && { id: 'sso', label: t.value('sso.title'), keywords: 'sso single sign-on keycloak oidc oauth identity provider', to: '/admin/sso', icon: Fingerprint, group: 'admin' },
+    isAdmin && { id: 'branding', label: t.value('settings.title.branding'), keywords: 'branding logo favicon brand powered by', to: '/admin/branding', icon: Palette, group: 'admin' },
+    isAdmin && { id: 'email-templates', label: t.value('settings.title.emailTemplates'), keywords: 'email templates mail notifications', to: '/admin/email-templates', icon: Mail, group: 'admin' },
+    isAdmin && { id: 'users', label: t.value('settings.title.users'), keywords: 'users accounts members admin', to: '/admin/users', icon: Users, group: 'admin' },
+    isAdmin && { id: 'all-shares', label: t.value('settings.title.allShares'), keywords: 'all shares files admin manage', to: '/admin/all-shares', icon: FolderOpen, group: 'admin' },
+
+    isAdmin && { id: 'general', label: t.value('settings.system.general'), keywords: 'general application name url language login message', to: '/admin/system#general', icon: Settings, group: 'system' },
+    isAdmin && { id: 'shares', label: t.value('settings.system.shares'), keywords: 'shares expiry size limits', to: '/admin/system#shares', icon: Share2, group: 'system' },
+    isAdmin && { id: 'reverse', label: t.value('settings.system.reverse_shares'), keywords: 'reverse shares file requests guest invite', to: '/admin/system#reverse_shares', icon: Inbox, group: 'system' },
+    isAdmin && { id: 'urls', label: t.value('settings.system.share_url_generation'), keywords: 'url generation pattern haiku shortcode link', to: '/admin/system#share_url_generation', icon: Link2, group: 'system' },
+    isAdmin && { id: 'emails', label: t.value('settings.system.emails'), keywords: 'emails notifications download expiry warning', to: '/admin/system#emails', icon: Send, group: 'system' },
+    isAdmin && { id: 'smtp', label: t.value('settings.system.smtp'), keywords: 'smtp mail server host port encryption', to: '/admin/system#smtp', icon: AtSign, group: 'system' },
+    isAdmin && { id: 'auth', label: t.value('settings.system.auth'), keywords: 'self registration signup sign up new users', to: '/admin/system#auth', icon: KeyRound, group: 'system' },
+    isAdmin && { id: 'security', label: t.value('settings.system.security.title'), keywords: 'security two factor mfa 2fa altcha ip', to: '/admin/system#security', icon: ShieldCheck, group: 'system' },
+    isAdmin && { id: 'backups', label: t.value('settings.system.backups.title'), keywords: 'backups database backup restore', to: '/admin/system#backups', icon: Database, group: 'system' },
+    isAdmin && { id: 'sso-required', label: t.value('sso.required_title'), keywords: 'sso required mandatory domain', to: '/admin/sso#sso-required', icon: Fingerprint, group: 'system' },
+    isAdmin && { id: 'providers', label: t.value('sso.providers_title'), keywords: 'identity providers keycloak oidc oauth microsoft google', to: '/admin/sso#auth_providers', icon: Fingerprint, group: 'system' }
   ]
-  
-  // Filter out admin-only commands if user is not admin
-  return allCommands.filter(cmd => !cmd.adminOnly || isAdmin)
+  return all.filter(Boolean)
 })
 
-// Fuzzy search implementation
+// Accents and case do not count: "systeme" finds "Système"
+const fold = (text) => String(text).normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 const fuzzyMatch = (text, query) => {
-  if (!query) return { match: true, score: 0 }
-  
-  const textLower = text.toLowerCase()
-  const queryLower = query.toLowerCase()
-  
-  // Exact match gets highest score
-  if (textLower.includes(queryLower)) {
-    return { match: true, score: 100 - textLower.indexOf(queryLower) }
-  }
-  
-  // Fuzzy matching - check if all query chars appear in order
-  let queryIndex = 0
+  const haystack = fold(text)
+  const needle = fold(query)
+  if (haystack.includes(needle)) return { match: true, score: 100 - haystack.indexOf(needle) }
+  // Otherwise every letter typed, in order, with a bonus for the ones that follow each other
+  let at = 0
   let score = 0
-  let consecutiveBonus = 0
-  
-  for (let i = 0; i < textLower.length && queryIndex < queryLower.length; i++) {
-    if (textLower[i] === queryLower[queryIndex]) {
-      score += 10 + consecutiveBonus
-      consecutiveBonus += 5
-      queryIndex++
+  let streak = 0
+  for (let i = 0; i < haystack.length && at < needle.length; i++) {
+    if (haystack[i] === needle[at]) {
+      score += 10 + streak
+      streak += 5
+      at++
     } else {
-      consecutiveBonus = 0
+      streak = 0
     }
   }
-  
-  return { 
-    match: queryIndex === queryLower.length, 
-    score 
-  }
+  return { match: at === needle.length, score }
 }
 
 const filteredCommands = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return commands.value
-  }
-  
   const query = searchQuery.value.trim()
-  
+  if (!query) return commands.value
   return commands.value
-    .map(cmd => {
-      const labelMatch = fuzzyMatch(cmd.label, query)
-      const keywordMatch = fuzzyMatch(cmd.keywords, query)
-      const bestScore = Math.max(labelMatch.score, keywordMatch.score)
-      
-      return {
-        ...cmd,
-        match: labelMatch.match || keywordMatch.match,
-        score: bestScore
-      }
+    .map((command) => {
+      const label = fuzzyMatch(command.label, query)
+      const keywords = fuzzyMatch(command.keywords, query)
+      return { ...command, match: label.match || keywords.match, score: Math.max(label.score, keywords.score) }
     })
-    .filter(cmd => cmd.match)
+    .filter((command) => command.match)
     .sort((a, b) => b.score - a.score)
 })
 
-// Reset selection when results change
-watch(filteredCommands, () => {
-  selectedIndex.value = 0
+// Without a query the results stay in their groups; with one they are ranked, still under a heading
+const sections = computed(() => {
+  const index = new Map(filteredCommands.value.map((command, position) => [command.id, position]))
+  return GROUPS.map((group) => ({
+    group,
+    items: filteredCommands.value.filter((command) => command.group === group).sort((a, b) => index.get(a.id) - index.get(b.id))
+  })).filter((section) => section.items.length > 0)
 })
+// The order the arrows follow: the one shown
+const ordered = computed(() => sections.value.flatMap((section) => section.items))
+const optionId = (command) => `${uid}-${command.id}`
+const activeCommand = computed(() => ordered.value[selectedIndex.value] ?? null)
+
+watch(filteredCommands, () => (selectedIndex.value = 0))
 
 const open = () => {
   isOpen.value = true
   searchQuery.value = ''
   selectedIndex.value = 0
-  nextTick(() => {
-    searchInput.value?.focus()
-  })
+  nextTick(() => searchInput.value?.focus())
 }
-
 const close = () => {
   isOpen.value = false
   searchQuery.value = ''
 }
-
 const selectCommand = (command) => {
-  navigateTo(command.path)
   close()
-}
-
-const handleKeydown = (e) => {
-  if (!isOpen.value) return
-  
-  switch (e.key) {
-    case 'ArrowDown':
-      e.preventDefault()
-      selectedIndex.value = Math.min(selectedIndex.value + 1, filteredCommands.value.length - 1)
-      scrollSelectedIntoView()
-      break
-    case 'ArrowUp':
-      e.preventDefault()
-      selectedIndex.value = Math.max(selectedIndex.value - 1, 0)
-      scrollSelectedIntoView()
-      break
-    case 'Enter':
-      e.preventDefault()
-      if (filteredCommands.value[selectedIndex.value]) {
-        selectCommand(filteredCommands.value[selectedIndex.value])
-      }
-      break
-    case 'Escape':
-      e.preventDefault()
-      close()
-      break
-  }
+  navigate(command.to)
 }
 
 const scrollSelectedIntoView = () => {
   nextTick(() => {
-    const selected = document.querySelector('.command-item.selected')
-    if (selected) {
-      selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-    }
+    if (activeCommand.value) document.getElementById(optionId(activeCommand.value))?.scrollIntoView({ block: 'nearest' })
   })
 }
-
-const handleGlobalKeydown = (e) => {
-  // Cmd+K (Mac) or Ctrl+K (Windows/Linux)
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-    e.preventDefault()
-    if (store.isLoggedIn()) {
-      if (isOpen.value) {
-        close()
-      } else {
-        open()
-      }
-    }
+const handleKeydown = (event) => {
+  const count = ordered.value.length
+  switch (event.key) {
+    case 'ArrowDown':
+      event.preventDefault()
+      selectedIndex.value = Math.min(selectedIndex.value + 1, count - 1)
+      scrollSelectedIntoView()
+      break
+    case 'ArrowUp':
+      event.preventDefault()
+      selectedIndex.value = Math.max(selectedIndex.value - 1, 0)
+      scrollSelectedIntoView()
+      break
+    case 'Enter':
+      event.preventDefault()
+      if (activeCommand.value) selectCommand(activeCommand.value)
+      break
+    case 'Escape':
+      event.preventDefault()
+      close()
+      break
+    case 'Tab':
+      // The palette is a modal: the focus stays in its field
+      event.preventDefault()
+      break
   }
 }
 
-const clickOutside = (e) => {
-  if (e.target === e.currentTarget) {
-    close()
+const handleGlobalKeydown = (event) => {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault()
+    if (!store.isLoggedIn()) return
+    isOpen.value ? close() : open()
   }
 }
-
-const getCategoryLabel = (category) => {
-  switch (category) {
-    case 'navigation': return t.value('commandPalette.category.navigation') || 'Navigation'
-    case 'system': return t.value('commandPalette.category.system') || 'System Settings'
-    case 'branding': return t.value('commandPalette.category.branding') || 'Branding'
-    default: return category
-  }
+const clickOutside = (event) => {
+  if (event.target === event.currentTarget) close()
 }
+const groupLabel = (group) =>
+  group === 'admin' ? t.value('nav.administration') : t.value(`commandPalette.category.${group}`)
 
-onMounted(() => {
-  document.addEventListener('keydown', handleGlobalKeydown)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('keydown', handleGlobalKeydown)
-})
+onMounted(() => document.addEventListener('keydown', handleGlobalKeydown))
+onBeforeUnmount(() => document.removeEventListener('keydown', handleGlobalKeydown))
 
 defineExpose({ open, close })
 </script>
@@ -215,50 +194,55 @@ defineExpose({ open, close })
   <Teleport to="body">
     <Transition name="ot-dialog">
       <div v-if="isOpen" class="command-palette-overlay" @click="clickOutside">
-        <div class="command-palette">
+        <div class="command-palette" role="dialog" aria-modal="true" :aria-label="t('nav.search')">
           <div class="command-palette-header">
-            <Search class="search-icon" />
+            <Search class="search-icon" aria-hidden="true" />
             <input
               ref="searchInput"
               v-model="searchQuery"
               type="text"
-              :placeholder="t('commandPalette.placeholder') || 'Search settings...'"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="true"
+              :aria-controls="`${uid}-results`"
+              :aria-activedescendant="activeCommand ? optionId(activeCommand) : undefined"
+              :aria-label="t('nav.search')"
+              :placeholder="t('nav.search_placeholder')"
+              autocomplete="off"
+              spellcheck="false"
               @keydown="handleKeydown"
               class="command-search-input"
             />
-            <kbd class="keyboard-hint">ESC</kbd>
+            <kbd class="keyboard-hint">Esc</kbd>
           </div>
-          
-          <div class="command-palette-body">
-            <div v-if="filteredCommands.length === 0" class="no-results">
-              {{ t('commandPalette.noResults') || 'No results found' }}
-            </div>
-            
-            <template v-else>
+
+          <div class="command-palette-body" :id="`${uid}-results`" role="listbox" :aria-label="t('nav.search')">
+            <p v-if="ordered.length === 0" class="no-results" role="status">{{ t('commandPalette.noResults') }}</p>
+
+            <div v-for="section in sections" :key="section.group" class="command-group" role="group" :aria-labelledby="`${uid}-g-${section.group}`">
+              <div class="command-group-label" :id="`${uid}-g-${section.group}`">{{ groupLabel(section.group) }}</div>
               <div
-                v-for="(command, index) in filteredCommands"
+                v-for="command in section.items"
                 :key="command.id"
+                :id="optionId(command)"
                 class="command-item"
-                :class="{ selected: index === selectedIndex }"
+                :class="{ selected: command === activeCommand }"
+                role="option"
+                :aria-selected="command === activeCommand"
                 @click="selectCommand(command)"
-                @mouseenter="selectedIndex = index"
+                @mousemove="selectedIndex = ordered.indexOf(command)"
               >
-                <component :is="command.icon" class="command-icon" />
-                <div class="command-content">
-                  <span class="command-label">{{ command.label }}</span>
-                  <span class="command-category">{{ getCategoryLabel(command.category) }}</span>
-                </div>
+                <component :is="command.icon" class="command-icon" aria-hidden="true" />
+                <span class="command-label">{{ command.label }}</span>
+                <CornerDownLeft v-if="command === activeCommand" class="command-enter" aria-hidden="true" />
               </div>
-            </template>
+            </div>
           </div>
-          
-          <div class="command-palette-footer">
-            <div class="hint">
-              <kbd>↑</kbd><kbd>↓</kbd> {{ t('commandPalette.navigate') || 'to navigate' }}
-            </div>
-            <div class="hint">
-              <kbd>↵</kbd> {{ t('commandPalette.select') || 'to select' }}
-            </div>
+
+          <div class="command-palette-footer" aria-hidden="true">
+            <span class="hint"><kbd>↑</kbd><kbd>↓</kbd> {{ t('commandPalette.navigate') }}</span>
+            <span class="hint"><kbd>↵</kbd> {{ t('commandPalette.select') }}</span>
+            <span class="hint"><kbd>Esc</kbd> {{ t('send.close') }}</span>
           </div>
         </div>
       </div>
@@ -267,194 +251,174 @@ defineExpose({ open, close })
 </template>
 
 <style lang="scss" scoped>
+// The veil and the palette: the card of a dialog, near the top so the results have room
 .command-palette-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--overlay-background-color, rgba(0, 0, 0, 0.5));
-  z-index: 999;
+  inset: 0;
+  z-index: 400;
   display: flex;
-  align-items: flex-start;
   justify-content: center;
-  padding-top: 15vh;
+  align-items: flex-start;
+  padding: 12vh 16px 16px;
+  background: var(--overlay-background-color);
 }
 
 .command-palette {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  max-width: 560px;
-  background: var(--panel-background-color, #1a1a1a);
-  border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  max-width: 580px;
+  max-height: min(560px, 76vh);
   overflow: hidden;
-  border: 1px solid var(--panel-section-background-color-alt, #333);
+  background: var(--ot-card);
+  color: var(--ot-text);
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius-lg);
+  box-shadow: var(--ot-shadow);
+  transform-origin: top center;
 }
 
 .command-palette-header {
   display: flex;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--panel-section-background-color-alt, #333);
-  gap: 12px;
-  
+  gap: 10px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--ot-line-soft);
+
   .search-icon {
-    width: 20px;
-    height: 20px;
-    color: var(--panel-text-color-alt, #888);
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
+    color: var(--ot-muted);
   }
-  
-  .command-search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
+}
+input.command-search-input {
+  flex: 1;
+  height: 54px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ot-heading);
+  font-size: 1rem;
+
+  &:hover,
+  &:focus {
+    border: 0;
+  }
+  &:focus-visible {
     outline: none;
-    font-size: 1.1rem;
-    color: var(--panel-text-color, #fff);
-    
-    &::placeholder {
-      color: var(--panel-text-color-alt, #666);
-    }
-  }
-  
-  .keyboard-hint {
-    background: var(--panel-section-background-color-alt, #333);
-    color: var(--panel-text-color-alt, #888);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-family: inherit;
-    border: 1px solid var(--input-border-color, #444);
   }
 }
 
 .command-palette-body {
-  max-height: 400px;
+  flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  overscroll-behavior: contain;
+  padding: 6px;
 }
-
-.no-results {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--panel-text-color-alt, #666);
-  font-size: 0.95rem;
+.command-group + .command-group {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--ot-line-soft);
+}
+.command-group-label {
+  padding: 8px 10px 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ot-muted);
 }
 
 .command-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border-radius: 8px;
+  gap: 12px;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: var(--ot-radius);
+  color: var(--ot-text);
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
-  gap: 14px;
-  transition: background var(--ot-dur-fast) var(--ot-ease-out);
-  
-  &:hover,
-  &.selected {
-    background: var(--panel-section-background-color-alt, #2a2a2a);
-  }
-  
-  &.selected {
-    background: var(--primary-button-background-color, #3b82f6);
-    
-    .command-label {
-      color: var(--primary-button-text-color, #fff);
-    }
-    
-    .command-category {
-      color: var(--primary-button-text-color, #fff);
-      opacity: 0.7;
-    }
-    
-    .command-icon {
-      color: var(--primary-button-text-color, #fff);
-    }
-  }
-  
+  transition:
+    background-color var(--ot-dur-fast) var(--ot-ease-out),
+    color var(--ot-dur-fast) var(--ot-ease-out);
+
   .command-icon {
-    width: 18px;
-    height: 18px;
-    color: var(--link-color, #3b82f6);
+    width: 16px;
+    height: 16px;
     flex-shrink: 0;
+    color: var(--ot-muted);
+    transition: color var(--ot-dur-fast) var(--ot-ease-out);
   }
-  
-  .command-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-width: 0;
-  }
-  
   .command-label {
-    color: var(--panel-text-color, #fff);
-    font-size: 0.95rem;
-    font-weight: 500;
-    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  
-  .command-category {
-    color: var(--panel-text-color-alt, #666);
-    font-size: 0.8rem;
     white-space: nowrap;
-    flex-shrink: 0;
   }
+  .command-enter {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--ot-muted);
+    animation: ot-check-pop var(--ot-dur) var(--ot-ease-spring) both;
+  }
+
+  // The active result: the accent tint of the segmented filters
+  &.selected {
+    background: var(--ot-accent-soft);
+    color: var(--ot-heading);
+
+    .command-icon {
+      color: var(--ot-accent-text);
+    }
+  }
+
+  @media (forced-colors: active) {
+    &.selected {
+      outline: 2px solid Highlight;
+    }
+  }
+}
+
+.no-results {
+  margin: 0;
+  padding: 28px 12px;
+  text-align: center;
+  color: var(--ot-muted);
+  font-size: 0.875rem;
 }
 
 .command-palette-footer {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 24px;
-  padding: 12px 20px;
-  border-top: 1px solid var(--panel-section-background-color-alt, #333);
-  background: var(--panel-section-background-color-alt, #1f1f1f);
-  
+  gap: 6px 18px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--ot-line-soft);
+  color: var(--ot-muted);
+  font-size: 0.75rem;
+
   .hint {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    color: var(--panel-text-color-alt, #666);
-    font-size: 0.8rem;
-    
-    kbd {
-      background: var(--panel-background-color, #2a2a2a);
-      color: var(--panel-text-color-alt, #888);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-family: inherit;
-      border: 1px solid var(--input-border-color, #444);
-      min-width: 22px;
-      text-align: center;
-    }
+    gap: 4px;
   }
 }
+kbd {
+  min-width: 20px;
+  text-align: center;
+}
 
-
-// Scrollbar styling
-.command-palette-body {
-  &::-webkit-scrollbar {
-    width: 8px;
+@media (max-width: 600px) {
+  .command-palette-overlay {
+    padding-top: 16px;
   }
-  
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--panel-section-background-color-alt, #333);
-    border-radius: 4px;
-    
-    &:hover {
-      background: var(--input-border-color, #444);
-    }
+  .command-palette-footer {
+    display: none;
   }
 }
 </style>
-

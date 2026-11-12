@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, defineEmits } from 'vue'
+import { pinLeaving } from '../../lib/motion'
 import { getUsers, createUser, deleteUser, updateUser, forceResetPassword, resetUserTwoFactor } from '../../api'
 import { UserPen, Trash, UserPlus, CircleX, UserRoundCheck, FolderOpen, KeyRound, ShieldOff } from 'lucide-vue-next'
 import RowMenu from '../layout/RowMenu.vue'
@@ -49,7 +50,8 @@ const handleDeleteUserClick = async (id) => {
     title: t.value('settings.users.delete'),
     message: t.value('confirm_delete_user'),
     okText: t.value('settings.users.delete'),
-    cancelText: t.value('settings.close')
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
   })
 
   if (confirmed) {
@@ -159,7 +161,8 @@ const handleResetTwoFactor = async (user) => {
     title: t.value('settings.users.reset_two_factor'),
     message: t.value('settings.users.confirm_reset_two_factor', { name: user.name }),
     okText: t.value('settings.users.reset_two_factor'),
-    cancelText: t.value('settings.close')
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
   })
   if (!confirmed) return
 
@@ -213,178 +216,180 @@ const confirmForceResetPassword = () => {
 </script>
 
 <template>
-  <section class="ot-card users-card" aria-labelledby="h-users">
-    <div class="users-head">
-      <h2 class="ot-card-title" id="h-users">{{ $t('settings.title.users') }}</h2>
-      <span class="ot-pill">{{ $t('settings.users.count', { count: users.length }) }}</span>
-    </div>
-    <ul class="user-list">
-      <li v-for="user in users" :key="user.id" class="user-row">
-        <UserAvatar :seed="user.avatar_seed ?? ''" :name="user.name" :size="32" />
-        <div class="user-row-main">
-          <div class="user-row-name">
-            {{ user.name }}
-            <span v-if="isSelf(user)" class="ot-pill is-accent">{{ $t('settings.users.you') }}</span>
+  <div class="users-page">
+    <section class="ot-card users-card" aria-labelledby="h-users">
+      <div class="users-head">
+        <h2 class="ot-card-title" id="h-users">{{ $t('settings.title.users') }}</h2>
+        <span class="ot-pill">{{ $t('settings.users.count', { count: users.length }) }}</span>
+      </div>
+      <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="user-list ot-list-host">
+        <li v-for="(user, index) in users" :key="user.id" class="user-row" :style="{ '--ot-i': index }">
+          <UserAvatar :seed="user.avatar_seed ?? ''" :name="user.name" :size="32" />
+          <div class="user-row-main">
+            <div class="user-row-name">
+              {{ user.name }}
+              <span v-if="isSelf(user)" class="ot-pill is-accent">{{ $t('settings.users.you') }}</span>
+            </div>
+            <div class="user-row-meta">{{ user.email }} · {{ $t('settings.users.created_on', { date: niceDate(user.created_at) }) }}</div>
           </div>
-          <div class="user-row-meta">{{ user.email }} · {{ $t('settings.users.created_on', { date: niceDate(user.created_at) }) }}</div>
-        </div>
-        <div class="user-row-tags">
-          <span v-if="user.admin" class="ot-pill">{{ $t('settings.users.admin') }}</span>
-          <span v-if="hasSecondFactor(user)" class="ot-pill is-success" :title="$t('settings.users.two_factor_on')">2FA</span>
-          <span v-if="user.must_change_password" class="ot-pill is-warning">{{ $t('settings.users.must_change_password') }}</span>
-        </div>
-        <div class="user-row-actions">
-          <AppLink v-if="isSelf(user)" to="/profile" class="ot-act">
-            <UserPen aria-hidden="true" />
-            {{ $t('settings.users.edit_my_profile') }}
-          </AppLink>
-          <button v-else type="button" class="ot-act" @click="handleEditUserClick(user)">
-            <UserPen aria-hidden="true" />
-            {{ $t('settings.users.edit') }}
-          </button>
-          <RowMenu :label="$t('shares.more_actions', { name: user.name })" :items="menuItems(user)" />
-        </div>
-      </li>
-    </ul>
-  </section>
+          <div class="user-row-tags">
+            <span v-if="user.admin" class="ot-pill">{{ $t('settings.users.admin') }}</span>
+            <span v-if="hasSecondFactor(user)" class="ot-pill is-success" :title="$t('settings.users.two_factor_on')">2FA</span>
+            <span v-if="user.must_change_password" class="ot-pill is-warning">{{ $t('settings.users.must_change_password') }}</span>
+          </div>
+          <div class="user-row-actions">
+            <AppLink v-if="isSelf(user)" to="/profile" class="ot-act">
+              <UserPen aria-hidden="true" />
+              {{ $t('settings.users.edit_my_profile') }}
+            </AppLink>
+            <button v-else type="button" class="ot-act" @click="handleEditUserClick(user)">
+              <UserPen aria-hidden="true" />
+              {{ $t('settings.users.edit') }}
+            </button>
+            <RowMenu :label="$t('shares.more_actions', { name: user.name })" :items="menuItems(user)" />
+          </div>
+        </li>
+      </TransitionGroup>
+    </section>
 
-  <div class="user-form-overlay" :class="{ active: newUserFormActive }" @click="newUserFormClickOutside">
-    <div class="user-form">
-      <h2>
-        <UserPlus />
-        {{ $t('settings.users.add') }}
-      </h2>
-      <p v-html="$t('settings.users.add_user_description')"></p>
-      <p v-if="selfRegistrationEnabled">{{ $t('settings.users.add_user_self_registration_tip_on') }}</p>
-      <p v-else>{{ $t('settings.users.add_user_self_registration_tip_off') }}</p>
-      <div class="input-container">
-        <label for="new_user_email">{{ $t('settings.users.email') }}</label>
-        <input
-          type="email"
-          v-model="newUser.email"
-          id="new_user_email"
-          :placeholder="$t('settings.users.email')"
-          required
-          :class="{ error: errors.email }"
-        />
-        <div class="error-message" v-if="errors.email">
-          {{ errors.email[0] }}
-        </div>
-      </div>
-      <div class="input-container">
-        <label for="new_user_name">{{ $t('settings.users.name') }}</label>
-        <input
-          type="text"
-          v-model="newUser.name"
-          id="new_user_name"
-          :placeholder="$t('settings.users.name')"
-          required
-          :class="{ error: errors.name }"
-        />
-        <div class="error-message" v-if="errors.name">
-          {{ errors.name[0] }}
-        </div>
-      </div>
-
-      <div class="checkbox-container">
-        <input type="checkbox" v-model="newUser.admin" id="admin" />
-        <label for="admin">{{ $t('settings.users.admin') }}</label>
-        <p class="help-text">
-          {{ $t('settings.users.admin_help_text') }}
-          <br />
-          {{ $t('settings.users.admin_help_text_2') }}
-        </p>
-      </div>
-
-      <div class="button-bar">
-        <button @click="saveUser">
+    <div class="user-form-overlay" :class="{ active: newUserFormActive }" @click="newUserFormClickOutside">
+      <div class="user-form">
+        <h2>
           <UserPlus />
           {{ $t('settings.users.add') }}
-        </button>
-        <button class="secondary close-button" @click="newUserFormActive = false">
-          <CircleX />
-          {{ $t('settings.close') }}
-        </button>
-      </div>
-    </div>
-  </div>
+        </h2>
+        <p v-html="$t('settings.users.add_user_description')"></p>
+        <p v-if="selfRegistrationEnabled">{{ $t('settings.users.add_user_self_registration_tip_on') }}</p>
+        <p v-else>{{ $t('settings.users.add_user_self_registration_tip_off') }}</p>
+        <div class="input-container">
+          <label for="new_user_email">{{ $t('settings.users.email') }}</label>
+          <input
+            type="email"
+            v-model="newUser.email"
+            id="new_user_email"
+            :placeholder="$t('settings.users.email')"
+            required
+            :class="{ error: errors.email }"
+          />
+          <div class="error-message" v-if="errors.email">
+            {{ errors.email[0] }}
+          </div>
+        </div>
+        <div class="input-container">
+          <label for="new_user_name">{{ $t('settings.users.name') }}</label>
+          <input
+            type="text"
+            v-model="newUser.name"
+            id="new_user_name"
+            :placeholder="$t('settings.users.name')"
+            required
+            :class="{ error: errors.name }"
+          />
+          <div class="error-message" v-if="errors.name">
+            {{ errors.name[0] }}
+          </div>
+        </div>
 
-  <div class="user-form-overlay" :class="{ active: editUserFormActive }" @click="editUserFormClickOutside">
-    <div class="user-form">
-      <h2>
-        <UserPlus />
-        {{ $t('settings.title.users.edit', { name: editUser.name }) }}
-      </h2>
-      <div class="input-container">
-        <label for="edit_user_email">{{ $t('settings.users.email') }}</label>
-        <input
-          type="email"
-          v-model="editUser.email"
-          id="edit_user_email"
-          :placeholder="$t('settings.users.email')"
-          required
-          :class="{ error: errors.email }"
-        />
-        <div class="error-message" v-if="errors.email">
-          {{ errors.email }}
+        <div class="checkbox-container">
+          <input type="checkbox" v-model="newUser.admin" id="admin" />
+          <label for="admin">{{ $t('settings.users.admin') }}</label>
+          <p class="help-text">
+            {{ $t('settings.users.admin_help_text') }}
+            <br />
+            {{ $t('settings.users.admin_help_text_2') }}
+          </p>
+        </div>
+
+        <div class="button-bar">
+          <button @click="saveUser">
+            <UserPlus />
+            {{ $t('settings.users.add') }}
+          </button>
+          <button class="secondary close-button" @click="newUserFormActive = false">
+            <CircleX />
+            {{ $t('settings.close') }}
+          </button>
         </div>
       </div>
-      <div class="input-container">
-        <label for="edit_user_name">{{ $t('settings.users.name') }}</label>
-        <input
-          type="text"
-          v-model="editUser.name"
-          id="edit_user_name"
-          :placeholder="$t('settings.users.name')"
-          required
-          :class="{ error: errors.name }"
-        />
-        <div class="error-message" v-if="errors.name">
-          {{ errors.name }}
+    </div>
+
+    <div class="user-form-overlay" :class="{ active: editUserFormActive }" @click="editUserFormClickOutside">
+      <div class="user-form">
+        <h2>
+          <UserPlus />
+          {{ $t('settings.title.users.edit', { name: editUser.name }) }}
+        </h2>
+        <div class="input-container">
+          <label for="edit_user_email">{{ $t('settings.users.email') }}</label>
+          <input
+            type="email"
+            v-model="editUser.email"
+            id="edit_user_email"
+            :placeholder="$t('settings.users.email')"
+            required
+            :class="{ error: errors.email }"
+          />
+          <div class="error-message" v-if="errors.email">
+            {{ errors.email }}
+          </div>
+        </div>
+        <div class="input-container">
+          <label for="edit_user_name">{{ $t('settings.users.name') }}</label>
+          <input
+            type="text"
+            v-model="editUser.name"
+            id="edit_user_name"
+            :placeholder="$t('settings.users.name')"
+            required
+            :class="{ error: errors.name }"
+          />
+          <div class="error-message" v-if="errors.name">
+            {{ errors.name }}
+          </div>
+        </div>
+
+        <div class="checkbox-container">
+          <input type="checkbox" v-model="editUser.admin" id="edit_user_admin" />
+          <label for="edit_user_admin">{{ $t('settings.users.admin') }}</label>
+          <p class="help-text">
+            {{ $t('settings.users.admin_help_text') }}
+            <br />
+            {{ $t('settings.users.admin_help_text_2') }}
+          </p>
+        </div>
+
+        <div class="button-bar">
+          <button @click="saveUser">
+            <UserRoundCheck />
+            {{ $t('settings.users.save_changes') }}
+          </button>
+          <button class="secondary close-button" @click="editUserFormActive = false">
+            <CircleX />
+            {{ $t('settings.close') }}
+          </button>
         </div>
       </div>
-
-      <div class="checkbox-container">
-        <input type="checkbox" v-model="editUser.admin" id="edit_user_admin" />
-        <label for="edit_user_admin">{{ $t('settings.users.admin') }}</label>
-        <p class="help-text">
-          {{ $t('settings.users.admin_help_text') }}
-          <br />
-          {{ $t('settings.users.admin_help_text_2') }}
-        </p>
-      </div>
-
-      <div class="button-bar">
-        <button @click="saveUser">
-          <UserRoundCheck />
-          {{ $t('settings.users.save_changes') }}
-        </button>
-        <button class="secondary close-button" @click="editUserFormActive = false">
-          <CircleX />
-          {{ $t('settings.close') }}
-        </button>
-      </div>
     </div>
-  </div>
 
-  <div class="user-form-overlay" :class="{ active: resetPasswordFormActive }" @click="resetPasswordFormClickOutside">
-    <div class="user-form">
-      <h2>
-        <KeyRound />
-        {{ $t('settings.users.force_reset_password') }}
-      </h2>
-      <p v-if="resetPasswordUser">
-        {{ $t('settings.users.confirm_force_reset_password', { name: resetPasswordUser.name }) }}
-      </p>
-      <div class="button-bar">
-        <button @click="confirmForceResetPassword">
+    <div class="user-form-overlay" :class="{ active: resetPasswordFormActive }" @click="resetPasswordFormClickOutside">
+      <div class="user-form">
+        <h2>
           <KeyRound />
           {{ $t('settings.users.force_reset_password') }}
-        </button>
-        <button class="secondary close-button" @click="resetPasswordFormActive = false; resetPasswordUser = null">
-          <CircleX />
-          {{ $t('settings.close') }}
-        </button>
+        </h2>
+        <p v-if="resetPasswordUser">
+          {{ $t('settings.users.confirm_force_reset_password', { name: resetPasswordUser.name }) }}
+        </p>
+        <div class="button-bar">
+          <button @click="confirmForceResetPassword">
+            <KeyRound />
+            {{ $t('settings.users.force_reset_password') }}
+          </button>
+          <button class="secondary close-button" @click="resetPasswordFormActive = false; resetPasswordUser = null">
+            <CircleX />
+            {{ $t('settings.close') }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

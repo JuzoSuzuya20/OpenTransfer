@@ -1,49 +1,122 @@
-// vue-toastification loads its stylesheet after this one, hence the !important
+// Notifications: a small card of the app at the bottom right, its state told by an icon on its
+// tint and the 3 px line at the foot of every card. No countdown bar: it ran at a constant speed.
+// vue-toastification loads its stylesheet after this one, hence the !important.
 
-.Vue-Toastification__close-button {
-  opacity: 1 !important;
-  height: 20px !important;
-  width: 20px !important;
-  &:hover {
-    background: none !important;
-  }
+.Vue-Toastification__container.bottom-right {
+  right: 16px !important;
+  bottom: 16px !important;
+  width: min(380px, calc(100vw - 32px)) !important;
+  min-height: 0 !important;
+  padding: 0 !important;
 }
 
-.Vue-Toastification__progress-bar {
-  border-radius: var(--panel-border-radius) !important;
-}
-
-// Panel backgrounds may be gradients: "background", never "background-color"
 .Vue-Toastification__toast {
-  --toast-accent: var(--link-color);
-  border-radius: var(--panel-border-radius) !important;
-  border: 1px solid var(--border-color);
-  overflow: hidden;
-  color: var(--panel-text-color) !important;
-  background: var(--panel-background-color) !important;
+  --toast-accent: var(--ot-accent);
+  --toast-tint: var(--ot-accent-soft);
+  --toast-ink: var(--ot-accent-text);
+
+  align-items: flex-start !important;
+  gap: 12px;
+  width: 100%;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  margin: 0 0 10px !important;
+  padding: 12px 10px 15px 12px !important;
+  background: var(--ot-card) !important;
+  color: var(--ot-text) !important;
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius) !important;
+  box-shadow: var(--ot-shadow) !important;
   font-family: inherit !important;
 
-  .Vue-Toastification__progress-bar {
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
     background: var(--toast-accent);
-  }
-  .Vue-Toastification__icon,
-  .Vue-Toastification__close-button {
-    color: var(--toast-accent);
   }
 }
 
 .Vue-Toastification__toast--success {
-  --toast-accent: var(--color-success);
+  --toast-accent: var(--ot-success);
+  --toast-tint: var(--ot-success-soft);
+  --toast-ink: var(--ot-success);
 }
 .Vue-Toastification__toast--error {
-  --toast-accent: var(--color-danger);
+  --toast-accent: var(--ot-danger);
+  --toast-tint: var(--ot-danger-soft);
+  --toast-ink: var(--ot-danger-text);
 }
 .Vue-Toastification__toast--warning {
-  --toast-accent: var(--color-warning);
+  --toast-accent: var(--ot-warning);
+  --toast-tint: var(--ot-warning-soft);
+  --toast-ink: var(--ot-warning);
 }
 
-.Vue-Toastification__container.bottom-left,
-.Vue-Toastification__container.bottom-right,
-.Vue-Toastification__container.bottom-center {
-  flex-direction: column-reverse;
+// The state, on its tint, popping in on a spring after the card has arrived
+.Vue-Toastification__icon {
+  flex-shrink: 0;
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 !important;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--toast-tint);
+  color: var(--toast-ink) !important;
+  animation: ot-check-pop var(--ot-dur-slow) var(--ot-ease-spring) 80ms both;
+}
+
+.Vue-Toastification__toast-body {
+  align-self: center;
+  font-size: 0.875rem !important;
+  font-weight: 600;
+  line-height: 1.45 !important;
+  color: var(--ot-heading);
+}
+
+button.Vue-Toastification__close-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0;
+  border-radius: var(--ot-btn-radius) !important;
+  background: none !important;
+  color: var(--ot-muted) !important;
+  opacity: 1 !important;
+  font-size: 1.125rem !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  transition:
+    background-color var(--ot-dur-fast) var(--ot-ease-out),
+    color var(--ot-dur-fast) var(--ot-ease-out),
+    transform var(--ot-dur) var(--ot-ease-spring) !important;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--ot-raised) !important;
+    color: var(--ot-heading) !important;
+  }
+}
+
+.Vue-Toastification__progress-bar {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .Vue-Toastification__container.bottom-right {
+    right: 8px !important;
+    bottom: 8px !important;
+    left: 8px !important;
+    width: auto !important;
+  }
 }

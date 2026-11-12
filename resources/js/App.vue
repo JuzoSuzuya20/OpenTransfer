@@ -10,6 +10,7 @@ import Auth from './components/auth.vue'
 import Setup from './components/setup.vue'
 import ThankGuestForUpload from './components/thankGuestForUpload.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
+import { useConfirmDialog } from './composables/useConfirmDialog'
 import CommandPalette from './components/CommandPalette.vue'
 import MySharesPage from './pages/MySharesPage.vue'
 import RequestsPage from './pages/RequestsPage.vue'
@@ -160,8 +161,18 @@ watch(
   { immediate: true }
 )
 
-const handleLogout = () => {
-  if (store.isGuest() && !window.confirm(t.value('auth.confirm_end_guest_session'))) {
+const confirmDialog = useConfirmDialog()
+const handleLogout = async () => {
+  if (
+    store.isGuest() &&
+    !(await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('auth.confirm_end_guest_session'),
+    okText: t.value('auth.end_guest_session'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  }))
+  ) {
     return
   }
   logout()

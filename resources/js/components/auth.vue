@@ -88,6 +88,9 @@ const mfaInput = ref(null)
 const enrolToken = ref('')
 
 // The first screen of signing in: the brand is its heading, every other step has its own
+// Sign in, forgotten password and sign up share one card: it changes as a whole
+const mainStep = computed(() => (forgotPasswordMode.value ? 'forgot' : registrationMode.value ? 'register' : 'login'))
+
 const isSignInStep = computed(
   () => !enrolToken.value && !mfaToken.value && !verificationMode.value && !haveResetToken.value && !waitingForRedirect.value && !forgotPasswordMode.value && !registrationMode.value
 )
@@ -443,6 +446,8 @@ const switchToLogin = () => {
       <p class="auth-subtitle" v-if="isSignInStep">{{ loginMessage }}</p>
     </div>
 
+  <!-- From one step to the next: the old one goes at once, the new one settles -->
+  <Transition name="ot-page" mode="out-in">
   <!-- Mandatory second factor setup -->
   <div class="auth-container" v-if="enrolToken">
     <div class="auth-container-inner">
@@ -541,7 +546,8 @@ const switchToLogin = () => {
 
   <!-- Main Auth Container -->
   <div class="auth-container" v-else-if="!haveResetToken && !waitingForRedirect">
-    <div class="auth-container-inner" :class="{ 'is-sign-in': isSignInStep }">
+    <Transition name="ot-page" mode="out-in">
+    <div class="auth-container-inner" :class="{ 'is-sign-in': isSignInStep }" :key="mainStep">
       <!-- Login Mode -->
       <template v-if="!forgotPasswordMode && !registrationMode">
         <p class="auth-notice" v-if="hasInviteIdPending">{{ $t('auth.login_to_accept_invite') }}</p>
@@ -659,6 +665,7 @@ const switchToLogin = () => {
       </template>
 
     </div>
+    </Transition>
     <svg id="gradientDefs">
       <linearGradient id="gradient">
         <stop offset="0%" style="stop-color: var(--link-color); stop-opacity: 1" />
@@ -715,6 +722,7 @@ const switchToLogin = () => {
       </div>
     </div>
   </div>
+  </Transition>
   </div>
 </template>
 

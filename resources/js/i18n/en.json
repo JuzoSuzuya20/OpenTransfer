@@ -120,13 +120,12 @@
   },
   "commandPalette": {
     "category": {
-      "branding": "Branding",
       "navigation": "Navigation",
-      "system": "System Settings"
+      "system": "System settings",
+      "pages": "Pages"
     },
     "navigate": "to navigate",
     "noResults": "No results found",
-    "placeholder": "Search settings...",
     "select": "to select"
   },
   "confirm_delete_user": "Are you sure you want to delete this user?",
@@ -260,7 +259,8 @@
       "upload_background_image": "Upload Background Image",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Use My Backgrounds",
-      "use_my_backgrounds_description": "Use the backgrounds you have uploaded. If not checked, Unsplash backgrounds will be used."
+      "use_my_backgrounds_description": "Use the backgrounds you have uploaded. If not checked, Unsplash backgrounds will be used.",
+      "confirm_delete_favicon": "Delete the custom favicon? The default OpenTransfer icon comes back."
     },
     "button": {
       "branding": {
@@ -657,7 +657,8 @@
       "smtp_username": "SMTP Username",
       "smtp_username_description": "The username required to authenticate with your SMTP server. This is typically the email address or account name associated with your email service.",
       "upload_modes": "Upload modes",
-      "your_auth_providers": "Your Auth Providers"
+      "your_auth_providers": "Your Auth Providers",
+      "delete_auth_provider_confirmation": "Delete this identity provider? Its settings are lost and nobody can sign in with it any more."
     },
     "system_auth_provider_info_link": "About {name}",
     "table": {
@@ -904,7 +905,9 @@
     "expiry_title": "Expires after",
     "files_title": "Files to send",
     "password_set": "Protected by a password",
-    "recipients_title": "Recipients"
+    "recipients_title": "Recipients",
+    "too_big": "These files weigh {size}: a share may hold {max} at most.",
+    "upload_failed": "The upload failed: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Uploading # file} other {Uploading # files}}"
@@ -1139,5 +1142,15 @@
       "reset_failed": "The original text could not be restored",
       "unsaved": "Changes are not saved. Change the language anyway?"
     }
+  },
+  "dialog": {
+    "title": "Please confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "change_anyway": "Change anyway"
+  },
+  "number": {
+    "decrease": "Decrease",
+    "increase": "Increase"
   }
 }

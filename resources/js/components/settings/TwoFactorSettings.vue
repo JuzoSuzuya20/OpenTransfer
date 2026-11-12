@@ -1,6 +1,7 @@
 <script setup>
 // The second factor of the account: authenticator app, passkeys and recovery codes.
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { pinLeaving } from '../../lib/motion'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
 import { ShieldCheck, Smartphone, Fingerprint, KeyRound, Trash, Plus, RefreshCw } from 'lucide-vue-next'
@@ -225,7 +226,7 @@ const confirmSetup = async (code) => {
         </div>
         <div class="factor-body">
           <p class="factor-text">{{ $t('settings.two_factor.passkeys_description') }}</p>
-          <ul class="passkeys" v-if="status.passkeys.length">
+          <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="passkeys ot-list-host" v-if="status.passkeys.length">
             <li v-for="passkey in status.passkeys" :key="passkey.id">
               <div class="passkey-main">
                 <strong>{{ passkey.name }}</strong>
@@ -246,7 +247,7 @@ const confirmSetup = async (code) => {
                 <Trash aria-hidden="true" />
               </button>
             </li>
-          </ul>
+          </TransitionGroup>
           <form v-if="canUsePasskeys" class="passkey-add" @submit.prevent="askPassword('addPasskey')">
             <div class="input-container">
               <label for="passkey_name">{{ $t('settings.two_factor.passkey_name') }}</label>

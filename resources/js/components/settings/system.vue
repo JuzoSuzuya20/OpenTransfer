@@ -32,6 +32,7 @@ import {
 import HelpTip from '../helpTip.vue'
 import AppLink from '../layout/AppLink.vue'
 import OtSelect from '../layout/OtSelect.vue'
+import OtNumber from '../layout/OtNumber.vue'
 
 import { useToast } from 'vue-toastification'
 import { mapSettings } from '../../utils'
@@ -352,7 +353,8 @@ const handleDeleteBackup = async (filename) => {
     title: t.value('settings.system.backups.delete'),
     message: t.value('settings.system.backups.delete_confirmation'),
     okText: t.value('settings.system.backups.delete'),
-    cancelText: t.value('settings.close')
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
   })
 
   if (!confirmed) {
@@ -514,21 +516,21 @@ defineExpose({
                     {{ $t('settings.system.default_expiry_time') }}
                     <small>({{ $t('settings.system.days') }})</small>
                   </label>
-                  <input type="number" id="default_expiry_time" v-model="settings.default_expiry_time" placeholder="7" />
+                  <OtNumber id="default_expiry_time" v-model="settings.default_expiry_time" :min="1" placeholder="7" />
                 </div>
                 <div class="setting-group-body-item">
                   <label for="max_expiry_time">
                     {{ $t('settings.system.max_expiry_time') }}
                     <small>({{ $t('settings.system.days') }})</small>
                   </label>
-                  <input type="number" id="max_expiry_time" v-model="settings.max_expiry_time" placeholder="∞" />
+                  <OtNumber id="max_expiry_time" v-model="settings.max_expiry_time" :min="1" placeholder="∞" />
                   <p class="help-text">{{ $t('settings.system.max_expiry_time_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <div class="row">
                     <div class="col pe-0">
                       <label for="max_share_size">{{ $t('settings.system.max_share_size') }}</label>
-                      <input type="number" id="max_share_size" v-model="settings.max_share_size" />
+                      <OtNumber id="max_share_size" v-model="settings.max_share_size" :min="1" />
                     </div>
                     <div class="col-auto ps-1">
                       <label for="max_share_size_unit">&nbsp;</label>
@@ -547,12 +549,7 @@ defineExpose({
                     {{ $t('settings.system.clean_files_after') }}
                     <small>({{ $t('settings.system.days') }})</small>
                   </label>
-                  <input
-                    type="number"
-                    id="clean_files_after_days"
-                    v-model="settings.clean_files_after_days"
-                    placeholder="30"
-                  />
+                  <OtNumber id="clean_files_after_days" v-model="settings.clean_files_after_days" :min="1" placeholder="30" />
                   <p class="help-text">{{ $t('settings.system.clean_files_after_description') }}</p>
                 </div>
                 <h3 id="reverse_shares" class="setting-subtitle">{{ $t('settings.system.reverse_shares') }}</h3>
@@ -729,7 +726,7 @@ defineExpose({
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_port">{{ $t('settings.system.smtp_port') }}</label>
-                  <input type="number" id="smtp_port" v-model="settings.smtp_port" />
+                  <OtNumber id="smtp_port" v-model="settings.smtp_port" :min="1" :max="65535" :steppers="false" />
                   <p class="help-text">{{ $t('settings.system.smtp_port_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
@@ -923,7 +920,7 @@ defineExpose({
 
                 <div class="setting-group-body-item" v-if="settings.altcha_enabled">
                   <label for="altcha_max_number">{{ $t('settings.system.security.altcha_difficulty') }}</label>
-                  <input type="number" id="altcha_max_number" min="1000" max="10000000" v-model="settings.altcha_max_number" />
+                  <OtNumber id="altcha_max_number" :min="1000" :max="10000000" :increment="10000" v-model="settings.altcha_max_number" />
                   <p class="help-text">{{ $t('settings.system.security.altcha_difficulty_help') }}</p>
                 </div>
               </div>
@@ -980,7 +977,7 @@ defineExpose({
                           <!-- <th>{{ $t('settings.system.backups.filename') }}</th> -->
                           <th>{{ $t('settings.system.backups.created_at') }}</th>
                           <th>{{ $t('settings.system.backups.size') }}</th>
-                          <th>{{ $t('settings.system.backups.actions') }}</th>
+                          <th class="backup-actions-cell">{{ $t('settings.system.backups.actions') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -994,6 +991,7 @@ defineExpose({
                               :disabled="backupDownloading === backup.filename"
                               class="ot-act icon-only"
                               :title="$t('settings.system.backups.download')"
+                              :aria-label="$t('settings.system.backups.download')"
                             >
                               <Loader2 v-if="backupDownloading === backup.filename" class="spinner" />
                               <Download v-else />
@@ -1003,6 +1001,7 @@ defineExpose({
                               :disabled="backupDeleting === backup.filename"
                               class="ot-act icon-only delete-button"
                               :title="$t('settings.system.backups.delete')"
+                              :aria-label="$t('settings.system.backups.delete')"
                             >
                               <Loader2 v-if="backupDeleting === backup.filename" class="spinner" />
                               <Trash v-else />
@@ -1035,13 +1034,13 @@ defineExpose({
 }
 
 .provider-type {
-  background: var(--panel-section-background-color-alt);
+  background: var(--ot-field);
   height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: var(--panel-border-radius);
+  border-radius: var(--ot-radius);
 
   h6 {
     cursor: pointer;
@@ -1050,7 +1049,7 @@ defineExpose({
 
   small {
     font-size: 0.7rem;
-    color: var(--panel-text-color-alt);
+    color: var(--ot-muted);
     margin-bottom: 0;
   }
 
@@ -1069,8 +1068,8 @@ defineExpose({
 }
 
 .provider-settings {
-  background: var(--panel-section-background-color-alt);
-  border-radius: var(--panel-border-radius);
+  background: var(--ot-field);
+  border-radius: var(--ot-radius);
   border-top: 1px solid var(--input-border-color);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
@@ -1167,9 +1166,9 @@ defineExpose({
   gap: 5px;
   margin-top: 10px;
   font-size: 0.8rem;
-  color: var(--panel-text-color);
+  color: var(--ot-text);
   &:hover {
-    color: var(--color-danger);
+    color: var(--ot-danger-text);
   }
   svg {
     width: 15px;
@@ -1194,9 +1193,9 @@ defineExpose({
     display: flex;
     align-items: center;
     gap: 10px;
-    background: var(--panel-section-background-color-alt);
+    background: var(--ot-field);
     padding: 10px 15px;
-    border-radius: var(--panel-border-radius);
+    border-radius: var(--ot-radius);
     font-family: monospace;
     
     code {
@@ -1239,7 +1238,7 @@ defineExpose({
       padding: 4px 0;
       
       code {
-        background: var(--panel-section-background-color-alt);
+        background: var(--ot-field);
         padding: 2px 6px;
         border-radius: 3px;
         font-family: monospace;
@@ -1271,7 +1270,7 @@ defineExpose({
 .no-backups {
   padding: 20px;
   text-align: center;
-  color: var(--panel-text-color-alt);
+  color: var(--ot-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1284,46 +1283,19 @@ defineExpose({
 }
 
 .backups-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  
-  th, td {
-    padding: 10px 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--input-border-color);
-  }
-  
-  th {
-    font-weight: 600;
-    color: var(--panel-text-color);
-    background: var(--panel-section-background-color-alt);
-  }
-  
-  td {
-    color: var(--panel-text-color);
-  }
-  
-  .backup-filename {
-    font-family: monospace;
-    font-size: 0.85rem;
-    word-break: break-all;
-  }
-  
   .backup-actions-cell {
     white-space: nowrap;
     width: 1px;
-    
+    text-align: right;
+
     button {
-      margin-right: 5px;
-      
-      &.delete-button:hover {
-        color: var(--color-danger);
+      margin-right: 6px;
+
+      &:last-child {
+        margin-right: 0;
       }
-      
-      svg {
-        width: 16px;
-        height: 16px;
+      &.delete-button:hover {
+        color: var(--ot-danger-text);
       }
     }
   }

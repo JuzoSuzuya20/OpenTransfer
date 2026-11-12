@@ -158,7 +158,8 @@ const skipAndLogin = async () => {
       </div>
 
       <!-- Step 1: Create Admin Account -->
-      <div v-if="currentStep === 1">
+      <Transition name="ot-page" mode="out-in">
+      <div v-if="currentStep === 1" key="account">
         <p class="setup-intro">{{ t('setup.intro') }}</p>
 
         <div class="seperator"></div>
@@ -243,7 +244,7 @@ const skipAndLogin = async () => {
       </div>
 
       <!-- Step 2: Optional Settings -->
-      <div v-if="currentStep === 2">
+      <div v-else-if="currentStep === 2" key="settings">
         <p class="setup-intro">{{ t('setup.step2_intro') }}</p>
 
         <div class="seperator"></div>
@@ -306,6 +307,7 @@ const skipAndLogin = async () => {
           </div>
         </div>
       </div>
+      </Transition>
     </div>
   </div>
 </template>

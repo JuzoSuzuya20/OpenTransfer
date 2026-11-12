@@ -1,19 +1,25 @@
+// Tables (backups, the figures of a chart): rows on the ground of a field, separated by a thin
+// line, the header in small muted type. No box around each cell.
 table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--table-background-color);
+  background: none;
+  font-size: 0.875rem;
 
   thead {
-    color: var(--table-header-text-color);
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--table-header-background-color);
+    background: var(--ot-card);
+    color: var(--ot-muted);
+
     th {
-      padding: 10px;
+      padding: 8px 12px;
       text-align: left;
-      font-size: 0.8125rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--ot-line);
+
       svg {
         width: 16px;
         height: 16px;
@@ -24,18 +30,24 @@ table {
     }
   }
   tbody {
-    background: var(--table-background-color);
     tr {
-      background: var(--table-row-background-color);
-      &:nth-child(even) {
-        background: var(--table-row-background-color-alt);
+      background: none;
+      transition: background-color var(--ot-dur-fast) var(--ot-ease-out);
+
+      &:hover {
+        background: var(--ot-field);
       }
     }
     td {
-      padding: 10px;
+      padding: 10px 12px;
       text-align: left;
-      border: 1px solid var(--border-color);
-      color: var(--table-row-text-color);
+      border: 0;
+      border-bottom: 1px solid var(--ot-line-soft);
+      color: var(--ot-text);
+      font-variant-numeric: tabular-nums;
+    }
+    tr:last-child td {
+      border-bottom: 0;
     }
   }
 }

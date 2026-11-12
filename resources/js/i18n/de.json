@@ -120,13 +120,12 @@
   },
   "commandPalette": {
     "category": {
-      "branding": "Branding",
       "navigation": "Navigation",
-      "system": "System-Einstellungen"
+      "system": "Systemeinstellungen",
+      "pages": "Seiten"
     },
     "navigate": "zum Navigieren",
     "noResults": "Keine Ergebnisse gefunden",
-    "placeholder": "Sucheinstellungen...",
     "select": "zum Auswählen"
   },
   "confirm_delete_user": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?",
@@ -260,7 +259,8 @@
       "upload_background_image": "Hintergrundbild hochladen",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Meine Hintergründe verwenden",
-      "use_my_backgrounds_description": "Verwenden Sie die Hintergründe, die Sie hochgeladen haben. Wenn nicht markiert, werden Unsplash-Hintergründe verwendet."
+      "use_my_backgrounds_description": "Verwenden Sie die Hintergründe, die Sie hochgeladen haben. Wenn nicht markiert, werden Unsplash-Hintergründe verwendet.",
+      "confirm_delete_favicon": "Das eigene Favicon löschen? Das Standardsymbol von OpenTransfer kehrt zurück."
     },
     "button": {
       "branding": {
@@ -657,7 +657,8 @@
       "smtp_username": "SMTP-Benutzername",
       "smtp_username_description": "Der Benutzername, der für die Authentifizierung bei Ihrem SMTP-Server erforderlich ist. Dies ist normalerweise die E-Mail-Adresse oder der Kontoname, der mit Ihrem E-Mail-Dienst verbunden ist.",
       "upload_modes": "Upload-Modi",
-      "your_auth_providers": "Ihre Auth-Provider"
+      "your_auth_providers": "Ihre Auth-Provider",
+      "delete_auth_provider_confirmation": "Diesen Identitätsanbieter löschen? Seine Einstellungen gehen verloren, und niemand kann sich mehr darüber anmelden."
     },
     "system_auth_provider_info_link": "Über {name}",
     "table": {
@@ -904,7 +905,9 @@
     "expiry_title": "Läuft ab nach",
     "files_title": "Zu sendende Dateien",
     "password_set": "Durch ein Passwort geschützt",
-    "recipients_title": "Empfänger"
+    "recipients_title": "Empfänger",
+    "too_big": "Diese Dateien sind {size} groß: Eine Freigabe darf höchstens {max} enthalten.",
+    "upload_failed": "Das Hochladen ist fehlgeschlagen: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Hochladen der Datei #} other {Hochladen von # Dateien}}"
@@ -1139,5 +1142,15 @@
       "reset_failed": "Der Originaltext konnte nicht wiederhergestellt werden",
       "unsaved": "Änderungen sind nicht gespeichert. Trotzdem die Sprache wechseln?"
     }
+  },
+  "dialog": {
+    "title": "Bitte bestätigen",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "change_anyway": "Trotzdem wechseln"
+  },
+  "number": {
+    "decrease": "Verringern",
+    "increase": "Erhöhen"
   }
 }

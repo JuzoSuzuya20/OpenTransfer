@@ -76,16 +76,22 @@
   cursor: pointer;
   transition:
     border-color var(--ot-dur-fast) var(--ot-ease-out),
-    background-color var(--ot-dur-fast) var(--ot-ease-out);
+    background-color var(--ot-dur-fast) var(--ot-ease-out),
+    transform var(--ot-dur-slow) var(--ot-ease-spring);
 
   &:hover {
     border-color: var(--ot-accent);
   }
-  // A file is being dragged over the zone
+  // A file is being dragged over the zone: it opens up a little and its arrow rises to take it
   &.active {
     border-style: solid;
     border-color: var(--ot-accent);
     background: var(--ot-accent-soft);
+    transform: scale(calc(1 + 0.01 * var(--ot-motion)));
+
+    .dropzone-icon {
+      transform: translateY(calc(-6px * var(--ot-motion)));
+    }
   }
 
   .dropzone-icon {
@@ -94,6 +100,7 @@
     color: var(--ot-accent);
     stroke-width: 1.6;
     pointer-events: none;
+    transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
   }
   .dropzone-title {
     font-size: 1.125rem;
@@ -228,7 +235,7 @@
 // A number and its unit in one field
 .field-group {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
+  grid-template-columns: 124px minmax(0, 1fr);
   gap: 6px;
 }
 

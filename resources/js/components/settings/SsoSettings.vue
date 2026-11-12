@@ -1,9 +1,10 @@
 <script setup>
 import OtSelect from '../layout/OtSelect.vue'
+import { useConfirmDialog } from '../../composables/useConfirmDialog'
 import { ref, computed, onMounted } from 'vue'
 import { useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
-import { Plus, Eye, EyeOff, Copy, Check, Trash2, PlugZap, ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { Plus, Eye, EyeOff, Copy, Check, Trash2, PlugZap, ChevronDown } from 'lucide-vue-next'
 import {
   getSettingsByGroup,
   saveSettingsById,
@@ -84,8 +85,16 @@ const addProvider = async () => {
   newType.value = ''
 }
 
+const confirmDialog = useConfirmDialog()
 const removeProvider = async (provider) => {
-  if (!confirm(t.value('settings.system.delete_auth_provider_confirmation'))) return
+  const sure = await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('settings.system.delete_auth_provider_confirmation'),
+    okText: t.value('dialog.delete'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  })
+  if (!sure) return
   if (!provider.id) {
     providers.value = providers.value.filter((item) => item !== provider)
     return
@@ -187,8 +196,7 @@ defineExpose({ save })
             {{ provider.enabled ? t('settings.system.enabled') : t('settings.system.disabled') }}
           </span>
           <button type="button" class="ot-act" @click="provider.editing = !provider.editing" :aria-expanded="provider.editing">
-            <ChevronUp v-if="provider.editing" aria-hidden="true" />
-            <ChevronDown v-else aria-hidden="true" />
+            <ChevronDown class="sso-chevron" :class="{ 'is-open': provider.editing }" aria-hidden="true" />
             {{ provider.editing ? t('sso.collapse') : t('settings.provider.edit') }}
           </button>
         </header>
@@ -216,8 +224,8 @@ defineExpose({ save })
                   @click="shown[`${provider.uuid}-${key}`] = !shown[`${provider.uuid}-${key}`]"
                   :aria-label="shown[`${provider.uuid}-${key}`] ? t('send.hide_password') : t('send.show_password')"
                 >
-                  <EyeOff v-if="shown[`${provider.uuid}-${key}`]" aria-hidden="true" />
-                  <Eye v-else aria-hidden="true" />
+                  <EyeOff v-if="shown[`${provider.uuid}-${key}`]" class="ot-check-pop" aria-hidden="true" />
+                  <Eye v-else class="ot-check-pop" aria-hidden="true" />
                 </button>
               </div>
               <input
@@ -276,7 +284,7 @@ defineExpose({ save })
                 <span class="sso-copy">
                   <code>{{ provider.callback_url }}</code>
                   <button type="button" class="ot-act icon-only" @click="copy(provider.callback_url, `cb-${provider.uuid}`)" :aria-label="t('sso.copy')">
-                    <Check v-if="copied === `cb-${provider.uuid}`" aria-hidden="true" />
+                    <Check v-if="copied === `cb-${provider.uuid}`" class="ot-check-pop" aria-hidden="true" />
                     <Copy v-else aria-hidden="true" />
                   </button>
                 </span>
@@ -286,7 +294,7 @@ defineExpose({ save })
                 <span class="sso-copy">
                   <code>{{ provider.post_logout_redirect_uri }}</code>
                   <button type="button" class="ot-act icon-only" @click="copy(provider.post_logout_redirect_uri, `pl-${provider.uuid}`)" :aria-label="t('sso.copy')">
-                    <Check v-if="copied === `pl-${provider.uuid}`" aria-hidden="true" />
+                    <Check v-if="copied === `pl-${provider.uuid}`" class="ot-check-pop" aria-hidden="true" />
                     <Copy v-else aria-hidden="true" />
                   </button>
                 </span>
@@ -319,6 +327,14 @@ defineExpose({ save })
 </template>
 
 <style scoped lang="scss">
+// The chevron of a provider turns over on a spring as its settings open
+.sso-chevron {
+  transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
+
+  &.is-open {
+    transform: rotate(180deg);
+  }
+}
 .domain-chips {
   display: flex;
   flex-wrap: wrap;

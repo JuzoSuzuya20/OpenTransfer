@@ -198,3 +198,77 @@
 .spin {
   animation: spin 0.9s var(--ot-ease-loop) infinite;
 }
+
+// --- Lists: rows arrive one after the other (the wait is capped), leave sideways at once, and the
+// others close up on a spring. The leaving row is pinned in place (lib/motion.js).
+.ot-list-host {
+  position: relative;
+}
+.ot-list-enter-active {
+  transition:
+    opacity var(--ot-dur-slow) var(--ot-ease-out),
+    transform var(--ot-dur-slow) var(--ot-ease-out);
+  transition-delay: calc(min(var(--ot-i, 0), 8) * 30ms);
+}
+.ot-list-leave-active {
+  position: absolute;
+  transition:
+    opacity var(--ot-dur-exit) var(--ot-ease-in),
+    transform var(--ot-dur-exit) var(--ot-ease-in);
+}
+.ot-list-enter-from {
+  opacity: 0;
+  transform: translateY(calc(10px * var(--ot-motion)));
+}
+.ot-list-leave-to {
+  opacity: 0;
+  transform: translateX(calc(-16px * var(--ot-motion)));
+}
+.ot-list-move {
+  transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
+}
+
+// --- What opens under the control that opened it rises into place: a provider being edited, the
+// limit form of a share, the pattern settings, a 2FA step, a message that appears
+.sso-provider-body,
+.share-row-limit,
+.pattern-url-settings,
+.two-factor-panel,
+.factor-body,
+.error-message,
+.download-error,
+.auth-sso-note,
+.auth-notice,
+.share-empty,
+.no-results {
+  animation: ot-rise-in var(--ot-dur-slow) var(--ot-ease-out) both;
+}
+
+// --- Data: the bars rise from their baseline, the meters fill from the left, once
+@keyframes ot-grow-y {
+  from {
+    opacity: 0;
+    transform: scaleY(calc(1 - var(--ot-motion)));
+  }
+}
+@keyframes ot-grow-x {
+  from {
+    transform: scaleX(calc(1 - var(--ot-motion)));
+  }
+}
+@keyframes ot-ring-draw {
+  from {
+    stroke-dasharray: 0 999;
+  }
+}
+
+// --- Links change colour gently
+a {
+  transition: color var(--ot-dur-fast) var(--ot-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-fill {
+    animation: none !important;
+  }
+}

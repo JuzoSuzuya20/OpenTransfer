@@ -8,6 +8,7 @@ import { store } from '../../store'
 import TwoFactorSettings from './TwoFactorSettings.vue'
 
 import { useTranslate } from '@tolgee/vue'
+import { useConfirmDialog } from '../../composables/useConfirmDialog'
 
 const { t } = useTranslate()
 
@@ -137,8 +138,15 @@ const handleNavItemClicked = (item) => {
   emit('navItemClicked', item)
 }
 
-const handleLinkProvider = (provider) => {
-  const confirm = window.confirm(t.value('settings.users.link_provider_confirm'))
+const confirmDialog = useConfirmDialog()
+const handleLinkProvider = async (provider) => {
+  const confirm = await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('settings.users.link_provider_confirm'),
+    okText: t.value('settings.account.create_link'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'default'
+  })
   if (confirm) {
     try {
       window.location.href = `/auth/provider/${provider.id}/link`
@@ -149,7 +157,13 @@ const handleLinkProvider = (provider) => {
 }
 
 const handleUnlinkProvider = async (provider) => {
-  const confirm = window.confirm(t.value('settings.users.unlink_provider_confirm'))
+  const confirm = await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('settings.users.unlink_provider_confirm'),
+    okText: t.value('settings.account.unlink'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  })
   if (confirm) {
     try {
       await unlinkProvider(provider.id)

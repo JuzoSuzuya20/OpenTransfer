@@ -120,13 +120,12 @@
   },
   "commandPalette": {
     "category": {
-      "branding": "Marca",
       "navigation": "Navegación",
-      "system": "Ajustes del sistema"
+      "system": "Ajustes del sistema",
+      "pages": "Páginas"
     },
     "navigate": "para navegar",
     "noResults": "Ningún resultado",
-    "placeholder": "Buscar en los ajustes...",
     "select": "para seleccionar"
   },
   "confirm_delete_user": "¿Seguro que quiere eliminar este usuario?",
@@ -260,7 +259,8 @@
       "upload_background_image": "Subir una imagen de fondo",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Usar mis fondos",
-      "use_my_backgrounds_description": "Usa los fondos que ha subido. Si no está marcado, se usan los fondos de Unsplash."
+      "use_my_backgrounds_description": "Usa los fondos que ha subido. Si no está marcado, se usan los fondos de Unsplash.",
+      "confirm_delete_favicon": "¿Eliminar el favicon propio? Vuelve el icono de OpenTransfer."
     },
     "button": {
       "branding": {
@@ -657,7 +657,8 @@
       "smtp_username": "Usuario SMTP",
       "smtp_username_description": "El nombre de usuario para autenticarse en su servidor SMTP. Suele ser la dirección de correo o el nombre de cuenta de su servicio de correo.",
       "upload_modes": "Modos de subida",
-      "your_auth_providers": "Sus proveedores de autenticación"
+      "your_auth_providers": "Sus proveedores de autenticación",
+      "delete_auth_provider_confirmation": "¿Eliminar este proveedor de identidad? Se pierde su configuración y nadie podrá volver a iniciar sesión con él."
     },
     "system_auth_provider_info_link": "Acerca de {name}",
     "table": {
@@ -904,7 +905,9 @@
     "expiry_title": "Caduca después de",
     "files_title": "Archivos que enviar",
     "password_set": "Protegido con contraseña",
-    "recipients_title": "Destinatarios"
+    "recipients_title": "Destinatarios",
+    "too_big": "Estos archivos ocupan {size}: un envío admite {max} como máximo.",
+    "upload_failed": "La subida ha fallado: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Subiendo # archivo} other {Subiendo # archivos}}"
@@ -1139,5 +1142,15 @@
       "reset_failed": "No se pudo restaurar el texto original",
       "unsaved": "Hay cambios sin guardar. ¿Cambiar de idioma de todos modos?"
     }
+  },
+  "dialog": {
+    "title": "Confirme, por favor",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "change_anyway": "Cambiar de todos modos"
+  },
+  "number": {
+    "decrease": "Disminuir",
+    "increase": "Aumentar"
   }
 }

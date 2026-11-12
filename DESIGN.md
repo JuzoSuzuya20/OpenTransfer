@@ -216,7 +216,10 @@ Ce qui arrive décélère (`--ot-ease-out`), ce qui part accélère et part plus
 appui d'un bouton, coche, chevron, soulignement de l'onglet courant, option d'un filtre. Rien ne bouge à vitesse
 constante, pas même ce qui tourne en attendant (`--ot-ease-loop`). Durées : 120 ms pour un retour, 200 ms pour un
 changement d'état, 320 ms pour une fenêtre ou une page. Transitions partagées dans `styles/_motion.scss` :
-`ot-pop` (menus, listes), `ot-dialog` (fenêtres), `ot-page` (changement de page), `ot-toast`, `ot-check-pop`.
+`ot-pop` (menus, listes), `ot-dialog` (fenêtres), `ot-page` (changement de page, de section d'administration,
+d'étape de connexion ou d'installation), `ot-list` (lignes qui arrivent l'une après l'autre, partent de côté, les
+autres se resserrent en ressort ; `pinLeaving` garde la ligne sortante à sa place), `ot-toast`, `ot-check-pop`
+(coche, œil, lien copié). Ce qui s'ouvre sous son bouton monte en place ; barres et jauges se remplissent une fois.
 Un seul moment signé : le partage créé, son bordereau tamponné (léger dépassement, une pointe de biais) puis son lien
 encré d'un anneau d'accent. `--ot-motion` multiplie tout déplacement ; il vaut 0 quand le système demande moins de
 mouvement : les fondus et changements de couleur restent, rien ne se déplace.
@@ -241,6 +244,16 @@ zone de dépôt et aux champs en lecture seule.
 - **Liste de choix** (`OtSelect`) : jamais de `<select>` natif. Bouton à l'allure d'un champ, liste en surplomb de
   la page (rien ne la coupe), option courante cochée ; clavier d'un select natif (flèches, début/fin, pages, lettres
   tapées, Entrée, Échap). Variante compacte (`size="sm"`) pour la langue.
+- **Champ numérique** (`OtNumber`) : jamais les flèches du navigateur ; boutons − et + dans le champ, qui
+  répètent tant qu'on appuie, hors de l'ordre de tabulation (le clavier garde les flèches). Sans boutons pour ce qui
+  se tape (port, difficulté).
+- **Questions** : jamais `confirm()` ni `alert()` du navigateur. Une question passe par `useConfirmDialog`
+  (carte centrée, focus dedans, Échap annule ; ton `danger` pour l'irréversible, le focus va alors sur « Annuler »),
+  une erreur par une notification.
+- **Notification** : petite carte en bas à droite, icône sur la teinte de l'état, liseré de 3 px au pied ; pas de
+  barre de décompte.
+- **Recherche** (Ctrl+K) : carte de fenêtre, résultats groupés (pages, administration, réglages), résultat actif
+  teinté de l'accent.
 - **Écrans hors application** (connexion et ses étapes, installation, attente) : titre et explication centrés, action
   principale pleine largeur, liens de retour centrés dessous.
 - **Champ** : 40 px, bordure de 1 px, survol plus marqué, focus en bordure et anneau d'accent ; erreur sous le champ,

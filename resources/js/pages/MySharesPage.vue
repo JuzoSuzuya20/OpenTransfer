@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { pinLeaving } from '../lib/motion'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { Trash2 } from 'lucide-vue-next'
 import ShareRow from '../components/layout/ShareRow.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import { getMyShares, pruneExpiredShares } from '../api'
+import { useConfirmDialog } from '../composables/useConfirmDialog'
 import { niceFileSize } from '../utils'
 import { shareState, monthSummary, groupByWeek } from '../lib/shares'
 
@@ -73,8 +75,16 @@ const toggleDeleted = (event) => {
   localStorage.setItem('showDeletedShares', showDeleted.value)
   load()
 }
+const confirmDialog = useConfirmDialog()
 const prune = async () => {
-  if (!confirm(t.value('settings.confirm.pruneExpiredShares'))) return
+  const sure = await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('settings.confirm.pruneExpiredShares'),
+    okText: t.value('settings.button.myShares.pruneExpired'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  })
+  if (!sure) return
   run(pruneExpiredShares(), 'settings.success.pruneExpiredShares', 'settings.error.pruneExpiredShares')
 }
 </script>
@@ -145,14 +155,26 @@ const prune = async () => {
         </button>
       </div>
 
-      <div class="share-group" v-for="group in groups" :key="group.key">
-        <div class="share-group-head">
-          <h2>{{ groupTitle(group) }}</h2>
-          <span class="ot-pill">{{ groupSummary(group) }}</span>
-        </div>
+      <!-- The rows arrive one after the other, leave sideways, and the others close up on a spring -->
+      <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="div" class="share-groups ot-list-host">
+        <div class="share-group" v-for="(group, groupIndex) in groups" :key="group.key" :style="{ '--ot-i': groupIndex }">
+          <div class="share-group-head">
+            <h2>{{ groupTitle(group) }}</h2>
+            <span class="ot-pill">{{ groupSummary(group) }}</span>
+          </div>
 
-        <ShareRow v-for="share in group.shares" :key="share.id" :share="share" :now="now" @changed="load" />
-      </div>
+          <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="div" class="share-group-rows ot-list-host">
+            <ShareRow
+              v-for="(share, index) in group.shares"
+              :key="share.id"
+              :share="share"
+              :now="now"
+              :style="{ '--ot-i': index }"
+              @changed="load"
+            />
+          </TransitionGroup>
+        </div>
+      </TransitionGroup>
 
       <div class="ot-card share-empty" v-if="loaded && groups.length === 0">
         <p>{{ filter === 'all' ? t('shares.empty') : t('shares.empty_filter') }}</p>

@@ -120,13 +120,12 @@
   },
   "commandPalette": {
     "category": {
-      "branding": "Branding",
       "navigation": "Navigatie",
-      "system": "Systeeminstellingen"
+      "system": "Systeeminstellingen",
+      "pages": "Pagina’s"
     },
     "navigate": "navigeren",
     "noResults": "Geen resultaten gevonden",
-    "placeholder": "Zoekinstellingen...",
     "select": "om te kiezen"
   },
   "confirm_delete_user": "Weet je zeker dat je deze gebruiker wilt verwijderen?",
@@ -260,7 +259,8 @@
       "upload_background_image": "Upload achtergrondafbeelding",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Mijn achtergronden gebruiken",
-      "use_my_backgrounds_description": "Gebruik de achtergronden die je hebt geüpload. Als dit vakje niet is aangevinkt, worden de achtergronden van Unsplash gebruikt."
+      "use_my_backgrounds_description": "Gebruik de achtergronden die je hebt geüpload. Als dit vakje niet is aangevinkt, worden de achtergronden van Unsplash gebruikt.",
+      "confirm_delete_favicon": "Het eigen favicon verwijderen? Het pictogram van OpenTransfer komt terug."
     },
     "button": {
       "branding": {
@@ -657,7 +657,8 @@
       "smtp_username": "SMTP Gebruikersnaam",
       "smtp_username_description": "De gebruikersnaam die nodig is om te verifiëren met je SMTP-server. Dit is meestal het e-mailadres of de accountnaam die is gekoppeld aan uw e-mailservice.",
       "upload_modes": "Upload opties",
-      "your_auth_providers": "Uw autorisatoren"
+      "your_auth_providers": "Uw autorisatoren",
+      "delete_auth_provider_confirmation": "Deze identiteitsprovider verwijderen? De instellingen gaan verloren en niemand kan er nog mee inloggen."
     },
     "system_auth_provider_info_link": "Over {name}",
     "table": {
@@ -904,7 +905,9 @@
     "expiry_title": "Verloopt na",
     "files_title": "Te verzenden bestanden",
     "password_set": "Beveiligd met een wachtwoord",
-    "recipients_title": "Ontvangers"
+    "recipients_title": "Ontvangers",
+    "too_big": "Deze bestanden zijn {size}: een share mag hoogstens {max} bevatten.",
+    "upload_failed": "Het uploaden is mislukt: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {# bestand uploaden} other {# bestanden uploaden}}"
@@ -1139,5 +1142,15 @@
       "reset_failed": "De originele tekst kon niet worden hersteld",
       "unsaved": "Er zijn niet-opgeslagen wijzigingen. Toch van taal wisselen?"
     }
+  },
+  "dialog": {
+    "title": "Bevestig",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "change_anyway": "Toch wisselen"
+  },
+  "number": {
+    "decrease": "Verlagen",
+    "increase": "Verhogen"
   }
 }

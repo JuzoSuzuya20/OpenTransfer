@@ -113,19 +113,19 @@ onMounted(() => {
   <div class="page page-admin">
     <PageHead :title="t('nav.administration')">
       <template #actions>
-        <button v-if="section === 'system'" @click="systemSettings.saveSettings()">
+        <button v-if="section === 'system'" @click="systemSettings?.saveSettings()">
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
         </button>
-        <button v-else-if="section === 'sso'" @click="ssoSettings.save()">
+        <button v-else-if="section === 'sso'" @click="ssoSettings?.save()">
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
         </button>
-        <button v-else-if="section === 'branding'" @click="brandingSettings.saveSettings()">
+        <button v-else-if="section === 'branding'" @click="brandingSettings?.saveSettings()">
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
         </button>
-        <button v-else-if="section === 'email-templates'" @click="emailTemplates.saveEmailTemplates()">
+        <button v-else-if="section === 'email-templates'" @click="emailTemplates?.saveEmailTemplates()">
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
         </button>
@@ -134,7 +134,7 @@ onMounted(() => {
             <Info aria-hidden="true" />
             {{ selfRegistrationEnabled ? t('settings.users.self_registration_on') : t('settings.users.self_registration_off') }}
           </AppLink>
-          <button @click="usersPanel.addUser">
+          <button @click="usersPanel?.addUser()">
             <UserPlus aria-hidden="true" />
             {{ t('settings.button.users.add') }}
           </button>
@@ -171,11 +171,14 @@ onMounted(() => {
 
     <p class="page-description" v-if="current">{{ current.description }}</p>
 
-    <SystemSettings v-if="section === 'system'" ref="systemSettings" @navItemClicked="onSection" />
-    <SsoSettings v-else-if="section === 'sso'" ref="ssoSettings" />
-    <BrandingSettings v-else-if="section === 'branding'" ref="brandingSettings" />
-    <EmailTemplates v-else-if="section === 'email-templates'" ref="emailTemplates" @navItemClicked="onSection" />
-    <Users v-else-if="section === 'users'" ref="usersPanel" @viewUserShares="viewUserShares" />
-    <AllShares v-else-if="section === 'all-shares'" ref="allSharesPanel" />
+    <!-- From one section to the next as from one page to the next -->
+    <Transition name="ot-page" mode="out-in">
+      <SystemSettings v-if="section === 'system'" ref="systemSettings" @navItemClicked="onSection" />
+      <SsoSettings v-else-if="section === 'sso'" ref="ssoSettings" />
+      <BrandingSettings v-else-if="section === 'branding'" ref="brandingSettings" />
+      <EmailTemplates v-else-if="section === 'email-templates'" ref="emailTemplates" @navItemClicked="onSection" />
+      <Users v-else-if="section === 'users'" ref="usersPanel" @viewUserShares="viewUserShares" />
+      <AllShares v-else-if="section === 'all-shares'" ref="allSharesPanel" />
+    </Transition>
   </div>
 </template>
