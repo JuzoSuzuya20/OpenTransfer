@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\RefreshCookie;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -27,7 +28,7 @@ trait IssuesTokens
         $twentyFourHours = 60 * 60 * 24;
         $refreshToken = Auth::claims(array_filter(['amr' => $amr, 'sid' => $sid]))->setTTL($twentyFourHours)->tokenById($user->id);
 
-        $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, false, true);
+        $cookie = RefreshCookie::make($refreshToken, $twentyFourHours);
 
         return response()->json([
             'status' => 'success',

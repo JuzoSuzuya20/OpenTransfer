@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use App\Services\SsoPolicy;
 use App\Services\SsoSessions;
 use App\Services\TwoFactor;
+use App\Support\RefreshCookie;
 
 
 class AuthController extends Controller
@@ -168,19 +169,23 @@ class AuthController extends Controller
     //logout the user
     public function logout()
     {
+        $refreshToken = request()->cookie(RefreshCookie::NAME);
+
         // The session at the identity provider, if it was opened there and asked to be closed too
-        $logoutUrl = SsoSessions::logoutUrl(request()->cookie('refresh_token'));
+        $logoutUrl = SsoSessions::logoutUrl($refreshToken);
 
-        //invalidate the token
-        rescue(fn () => Auth::logout(), null, false);
+        // Both tokens stop working on the server, not only in this browser: the access token of
+        // the page, and the refresh token of the cookie that a copy taken earlier would keep using
+        $tokens = array_filter([request()->bearerToken(), $refreshToken ? urldecode($refreshToken) : null]);
+        foreach ($tokens as $token) {
+            rescue(fn () => Auth::setToken($token)->invalidate(), null, false);
+        }
 
-        //clear the refresh_token cookie
-        $cookie = cookie('refresh_token', '', 0, null, null, false, true);
         return response()->json([
             'status' => 'success',
             'message' => 'Logout successful',
             'data' => ['logout_url' => $logoutUrl],
-        ])->withCookie($cookie);
+        ])->withCookie(RefreshCookie::forget());
     }
 
     public function acceptReverseShareInvite(Request $request)
@@ -328,11 +333,10 @@ class AuthController extends Controller
             }
 
             $refreshToken = Auth::setTTL($twentyFourHours)->tokenById($user->id);
-            $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, false, true);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Password reset successfully'
-            ])->withCookie($cookie);
+            ])->withCookie(RefreshCookie::make($refreshToken, $twentyFourHours));
         }
 
         return response()->json([

@@ -17,6 +17,7 @@ use App\Jobs\sendEmail;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Support\RefreshCookie;
 
 class UploadsController extends Controller
 {
@@ -373,11 +374,10 @@ class UploadsController extends Controller
       Auth::logout();
       $user->delete();
 
-      $cookie = cookie('refresh_token', '', 0, null, null, false, true);
       return response()->json([
         'status' => 'success',
         'message' => 'Share created',
-      ])->withCookie($cookie);
+      ])->withCookie(RefreshCookie::forget());
     }
 
     // Check if this existing user has an active reverse share invite
