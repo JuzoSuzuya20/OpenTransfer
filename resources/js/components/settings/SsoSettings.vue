@@ -343,7 +343,7 @@ defineExpose({ save })
 .sso-warning {
   margin: 0;
   padding: 10px 14px;
-  border-left: 3px solid var(--ot-warning);
+  border: 1px solid var(--ot-warning-line);
   border-radius: var(--ot-radius);
   background: var(--ot-warning-soft);
   color: var(--ot-text);
