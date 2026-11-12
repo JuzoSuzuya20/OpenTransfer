@@ -107,8 +107,9 @@ class ReverseSharesController extends Controller
             $guestUser->save();
             $guestUserId = $guestUser->id;
 
-            // Generate a token only for guest users
-            $token = auth()->tokenById($guestUser->id);
+            // Generate a token only for guest users, valid as long as the request: with the default
+            // lifetime of an access token (an hour) the link stopped working the same day
+            $token = auth()->setTTL(7 * 24 * 60)->tokenById($guestUser->id);
             $encryptedToken = Crypt::encryptString($token);
         }
 

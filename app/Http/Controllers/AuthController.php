@@ -204,7 +204,15 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $token = Crypt::decryptString($request->token);
+        // A link cut short or altered is a refusal, not a server error
+        try {
+            $token = Crypt::decryptString($request->token);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized'
+            ], 401);
+        }
 
         $user = Auth::setToken($token)->user();
 
