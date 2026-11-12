@@ -269,18 +269,16 @@ class SharesController extends Controller
       if (!$refreshToken) {
         return false;
       }
-      $user = Auth::setToken($refreshToken)->user();
+      $user = rescue(fn () => Auth::setToken(urldecode($refreshToken))->user(), null, false);
 
-
-      if (!$user) {
+      // Only the member who asked, while the account is active: a disabled one (someone who
+      // left) keeps a sign-in cookie for a while, not the files dropped for them
+      if (!$user || !$user->active) {
         return false;
       }
-      $allowedUser = $share->invite->user;
-      if ($user && $allowedUser && $allowedUser->id == $user->id) {
-        return true;
-      } else {
-        return false;
-      }
+      $allowedUser = $share->invite?->user;
+
+      return $allowedUser && $allowedUser->id == $user->id;
     }
     return true;
   }
