@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // callback URL declared at the identity providers. See config/trustedproxy.php.
         $middleware->trustProxies(headers: Request::HEADER_X_FORWARDED_FOR);
         $middleware->appendToGroup('api', \App\Http\Middleware\RestrictSignInToAllowedIps::class);
+        $middleware->appendToGroup('api', \App\Http\Middleware\RejectDisabledAccounts::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\RestrictSignInToAllowedIps::class);
         // No "login" route here: signing in happens in the application at the root
         $middleware->redirectGuestsTo('/');

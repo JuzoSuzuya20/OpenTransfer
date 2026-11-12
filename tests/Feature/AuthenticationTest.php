@@ -126,6 +126,21 @@ class AuthenticationTest extends TestCase
             ->assertJsonMissingPath('data.access_token');
     }
 
+    // Disabling an account (someone who left) takes effect at once, not when its access token
+    // runs out an hour later
+    public function test_a_disabled_account_loses_the_api_at_once(): void
+    {
+        $user = $this->makeUser();
+        $token = auth('api')->tokenById($user->id);
+        $this->withHeader('Authorization', "Bearer {$token}")->getJson('/api/users/me')->assertOk();
+
+        $user->forceFill(['active' => false])->save();
+        $this->app['auth']->forgetGuards();
+
+        $this->withHeader('Authorization', "Bearer {$token}")->getJson('/api/users/me')->assertUnauthorized();
+        $this->withHeader('Authorization', "Bearer {$token}")->getJson('/api/shares')->assertUnauthorized();
+    }
+
     public function test_a_valid_refresh_token_issues_a_new_access_token(): void
     {
         $user = $this->makeUser();
