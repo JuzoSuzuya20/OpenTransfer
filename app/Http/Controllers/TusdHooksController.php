@@ -101,6 +101,16 @@ class TusdHooksController extends Controller
                 ], 401);
             }
 
+            // The tus protocol lets a client declare its size later (Upload-Defer-Length): the size
+            // checked below would be 0 and the upload unbounded. The app always sends it first.
+            if (!empty($payload['Event']['Upload']['SizeIsDeferred'])) {
+                Log::warning('tusd pre-create: Upload without a declared size', ['user_id' => $user->id]);
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'The size of an upload must be declared when it starts'
+                ], 400);
+            }
+
             $fileSize = $payload['Event']['Upload']['Size'] ?? 0;
             $settingsService = app(SettingsService::class);
             $maxUploadSize = $settingsService->getMaxUploadSize();
