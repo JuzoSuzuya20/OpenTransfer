@@ -950,7 +950,7 @@
     "sent_by": "{name} hat Ihnen gesendet",
     "expires": "Läuft ab in",
     "protected_text": "Geben Sie das Passwort ein, das Ihnen der Absender mitgeteilt hat, um die Dateien herunterzuladen.",
-    "unlock_and_download": "Entsperren und herunterladen",
+    "unlock": "Entsperren",
     "left_days": "{count, plural, one {# Tag} other {# Tagen}}",
     "left_hours": "{count} Std.",
     "left_minutes": "{count} Min."

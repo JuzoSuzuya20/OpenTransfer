@@ -103,7 +103,7 @@
   .download-error {
     margin-top: 10px;
     padding: 10px 14px;
-    border-left: 3px solid var(--ot-danger);
+    border: 1px solid var(--ot-danger-line);
     border-radius: var(--ot-radius);
     background: var(--ot-danger-soft);
     color: var(--ot-danger-text);
@@ -113,6 +113,19 @@
   .download-button {
     margin: 0;
   }
+}
+
+// A share behind a password: nothing but the field until the password opens it
+.download-lock {
+  width: 100%;
+  max-width: 440px;
+  align-self: center;
+}
+
+.download-lock-expiry {
+  color: var(--ot-muted);
+  font-size: 0.8125rem;
+  text-align: center;
 }
 
 .download-state {

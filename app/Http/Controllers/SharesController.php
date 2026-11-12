@@ -98,11 +98,65 @@ class SharesController extends Controller
       'status' => 'success',
       'message' => 'Share found',
       'data' => [
-
-        'share' => $this->formatSharePublic($share)
-
+        // Behind a password, nothing of what the share holds until unlock() is given it
+        'share' => $share->password ? $this->formatShareLocked($share) : $this->formatSharePublic($share)
       ]
     ]);
+  }
+
+  /**
+   * Opens a share behind a password: the answer read() gives an open share, once the password is
+   * right. Wrong passwords count towards the limit the downloads go by.
+   */
+  public function unlock($shareId)
+  {
+    $share = Share::where('long_id', $shareId)->with(['files', 'user'])->first();
+    if (!$share || !$this->checkShareAccess($share)) {
+      return response()->json(['status' => 'error', 'message' => 'Share not found'], 404);
+    }
+
+    if ($share->expires_at < Carbon::now()) {
+      return response()->json(['status' => 'error', 'message' => 'Share expired'], 410);
+    }
+
+    if ($share->download_limit != null && $share->download_count >= $share->download_limit) {
+      return response()->json(['status' => 'error', 'message' => 'Download limit reached'], 410);
+    }
+
+    if ($share->password) {
+      $password = request()->input('password');
+      if (!$password || !is_string($password)) {
+        return response()->json(['status' => 'error', 'message' => 'Password required'], 401);
+      }
+      if ($this->tooManyPasswordAttempts($share)) {
+        return response()->json(['status' => 'error', 'message' => 'Too many attempts'], 429);
+      }
+      if (!$this->checkSharePassword($share, $password)) {
+        return response()->json(['status' => 'error', 'message' => 'Invalid password'], 401);
+      }
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Share found',
+      'data' => ['share' => $this->formatSharePublic($share)]
+    ]);
+  }
+
+  /**
+   * What a share behind a password shows before it: who sent it and until when it stays online,
+   * nothing of its name, message, size or files.
+   */
+  private function formatShareLocked(Share $share)
+  {
+    return [
+      'expires_at' => $share->expires_at,
+      'user' => [
+        'name' => $share->user ? $share->user->name : 'Guest User',
+        'avatar_seed' => $share->user?->avatar_seed,
+      ],
+      'password_protected' => true
+    ];
   }
 
   private function formatSharePublic(Share $share)

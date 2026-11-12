@@ -3,7 +3,8 @@ import { ref, onMounted, nextTick, computed } from 'vue'
 import OtPassword from './layout/OtPassword.vue'
 import { niceFileSize, timeUntilExpiration, getApiUrl, niceFileType, niceFileName } from '../utils'
 import { HeartCrack, TrendingDown, FileX, Download } from 'lucide-vue-next'
-import { getShare } from '../api'
+import { getShare, unlockShare } from '../api'
+import { postDownload } from '../lib/postDownload'
 import { domError } from '../domData'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
@@ -61,10 +62,13 @@ onMounted(() => {
   }, 100)
 })
 
+// Behind a password the server sends nothing of the content until it is given the password
+const locked = computed(() => Boolean(share.value?.password_protected && !share.value.files))
+
 const fetchShare = async () => {
   try {
     share.value = await getShare(props.downloadShareCode)
-    document.title = share.value.name
+    document.title = locked.value ? t.value('downloader.protected_title') : share.value.name
   } catch (error) {
     console.log('error', error)
     if (error.message == 'Download limit reached') {
@@ -93,32 +97,40 @@ const splitFullName = (fullName) => {
 const password = ref('')
 const error = ref(null)
 
-const downloadPasswordProtectedFiles = () => {
-  //is the password filled in?
+const unlocking = ref(false)
+const UNLOCK_ERRORS = {
+  'Invalid password': 'share.download.invalid_password',
+  'Too many attempts': 'share.download.too_many_attempts',
+  'Password required': 'share.download.password_required_short'
+}
+
+const unlock = async () => {
   if (!password.value) {
-    toast.error(t.value('share.download.password_required'))
     error.value = t.value('share.download.password_required_short')
     return
   }
+  unlocking.value = true
+  error.value = null
+  try {
+    share.value = await unlockShare(props.downloadShareCode, password.value)
+    document.title = share.value.name
+  } catch (failure) {
+    const key = UNLOCK_ERRORS[failure.message]
+    if (key) {
+      error.value = t.value(key)
+    } else {
+      // Expired or out of downloads since the page opened: the page says which
+      share.value = null
+      await fetchShare()
+    }
+  } finally {
+    unlocking.value = false
+  }
+}
 
-  //create a form and submit it
-  const form = document.createElement('form')
-  form.action = `${apiUrl}/api/shares/${props.downloadShareCode}/download`
-  form.method = 'POST'
-
-  //add the password input
-  const passwordInput = document.createElement('input')
-  passwordInput.type = 'password'
-  passwordInput.name = 'password'
-  passwordInput.value = password.value
-  form.appendChild(passwordInput)
-
-  // Add the form to the document body - THIS LINE IS CRUCIAL
-  document.body.appendChild(form)
-
-  // Submit the form
-  form.submit()
-  setTimeout(() => document.body.removeChild(form), 0)
+// The password goes in the body of the request, never in the address
+const downloadPasswordProtectedFiles = () => {
+  postDownload(`${apiUrl}/api/shares/${props.downloadShareCode}/download`, { password: password.value })
 }
 
 const filesByDirectory = computed(() => {
@@ -172,7 +184,39 @@ const filesByDirectory = computed(() => {
 
 <template>
   <div class="download">
-    <template v-if="share">
+    <template v-if="share && locked">
+      <div class="download-head">
+        <div class="download-sender" v-if="share.user?.name">
+          <UserAvatar :seed="share.user.avatar_seed ?? ''" :name="share.user.name" :size="28" />
+          {{ $t('downloader.sent_by', { name: share.user.name }) }}
+        </div>
+        <h1 class="share-name">{{ $t('downloader.protected_title') }}</h1>
+      </div>
+
+      <form class="ot-card download-card download-lock" aria-labelledby="h-locked" @submit.prevent="unlock">
+        <h2 class="ot-card-title" id="h-locked">{{ $t('send.password') }}</h2>
+        <p>{{ $t('downloader.protected_text') }}</p>
+        <div class="input-container">
+          <label class="visually-hidden-label" for="share-password">{{ $t('send.password') }}</label>
+          <OtPassword
+            id="share-password"
+            v-model="password"
+            :class="{ error: error }"
+            :aria-invalid="error ? 'true' : 'false'"
+            :aria-describedby="error ? 'share-password-error' : null"
+            autocomplete="off"
+            autofocus
+          />
+          <div class="download-error" id="share-password-error" v-if="error" role="alert">{{ error }}</div>
+        </div>
+        <button type="submit" class="download-button block cta" :disabled="unlocking">
+          {{ $t('downloader.unlock') }}
+        </button>
+        <p class="download-lock-expiry" :title="expiresInFull">{{ $t('downloader.expires') }} {{ expiresInShort }}</p>
+      </form>
+    </template>
+
+    <template v-else-if="share">
       <div class="download-head">
         <div class="download-sender" v-if="share.user?.name">
           <UserAvatar :seed="share.user.avatar_seed ?? ''" :name="share.user.name" :size="28" />
@@ -201,31 +245,16 @@ const filesByDirectory = computed(() => {
         <div class="message">{{ share.description }}</div>
       </section>
 
-      <section class="ot-card download-card" v-if="share.password_protected" aria-labelledby="h-locked">
-        <h2 class="ot-card-title" id="h-locked">{{ $t('downloader.protected_title') }}</h2>
-        <p>{{ $t('downloader.protected_text') }}</p>
-        <div class="input-container">
-          <label for="share-password">{{ $t('send.password') }}</label>
-          <OtPassword
-            id="share-password"
-            v-model="password"
-            :class="{ error: error }"
-            :aria-invalid="error ? 'true' : 'false'"
-            :aria-describedby="error ? 'share-password-error' : null"
-            autocomplete="off"
-            @keyup.enter="downloadPasswordProtectedFiles"
-          />
-          <div class="download-error" id="share-password-error" v-if="error" role="alert">{{ error }}</div>
-        </div>
-        <button class="download-button block cta" @click="downloadPasswordProtectedFiles">
-          {{ $t('downloader.unlock_and_download') }}
-        </button>
-      </section>
-
       <section class="ot-card download-card share-files-list" aria-labelledby="h-files">
         <h2 class="ot-card-title" id="h-files">{{ $t('downloader.files_title') }}</h2>
-        <directory-item :structure="filesByDirectory" :is-root="true" :read-only="true" :share-code="downloadShareCode" />
-        <button class="download-button block cta" v-if="!share.password_protected" @click="downloadFiles">
+        <directory-item
+          :structure="filesByDirectory"
+          :is-root="true"
+          :read-only="true"
+          :share-code="downloadShareCode"
+          :password="share.password_protected ? password : ''"
+        />
+        <button class="download-button block cta" @click="share.password_protected ? downloadPasswordProtectedFiles() : downloadFiles()">
           <Download aria-hidden="true" />
           {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}
         </button>

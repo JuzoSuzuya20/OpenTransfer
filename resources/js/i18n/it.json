@@ -950,7 +950,7 @@
     "sent_by": "{name} ti ha inviato",
     "expires": "Scade tra",
     "protected_text": "Inserisci la password che ti ha dato il mittente per scaricare i file.",
-    "unlock_and_download": "Sblocca e scarica",
+    "unlock": "Sblocca",
     "left_days": "{count, plural, one {# giorno} other {# giorni}}",
     "left_hours": "{count} h",
     "left_minutes": "{count} min"

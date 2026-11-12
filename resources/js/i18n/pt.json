@@ -950,7 +950,7 @@
     "sent_by": "{name} enviou-lhe",
     "expires": "Expira em",
     "protected_text": "Introduza a palavra-passe que o remetente lhe deu para transferir os ficheiros.",
-    "unlock_and_download": "Desbloquear e transferir",
+    "unlock": "Desbloquear",
     "left_days": "{count, plural, one {# dia} other {# dias}}",
     "left_hours": "{count} h",
     "left_minutes": "{count} min"

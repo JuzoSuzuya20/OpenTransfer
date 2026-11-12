@@ -2,6 +2,7 @@
 import { Folder, Trash, File, Loader, Check, Clock } from 'lucide-vue-next'
 import { niceFileSize, niceFileType, niceFileName, getApiUrl } from '../utils'
 import { ref, computed } from 'vue'
+import { postDownload } from '../lib/postDownload'
 
 const apiUrl = getApiUrl()
 
@@ -21,6 +22,11 @@ const props = defineProps({
   shareCode: {
     type: String,
     default: null
+  },
+  // The password of a share that has one, once the recipient gave it
+  password: {
+    type: String,
+    default: ''
   },
   currentPath: {
     type: String,
@@ -82,7 +88,11 @@ function downloadFile(file, dirName = null) {
   }
   
   const downloadUrl = `${apiUrl}/api/shares/${props.shareCode}/download/file/${encodeURIComponent(filePath)}`
-  window.location.href = downloadUrl
+  if (props.password) {
+    postDownload(downloadUrl, { password: props.password })
+  } else {
+    window.location.href = downloadUrl
+  }
 }
 
 // Helper function to get directories from structure
@@ -213,6 +223,7 @@ function getDirectories(structure) {
           class="subdirectory"
           :read-only="readOnly"
           :share-code="shareCode"
+          :password="password"
           :current-path="currentPath ? `${currentPath}/${dirName}` : dirName"
           :is-uploading="isUploading"
           :current-uploading-file="currentUploadingFile"

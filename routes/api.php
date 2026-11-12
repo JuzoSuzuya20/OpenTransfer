@@ -242,11 +242,15 @@ Route::group([], function ($router) {
     //read shares [public]
     Route::get('/shares/{share}', [SharesController::class, 'read'])->name('shares.read');
 
+    //open a share behind a password [public, limited like the downloads]
+    Route::post('/shares/{share}/unlock', [SharesController::class, 'unlock'])->name('shares.unlock');
+
     //download shares [public]
     Route::any('/shares/{share}/download', [SharesController::class, 'download'])->name('shares.download');
     
-    //download specific file from share [public] - filepath can include nested directories
-    Route::get('/shares/{share}/download/file/{filepath}', [SharesController::class, 'downloadFile'])
+    //download specific file from share [public] - filepath can include nested directories; posted
+    //by the browser when the share has a password, so that it never ends up in an address or a log
+    Route::match(['get', 'post'], '/shares/{share}/download/file/{filepath}', [SharesController::class, 'downloadFile'])
         ->where('filepath', '.*')
         ->name('shares.downloadFile');
 

@@ -1141,6 +1141,22 @@ export const getShare = async (id) => {
   return data.data.share
 }
 
+// A share behind a password: its content, once the password is right (wrong ones are counted)
+export const unlockShare = async (id, password) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/shares/${id}/unlock`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    },
+    body: JSON.stringify({ password })
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data.data.share
+}
+
 // Theme Methods
 export const getThemes = async () => {
   const response = await fetchWithAuth(`${apiUrl}/api/themes`, {

@@ -950,7 +950,7 @@
     "sent_by": "{name} heeft je gestuurd",
     "expires": "Verloopt over",
     "protected_text": "Voer het wachtwoord in dat de afzender je gaf om de bestanden te downloaden.",
-    "unlock_and_download": "Ontgrendelen en downloaden",
+    "unlock": "Ontgrendelen",
     "left_days": "{count, plural, one {# dag} other {# dagen}}",
     "left_hours": "{count} u",
     "left_minutes": "{count} min"
