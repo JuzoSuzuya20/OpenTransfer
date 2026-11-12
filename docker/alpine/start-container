@@ -50,6 +50,15 @@ if [ ! -f "$STORAGE/jwt.secret" ]; then
     as_erugo sh -c "php -r 'echo base64_encode(random_bytes(32));' > '$STORAGE/jwt.secret'"
 fi
 
+# Keys, database and backups: read by the account the application runs as and nobody else
+# (a storage folder mounted from the host would otherwise show them to every user of the host).
+# Never in the way of a start: an unusual volume that refuses chmod keeps its permissions.
+as_erugo sh -c "
+    chmod 600 '$STORAGE/app.key' '$STORAGE/jwt.secret'
+    mkdir -p '$STORAGE/app/private' '$STORAGE/app/backups'
+    chmod 700 '$STORAGE/app/private' '$STORAGE/app/backups'
+" 2>/dev/null || echo "Could not restrict the permissions of the keys and database, continuing"
+
 # The scheduler runs under supervisord (schedule:work) and inherits this
 # environment: no cron, no .env file written into the application code.
 . /usr/local/lib/opentransfer-env

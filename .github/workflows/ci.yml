@@ -147,6 +147,8 @@ jobs:
           check "PHP 8.5 dans l'image" sh -c 'docker exec ot php -v | grep -q "^PHP 8\.5"'
           check "tusd installé" docker exec ot tusd -version
           check "pas de dépendances de dev dans l'image" docker exec ot test ! -d /var/www/html/vendor/phpunit
+          check "clés lisibles par l'application seule" sh -c 'test "$(docker exec ot stat -c %a /var/www/html/storage/app.key /var/www/html/storage/jwt.secret | sort -u)" = 600'
+          check "base et sauvegardes fermées aux autres comptes" sh -c 'test "$(docker exec ot stat -c %a /var/www/html/storage/app/private /var/www/html/storage/app/backups | sort -u)" = 700'
           check "fichiers déposés servis inertes (CSP sandbox)" sh -c 'curl -sI http://localhost:8080/images/logo.png | grep -qi "^content-security-policy:.*sandbox"'
           # Vu du conteneur, l'hôte arrive depuis une IP privée, comme un reverse proxy.
           hook='{"Type":"post-receive"}'
