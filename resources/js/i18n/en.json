@@ -109,7 +109,8 @@
     "local_account": "Email and password",
     "forgot_password_question": "Forgot your password?",
     "sso_required": "Your organisation signs you in through its account: use the button above.",
-    "sso_domain_note": "The @{domain} accounts sign in with the account of the organisation, above. Only administrators use this form."
+    "sso_domain_note": "The @{domain} accounts sign in with the account of the organisation, above. Only administrators use this form.",
+    "login_message_default": "Login to your account to get started."
   },
   "button": {
     "reverse_share_invite": "Create a reverse share request",
@@ -176,7 +177,8 @@
       "version": "Version",
       "visit_github": "GitHub",
       "changelog": "What’s new",
-      "report_issue": "Report a problem"
+      "report_issue": "Report a problem",
+      "fork": "A maintained fork of Erugo, whose development has stopped."
     },
     "account": {
       "change_password": "Change my password",
@@ -257,7 +259,15 @@
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Use My Backgrounds",
       "use_my_backgrounds_description": "Use the backgrounds you have uploaded. If not checked, Unsplash backgrounds will be used.",
-      "confirm_delete_favicon": "Delete the custom favicon? The default OpenTransfer icon comes back."
+      "confirm_delete_favicon": "Delete the custom favicon? The default OpenTransfer icon comes back.",
+      "sign_in_screen": "Sign-in screen",
+      "login_background": "Background image",
+      "login_background_none": "No image",
+      "login_background_set": "Current image",
+      "login_background_help": "JPEG, PNG or WebP, 10 MB and 8000 px at most. Shown behind the sign-in screen, darkened so the text stays readable.",
+      "remove_login_background": "Remove the background image",
+      "confirm_remove_login_background": "Remove the image behind the sign-in screen?",
+      "login_background_removed": "Background image removed"
     },
     "button": {
       "branding": {
@@ -668,7 +678,7 @@
     "title": {
       "about": "About",
       "allShares": "All Shares",
-      "branding": "Branding",
+      "branding": "Customization",
       "cloudConnect": "Erugo Connect",
       "emailTemplates": "Email templates",
       "linked_accounts": "Linked Accounts",
@@ -950,7 +960,8 @@
   "not_found": {
     "back": "Back to sending",
     "text": "This address leads to no page of the application.",
-    "title": "Page not found"
+    "title": "Page not found",
+    "stamp": "Return to sender"
   },
   "send": {
     "stats": {

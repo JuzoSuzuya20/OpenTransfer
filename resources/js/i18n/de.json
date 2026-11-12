@@ -109,7 +109,8 @@
     "local_account": "E-Mail und Passwort",
     "forgot_password_question": "Passwort vergessen?",
     "sso_required": "Ihre Organisation meldet Sie über ihr Konto an: Nutzen Sie die Schaltfläche oben.",
-    "sso_domain_note": "Die Konten @{domain} melden sich mit dem Konto der Organisation oben an. Nur Administratoren nutzen dieses Formular."
+    "sso_domain_note": "Die Konten @{domain} melden sich mit dem Konto der Organisation oben an. Nur Administratoren nutzen dieses Formular.",
+    "login_message_default": "Melden Sie sich an, um zu beginnen."
   },
   "button": {
     "reverse_share_invite": "Erstellen Sie eine umgekehrte Freigabeanforderung",
@@ -176,7 +177,8 @@
       "system_info": "Systeminformationen",
       "visit_github": "GitHub",
       "changelog": "Neuigkeiten",
-      "report_issue": "Problem melden"
+      "report_issue": "Problem melden",
+      "fork": "Ein gepflegter Fork von Erugo, dessen Entwicklung eingestellt wurde."
     },
     "account": {
       "change_password": "Mein Passwort ändern",
@@ -257,7 +259,15 @@
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Meine Hintergründe verwenden",
       "use_my_backgrounds_description": "Verwenden Sie die Hintergründe, die Sie hochgeladen haben. Wenn nicht markiert, werden Unsplash-Hintergründe verwendet.",
-      "confirm_delete_favicon": "Das eigene Favicon löschen? Das Standardsymbol von OpenTransfer kehrt zurück."
+      "confirm_delete_favicon": "Das eigene Favicon löschen? Das Standardsymbol von OpenTransfer kehrt zurück.",
+      "sign_in_screen": "Anmeldebildschirm",
+      "login_background": "Hintergrundbild",
+      "login_background_none": "Kein Bild",
+      "login_background_set": "Aktuelles Bild",
+      "login_background_help": "JPEG, PNG oder WebP, höchstens 10 MB und 8000 px. Wird hinter dem Anmeldebildschirm angezeigt, abgedunkelt, damit der Text lesbar bleibt.",
+      "remove_login_background": "Hintergrundbild entfernen",
+      "confirm_remove_login_background": "Das Bild hinter dem Anmeldebildschirm entfernen?",
+      "login_background_removed": "Hintergrundbild entfernt"
     },
     "button": {
       "branding": {
@@ -668,7 +678,7 @@
     "title": {
       "about": "Über",
       "allShares": "Alle Freigaben",
-      "branding": "Marke",
+      "branding": "Anpassung",
       "cloudConnect": "OpenTransfer Verbinden",
       "emailTemplates": "E-Mail-Vorlagen",
       "linked_accounts": "Verwandte Konten",
@@ -950,7 +960,8 @@
   "not_found": {
     "back": "Zurück zum Senden",
     "text": "Diese Adresse führt zu keiner Seite der Anwendung.",
-    "title": "Seite nicht gefunden"
+    "title": "Seite nicht gefunden",
+    "stamp": "Zurück an den Absender"
   },
   "send": {
     "stats": {

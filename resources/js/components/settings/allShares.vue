@@ -3,6 +3,7 @@
 // The page head (AdminPage) holds the owner filter and the "deleted shares" switch.
 import { ref, computed, onMounted } from 'vue'
 import { pinLeaving } from '../../lib/motion'
+import { useLiveRefresh } from '../../composables/useLiveRefresh'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import ShareRow from '../layout/ShareRow.vue'
@@ -18,7 +19,6 @@ const loaded = ref(false)
 const showDeletedShares = ref(localStorage.getItem('allSharesShowDeleted') === 'true')
 const selectedUserId = ref(null)
 const filter = ref('all')
-const now = ref(new Date())
 
 const loadShares = async () => {
   try {
@@ -31,6 +31,8 @@ const loadShares = async () => {
   }
 }
 onMounted(loadShares)
+// Downloads and expiries change without this page: it stays current while it is open
+const { now } = useLiveRefresh(loadShares)
 
 const stateOf = (share) => shareState(share, now.value)
 const FILTERS = {

@@ -848,6 +848,32 @@ export const resetLogo = async () => {
   return data
 }
 
+// The image behind the sign-in screen
+export const saveLoginBackground = async (imageFile) => {
+  const formData = new FormData()
+  formData.append('background', imageFile)
+  const response = await fetchWithAuth(`${apiUrl}/api/settings/login-background`, {
+    method: 'POST',
+    body: formData
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data.data
+}
+
+export const deleteLoginBackground = async () => {
+  const response = await fetchWithAuth(`${apiUrl}/api/settings/login-background`, {
+    method: 'DELETE'
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data
+}
+
 // Save settings during first-run setup (after authentication)
 export const saveFirstRunSettings = async (settings) => {
   // Save text-based settings first

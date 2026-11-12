@@ -173,9 +173,10 @@ class BackgroundsController extends Controller
         }
 
         // For images, use caching and scaling
+        // The cached copy is always a JPEG, whatever the extension of the original
         $cachedPath = Storage::disk('backgrounds')->path('cache/' . $safeFile);
         if (file_exists($cachedPath)) {
-            return response()->file($cachedPath);
+            return response()->file($cachedPath, ['Content-Type' => 'image/jpeg']);
         }
 
         $manager = new ImageManager(new Driver());
@@ -187,7 +188,7 @@ class BackgroundsController extends Controller
         //save the encoded image to the public/backgrounds/cache folder
         Storage::disk('backgrounds')->put('cache/' . $safeFile, $encoded);
 
-        return response($encoded)->header('Content-Type', 'image/webp');
+        return response($encoded)->header('Content-Type', 'image/jpeg');
     }
 
     public function useThumb($file)

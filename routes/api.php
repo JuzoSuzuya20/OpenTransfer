@@ -134,6 +134,9 @@ Route::group([], function ($router) {
         Route::post('/favicon', [SettingsController::class, 'writeFavicon'])->name('settings.writeFavicon');
         Route::delete('/favicon', [SettingsController::class, 'deleteFavicon'])->name('settings.deleteFavicon');
         Route::get('/favicon/status', [SettingsController::class, 'hasFavicon'])->name('settings.hasFavicon');
+        //the image behind the sign-in screen
+        Route::post('/login-background', [SettingsController::class, 'writeLoginBackground'])->name('settings.writeLoginBackground');
+        Route::delete('/login-background', [SettingsController::class, 'deleteLoginBackground'])->name('settings.deleteLoginBackground');
         //list background images
         Route::get('/backgrounds', [BackgroundsController::class, 'list'])->name('settings.backgrounds.list');
         //upload a background image

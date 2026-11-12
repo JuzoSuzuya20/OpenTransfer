@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, nextTick, computed } from 'vue'
+import OtPassword from './layout/OtPassword.vue'
 import { niceFileSize, timeUntilExpiration, getApiUrl, niceFileType, niceFileName } from '../utils'
 import { HeartCrack, TrendingDown, FileX, Download } from 'lucide-vue-next'
 import { getShare } from '../api'
@@ -205,8 +206,7 @@ const filesByDirectory = computed(() => {
         <p>{{ $t('downloader.protected_text') }}</p>
         <div class="input-container">
           <label for="share-password">{{ $t('send.password') }}</label>
-          <input
-            type="password"
+          <OtPassword
             id="share-password"
             v-model="password"
             :class="{ error: error }"

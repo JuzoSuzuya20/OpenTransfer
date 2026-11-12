@@ -110,6 +110,15 @@ class SettingsSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            // The image behind the sign-in screen: a file of the backgrounds disk, or none
+            [
+                'key' => 'login_background',
+                'value' => '',
+                'previous_value' => null,
+                'group' => 'ui.branding',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
             [
                 'key' => 'max_expiry_time',
                 'value' => '10',

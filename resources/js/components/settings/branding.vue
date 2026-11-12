@@ -1,7 +1,7 @@
 <script setup>
 import { emitter } from '../../store'
 import { ref, onMounted, watch, defineExpose, onBeforeUnmount, computed } from 'vue'
-import { RotateCcw } from 'lucide-vue-next'
+import { RotateCcw, Trash2 } from 'lucide-vue-next'
 
 import {
   getSettingsByGroup,
@@ -11,9 +11,12 @@ import {
   saveFavicon,
   deleteFavicon,
   resetFavicon,
-  getFaviconStatus
+  getFaviconStatus,
+  saveLoginBackground,
+  deleteLoginBackground
 } from '../../api'
 import FileInput from '../fileInput.vue'
+import { domData } from '../../domData'
 import OtNumber from '../layout/OtNumber.vue'
 import { useToast } from 'vue-toastification'
 import { niceFileName, mapSettings } from '../../utils'
@@ -36,6 +39,19 @@ const faviconStatus = ref({
   filename: null
 })
 const pendingFavicon = ref(null)  // File waiting to be uploaded on save
+// The image behind the sign-in screen: the stored file name, and a file waiting to be uploaded
+const loginBackground = ref(domData().login_background || '')
+const pendingBackground = ref(null)
+const backgroundObjectUrl = ref(null)
+watch(pendingBackground, (file) => {
+  if (backgroundObjectUrl.value) URL.revokeObjectURL(backgroundObjectUrl.value)
+  backgroundObjectUrl.value = file instanceof File ? URL.createObjectURL(file) : null
+})
+const backgroundPreview = computed(() => {
+  if (backgroundObjectUrl.value) return { url: backgroundObjectUrl.value, filename: pendingBackground.value.name }
+  if (loginBackground.value) return { url: `/api/backgrounds/${encodeURIComponent(loginBackground.value)}/thumb` }
+  return null
+})
 
 const settingsLoaded = ref(false)
 const saving = ref(false)
@@ -161,6 +177,12 @@ const saveSettings = async () => {
       loadFaviconStatus()
     }
 
+    if (pendingBackground.value instanceof File) {
+      const saved = await saveLoginBackground(pendingBackground.value)
+      loginBackground.value = saved.file
+      pendingBackground.value = null
+    }
+
     // Only the settings this page shows: the colours and backgrounds of the former themes are left as stored
     await saveSettingsById({ logo_width: settings.value.logo_width, show_powered_by: settings.value.show_powered_by })
 
@@ -248,6 +270,28 @@ const handleResetFavicon = async () => {
     .catch((error) => {
       toast.error(t.value('settings.branding.favicon_reset_failed'))
     })
+}
+
+const handleRemoveBackground = async () => {
+  if (pendingBackground.value) {
+    pendingBackground.value = null
+    return
+  }
+  const sure = await confirmDialog.show({
+    title: t.value('dialog.title'),
+    message: t.value('settings.branding.confirm_remove_login_background'),
+    okText: t.value('settings.branding.remove_login_background'),
+    cancelText: t.value('dialog.cancel'),
+    tone: 'danger'
+  })
+  if (!sure) return
+  try {
+    await deleteLoginBackground()
+    loginBackground.value = ''
+    toast.success(t.value('settings.branding.login_background_removed'))
+  } catch (error) {
+    toast.error(t.value('settings.branding.failed_to_save_settings'))
+  }
 }
 
 const updateBrowserLogo = () => {
@@ -338,6 +382,36 @@ defineExpose({
             <small>({{ $t('settings.branding.in_pixels') }})</small>
           </label>
           <OtNumber id="logoWidth" v-model="settings.logo_width" :min="1" :increment="10" />
+        </div>
+      </div>
+    </section>
+
+    <section class="ot-card setting-group" id="sign-in-screen" aria-labelledby="h-sign-in">
+      <h2 class="ot-card-title" id="h-sign-in">{{ $t('settings.branding.sign_in_screen') }}</h2>
+      <div class="branding-fields">
+        <div class="input-container">
+          <label for="loginBackground">{{ $t('settings.branding.login_background') }}</label>
+          <FileInput
+            id="loginBackground"
+            v-model="pendingBackground"
+            accept="image/jpeg, image/png, image/webp"
+            :label="loginBackground ? $t('settings.branding.login_background_set') : $t('settings.branding.login_background_none')"
+            :preview="backgroundPreview"
+          >
+            <template #actions>
+              <button
+                v-if="loginBackground || pendingBackground"
+                type="button"
+                class="ot-act icon-only"
+                @click="handleRemoveBackground"
+                :title="$t('settings.branding.remove_login_background')"
+                :aria-label="$t('settings.branding.remove_login_background')"
+              >
+                <Trash2 aria-hidden="true" />
+              </button>
+            </template>
+          </FileInput>
+          <p class="help-text">{{ $t('settings.branding.login_background_help') }}</p>
         </div>
       </div>
     </section>

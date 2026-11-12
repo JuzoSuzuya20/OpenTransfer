@@ -139,6 +139,8 @@ createApp(App)
     position: POSITION.BOTTOM_RIGHT,
     // Come in from the edge decelerating, leave towards it accelerating (styles/_motion.scss)
     transition: "ot-toast",
+    // The countdown bar stays (its animationend closes the toast) but transparent: no linear motion
+    hideProgressBar: true,
   })
   .use(VueTolgee, { tolgee })
   .provide('showHelpTip', showHelpTip)

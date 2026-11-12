@@ -109,7 +109,8 @@
     "local_account": "Identifiant et mot de passe",
     "forgot_password_question": "Mot de passe oublié ?",
     "sso_required": "Votre organisation vous connecte par son compte : utilisez le bouton ci-dessus.",
-    "sso_domain_note": "Les comptes @{domain} se connectent avec le compte de l'organisation, ci-dessus. Seuls les administrateurs utilisent ce formulaire."
+    "sso_domain_note": "Les comptes @{domain} se connectent avec le compte de l'organisation, ci-dessus. Seuls les administrateurs utilisent ce formulaire.",
+    "login_message_default": "Connectez-vous pour commencer."
   },
   "button": {
     "reverse_share_invite": "Créer une demande de partage inversé",
@@ -176,7 +177,8 @@
       "system_info": "Informations système",
       "visit_github": "GitHub",
       "changelog": "Nouveautés",
-      "report_issue": "Signaler un problème"
+      "report_issue": "Signaler un problème",
+      "fork": "Un fork maintenu d'Erugo, dont le développement s'est arrêté."
     },
     "account": {
       "change_password": "Modifier mon mot de passe",
@@ -257,7 +259,15 @@
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Utiliser mes arrière-plans",
       "use_my_backgrounds_description": "Utiliser les arrière-plans que vous avez téléchargés. Si la case n'est pas cochée, les arrière-plans Unsplash seront utilisés.",
-      "confirm_delete_favicon": "Supprimer le favicon personnalisé ? L’icône d’OpenTransfer revient."
+      "confirm_delete_favicon": "Supprimer le favicon personnalisé ? L’icône d’OpenTransfer revient.",
+      "sign_in_screen": "Écran de connexion",
+      "login_background": "Image de fond",
+      "login_background_none": "Aucune image",
+      "login_background_set": "Image actuelle",
+      "login_background_help": "JPEG, PNG ou WebP, 10 Mo et 8000 px au plus. Affichée derrière l'écran de connexion, assombrie pour que le texte reste lisible.",
+      "remove_login_background": "Retirer l'image de fond",
+      "confirm_remove_login_background": "Retirer l'image derrière l'écran de connexion ?",
+      "login_background_removed": "Image de fond retirée"
     },
     "button": {
       "branding": {
@@ -668,7 +678,7 @@
     "title": {
       "about": "À propos",
       "allShares": "Tous les partages",
-      "branding": "Marque",
+      "branding": "Personnalisation",
       "cloudConnect": "Erugo Connect",
       "emailTemplates": "Modèles d’e-mails",
       "linked_accounts": "Comptes liés",
@@ -950,7 +960,8 @@
   "not_found": {
     "back": "Retour à l'envoi",
     "text": "Cette adresse ne mène à aucune page de l'application.",
-    "title": "Page introuvable"
+    "title": "Page introuvable",
+    "stamp": "Retour à l'expéditeur"
   },
   "send": {
     "stats": {

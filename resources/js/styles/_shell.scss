@@ -60,6 +60,13 @@
     padding-top: 20px;
     padding-bottom: 20px;
   }
+  // Outside the app (sign-in, setup, a share's page) the bar spans the window: the brand in the top
+  // left corner, the language in the top right one, wherever the screen ends
+  .app-header:not(.is-full) & {
+    max-width: none;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 
   @media (max-width: 720px) {
     gap: 8px;
@@ -513,5 +520,21 @@
 
   a {
     font-weight: 700;
+  }
+}
+
+// The image an admin put behind the sign-in screen, under a veil of the page colour so the brand
+// and the text above it stay readable; the cards keep their own ground
+.login-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--ot-page) center / cover no-repeat;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--ot-page) 62%, transparent);
   }
 }

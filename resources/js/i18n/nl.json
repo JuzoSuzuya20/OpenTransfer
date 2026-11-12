@@ -109,7 +109,8 @@
     "local_account": "E-mail en wachtwoord",
     "forgot_password_question": "Wachtwoord vergeten?",
     "sso_required": "Je organisatie meldt je aan met haar account: gebruik de knop hierboven.",
-    "sso_domain_note": "De accounts @{domain} melden zich aan met het account van de organisatie, hierboven. Alleen beheerders gebruiken dit formulier."
+    "sso_domain_note": "De accounts @{domain} melden zich aan met het account van de organisatie, hierboven. Alleen beheerders gebruiken dit formulier.",
+    "login_message_default": "Log in om te beginnen."
   },
   "button": {
     "reverse_share_invite": "Een verzoek tot omgekeerd delen maken",
@@ -176,7 +177,8 @@
       "system_info": "Systeeminformatie",
       "visit_github": "GitHub",
       "changelog": "Wat is er nieuw",
-      "report_issue": "Probleem melden"
+      "report_issue": "Probleem melden",
+      "fork": "Een onderhouden fork van Erugo, waarvan de ontwikkeling is gestopt."
     },
     "account": {
       "change_password": "Mijn wachtwoord wijzigen",
@@ -257,7 +259,15 @@
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Mijn achtergronden gebruiken",
       "use_my_backgrounds_description": "Gebruik de achtergronden die je hebt geüpload. Als dit vakje niet is aangevinkt, worden de achtergronden van Unsplash gebruikt.",
-      "confirm_delete_favicon": "Het eigen favicon verwijderen? Het pictogram van OpenTransfer komt terug."
+      "confirm_delete_favicon": "Het eigen favicon verwijderen? Het pictogram van OpenTransfer komt terug.",
+      "sign_in_screen": "Inlogscherm",
+      "login_background": "Achtergrondafbeelding",
+      "login_background_none": "Geen afbeelding",
+      "login_background_set": "Huidige afbeelding",
+      "login_background_help": "JPEG, PNG of WebP, hoogstens 10 MB en 8000 px. Getoond achter het inlogscherm, verduisterd zodat de tekst leesbaar blijft.",
+      "remove_login_background": "Achtergrondafbeelding verwijderen",
+      "confirm_remove_login_background": "De afbeelding achter het inlogscherm verwijderen?",
+      "login_background_removed": "Achtergrondafbeelding verwijderd"
     },
     "button": {
       "branding": {
@@ -668,7 +678,7 @@
     "title": {
       "about": "Over",
       "allShares": "Alle shares",
-      "branding": "Huisstijl",
+      "branding": "Aanpassing",
       "cloudConnect": "OpenTransfer aansluiten",
       "emailTemplates": "E-mailsjablonen",
       "linked_accounts": "Verwante accounts",
@@ -950,7 +960,8 @@
   "not_found": {
     "back": "Terug naar verzenden",
     "text": "Dit adres leidt naar geen enkele pagina van de applicatie.",
-    "title": "Pagina niet gevonden"
+    "title": "Pagina niet gevonden",
+    "stamp": "Retour afzender"
   },
   "send": {
     "stats": {

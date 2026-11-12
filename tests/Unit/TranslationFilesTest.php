@@ -72,8 +72,9 @@ class TranslationFilesTest extends TestCase
         foreach (glob("$base/en/*.php") as $file) {
             $name = basename($file);
             $this->assertFileExists("$base/$code/$name", "No $name for '$code'");
-            $english = require $file;
-            $texts = require "$base/$code/$name";
+            // Nested files (errors.php, one group per status code) compare key by key
+            $english = self::flatten(require $file);
+            $texts = self::flatten(require "$base/$code/$name");
             $this->assertSame(array_keys($english), array_keys($texts), "Keys of lang/$code/$name");
             foreach ($english as $key => $text) {
                 preg_match_all('/:([a-z_]+)/', $text, $expected);

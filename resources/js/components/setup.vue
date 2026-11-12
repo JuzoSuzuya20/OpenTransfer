@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import OtPassword from './layout/OtPassword.vue'
 import { UserPlus, LogIn, Settings } from 'lucide-vue-next'
 import { getApiUrl } from '../utils'
 import { createFirstUser, saveFirstRunSettings, login } from '../api'
@@ -203,8 +204,7 @@ const skipAndLogin = async () => {
           <!-- password -->
           <div class="input-container mt-2">
             <label for="password">{{ t('setup.first_user.password') }}</label>
-            <input
-              type="password"
+            <OtPassword
               autocomplete="new-password"
               v-model="newUser.password"
               required
@@ -220,8 +220,7 @@ const skipAndLogin = async () => {
           <!-- confirm password -->
           <div class="input-container mt-2">
             <label for="password_confirmation">{{ t('setup.first_user.password_confirmation') }}</label>
-            <input
-              type="password"
+            <OtPassword
               autocomplete="new-password"
               v-model="newUser.password_confirmation"
               required

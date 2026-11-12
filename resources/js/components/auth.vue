@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import OtPassword from './layout/OtPassword.vue'
+import { loginMessageFor } from '../lib/loginMessage'
 import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
 import { domData } from '../domData'
@@ -51,7 +53,8 @@ const password = ref('')
 const password_confirmation = ref('')
 const verificationCode = ref('')
 const passwordInput = ref(null)
-const loginMessage = domData().login_message
+// Shown in the reader's language unless an admin wrote one
+const loginMessage = computed(() => loginMessageFor(domData().login_message, t.value('auth.login_message_default')))
 const applicationName = domData().application_name
 // The accounts of these domains sign in through the identity provider: the screen says so as they type
 const ssoDomain = computed(() => ssoDomainOf(email.value, domData().sso_required_domains))
@@ -579,8 +582,7 @@ const switchToLogin = () => {
           </div>
           <div class="input-container">
             <label for="password">{{ $t('auth.password') }}</label>
-            <input
-              type="password"
+            <OtPassword
               id="password"
               v-model="password"
               autocomplete="current-password"
@@ -640,13 +642,12 @@ const switchToLogin = () => {
         </div>
         <div class="input-container">
           <label for="register_password">{{ $t('auth.password') }}</label>
-          <input id="register_password" type="password" autocomplete="new-password" v-model="password" />
+          <OtPassword id="register_password" autocomplete="new-password" v-model="password" />
         </div>
         <div class="input-container">
           <label for="register_password_confirmation">{{ $t('auth.confirm_password') }}</label>
-          <input
+          <OtPassword
             id="register_password_confirmation"
-            type="password"
             autocomplete="new-password"
             v-model="password_confirmation"
             @keyup.enter="attemptRegister"
@@ -687,10 +688,9 @@ const switchToLogin = () => {
       </div>
       <div class="input-container">
         <label for="reset_password">{{ t('auth.password') }}</label>
-        <input
+        <OtPassword
           id="reset_password"
           ref="passwordInput"
-          type="password"
           autocomplete="new-password"
           v-model="password"
           @keyup.enter="attemptResetPassword"
@@ -698,9 +698,8 @@ const switchToLogin = () => {
       </div>
       <div class="input-container">
         <label for="reset_password_confirmation">{{ t('auth.confirm_password') }}</label>
-        <input
+        <OtPassword
           id="reset_password_confirmation"
-          type="password"
           autocomplete="new-password"
           v-model="password_confirmation"
           @keyup.enter="attemptResetPassword"

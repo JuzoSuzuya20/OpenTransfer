@@ -32,6 +32,10 @@ const settings = domData()
 const applicationName = settings.application_name
 const allowFileRequests = settings.allow_reverse_shares === true
 const showPoweredBy = settings.show_powered_by === true
+// The image an admin put behind the sign-in screen (Customization): only a name this app wrote
+const loginBackground = /^login-[a-z0-9]{16}\.(jpg|png|webp)$/.test(settings.login_background || '')
+  ? `/api/backgrounds/${settings.login_background}`
+  : null
 const logoWidth = settings.logo_width
 const defaultLogo = ref(settings.default_logo !== false)
 const logoTimestamp = ref(Date.now())
@@ -231,6 +235,15 @@ onBeforeUnmount(() => {
 <template>
   <TolgeeProvider>
     <a class="skip-link" href="#main">{{ t('nav.skip_to_content') }}</a>
+
+    <Transition name="ot-backdrop" appear>
+      <div
+        v-if="loginBackground && showAuth"
+        class="login-backdrop"
+        :style="{ backgroundImage: `url('${loginBackground}')` }"
+        aria-hidden="true"
+      ></div>
+    </Transition>
 
     <AppHeader
       :variant="headerVariant"

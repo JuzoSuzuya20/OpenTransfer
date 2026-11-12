@@ -49,6 +49,7 @@ const databaseDisplayName = computed(() => {
     <section class="ot-card about-card" aria-labelledby="h-about">
       <h2 class="ot-card-title" id="h-about">{{ $t('settings.about.title') }}</h2>
       <p class="about-intro">{{ $t('settings.about.intro') }}</p>
+      <p class="about-fork">{{ $t('settings.about.fork') }}</p>
       <p class="about-credit">
         {{ $t('settings.about.created_by') }}
         <a href="https://github.com/JuzoSuzuya20" target="_blank" rel="noopener noreferrer">JuzoSuzuya20</a>
@@ -174,6 +175,7 @@ const databaseDisplayName = computed(() => {
 .about-intro {
   color: var(--ot-text);
 }
+.about-fork,
 .about-credit,
 .about-loading {
   font-size: 0.8125rem;

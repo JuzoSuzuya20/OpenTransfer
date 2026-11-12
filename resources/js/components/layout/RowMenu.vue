@@ -1,5 +1,7 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+// The "…" menu of a list row. The panel is drawn over the page, under the button or above it when
+// the window ends; arrows move between its items, Escape or leaving it closes it.
+import { ref, nextTick, onBeforeUnmount } from 'vue'
 import { MoreHorizontal } from 'lucide-vue-next'
 
 defineProps({
@@ -9,67 +11,119 @@ defineProps({
 })
 
 const open = ref(false)
-const root = ref(null)
+const trigger = ref(null)
+const panel = ref(null)
+const panelStyle = ref({})
+const above = ref(false)
 
-const toggle = async () => {
-  open.value = !open.value
-  if (open.value) {
-    await nextTick()
-    root.value?.querySelector('.row-menu-panel button:not(:disabled)')?.focus()
-  }
+const place = () => {
+  if (!trigger.value) return
+  const rect = trigger.value.getBoundingClientRect()
+  const height = panel.value?.offsetHeight || 220
+  above.value = window.innerHeight - rect.bottom < height + 12 && rect.top > height + 12
+  const right = Math.max(8, window.innerWidth - rect.right)
+  panelStyle.value = above.value
+    ? { right: `${right}px`, bottom: `${window.innerHeight - rect.top + 6}px` }
+    : { right: `${right}px`, top: `${rect.bottom + 6}px` }
 }
-const run = (item) => {
+
+const focusables = () => [...(panel.value?.querySelectorAll('.row-menu-item:not(:disabled)') ?? [])]
+
+const show = async () => {
+  open.value = true
+  place()
+  await nextTick()
+  place()
+  focusables()[0]?.focus()
+  window.addEventListener('resize', place)
+  window.addEventListener('scroll', place, true)
+  document.addEventListener('pointerdown', onOutside, true)
+}
+const hide = (giveBackFocus = false) => {
+  if (!open.value) return
   open.value = false
+  window.removeEventListener('resize', place)
+  window.removeEventListener('scroll', place, true)
+  document.removeEventListener('pointerdown', onOutside, true)
+  if (giveBackFocus) trigger.value?.focus()
+}
+onBeforeUnmount(() => hide())
+
+const toggle = () => (open.value ? hide() : show())
+const run = (item) => {
+  hide(true)
   item.action()
 }
-const onDocumentClick = (event) => {
-  if (open.value && !root.value?.contains(event.target)) open.value = false
+const onOutside = (event) => {
+  if (trigger.value?.contains(event.target) || panel.value?.contains(event.target)) return
+  hide()
+}
+// The focus leaving the menu (Tab) closes it
+const onFocusOut = (event) => {
+  if (!panel.value?.contains(event.relatedTarget) && event.relatedTarget !== trigger.value) hide()
 }
 const onKeydown = (event) => {
-  if (open.value && event.key === 'Escape') {
-    open.value = false
-    root.value?.querySelector('.row-menu-trigger')?.focus()
+  const list = focusables()
+  const at = list.indexOf(document.activeElement)
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    event.stopPropagation()
+    hide(true)
+  } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault()
+    const step = event.key === 'ArrowDown' ? 1 : -1
+    list[(at + step + list.length) % list.length]?.focus()
+  } else if (event.key === 'Home' || event.key === 'End') {
+    event.preventDefault()
+    list[event.key === 'Home' ? 0 : list.length - 1]?.focus()
   }
 }
-onMounted(() => {
-  document.addEventListener('click', onDocumentClick)
-  document.addEventListener('keydown', onKeydown)
-})
-onBeforeUnmount(() => {
-  document.removeEventListener('click', onDocumentClick)
-  document.removeEventListener('keydown', onKeydown)
-})
 </script>
 
 <template>
-  <div class="row-menu" ref="root">
+  <div class="row-menu">
     <button
+      ref="trigger"
       type="button"
       class="ot-act icon-only row-menu-trigger"
       :aria-label="label"
       :title="label"
-      aria-haspopup="true"
+      aria-haspopup="menu"
       :aria-expanded="open"
       @click="toggle"
     >
       <MoreHorizontal aria-hidden="true" />
     </button>
-    <Transition name="ot-pop">
-    <div class="row-menu-panel" v-show="open">
-      <button
-        v-for="item in items"
-        :key="item.label"
-        type="button"
-        class="row-menu-item"
-        :class="{ 'is-danger': item.danger }"
-        :disabled="item.disabled"
-        @click="run(item)"
-      >
-        <component :is="item.icon" v-if="item.icon" aria-hidden="true" />
-        {{ item.label }}
-      </button>
-    </div>
-    </Transition>
+    <Teleport to="body">
+      <Transition name="ot-pop">
+        <div
+          v-if="open"
+          ref="panel"
+          class="row-menu-panel"
+          :class="{ 'is-above': above }"
+          role="menu"
+          :aria-label="label"
+          :style="panelStyle"
+          @keydown="onKeydown"
+          @focusout="onFocusOut"
+          @mousedown.prevent
+        >
+          <button
+            v-for="item in items"
+            :key="item.label"
+            type="button"
+            role="menuitem"
+            class="row-menu-item"
+            :class="{ 'is-danger': item.danger }"
+            :disabled="item.disabled"
+            @click="run(item)"
+          >
+            <component :is="item.icon" v-if="item.icon" aria-hidden="true" />
+            {{ item.label }}
+          </button>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -77,11 +131,10 @@ onBeforeUnmount(() => {
 .row-menu {
   position: relative;
 }
+// Drawn over the page (teleported), so a card that clips its content cannot cut it
 .row-menu-panel {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  z-index: 50;
+  position: fixed;
+  z-index: 900;
   min-width: 230px;
   padding: 6px;
   background: var(--ot-card);
@@ -89,6 +142,10 @@ onBeforeUnmount(() => {
   border-radius: var(--ot-radius-lg);
   box-shadow: var(--ot-shadow);
   transform-origin: top right;
+
+  &.is-above {
+    transform-origin: bottom right;
+  }
 }
 .row-menu-item {
   display: flex;

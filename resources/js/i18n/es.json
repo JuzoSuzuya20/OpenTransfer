@@ -109,7 +109,8 @@
     "local_account": "Correo y contraseña",
     "forgot_password_question": "¿Ha olvidado su contraseña?",
     "sso_required": "Su organización le identifica con su propia cuenta: use el botón de arriba.",
-    "sso_domain_note": "Las cuentas @{domain} inician sesión con la cuenta de la organización, arriba. Solo los administradores usan este formulario."
+    "sso_domain_note": "Las cuentas @{domain} inician sesión con la cuenta de la organización, arriba. Solo los administradores usan este formulario.",
+    "login_message_default": "Inicie sesión para empezar."
   },
   "button": {
     "reverse_share_invite": "Crear una solicitud de archivos",
@@ -176,7 +177,8 @@
       "version": "Versión",
       "visit_github": "GitHub",
       "changelog": "Novedades",
-      "report_issue": "Informar de un problema"
+      "report_issue": "Informar de un problema",
+      "fork": "Un fork mantenido de Erugo, cuyo desarrollo se ha detenido."
     },
     "account": {
       "change_password": "Cambiar mi contraseña",
@@ -257,7 +259,15 @@
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Usar mis fondos",
       "use_my_backgrounds_description": "Usa los fondos que ha subido. Si no está marcado, se usan los fondos de Unsplash.",
-      "confirm_delete_favicon": "¿Eliminar el favicon propio? Vuelve el icono de OpenTransfer."
+      "confirm_delete_favicon": "¿Eliminar el favicon propio? Vuelve el icono de OpenTransfer.",
+      "sign_in_screen": "Pantalla de inicio de sesión",
+      "login_background": "Imagen de fondo",
+      "login_background_none": "Sin imagen",
+      "login_background_set": "Imagen actual",
+      "login_background_help": "JPEG, PNG o WebP, 10 MB y 8000 px como máximo. Se muestra detrás de la pantalla de inicio de sesión, oscurecida para que el texto siga siendo legible.",
+      "remove_login_background": "Quitar la imagen de fondo",
+      "confirm_remove_login_background": "¿Quitar la imagen de detrás de la pantalla de inicio de sesión?",
+      "login_background_removed": "Imagen de fondo quitada"
     },
     "button": {
       "branding": {
@@ -668,7 +678,7 @@
     "title": {
       "about": "Acerca de",
       "allShares": "Todos los envíos",
-      "branding": "Marca",
+      "branding": "Personalización",
       "cloudConnect": "Erugo Connect",
       "emailTemplates": "Plantillas de correo",
       "linked_accounts": "Cuentas vinculadas",
@@ -950,7 +960,8 @@
   "not_found": {
     "back": "Volver a la página de envío",
     "text": "Esta dirección no lleva a ninguna página de la aplicación.",
-    "title": "Página no encontrada"
+    "title": "Página no encontrada",
+    "stamp": "Devuelto al remitente"
   },
   "send": {
     "stats": {

@@ -112,3 +112,58 @@
     transform: rotate(360deg);
   }
 }
+
+// The error pages (resources/views/errors): the code as the address of a slip that came back,
+// stamped once it has arrived
+.status-page {
+  .status-home {
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .error-card {
+    padding-top: 28px;
+  }
+}
+.error-code {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+  line-height: 1;
+
+  .error-number {
+    display: block;
+    font-size: clamp(4.5rem, 14vw, 6rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--ot-heading);
+    font-variant-numeric: tabular-nums;
+  }
+  .error-stamp {
+    position: absolute;
+    right: -18%;
+    bottom: -6px;
+    padding: 5px 10px;
+    border: 2px solid var(--ot-accent);
+    border-radius: var(--ot-btn-radius);
+    background: color-mix(in srgb, var(--ot-card) 85%, transparent);
+    color: var(--ot-accent-text);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transform: rotate(-8deg);
+    animation: ot-error-stamp 520ms var(--ot-ease-spring) 240ms both;
+  }
+}
+@keyframes ot-error-stamp {
+  from {
+    opacity: 0;
+    transform: rotate(calc(-8deg - 6deg * var(--ot-motion))) scale(calc(1 + 0.5 * var(--ot-motion)));
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-8deg);
+  }
+}

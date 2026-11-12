@@ -8,6 +8,7 @@ import ShareRow from '../components/layout/ShareRow.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import { getMyShares, pruneExpiredShares } from '../api'
 import { useConfirmDialog } from '../composables/useConfirmDialog'
+import { useLiveRefresh } from '../composables/useLiveRefresh'
 import { niceFileSize } from '../utils'
 import { shareState, monthSummary, groupByWeek } from '../lib/shares'
 
@@ -23,6 +24,8 @@ const showDeleted = ref(localStorage.getItem('showDeletedShares') === 'true')
 const load = async () => {
   try {
     shares.value = await getMyShares(showDeleted.value)
+    // The states are read against the time of the data: a share just expired shows as expired
+    now.value = new Date()
   } catch (error) {
     toast.error(t.value('shares.load_failed'))
   } finally {
@@ -31,7 +34,8 @@ const load = async () => {
 }
 onMounted(load)
 
-const now = ref(new Date())
+// Downloads and expiries change without this page: it stays current while it is open
+const { now } = useLiveRefresh(load)
 const stateOf = (share) => shareState(share, now.value)
 
 const FILTERS = {

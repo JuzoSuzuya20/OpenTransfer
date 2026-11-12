@@ -1,6 +1,7 @@
 <script setup>
 // The second factor of the account: authenticator app, passkeys and recovery codes.
 import { ref, computed, onMounted, nextTick } from 'vue'
+import OtPassword from '../layout/OtPassword.vue'
 import { pinLeaving } from '../../lib/motion'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
@@ -172,7 +173,7 @@ const confirmSetup = async (code) => {
       <form class="two-factor-panel" v-if="pendingAction" @submit.prevent="submitPassword">
         <div class="input-container">
           <label for="two_factor_password">{{ $t('settings.two_factor.confirm_password') }}</label>
-          <input id="two_factor_password" ref="passwordInput" type="password" autocomplete="current-password" v-model="password" />
+          <OtPassword id="two_factor_password" ref="passwordInput" autocomplete="current-password" v-model="password" />
         </div>
         <div class="factor-actions">
           <button type="submit" :disabled="busy || !password">{{ $t('settings.two_factor.continue') }}</button>

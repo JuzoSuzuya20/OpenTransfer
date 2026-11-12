@@ -67,40 +67,33 @@ const diskTone = computed(() => {
   <p class="stats-loading" v-if="loading && !stats">{{ $t('settings.stats.loading') }}</p>
 
   <div class="stats" v-if="stats" :class="{ 'is-loading': loading }">
-    <div class="send-stats stats-figures">
-      <div class="ot-card ot-card--tight ot-stat">
-        <h2 class="ot-card-title">{{ $t('settings.stats.nav.storage') }}</h2>
-        <div class="ot-stat-value">
-          <span class="ot-figure is-accent">{{ stats.storage.used_formatted }}</span>
-          <span class="ot-stat-sub">
-            {{ $t('settings.stats.figures.storage_sub', { percent: stats.storage.shares_usage_percent, free: stats.storage.disk_free_formatted }) }}
-          </span>
-        </div>
+    <!-- The four headline figures in one band: aligned on top, no card left with a hole -->
+    <section class="ot-card stats-band" :aria-label="$t('settings.title.stats')">
+      <div class="stats-band-item">
+        <h2>{{ $t('settings.stats.nav.storage') }}</h2>
+        <span class="ot-figure is-accent">{{ stats.storage.used_formatted }}</span>
+        <span class="ot-stat-sub">
+          {{ $t('settings.stats.figures.storage_sub', { percent: stats.storage.shares_usage_percent, free: stats.storage.disk_free_formatted }) }}
+        </span>
       </div>
-      <div class="ot-card ot-card--tight ot-stat">
-        <h2 class="ot-card-title">{{ $t('settings.stats.shares.active_shares') }}</h2>
-        <div class="ot-stat-value">
-          <span class="ot-figure is-success">{{ stats.shares.active }}</span>
-          <span class="ot-stat-sub">{{ $t('settings.stats.figures.shares_sub', { expired: stats.shares.expired, total: stats.shares.total }) }}</span>
-        </div>
+      <div class="stats-band-item">
+        <h2>{{ $t('settings.stats.shares.active_shares') }}</h2>
+        <span class="ot-figure is-success">{{ stats.shares.active }}</span>
+        <span class="ot-stat-sub">{{ $t('settings.stats.figures.shares_sub', { expired: stats.shares.expired, total: stats.shares.total }) }}</span>
       </div>
-      <div class="ot-card ot-card--tight ot-stat">
-        <h2 class="ot-card-title">{{ $t('settings.stats.nav.downloads') }}</h2>
-        <div class="ot-stat-value">
-          <span class="ot-figure is-accent">{{ stats.downloads.total_in_period }}</span>
-          <span class="ot-stat-sub">
-            {{ $t('settings.stats.figures.downloads_sub', { days: selectedDays, unique: stats.downloads.unique_downloaders }) }}
-          </span>
-        </div>
+      <div class="stats-band-item">
+        <h2>{{ $t('settings.stats.nav.downloads') }}</h2>
+        <span class="ot-figure is-accent">{{ stats.downloads.total_in_period }}</span>
+        <span class="ot-stat-sub">
+          {{ $t('settings.stats.figures.downloads_sub', { days: selectedDays, unique: stats.downloads.unique_downloaders }) }}
+        </span>
       </div>
-      <div class="ot-card ot-card--tight ot-stat">
-        <h2 class="ot-card-title">{{ $t('settings.stats.nav.users') }}</h2>
-        <div class="ot-stat-value">
-          <span class="ot-figure">{{ stats.users.total }}</span>
-          <span class="ot-stat-sub">{{ $t('settings.stats.figures.users_sub', { admins: stats.users.admins, guests: stats.users.guests }) }}</span>
-        </div>
+      <div class="stats-band-item">
+        <h2>{{ $t('settings.stats.nav.users') }}</h2>
+        <span class="ot-figure">{{ stats.users.total }}</span>
+        <span class="ot-stat-sub">{{ $t('settings.stats.figures.users_sub', { admins: stats.users.admins, guests: stats.users.guests }) }}</span>
       </div>
-    </div>
+    </section>
 
     <div class="stats-columns">
       <div class="stats-column is-wide">
@@ -313,6 +306,46 @@ const diskTone = computed(() => {
 </template>
 
 <style scoped lang="scss">
+.stats-band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.stats-band-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 18px 20px 21px;
+
+  & + & {
+    border-left: 1px solid var(--ot-line-soft);
+  }
+  h2 {
+    margin: 0 0 2px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--ot-text);
+  }
+  .ot-stat-sub {
+    font-size: 0.8125rem;
+    color: var(--ot-muted);
+  }
+
+  @media (max-width: 900px) {
+    &:nth-child(3) {
+      border-left: 0;
+    }
+    &:nth-child(n + 3) {
+      border-top: 1px solid var(--ot-line-soft);
+    }
+  }
+}
+
 .stats {
   display: flex;
   flex-direction: column;

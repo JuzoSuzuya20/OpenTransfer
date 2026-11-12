@@ -28,6 +28,23 @@ class AppServiceProvider extends ServiceProvider
         // Use a view composer for email templates so settings are loaded fresh each time.
         // This is important for queue workers which are long-running processes -
         // View::share() would capture stale values from when the worker started.
+        // The error pages (resources/views/errors): the language and the brand of the instance,
+        // set before the page reads its texts. An error page must show even when the database
+        // does not answer: it then falls back on English and the OpenTransfer mark.
+        View::composer(['errors::*', 'errors.*'], function ($view) {
+            try {
+                $locale = \App\Support\Locales::default();
+                app()->setLocale($locale);
+                $view->with([
+                    'errorLocale' => $locale,
+                    'errorSettings' => app(SettingsService::class)->getMany(['application_name', 'logo_width']),
+                    'errorDefaultLogo' => usesDefaultLogo(),
+                ]);
+            } catch (\Throwable $e) {
+                $view->with(['errorLocale' => app()->getLocale()]);
+            }
+        });
+
         View::composer('emails.*', function ($view) {
             try {
                 $settingsService = app(SettingsService::class);

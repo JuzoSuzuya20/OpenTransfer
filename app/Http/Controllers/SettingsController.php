@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Utils\FileHelper;
 use App\Services\SettingsService;
+use Illuminate\Support\Str;
 class SettingsController extends Controller
 {
     public function write(Request $request)
@@ -279,6 +280,70 @@ class SettingsController extends Controller
                 'settings' => $settings,
             ]
         ]);
+    }
+
+    // The image behind the sign-in screen. An image only, never an SVG (it would carry script), of a
+    // bounded weight and size so that resizing it cannot exhaust the memory. Stored under a random
+    // name (no stale cache, nothing guessed from the upload's name); the previous one goes.
+    public function writeLoginBackground(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'background' => 'required|file|image|mimes:jpg,jpeg,png,webp|max:10240|dimensions:max_width=8000,max_height=8000',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $image = $request->file('background');
+        $extension = strtolower($image->extension()) === 'jpeg' ? 'jpg' : strtolower($image->extension());
+        $file = 'login-' . Str::lower(Str::random(16)) . '.' . $extension;
+
+        if (!Storage::disk('backgrounds')->putFileAs('', $image, $file)) {
+            return response()->json(['status' => 'error', 'message' => 'Failed to save the image'], 500);
+        }
+
+        $previous = $this->setLoginBackground($file);
+        $this->removeBackgroundFile($previous);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Sign-in background saved',
+            'data' => ['file' => $file],
+        ]);
+    }
+
+    public function deleteLoginBackground()
+    {
+        $this->removeBackgroundFile($this->setLoginBackground(''));
+
+        return response()->json(['status' => 'success', 'message' => 'Sign-in background removed']);
+    }
+
+    // Saves the new value and returns the file it replaces
+    private function setLoginBackground(string $file): string
+    {
+        $setting = Setting::firstOrCreate(['key' => 'login_background'], ['value' => '', 'group' => 'ui.branding']);
+        $previous = (string) $setting->value;
+        $setting->previous_value = $previous;
+        $setting->value = $file;
+        $setting->save();
+        app(SettingsService::class)->clearCache();
+
+        return $previous;
+    }
+
+    private function removeBackgroundFile(string $file): void
+    {
+        // Only a file this endpoint wrote: never a path
+        if (!preg_match('/^login-[a-z0-9]{16}\.(jpg|png|webp)$/', $file)) {
+            return;
+        }
+        $disk = Storage::disk('backgrounds');
+        $disk->delete([$file, 'cache/' . $file, 'cache/thumbs/' . pathinfo($file, PATHINFO_FILENAME) . '.webp']);
     }
 
     public function writeLogo(Request $request)

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, defineExpose, inject, computed, nextTick, watch } from 'vue'
+import OtPassword from '../layout/OtPassword.vue'
 import {
   Settings,
   Tag,
@@ -33,6 +34,7 @@ import HelpTip from '../helpTip.vue'
 import AppLink from '../layout/AppLink.vue'
 import OtSelect from '../layout/OtSelect.vue'
 import OtNumber from '../layout/OtNumber.vue'
+import { SHIPPED_LOGIN_MESSAGE } from '../../lib/loginMessage'
 
 import { useToast } from 'vue-toastification'
 import { mapSettings } from '../../utils'
@@ -299,6 +301,8 @@ const loadSettings = async () => {
       ...mapSettings(await getSettingsByGroup('system.*')),
       ...mapSettings(await getSettingsByGroup('ui.*'))
     }
+    // The message installed with the app shows as empty: the field's placeholder is its translation
+    if (settings.value.login_message === SHIPPED_LOGIN_MESSAGE) settings.value.login_message = ''
 
     settingsLoaded.value = true
   } catch (error) {
@@ -480,7 +484,7 @@ defineExpose({
                     type="text"
                     id="login_message"
                     v-model="settings.login_message"
-                    placeholder="Login to your account to upload files."
+                    :placeholder="$t('auth.login_message_default')"
                   />
                   <p class="help-text">{{ $t('settings.system.login_message_description') }}</p>
                 </div>
@@ -749,7 +753,7 @@ defineExpose({
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_password">{{ $t('settings.system.smtp_password') }}</label>
-                  <input type="password" id="smtp_password" v-model="settings.smtp_password" autocomplete="new-password" />
+                  <OtPassword id="smtp_password" v-model="settings.smtp_password" autocomplete="new-password" />
                   <p class="help-text">{{ $t('settings.system.smtp_password_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">

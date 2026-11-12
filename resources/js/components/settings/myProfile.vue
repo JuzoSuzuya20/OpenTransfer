@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, defineExpose, nextTick } from 'vue'
+import OtPassword from '../layout/OtPassword.vue'
 import { getMyProfile, updateMyProfile, getAvailableAuthProviders, unlinkProvider } from '../../api'
 import { CircleX, UserRoundCheck, UserRoundPen, Fingerprint, Link, Unlink, Save } from 'lucide-vue-next'
 import UserAvatar from '../layout/UserAvatar.vue'
@@ -250,10 +251,10 @@ const handleUnlinkProvider = async (provider) => {
 
       <div class="input-container">
         <label for="current_password">{{ $t('settings.users.current_password') }}</label>
-        <input
-          type="password"
+        <OtPassword
+          id="current_password"
           v-model="editUser.current_password"
-          :placeholder="$t('settings.users.current_password')"
+          autocomplete="current-password"
           required
           :class="{ error: errors.current_password }"
         />
@@ -263,10 +264,10 @@ const handleUnlinkProvider = async (provider) => {
       </div>
       <div class="input-container">
         <label for="password">{{ $t('settings.users.password') }}</label>
-        <input
-          type="password"
+        <OtPassword
+          id="password"
           v-model="editUser.password"
-          :placeholder="$t('settings.users.password')"
+          autocomplete="new-password"
           required
           :class="{ error: errors.password }"
         />
@@ -276,10 +277,10 @@ const handleUnlinkProvider = async (provider) => {
       </div>
       <div class="input-container">
         <label for="password_confirmation">{{ $t('settings.users.password_confirmation') }}</label>
-        <input
-          type="password"
+        <OtPassword
+          id="password_confirmation"
           v-model="editUser.password_confirmation"
-          :placeholder="$t('settings.users.password_confirmation')"
+          autocomplete="new-password"
           required
           :class="{ error: errors.password_confirmation }"
         />

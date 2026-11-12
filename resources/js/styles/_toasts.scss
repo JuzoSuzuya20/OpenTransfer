@@ -1,5 +1,6 @@
 // Notifications: a small card of the app at the bottom right, its state told by an icon on its
-// tint and the 3 px line at the foot of every card. No countdown bar: it ran at a constant speed.
+// tint and the 3 px line at the foot of every card. The countdown bar is transparent
+// (hideProgressBar in app.js): it must keep running, its animationend closes the toast.
 // vue-toastification loads its stylesheet after this one, hence the !important.
 
 .Vue-Toastification__container.bottom-right {
@@ -108,9 +109,6 @@ button.Vue-Toastification__close-button {
   }
 }
 
-.Vue-Toastification__progress-bar {
-  display: none !important;
-}
 
 @media (max-width: 600px) {
   .Vue-Toastification__container.bottom-right {

@@ -80,21 +80,69 @@
   }
 }
 
-// From one page to the next: the old one goes at once, the new one settles
+// From one page to the next: the old one goes at once, the new one fades in while its blocks
+// rise one after the other (below)
 .ot-page-enter-active {
-  transition:
-    opacity var(--ot-dur) var(--ot-ease-out),
-    transform var(--ot-dur-slow) var(--ot-ease-out);
+  transition: opacity var(--ot-dur-fast) var(--ot-ease-out);
 }
 .ot-page-leave-active {
   transition: opacity 90ms var(--ot-ease-in);
 }
-.ot-page-enter-from {
-  opacity: 0;
-  transform: translateY(calc(8px * var(--ot-motion)));
-}
+.ot-page-enter-from,
 .ot-page-leave-to {
   opacity: 0;
+}
+
+// --- Opening: the site and each page
+// The header comes down into place once, when the site opens
+.app-header {
+  animation: ot-header-in 480ms var(--ot-ease-out) both;
+}
+@keyframes ot-header-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-10px * var(--ot-motion)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+// A page opens from the top: its title, then each of its blocks, 50 ms apart (capped). The same
+// for the sign-in screen, the setup, a share's page and the sections of the administration.
+.page > *,
+.admin-sections > *,
+.system-settings > *,
+.stats > *,
+.send > *,
+.download > *,
+.auth > *,
+.auth-container-inner.is-sign-in > *,
+.not-found > * {
+  animation: ot-rise-open 460ms var(--ot-ease-out) both;
+
+  &:nth-child(2) {
+    animation-delay: 50ms;
+  }
+  &:nth-child(3) {
+    animation-delay: 100ms;
+  }
+  &:nth-child(4) {
+    animation-delay: 150ms;
+  }
+  &:nth-child(n + 5) {
+    animation-delay: 200ms;
+  }
+}
+@keyframes ot-rise-open {
+  from {
+    opacity: 0;
+    transform: translateY(calc(14px * var(--ot-motion)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 // Notifications come in from their edge and leave towards it
@@ -197,6 +245,18 @@
 // Something that waits turns on itself, speeding up and slowing down on each turn
 .spin {
   animation: spin 0.9s var(--ot-ease-loop) infinite;
+}
+
+// The sign-in background fades in slowly, the one time it appears
+.ot-backdrop-enter-active {
+  transition: opacity 700ms var(--ot-ease-out);
+}
+.ot-backdrop-leave-active {
+  transition: opacity var(--ot-dur) var(--ot-ease-in);
+}
+.ot-backdrop-enter-from,
+.ot-backdrop-leave-to {
+  opacity: 0;
 }
 
 // --- Lists: rows arrive one after the other (the wait is capped), leave sideways at once, and the

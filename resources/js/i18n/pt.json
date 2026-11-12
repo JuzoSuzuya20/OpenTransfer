@@ -109,7 +109,8 @@
     "verification_code_sent": "Enviámos um código de verificação para {email}. Introduza-o abaixo.",
     "verification_failed": "A verificação falhou",
     "verify_email": "Verificar e-mail",
-    "verifying": "A verificar..."
+    "verifying": "A verificar...",
+    "login_message_default": "Inicie sessão para começar."
   },
   "button": {
     "reverse_share_invite": "Enviar um pedido de partilha",
@@ -176,7 +177,8 @@
       "system_info": "Informações do sistema",
       "visit_github": "GitHub",
       "changelog": "Novidades",
-      "report_issue": "Reportar um problema"
+      "report_issue": "Reportar um problema",
+      "fork": "Um fork mantido do Erugo, cujo desenvolvimento parou."
     },
     "account": {
       "change_password": "Alterar a minha palavra-passe",
@@ -257,7 +259,15 @@
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Usar as Minhas Imagens de Fundo",
       "use_my_backgrounds_description": "Usar as imagens de fundo que transferiu. Se não for selecionado, serão utilizadas as imagens de fundo de Unsplash.",
-      "confirm_delete_favicon": "Eliminar o favicon personalizado? Volta o ícone do OpenTransfer."
+      "confirm_delete_favicon": "Eliminar o favicon personalizado? Volta o ícone do OpenTransfer.",
+      "sign_in_screen": "Ecrã de início de sessão",
+      "login_background": "Imagem de fundo",
+      "login_background_none": "Sem imagem",
+      "login_background_set": "Imagem atual",
+      "login_background_help": "JPEG, PNG ou WebP, no máximo 10 MB e 8000 px. Mostrada atrás do ecrã de início de sessão, escurecida para que o texto continue legível.",
+      "remove_login_background": "Remover a imagem de fundo",
+      "confirm_remove_login_background": "Remover a imagem atrás do ecrã de início de sessão?",
+      "login_background_removed": "Imagem de fundo removida"
     },
     "button": {
       "branding": {
@@ -668,7 +678,7 @@
     "title": {
       "about": "Sobre",
       "allShares": "Todas as partilhas",
-      "branding": "Marca",
+      "branding": "Personalização",
       "cloudConnect": "Erugo Connect",
       "emailTemplates": "Modelos de e-mail",
       "linked_accounts": "Contas Conectadas",
@@ -950,7 +960,8 @@
   "not_found": {
     "back": "Voltar ao envio",
     "text": "Este endereço não leva a nenhuma página da aplicação.",
-    "title": "Página não encontrada"
+    "title": "Página não encontrada",
+    "stamp": "Devolvido ao remetente"
   },
   "send": {
     "stats": {
