@@ -110,6 +110,7 @@ const downloadLimitOptions = [1, 3, 5, 10, 25, 50]
 const recipientInput = ref('')
 const recipientError = ref('')
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const MAX_RECIPIENTS = 50
 const addRecipientFromInput = () => {
   const addresses = recipientInput.value.split(/[\s,;]+/).filter(Boolean)
   if (addresses.length === 0) {
@@ -121,10 +122,18 @@ const addRecipientFromInput = () => {
     recipientError.value = t.value('send.recipient_invalid', { address: invalid })
     return
   }
-  for (const address of addresses) {
-    if (!recipients.value.some((recipient) => recipient.email.toLowerCase() === address.toLowerCase())) {
-      recipients.value.push({ id: simpleUUID(), name: address, email: address })
-    }
+  const fresh = addresses.filter(
+    (address, index) =>
+      addresses.findIndex((other) => other.toLowerCase() === address.toLowerCase()) === index &&
+      !recipients.value.some((recipient) => recipient.email.toLowerCase() === address.toLowerCase())
+  )
+  // The server sends one share to MAX_RECIPIENTS people at most
+  if (recipients.value.length + fresh.length > MAX_RECIPIENTS) {
+    recipientError.value = t.value('send.recipients_max', { max: MAX_RECIPIENTS })
+    return
+  }
+  for (const address of fresh) {
+    recipients.value.push({ id: simpleUUID(), name: address, email: address })
   }
   recipientInput.value = ''
   recipientError.value = ''

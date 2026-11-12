@@ -1088,7 +1088,8 @@
     "link_ready": "De link is klaar",
     "another": "Nog een share versturen",
     "see_in_my_shares": "Bekijken in Mijn shares",
-    "drop_more": "Zet meer bestanden neer, of"
+    "drop_more": "Zet meer bestanden neer, of",
+    "recipients_max": "Een share gaat naar hoogstens {max} ontvangers."
   },
   "shares": {
     "this_month": "Deze maand",

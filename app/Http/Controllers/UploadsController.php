@@ -82,7 +82,11 @@ class UploadsController extends Controller
       'description' => ['max:500'],
       'uploadIds' => ['required', 'array'],
       'uploadIds.*' => ['required', 'string'],
-      'expiry_date' => ['required', 'date']
+      'expiry_date' => ['required', 'date'],
+      // Each recipient gets an e-mail from the organisation: real addresses, a bounded number
+      'recipients' => ['sometimes', 'array', 'max:50'],
+      'recipients.*.email' => ['required', 'email', 'max:255'],
+      'recipients.*.name' => ['nullable', 'string', 'max:255'],
     ]);
 
     if ($validator->fails()) {

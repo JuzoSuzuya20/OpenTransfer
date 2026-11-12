@@ -1088,7 +1088,8 @@
     "link_ready": "El enlace está listo",
     "another": "Hacer otro envío",
     "see_in_my_shares": "Verlo en Mis envíos",
-    "drop_more": "Deposite más archivos, o"
+    "drop_more": "Deposite más archivos, o",
+    "recipients_max": "Un envío llega a {max} destinatarios como máximo."
   },
   "shares": {
     "this_month": "Este mes",

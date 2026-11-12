@@ -1088,7 +1088,8 @@
     "link_ready": "A ligação está pronta",
     "another": "Enviar outra partilha",
     "see_in_my_shares": "Ver em As minhas partilhas",
-    "drop_more": "Deposite mais ficheiros, ou"
+    "drop_more": "Deposite mais ficheiros, ou",
+    "recipients_max": "Uma partilha vai para {max} destinatários no máximo."
   },
   "shares": {
     "this_month": "Este mês",

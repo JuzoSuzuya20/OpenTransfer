@@ -1088,7 +1088,8 @@
     "link_ready": "Le lien est prêt",
     "another": "Envoyer un autre partage",
     "see_in_my_shares": "Voir dans Mes partages",
-    "drop_more": "Glissez d'autres fichiers, ou"
+    "drop_more": "Glissez d'autres fichiers, ou",
+    "recipients_max": "Un partage part à {max} destinataires au plus."
   },
   "shares": {
     "this_month": "Ce mois-ci",

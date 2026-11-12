@@ -1088,7 +1088,8 @@
     "link_ready": "Der Link ist fertig",
     "another": "Eine weitere Freigabe senden",
     "see_in_my_shares": "In Meine Freigaben ansehen",
-    "drop_more": "Weitere Dateien hier ablegen, oder"
+    "drop_more": "Weitere Dateien hier ablegen, oder",
+    "recipients_max": "Eine Freigabe geht an höchstens {max} Empfänger."
   },
   "shares": {
     "this_month": "Diesen Monat",
