@@ -214,8 +214,10 @@ const updateTemplate = (event, template) => {
 }
 
 // Format variable name for display
+// The label the editor shows for that block (subject, header, content, action_url, action_text)
 const formatVariableName = (name) => {
-  return name.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())
+  const label = t.value(`settings.emailTemplates.sections.${name}`, '')
+  return label && label !== `settings.emailTemplates.sections.${name}` ? label : name.replace(/_/g, ' ')
 }
 
 //define exposed methods
@@ -224,324 +226,160 @@ defineExpose({
 })
 </script>
 <template>
-  <div class="container-fluid">
-    <div class="row mb-5">
-      <div class="col-2 d-none d-md-block">
-        <ul class="settings-nav pt-5">
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('baseTemplate')">
-              {{ $t('settings.emailTemplates.baseTemplate') }}
-            </a>
-          </li>
-          <li v-for="template in emailTemplates" :key="template.id">
-            <a href="#" @click.prevent="handleNavItemClicked(template.id)">
-              {{ $t(template.name) }}
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-12 col-md-10 pt-5">
-        <div class="row mb-5">
-          <div class="col-12 col-md-8 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="emailLanguage">
-              <div class="setting-group-header">
-                <h3>{{ $t('emails.admin.language_title') }}</h3>
-              </div>
-              <div class="setting-group-body">
-                <div class="setting-group-body-item">
-                  <label for="email-language">{{ $t('emails.admin.language_label') }}</label>
-                  <select id="email-language" :value="locale" @change="changeLanguage">
-                    <option v-for="language in LANGUAGES" :key="language.code" :value="language.code" :lang="language.code">{{ language.name }}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+  <div class="email-templates-page">
+    <!-- One link per email: the page is long -->
+    <nav class="section-index" :aria-label="$t('settings.title.emailTemplates')">
+      <a href="#baseTemplate" class="ot-act" v-if="locale === defaultLanguage" @click.prevent="handleNavItemClicked('baseTemplate')">
+        {{ $t('settings.emailTemplates.baseTemplate') }}
+      </a>
+      <a v-for="template in emailTemplates" :key="template.id" :href="`#${template.id}`" class="ot-act" @click.prevent="handleNavItemClicked(template.id)">
+        {{ $t(template.name) }}
+      </a>
+    </nav>
+
+    <div class="admin-sections">
+      <section class="setting-group" id="emailLanguage" aria-labelledby="h-email-language">
+        <div class="setting-group-header">
+          <h3 id="h-email-language">{{ $t('emails.admin.language_title') }}</h3>
+        </div>
+        <div class="setting-group-body email-language">
+          <div class="setting-group-body-item">
+            <label for="email-language">{{ $t('emails.admin.language_label') }}</label>
+            <select id="email-language" :value="locale" @change="changeLanguage">
+              <option v-for="language in LANGUAGES" :key="language.code" :value="language.code" :lang="language.code">{{ language.name }}</option>
+            </select>
           </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <p>{{ $t('emails.admin.language_help') }}</p>
-            </div>
+          <p class="card-description">{{ $t('emails.admin.language_help') }}</p>
+        </div>
+      </section>
+
+      <section class="setting-group" id="baseTemplate" v-if="locale === defaultLanguage" aria-labelledby="h-base-template">
+        <div class="setting-group-header">
+          <h3 id="h-base-template">{{ $t('settings.emailTemplates.baseTemplate') }}</h3>
+        </div>
+        <div class="setting-group-body">
+          <p class="card-description">{{ $t('settings.emailTemplates.baseTemplateDescription') }}</p>
+          <div class="setting-group-body-item">
+            <label for="baseTemplateFallbackText">{{ $t('settings.emailTemplates.sections.fallbackText') }}</label>
+            <input type="text" id="baseTemplateFallbackText" v-model="fallbackText" />
+            <p class="help-text">{{ $t('settings.emailTemplates.sections.fallbackTextDescription') }}</p>
           </div>
         </div>
-        <div class="row mb-5" v-if="locale === defaultLanguage">
-          <div class="col-12 col-md-8 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="baseTemplate">
-              <div class="setting-group-header">
-                <h3>
-                  {{ $t('settings.emailTemplates.baseTemplate') }}
-                </h3>
-              </div>
-              <div class="setting-group-body">
-                <div class="setting-group-body-item">
-                  <label for="baseTemplateFallbackText">{{ $t('settings.emailTemplates.sections.fallbackText') }}</label>
-                  <input type="text" id="baseTemplateFallbackText" v-model="fallbackText" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.emailTemplates.baseTemplate') }}</h6>
-              <p>{{ $t('settings.emailTemplates.baseTemplateDescription') }}</p>
-              <h6>{{ $t('settings.emailTemplates.sections.fallbackText') }}</h6>
-              <p>{{ $t('settings.emailTemplates.sections.fallbackTextDescription') }}</p>
-            </div>
-          </div>
+      </section>
+
+      <section class="setting-group email-template" v-for="template in emailTemplates" :key="template.id" :id="template.id" :aria-labelledby="`h-${template.id}`">
+        <div class="setting-group-header email-template-head">
+          <h3 :id="`h-${template.id}`">{{ $t(template.name) }}</h3>
+          <span class="ot-pill" :class="{ 'is-warning': template.customised }">
+            {{ template.customised ? $t('emails.admin.customised') : $t('emails.admin.shipped') }}
+          </span>
+          <button type="button" class="ot-act email-template-reset" v-if="template.customised" @click="resetTemplate(template)">
+            <RotateCcw aria-hidden="true" />
+            {{ $t('emails.admin.reset') }}
+          </button>
         </div>
 
-        <div class="row mb-5" v-for="template in emailTemplates" :key="template.id">
-          <div class="col-12 col-md-8 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" :id="template.id">
-              <div class="setting-group-header email-template-head">
-                <h3>
-                  {{ $t(template.name) }}
-                </h3>
-                <span class="ot-pill" :class="{ 'is-warning': template.customised }">
-                  {{ template.customised ? $t('emails.admin.customised') : $t('emails.admin.shipped') }}
-                </span>
-              </div>
-
-              <div class="setting-group-body">
-                <button type="button" class="ot-act email-template-reset" v-if="template.customised" @click="resetTemplate(template)">
-                  <RotateCcw aria-hidden="true" />
-                  {{ $t('emails.admin.reset') }}
-                </button>
-                <EmailTemplateEditor :model-value="template" @update:model-value="updateTemplate($event, template)" />
-              </div>
-            </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6 class="mt-3">{{ $t('settings.emailTemplates.requiredFields') }}</h6>
-              <ul class="required-variables-list">
-                <li 
-                  v-for="varName in template.requiredVariables" 
-                  :key="varName"
-                  :class="{ valid: isVariableValid(template, varName), invalid: !isVariableValid(template, varName) }"
-                >
-                  <Check v-if="isVariableValid(template, varName)" class="status-icon" />
-                  <X v-else class="status-icon" />
-                  {{ formatVariableName(varName) }}
-                </li>
-              </ul>
-            </div>
-          </div>
+        <div class="email-template-body">
+          <EmailTemplateEditor :model-value="template" @update:model-value="updateTemplate($event, template)" />
+          <!-- What the email cannot go without, checked as the admin types -->
+          <aside class="email-template-required" :aria-label="$t('settings.emailTemplates.requiredFields')">
+            <h4>{{ $t('settings.emailTemplates.requiredFields') }}</h4>
+            <ul class="required-variables-list">
+              <li
+                v-for="varName in template.requiredVariables"
+                :key="varName"
+                :class="{ valid: isVariableValid(template, varName), invalid: !isVariableValid(template, varName) }"
+              >
+                <Check v-if="isVariableValid(template, varName)" class="status-icon" aria-hidden="true" />
+                <X v-else class="status-icon" aria-hidden="true" />
+                {{ formatVariableName(varName) }}
+              </li>
+            </ul>
+          </aside>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.setting-group .email-language {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 12px 32px;
+  align-items: end;
+
+  @media (max-width: 760px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .email-template-head {
   flex-direction: row !important;
+  flex-wrap: wrap;
   align-items: center !important;
-  justify-content: space-between;
-  gap: 12px;
-}
-.email-template-reset {
-  align-self: flex-start;
-}
+  gap: 10px;
 
-.auth-provider {
-  margin-bottom: 8px;
-  .icon {
-    svg {
-      width: 2rem;
-      height: 2rem;
-      stroke: url(#icon-gradient);
-      &.custom {
-        fill: url(#icon-gradient);
-      }
-    }
+  h3 {
+    flex: 1;
+  }
+  .ot-act {
+    margin: 0;
   }
 }
+// The editor takes the width; what the email cannot go without stays beside it
+.email-template-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  gap: 24px;
+  align-items: start;
 
-.provider-type {
-  background: var(--panel-section-background-color-alt);
-  height: 80px;
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.email-template-required {
+  position: sticky;
+  top: 16px;
+  padding: 12px 14px;
+  background: var(--ot-field);
+  border: 1px solid var(--ot-line-soft);
+  border-radius: var(--ot-radius);
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ot-muted);
+  }
+}
+.required-variables-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--panel-border-radius);
-
-  h6 {
-    cursor: pointer;
-    margin-top: -4px;
-  }
-
-  small {
-    font-size: 0.7rem;
-    color: var(--panel-text-color-alt);
-    margin-bottom: 0;
-  }
-
-  .checkbox-container {
-    margin-top: 25px;
-    label {
-      margin-bottom: 0;
-      font-weight: 400;
-    }
-  }
-
-  &.open {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-}
-
-.provider-settings {
-  background: var(--panel-section-background-color-alt);
-  border-radius: var(--panel-border-radius);
-  border-top: 1px solid var(--input-border-color);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  padding: 1rem;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  margin-bottom: 0px;
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition: all 0.5s ease;
-  &.open {
-    margin-bottom: 10px;
-    opacity: 1;
-    max-height: 800px;
-    padding: 1rem;
-  }
-}
-
-#gradientDefs {
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-}
-
-.input-group {
-  position: relative;
-
-  button {
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    bottom: 0;
-    height: 40px;
-    width: 40px;
-    border-radius: 100% !important;
-    svg {
-      margin-top: 1px;
-    }
-  }
-}
-
-.new-provider-form {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding-left: 15px;
-  padding-right: 15px;
-  select {
-    opacity: 0;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    width: calc(100% - 70px);
-    pointer-events: none;
-  }
-  .new-provider-button {
-    position: absolute;
-    right: 50%;
-    top: 50%;
-    transform: translateX(50%) translateY(-50%);
-    transition: all 0.3s ease;
-    filter: grayscale(100%);
-    opacity: 0.4;
-  }
-  &:hover {
-    .new-provider-button {
-      filter: grayscale(0%);
-      opacity: 1;
-    }
-  }
-  &.active {
-    select {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .new-provider-button {
-      left: unset;
-      right: 12px;
-      transform: translateX(0) translateY(-50%);
-      filter: grayscale(0%);
-      opacity: 1;
-    }
-  }
-}
-
-.delete-auth-provider {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-  font-size: 0.8rem;
-  color: var(--panel-text-color);
-  &:hover {
-    color: var(--color-danger);
-  }
-  svg {
-    width: 15px;
-    height: 15px;
-    margin-top: -2px;
-  }
-}
-
-.provider-info-link {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  svg {
-    width: 15px;
-    height: 15px;
-    margin-top: -2px;
-  }
-}
-
-.section-help {
-  word-break: break-word;
-}
-
-.required-variables-list {
-  list-style: none;
-  padding: 0;
+  gap: 4px;
   margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
 
   li {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 0;
-    font-size: 0.9rem;
-    transition: color 0.2s ease;
 
     &.valid {
-      color: var(--color-success, #22c55e);
+      color: var(--ot-success);
     }
-
     &.invalid {
-      color: var(--color-danger, #ef4444);
+      color: var(--ot-danger-text);
+      font-weight: 700;
     }
-
-    .status-icon {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-    }
+  }
+  .status-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
   }
 }
 </style>

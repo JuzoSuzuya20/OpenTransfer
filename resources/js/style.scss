@@ -510,6 +510,57 @@ body {
   gap: 20px;
 }
 
+// A long settings page opens with one link per section
+.section-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  .ot-act {
+    margin: 0;
+  }
+}
+
+// System settings: one card per section, its settings in two supple columns, each one with its
+// explanation right under it (no help column beside the card any more)
+.system-settings .setting-group .setting-group-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 22px 40px;
+  align-items: start;
+
+  > .card-description,
+  > .setting-group-body-item:has(table),
+  > .setting-group-body-item:has(.pattern-syntax-help),
+  > :not(.setting-group-body-item) {
+    grid-column: 1 / -1;
+  }
+}
+.setting-group {
+  .card-description {
+    margin: 0;
+    max-width: 80ch;
+    font-size: 0.8125rem;
+    color: var(--ot-muted);
+  }
+  .setting-group-body-item > .help-text {
+    margin: 6px 0 0;
+    max-width: 70ch;
+  }
+}
+// A group of settings within a section: a line across the card, then its title
+.setting-group .setting-subtitle {
+  grid-column: 1 / -1;
+  margin: 4px 0 -8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ot-line-soft);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ot-heading);
+  scroll-margin-top: 24px;
+}
+
 
 .setting-group-body-item {
   .background-images {

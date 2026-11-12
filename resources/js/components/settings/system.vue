@@ -401,6 +401,16 @@ const shareSettingsLookOk = () => {
   return true
 }
 
+const sectionIndex = computed(() => [
+  { id: 'general', icon: Settings, label: t.value('settings.system.general') },
+  { id: 'shares', icon: Share2, label: t.value('settings.system.shares') },
+  { id: 'emails', icon: Send, label: t.value('settings.system.emails') },
+  { id: 'smtp', icon: AtSign, label: t.value('settings.system.smtp') },
+  { id: 'auth', icon: Fingerprint, label: t.value('settings.system.auth') },
+  { id: 'security', icon: ShieldCheck, label: t.value('settings.system.security.title') },
+  { id: 'backups', icon: Database, label: t.value('settings.system.backups.title') }
+])
+
 const handleNavItemClicked = (item) => {
   emit('navItemClicked', item)
 }
@@ -412,58 +422,22 @@ defineExpose({
 
 </script>
 <template>
-  <div class="container-fluid">
-    <div class="row mb-5">
-      <div class="col-2 d-none d-md-block">
-        <ul class="settings-nav pt-5">
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('general')">
-              <Settings />
-              {{ $t('settings.system.general') }}
-            </a>
-          </li>
-          <li>
-            <a href="" @click.prevent="handleNavItemClicked('shares')">
-              <Share2 />
-              {{ $t('settings.system.shares') }}
-            </a>
-          </li>
-          <li>
-            <a href="" @click.prevent="handleNavItemClicked('emails')">
-              <Send />
-              {{ $t('settings.system.emails') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('smtp')">
-              <AtSign />
-              {{ $t('settings.system.smtp') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('auth')">
-              <Fingerprint />
-              {{ $t('settings.system.auth') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('security')">
-              <ShieldCheck />
-              {{ $t('settings.system.security.title') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('backups')">
-              <Database />
-              {{ $t('settings.system.backups.title') }}
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-12 col-md-8 pt-5">
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="general">
+  <div class="system-settings">
+    <!-- A long page: its sections, one link each -->
+    <nav class="section-index" :aria-label="$t('settings.title.system')">
+      <a
+        v-for="section in sectionIndex"
+        :key="section.id"
+        :href="`#${section.id}`"
+        class="ot-act"
+        @click.prevent="handleNavItemClicked(section.id)"
+      >
+        <component :is="section.icon" aria-hidden="true" />
+        {{ section.label }}
+      </a>
+    </nav>
+    <div class="admin-sections">
+        <div class="setting-group" id="general">
               <div class="setting-group-header">
                 <h3>
                   <Settings />
@@ -475,11 +449,13 @@ defineExpose({
                 <div class="setting-group-body-item">
                   <label for="application_name">{{ $t('settings.system.application_name') }}</label>
                   <input type="text" id="application_name" v-model="settings.application_name" />
+                  <p class="help-text">{{ $t('settings.system.application_name_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
                   <label for="application_url">{{ $t('settings.system.application_url') }}</label>
                   <input type="text" id="application_url" v-model="settings.application_url" />
+                  <p class="help-text">{{ $t('settings.system.application_url_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -490,6 +466,7 @@ defineExpose({
                     v-model="settings.login_message"
                     placeholder="Login to your account to upload files."
                   />
+                  <p class="help-text">{{ $t('settings.system.login_message_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -510,6 +487,7 @@ defineExpose({
                     <!-- Portuguese-->
                     <option value="pt">{{ t('settings.system.languages.portuguese') }}</option>
                   </select>
+                  <p class="help-text">{{ $t('settings.system.default_language_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item mt-3">
@@ -517,33 +495,13 @@ defineExpose({
                     <input type="checkbox" id="show_language_selector" v-model="settings.show_language_selector" />
                     <label for="show_language_selector">{{ $t('settings.system.show_language_selector') }}</label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.show_language_selector_description') }}</p>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.system.application_name') }}</h6>
-              <p>{{ $t('settings.system.application_name_description') }}</p>
 
-              <h6>{{ $t('settings.system.application_url') }}</h6>
-              <p>{{ $t('settings.system.application_url_description') }}</p>
 
-              <h6>{{ $t('settings.system.login_message') }}</h6>
-              <p>{{ $t('settings.system.login_message_description') }}</p>
-
-              <h6>{{ $t('settings.system.default_language') }}</h6>
-              <p>{{ $t('settings.system.default_language_description') }}</p>
-
-              <h6>{{ $t('settings.system.show_language_selector') }}</h6>
-              <p>{{ $t('settings.system.show_language_selector_description') }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="shares">
+        <div class="setting-group" id="shares">
               <div class="setting-group-header">
                 <h3>
                   <Share2 />
@@ -565,6 +523,7 @@ defineExpose({
                     <small>({{ $t('settings.system.days') }})</small>
                   </label>
                   <input type="number" id="max_expiry_time" v-model="settings.max_expiry_time" placeholder="∞" />
+                  <p class="help-text">{{ $t('settings.system.max_expiry_time_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <div class="row">
@@ -584,6 +543,7 @@ defineExpose({
                       </select>
                     </div>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.max_share_size_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="clean_files_after_days">
@@ -596,22 +556,25 @@ defineExpose({
                     v-model="settings.clean_files_after_days"
                     placeholder="30"
                   />
+                  <p class="help-text">{{ $t('settings.system.clean_files_after_description') }}</p>
                 </div>
-                <h6 id="reverse_shares" class="mt-3 mb-3">{{ $t('settings.system.reverse_shares') }}</h6>
+                <h3 id="reverse_shares" class="setting-subtitle">{{ $t('settings.system.reverse_shares') }}</h3>
                 <div class="setting-group-body-item">
                   <div class="checkbox-container">
                     <input type="checkbox" id="allow_reverse_shares" v-model="settings.allow_reverse_shares" />
                     <label for="allow_reverse_shares">{{ $t('settings.system.allow_reverse_shares') }}</label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.allow_reverse_shares_description') }}</p>
                 </div>
 
-                <h6 id="share_url_generation" class="mt-3 mb-3">{{ $t('settings.system.share_url_generation') }}</h6>
+                <h3 id="share_url_generation" class="setting-subtitle">{{ $t('settings.system.share_url_generation') }}</h3>
                 <div class="setting-group-body-item">
                   <label for="share_url_mode">{{ $t('settings.system.share_url_mode') }}</label>
                   <select id="share_url_mode" v-model="settings.share_url_mode">
                     <option value="haiku">{{ $t('settings.system.share_url_mode_haiku') }}</option>
                     <option value="pattern">{{ $t('settings.system.share_url_mode_pattern') }}</option>
                   </select>
+                  <p class="help-text">{{ $t('settings.system.share_url_mode_description') }}</p>
                 </div>
 
                 <div v-if="settings.share_url_mode === 'pattern'" class="pattern-url-settings">
@@ -631,36 +594,8 @@ defineExpose({
                       v-model="settings.share_url_pattern"
                       :placeholder="$t('settings.system.share_url_pattern_placeholder')"
                     />
-                  </div>
-                  <div class="setting-group-body-item pattern-preview" v-if="settings.share_url_pattern">
-                    <label>{{ $t('settings.system.share_url_pattern_preview') }}</label>
-                    <div class="preview-box">
-                      <code>{{ patternPreview }}</code>
-                      <button type="button" class="refresh-preview" @click="generatePatternPreview">
-                        ↻
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.system.max_expiry_time') }}</h6>
-              <p>{{ $t('settings.system.max_expiry_time_description') }}</p>
-              <h6>{{ $t('settings.system.max_share_size') }}</h6>
-              <p>{{ $t('settings.system.max_share_size_description') }}</p>
-              <h6>{{ $t('settings.system.clean_files_after') }}</h6>
-              <p>{{ $t('settings.system.clean_files_after_description') }}</p>
-              <h6>{{ $t('settings.system.allow_reverse_shares') }}</h6>
-              <p>{{ $t('settings.system.allow_reverse_shares_description') }}</p>
-              <h6>{{ $t('settings.system.share_url_mode') }}</h6>
-              <p>{{ $t('settings.system.share_url_mode_description') }}</p>
-              <div v-if="settings.share_url_mode === 'pattern'">
-                <h6>{{ $t('settings.system.share_url_pattern') }}</h6>
-                <p>{{ $t('settings.system.share_url_pattern_description') }}</p>
+                    <p class="help-text">{{ $t('settings.system.share_url_pattern_description') }}</p>
+<div v-if="settings.share_url_mode === 'pattern'">
                 <div class="pattern-syntax-help">
                   <h6>{{ $t('settings.system.share_url_pattern_syntax') }}</h6>
                   <ul class="syntax-list">
@@ -674,13 +609,23 @@ defineExpose({
                   </ul>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+</div>
+                  <div class="setting-group-body-item pattern-preview" v-if="settings.share_url_pattern">
+                    <label>{{ $t('settings.system.share_url_pattern_preview') }}</label>
+                    <div class="preview-box">
+                      <code>{{ patternPreview }}</code>
+                      <button type="button" class="refresh-preview" @click="generatePatternPreview">
+                        ↻
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="emails">
+              </div>
+            </div>
+
+
+        <div class="setting-group" id="emails">
               <div class="setting-group-header">
                 <h3>
                   <Send />
@@ -700,6 +645,7 @@ defineExpose({
                       {{ $t('settings.system.enable_share_downloaded_emails') }}
                     </label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.share_downloaded_emails_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -713,6 +659,7 @@ defineExpose({
                       {{ $t('settings.system.enable_share_expiry_warning_emails') }}
                     </label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.share_expiry_warning_emails_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -726,6 +673,7 @@ defineExpose({
                       {{ $t('settings.system.enable_share_expired_warning_emails') }}
                     </label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.share_expired_warning_emails_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -739,6 +687,7 @@ defineExpose({
                       {{ $t('settings.system.enable_share_deletion_warning_emails') }}
                     </label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.share_deletion_warning_emails_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -752,33 +701,13 @@ defineExpose({
                       {{ $t('settings.system.enable_share_deleted_emails') }}
                     </label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.share_deleted_emails_description') }}</p>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.system.enable_share_downloaded_emails') }}</h6>
-              <p>{{ $t('settings.system.share_downloaded_emails_description') }}</p>
 
-              <h6>{{ $t('settings.system.enable_share_expiry_warning_emails') }}</h6>
-              <p>{{ $t('settings.system.share_expiry_warning_emails_description') }}</p>
 
-              <h6>{{ $t('settings.system.enable_share_expired_warning_emails') }}</h6>
-              <p>{{ $t('settings.system.share_expired_warning_emails_description') }}</p>
-
-              <h6>{{ $t('settings.system.enable_share_deletion_warning_emails') }}</h6>
-              <p>{{ $t('settings.system.share_deletion_warning_emails_description') }}</p>
-
-              <h6>{{ $t('settings.system.enable_share_deleted_emails') }}</h6>
-              <p>{{ $t('settings.system.share_deleted_emails_description') }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="smtp">
+        <div class="setting-group" id="smtp">
               <div class="setting-group-header">
                 <h3>
                   <AtSign />
@@ -794,10 +723,12 @@ defineExpose({
                 <div class="setting-group-body-item">
                   <label for="smtp_host">{{ $t('settings.system.smtp_host') }}</label>
                   <input type="text" id="smtp_host" v-model="settings.smtp_host" />
+                  <p class="help-text">{{ $t('settings.system.smtp_host_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_port">{{ $t('settings.system.smtp_port') }}</label>
                   <input type="number" id="smtp_port" v-model="settings.smtp_port" />
+                  <p class="help-text">{{ $t('settings.system.smtp_port_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_encryption">{{ $t('settings.system.smtp_encryption') }}</label>
@@ -806,55 +737,33 @@ defineExpose({
                     <option value="ssl">SSL</option>
                     <option value="">{{ $t('settings.system.smtp_encryption_none') }}</option>
                   </select>
+                  <p class="help-text">{{ $t('settings.system.smtp_encryption_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_username">{{ $t('settings.system.smtp_username') }}</label>
                   <input type="text" id="smtp_username" v-model="settings.smtp_username" autocomplete="off" />
+                  <p class="help-text">{{ $t('settings.system.smtp_username_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_password">{{ $t('settings.system.smtp_password') }}</label>
                   <input type="password" id="smtp_password" v-model="settings.smtp_password" autocomplete="new-password" />
+                  <p class="help-text">{{ $t('settings.system.smtp_password_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_sender_name">{{ $t('settings.system.smtp_sender_name') }}</label>
                   <input type="text" id="smtp_sender_name" v-model="settings.smtp_sender_name" />
+                  <p class="help-text">{{ $t('settings.system.smtp_sender_name_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_sender_address">{{ $t('settings.system.smtp_sender_address') }}</label>
                   <input type="text" id="smtp_sender_address" v-model="settings.smtp_sender_address" />
+                  <p class="help-text">{{ $t('settings.system.smtp_sender_address_description') }}</p>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.system.smtp_host') }}</h6>
-              <p>{{ $t('settings.system.smtp_host_description') }}</p>
 
-              <h6>{{ $t('settings.system.smtp_port') }}</h6>
-              <p>{{ $t('settings.system.smtp_port_description') }}</p>
 
-              <h6>{{ $t('settings.system.smtp_encryption') }}</h6>
-              <p>{{ $t('settings.system.smtp_encryption_description') }}</p>
-
-              <h6>{{ $t('settings.system.smtp_username') }}</h6>
-              <p>{{ $t('settings.system.smtp_username_description') }}</p>
-
-              <h6>{{ $t('settings.system.smtp_password') }}</h6>
-              <p>{{ $t('settings.system.smtp_password_description') }}</p>
-
-              <h6>{{ $t('settings.system.smtp_sender_name') }}</h6>
-              <p>{{ $t('settings.system.smtp_sender_name_description') }}</p>
-
-              <h6>{{ $t('settings.system.smtp_sender_address') }}</h6>
-              <p>{{ $t('settings.system.smtp_sender_address_description') }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="auth">
+        <div class="setting-group" id="auth">
               <div class="setting-group-header">
                 <h3>
                   <Fingerprint />
@@ -862,10 +771,9 @@ defineExpose({
                 </h3>
               </div>
 
-                          <div class="setting-group-body">
-                <!-- Self Registration Settings -->
-                <h5 id="self_registration" class="mb-3">{{ $t('settings.system.self_registration') }}</h5>
-                <div class="setting-group-body-item">
+              <div class="setting-group-body">
+                <!-- Self registration: the target of the link on the users page -->
+                <div class="setting-group-body-item" id="self_registration">
                   <div class="checkbox-container">
                     <input
                       type="checkbox"
@@ -876,6 +784,7 @@ defineExpose({
                       {{ $t('settings.system.self_registration_enabled') }}
                     </label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.self_registration_description') }}</p>
                 </div>
 
                 <div class="self-registration-options" v-if="settings.self_registration_enabled">
@@ -903,6 +812,7 @@ defineExpose({
                       :placeholder="$t('settings.system.self_registration_allowed_domains_placeholder')"
                     />
                     <p class="help-text">{{ $t('settings.system.self_registration_allowed_domains_help') }}</p>
+                    <p class="help-text">{{ $t('settings.system.self_registration_allowed_domains_description') }}</p>
                   </div>
                 </div>
 
@@ -912,20 +822,9 @@ defineExpose({
                 </p>
               </div>
             </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.system.self_registration') }}</h6>
-              <p>{{ $t('settings.system.self_registration_description') }}</p>
-              <h6>{{ $t('settings.system.self_registration_allowed_domains') }}</h6>
-              <p>{{ $t('settings.system.self_registration_allowed_domains_description') }}</p>
-            </div>
-          </div>
-        </div>
 
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="security">
+
+        <div class="setting-group" id="security">
               <div class="setting-group-header">
                 <h3>
                   <ShieldCheck />
@@ -945,6 +844,7 @@ defineExpose({
                       {{ $t('settings.system.security.ip_allowlist_enabled') }}
                     </label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.security.ip_allowlist_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -962,6 +862,8 @@ defineExpose({
                       {{ $t('settings.system.security.add_your_ip') }}
                     </a>
                   </p>
+                  <p class="help-text"><strong>{{ $t('settings.system.security.proxy_title') }}</strong> {{ $t('settings.system.security.proxy_help') }}</p>
+                  <p class="help-text"><strong>{{ $t('settings.system.security.recovery_title') }}</strong> {{ $t('settings.system.security.recovery_help') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -971,6 +873,7 @@ defineExpose({
                     <option value="admins">{{ $t('settings.system.security.mfa_policy_admins') }}</option>
                     <option value="everyone">{{ $t('settings.system.security.mfa_policy_everyone') }}</option>
                   </select>
+                  <p class="help-text">{{ $t('settings.system.security.mfa_policy_help') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -978,6 +881,7 @@ defineExpose({
                     <input type="checkbox" id="passkey_login_enabled" v-model="settings.passkey_login_enabled" />
                     <label for="passkey_login_enabled">{{ $t('settings.system.security.passkey_login') }}</label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.security.passkey_login_help') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -996,6 +900,7 @@ defineExpose({
                   <p class="help-text" v-else-if="!storageEncryption.key_configured">
                     {{ $t('settings.system.security.encryption_key_absent') }}
                   </p>
+                  <p class="help-text">{{ $t('settings.system.security.encryption_help') }}</p>
                 </div>
 
                 <div class="setting-group-body-item">
@@ -1003,6 +908,7 @@ defineExpose({
                     <input type="checkbox" id="altcha_enabled" v-model="settings.altcha_enabled" />
                     <label for="altcha_enabled">{{ $t('settings.system.security.altcha_enabled') }}</label>
                   </div>
+                  <p class="help-text">{{ $t('settings.system.security.altcha_description') }}</p>
                 </div>
 
                 <div class="setting-group-body-item" v-if="settings.altcha_enabled">
@@ -1012,36 +918,9 @@ defineExpose({
                 </div>
               </div>
             </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.system.security.ip_allowlist') }}</h6>
-              <p>{{ $t('settings.system.security.ip_allowlist_description') }}</p>
 
-              <h6>{{ $t('settings.system.security.proxy_title') }}</h6>
-              <p>{{ $t('settings.system.security.proxy_help') }}</p>
 
-              <h6>{{ $t('settings.system.security.recovery_title') }}</h6>
-              <p>{{ $t('settings.system.security.recovery_help') }}</p>
-
-              <h6>{{ $t('settings.system.security.mfa_policy') }}</h6>
-              <p>{{ $t('settings.system.security.mfa_policy_help') }}</p>
-
-              <h6>{{ $t('settings.system.security.passkey_login') }}</h6>
-              <p>{{ $t('settings.system.security.passkey_login_help') }}</p>
-
-              <h6>{{ $t('settings.system.security.encryption') }}</h6>
-              <p>{{ $t('settings.system.security.encryption_help') }}</p>
-
-              <h6>{{ $t('settings.system.security.altcha') }}</h6>
-              <p>{{ $t('settings.system.security.altcha_description') }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-5">
-          <div class="col-12 col-md-6 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="backups">
+        <div class="setting-group" id="backups">
               <div class="setting-group-header">
                 <h3>
                   <Database />
@@ -1050,12 +929,14 @@ defineExpose({
               </div>
 
               <div class="setting-group-body">
+                <p class="card-description">{{ $t('settings.system.backups.description') }}</p>
+                <p class="card-description">{{ $t('settings.system.backups.auto_backup_description') }}</p>
                 <div class="setting-group-body-item">
                   <div class="backup-actions mb-3">
                     <button 
                       @click="handleCreateBackup" 
                       :disabled="backupCreating"
-                      class="create-backup-button"
+                      class="create-backup-button ot-act"
                     >
                       <Loader2 v-if="backupCreating" class="spinner" />
                       <Plus v-else />
@@ -1064,7 +945,7 @@ defineExpose({
                     <button 
                       @click="loadBackups" 
                       :disabled="backupsLoading"
-                      class="refresh-backups-button"
+                      class="refresh-backups-button ot-act"
                     >
                       <Loader2 v-if="backupsLoading" class="spinner" />
                       {{ $t('settings.system.backups.refresh') }}
@@ -1101,7 +982,7 @@ defineExpose({
                             <button 
                               @click="handleDownloadBackup(backup.filename)"
                               :disabled="backupDownloading === backup.filename"
-                              class="icon-only"
+                              class="ot-act icon-only"
                               :title="$t('settings.system.backups.download')"
                             >
                               <Loader2 v-if="backupDownloading === backup.filename" class="spinner" />
@@ -1110,7 +991,7 @@ defineExpose({
                             <button 
                               @click="handleDeleteBackup(backup.filename)"
                               :disabled="backupDeleting === backup.filename"
-                              class="icon-only delete-button secondary"
+                              class="ot-act icon-only delete-button"
                               :title="$t('settings.system.backups.delete')"
                             >
                               <Loader2 v-if="backupDeleting === backup.filename" class="spinner" />
@@ -1124,17 +1005,6 @@ defineExpose({
                 </div>
               </div>
             </div>
-          </div>
-          <div class="d-none d-md-block col ps-0">
-            <div class="section-help">
-              <h6>{{ $t('settings.system.backups.title') }}</h6>
-              <p>{{ $t('settings.system.backups.description') }}</p>
-              <h6>{{ $t('settings.system.backups.auto_backup') }}</h6>
-              <p>{{ $t('settings.system.backups.auto_backup_description') }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>

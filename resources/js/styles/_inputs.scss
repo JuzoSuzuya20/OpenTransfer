@@ -96,7 +96,8 @@ select {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr;
+  // As many rows as it holds: a checkbox alone is one line, not two
+  grid-template-rows: auto;
   padding-right: 20px;
 
   &.disabled {
