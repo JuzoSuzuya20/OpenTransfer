@@ -1130,7 +1130,8 @@
     "copy_failed": "Il link non è stato copiato",
     "load_failed": "Le tue condivisioni non sono state caricate",
     "empty": "Non hai ancora inviato nulla.",
-    "empty_filter": "Nessuna condivisione corrisponde a questo filtro."
+    "empty_filter": "Nessuna condivisione corrisponde a questo filtro.",
+    "max_expiry_reached": "Questa condivisione resta già online quanto consentito ({days} giorni dall’invio)"
   },
   "requests": {
     "description": "Chiedi a una persona esterna di inviarti dei file. Ciò che invia arriva in Le mie condivisioni.",

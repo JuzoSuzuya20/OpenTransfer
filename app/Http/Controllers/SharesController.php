@@ -657,7 +657,25 @@ class SharesController extends Controller
         'message' => 'Unauthorized'
       ], 401);
     }
-    $share->expires_at = Carbon::now()->addDays(7);
+    // Seven more days, never past the longest time the admin lets a share stay online, counted
+    // from the day it was sent like at its creation: extending again and again stays within it
+    $extended = Carbon::now()->addDays(7);
+    $maxDays = app(SettingsService::class)->get('max_expiry_time');
+    if (is_numeric($maxDays) && (int) $maxDays > 0 && $share->created_at) {
+      $latest = $share->created_at->copy()->addDays((int) $maxDays);
+      if ($share->expires_at >= $latest || Carbon::now() >= $latest) {
+        return response()->json([
+          'status' => 'error',
+          'code' => 'max_expiry_reached',
+          'message' => 'This share already stays online as long as the admin allows',
+          'data' => ['max_expiry_time' => (int) $maxDays],
+        ], 422);
+      }
+      if ($extended->greaterThan($latest)) {
+        $extended = $latest;
+      }
+    }
+    $share->expires_at = $extended;
     $share->save();
     return response()->json([
       'status' => 'success',
@@ -690,11 +708,16 @@ class SharesController extends Controller
         'message' => 'Unauthorized'
       ], 401);
     }
-    if ($request->amount == -1) {
-      $share->download_limit = null;
-    } else {
-      $share->download_limit = $request->amount;
+    // A whole number of downloads, or -1 for none
+    $amount = $request->input('amount');
+    $valid = is_int($amount) || (is_string($amount) && preg_match('/^-?\d+$/', $amount));
+    if (!$valid || ((int) $amount !== -1 && ((int) $amount < 1 || (int) $amount > 1000000))) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'The download limit is a whole number from 1 to 1000000, or -1 for none',
+      ], 422);
     }
+    $share->download_limit = (int) $amount === -1 ? null : (int) $amount;
     $share->save();
     return response()->json([
       'status' => 'success',

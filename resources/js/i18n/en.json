@@ -1130,7 +1130,8 @@
     "copy_failed": "The link could not be copied",
     "load_failed": "Your shares could not be loaded",
     "empty": "You have not sent anything yet.",
-    "empty_filter": "No share matches this filter."
+    "empty_filter": "No share matches this filter.",
+    "max_expiry_reached": "This share already stays online as long as allowed ({days} days from its sending)"
   },
   "requests": {
     "description": "Ask someone outside the organisation to send you files. What they send lands in My shares.",

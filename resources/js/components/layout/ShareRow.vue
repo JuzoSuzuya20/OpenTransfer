@@ -60,7 +60,7 @@ const run = async (promise, success, failure) => {
     toast.success(t.value(success))
     emit('changed')
   } catch (error) {
-    toast.error(t.value(failure))
+    toast.error(error?.code === 'max_expiry_reached' ? t.value('shares.max_expiry_reached', { days: error.data?.max_expiry_time }) : t.value(failure))
   }
 }
 

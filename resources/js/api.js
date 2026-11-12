@@ -1125,7 +1125,8 @@ export const extendShare = async (id) => {
   })
   const data = await response.json()
   if (!response.ok) {
-    throw new Error(data.message)
+    // The code says why (max_expiry_reached: online as long as the admin allows)
+    throw Object.assign(new Error(data.message), { code: data.code, data: data.data })
   }
   return data.data.share
 }

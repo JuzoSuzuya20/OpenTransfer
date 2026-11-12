@@ -1130,7 +1130,8 @@
     "copy_failed": "Der Link konnte nicht kopiert werden",
     "load_failed": "Ihre Freigaben konnten nicht geladen werden",
     "empty": "Sie haben noch nichts gesendet.",
-    "empty_filter": "Keine Freigabe entspricht diesem Filter."
+    "empty_filter": "Keine Freigabe entspricht diesem Filter.",
+    "max_expiry_reached": "Diese Freigabe bleibt bereits so lange online wie erlaubt ({days} Tage ab dem Versand)"
   },
   "requests": {
     "description": "Bitten Sie eine externe Person, Ihnen Dateien zu senden. Was sie sendet, landet in Meine Freigaben.",

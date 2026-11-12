@@ -1130,7 +1130,8 @@
     "copy_failed": "Não foi possível copiar a ligação",
     "load_failed": "Não foi possível carregar as suas partilhas",
     "empty": "Ainda não enviou nada.",
-    "empty_filter": "Nenhuma partilha corresponde a este filtro."
+    "empty_filter": "Nenhuma partilha corresponde a este filtro.",
+    "max_expiry_reached": "Esta partilha já fica online o tempo máximo permitido ({days} dias desde o envio)"
   },
   "requests": {
     "description": "Peça a uma pessoa externa que lhe envie ficheiros. O que ela enviar chega a As minhas partilhas.",

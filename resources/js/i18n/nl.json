@@ -1130,7 +1130,8 @@
     "copy_failed": "De link kon niet worden gekopieerd",
     "load_failed": "Je shares konden niet worden geladen",
     "empty": "Je hebt nog niets verzonden.",
-    "empty_filter": "Geen share past bij dit filter."
+    "empty_filter": "Geen share past bij dit filter.",
+    "max_expiry_reached": "Deze share blijft al zo lang online als toegestaan ({days} dagen na verzending)"
   },
   "requests": {
     "description": "Vraag iemand buiten de organisatie om je bestanden te sturen. Wat die stuurt, komt in Mijn shares.",

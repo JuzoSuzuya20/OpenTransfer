@@ -1130,7 +1130,8 @@
     "copy_failed": "Le lien n'a pas pu être copié",
     "load_failed": "Vos partages n'ont pas pu être chargés",
     "empty": "Vous n'avez encore rien envoyé.",
-    "empty_filter": "Aucun partage ne correspond à ce filtre."
+    "empty_filter": "Aucun partage ne correspond à ce filtre.",
+    "max_expiry_reached": "Ce partage reste déjà en ligne aussi longtemps que permis ({days} jours depuis son envoi)"
   },
   "requests": {
     "description": "Demandez à une personne extérieure de vous envoyer des fichiers. Ce qu'elle envoie arrive dans Mes partages.",

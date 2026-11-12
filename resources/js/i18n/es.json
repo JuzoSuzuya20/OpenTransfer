@@ -1130,7 +1130,8 @@
     "copy_failed": "No se pudo copiar el enlace",
     "load_failed": "No se pudieron cargar sus envíos",
     "empty": "Aún no ha enviado nada.",
-    "empty_filter": "Ningún envío coincide con este filtro."
+    "empty_filter": "Ningún envío coincide con este filtro.",
+    "max_expiry_reached": "Este envío ya permanece en línea el tiempo máximo permitido ({days} días desde su envío)"
   },
   "requests": {
     "description": "Pida a alguien de fuera de la organización que le envíe archivos. Lo que envíe llegará a Mis envíos.",
