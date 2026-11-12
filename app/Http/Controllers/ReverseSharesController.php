@@ -58,7 +58,8 @@ class ReverseSharesController extends Controller
 
         $validator = Validator::make($request->all(), [
             'recipient_name' => ['required', 'string', 'max:255'],
-            'recipient_email' => ['required', 'email', 'max:255']
+            'recipient_email' => ['required', 'email', 'max:255'],
+            'message' => ['nullable', 'string', 'max:5000']
         ]);
 
         if ($validator->fails()) {

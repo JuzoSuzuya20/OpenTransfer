@@ -8,6 +8,7 @@ use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Middleware\AdminMiddleware as Admin;
 use App\Http\Middleware\RequireAltcha;
+use App\Http\Middleware\MembersOnly;
 use App\Services\Altcha;
 use App\Http\Middleware\NoUsersMiddleware as NoUsers;
 use App\Http\Controllers\SettingsController;
@@ -84,21 +85,24 @@ Route::group([], function ($router) {
     //manage my profile [auth]
     Route::group(['prefix' => 'users/me', 'middleware' => ['auth']], function ($router) {
         Route::get('/', [UsersController::class, 'me'])->name('profile.view');
-        Route::put('/', [UsersController::class, 'updateMe'])->name('profile.update');
-        //a new address, proved by the code sent to it
-        Route::post('/email', [EmailChangeController::class, 'request'])->name('profile.email.request')->middleware('throttle:6,1');
-        Route::post('/email/confirm', [EmailChangeController::class, 'confirm'])->name('profile.email.confirm');
-        Route::delete('/providers/{providerId}', [UsersController::class, 'unlinkProvider'])->name('profile.unlinkProvider');
+        // Changing the account and how it signs in: members only, never the guest of a file request
+        Route::middleware(MembersOnly::class)->group(function () {
+            Route::put('/', [UsersController::class, 'updateMe'])->name('profile.update');
+            //a new address, proved by the code sent to it
+            Route::post('/email', [EmailChangeController::class, 'request'])->name('profile.email.request')->middleware('throttle:6,1');
+            Route::post('/email/confirm', [EmailChangeController::class, 'confirm'])->name('profile.email.confirm');
+            Route::delete('/providers/{providerId}', [UsersController::class, 'unlinkProvider'])->name('profile.unlinkProvider');
 
-        //second factor
-        Route::get('/2fa', [TwoFactorController::class, 'status'])->name('profile.2fa.status');
-        Route::post('/2fa/totp/setup', [TwoFactorController::class, 'totpSetup'])->name('profile.2fa.totpSetup');
-        Route::post('/2fa/totp/confirm', [TwoFactorController::class, 'totpConfirm'])->name('profile.2fa.totpConfirm');
-        Route::delete('/2fa/totp', [TwoFactorController::class, 'totpDisable'])->name('profile.2fa.totpDisable');
-        Route::post('/2fa/recovery-codes', [TwoFactorController::class, 'regenerateRecoveryCodes'])->name('profile.2fa.recoveryCodes');
-        Route::post('/passkeys/options', [TwoFactorController::class, 'passkeyRegistrationOptions'])->name('profile.passkeys.options');
-        Route::post('/passkeys', [TwoFactorController::class, 'passkeyRegister'])->name('profile.passkeys.register');
-        Route::delete('/passkeys/{id}', [TwoFactorController::class, 'passkeyDelete'])->whereNumber('id')->name('profile.passkeys.delete');
+            //second factor
+            Route::get('/2fa', [TwoFactorController::class, 'status'])->name('profile.2fa.status');
+            Route::post('/2fa/totp/setup', [TwoFactorController::class, 'totpSetup'])->name('profile.2fa.totpSetup');
+            Route::post('/2fa/totp/confirm', [TwoFactorController::class, 'totpConfirm'])->name('profile.2fa.totpConfirm');
+            Route::delete('/2fa/totp', [TwoFactorController::class, 'totpDisable'])->name('profile.2fa.totpDisable');
+            Route::post('/2fa/recovery-codes', [TwoFactorController::class, 'regenerateRecoveryCodes'])->name('profile.2fa.recoveryCodes');
+            Route::post('/passkeys/options', [TwoFactorController::class, 'passkeyRegistrationOptions'])->name('profile.passkeys.options');
+            Route::post('/passkeys', [TwoFactorController::class, 'passkeyRegister'])->name('profile.passkeys.register');
+            Route::delete('/passkeys/{id}', [TwoFactorController::class, 'passkeyDelete'])->whereNumber('id')->name('profile.passkeys.delete');
+        });
     });
 
     //manage users [auth, admin]
@@ -224,7 +228,8 @@ Route::group([], function ($router) {
     });
 
     //manage reverse shares [auth]
-    Route::group(['prefix' => 'reverse-shares', 'middleware' => ['auth']], function ($router) {
+    //the guest of a file request never sends requests itself (MembersOnly)
+    Route::group(['prefix' => 'reverse-shares', 'middleware' => ['auth', MembersOnly::class]], function ($router) {
         Route::post('/invite', [ReverseSharesController::class, 'createInvite'])->name('reverse-shares.createInvite');
         //the requests this account sent, and where each one is
         Route::get('/invites', [ReverseSharesController::class, 'listInvites'])->name('reverse-shares.listInvites');
