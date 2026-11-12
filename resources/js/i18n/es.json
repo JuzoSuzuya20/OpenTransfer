@@ -682,7 +682,16 @@
       "smtp_username_description": "A menudo, la dirección de la cuenta de envío.",
       "upload_modes": "Modos de subida",
       "your_auth_providers": "Sus proveedores de autenticación",
-      "delete_auth_provider_confirmation": "¿Eliminar este proveedor de identidad? Se pierde su configuración y nadie podrá volver a iniciar sesión con él."
+      "delete_auth_provider_confirmation": "¿Eliminar este proveedor de identidad? Se pierde su configuración y nadie podrá volver a iniciar sesión con él.",
+      "pattern_preset": {
+        "short": "Corto (8 caracteres)",
+        "random16": "Aleatorio (16 caracteres)",
+        "uuid": "Estilo UUID",
+        "hex12": "Hexadecimal (12 caracteres)",
+        "custom": "Personalizado"
+      },
+      "share_url_pattern_strong": "Unos {bits} bits de azar: suficiente para no ser adivinado.",
+      "share_url_pattern_weak": "Unos {bits} bits de azar: demasiado corto, los enlaces podrían adivinarse. Se necesitan al menos {min} (8 caracteres *)."
     },
     "system_auth_provider_info_link": "Acerca de {name}",
     "table": {

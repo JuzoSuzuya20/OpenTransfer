@@ -49,6 +49,30 @@ class SharesController extends Controller
     return 'share-password:' . $share->id . '|' . request()->ip();
   }
 
+  /**
+   * Looking for shares that do not exist is how links get guessed: past 30 misses in a minute
+   * from one address, lookups wait. A link that works is never counted.
+   */
+  private function shareLookupKey(): string
+  {
+    return 'share-lookup-miss:' . request()->ip();
+  }
+
+  private function tooManyShareLookups(): bool
+  {
+    return RateLimiter::tooManyAttempts($this->shareLookupKey(), 30);
+  }
+
+  private function shareLookupMissed(): void
+  {
+    RateLimiter::hit($this->shareLookupKey(), 60);
+  }
+
+  private function tooManyLookupsResponse()
+  {
+    return response()->json(['status' => 'error', 'message' => 'Too many attempts'], 429);
+  }
+
   private function tooManyPasswordAttempts(Share $share): bool
   {
     return RateLimiter::tooManyAttempts($this->sharePasswordThrottleKey($share), 10);
@@ -65,8 +89,13 @@ class SharesController extends Controller
 
   public function read($shareId)
   {
+    if ($this->tooManyShareLookups()) {
+      return $this->tooManyLookupsResponse();
+    }
+
     $share = Share::where('long_id', $shareId)->with(['files', 'user'])->first();
     if (!$share) {
+      $this->shareLookupMissed();
       return response()->json([
         'status' => 'error',
         'message' => 'Share not found'
@@ -110,7 +139,14 @@ class SharesController extends Controller
    */
   public function unlock($shareId)
   {
+    if ($this->tooManyShareLookups()) {
+      return $this->tooManyLookupsResponse();
+    }
+
     $share = Share::where('long_id', $shareId)->with(['files', 'user'])->first();
+    if (!$share) {
+      $this->shareLookupMissed();
+    }
     if (!$share || !$this->checkShareAccess($share)) {
       return response()->json(['status' => 'error', 'message' => 'Share not found'], 404);
     }
@@ -251,9 +287,13 @@ class SharesController extends Controller
 
   public function download($shareId)
   {
+    if ($this->tooManyShareLookups()) {
+      return $this->tooManyLookupsResponse();
+    }
 
     $share = Share::where('long_id', $shareId)->with('files')->first();
     if (!$share) {
+      $this->shareLookupMissed();
       return redirect()->to('/shares/' . $shareId);
     }
 
@@ -336,8 +376,13 @@ class SharesController extends Controller
    */
   public function downloadFile($shareId, $filepath)
   {
+    if ($this->tooManyShareLookups()) {
+      return $this->tooManyLookupsResponse();
+    }
+
     $share = Share::where('long_id', $shareId)->with('files')->first();
     if (!$share) {
+      $this->shareLookupMissed();
       return response()->json(['error' => 'Share not found'], 404);
     }
 
@@ -736,16 +781,15 @@ class SharesController extends Controller
 
   private function generatePatternId(SettingsService $settingsService): string
   {
-    $pattern = $settingsService->get('share_url_pattern') ?? '******';
+    $pattern = $settingsService->get('share_url_pattern') ?? PatternGenerator::SAFE_PATTERN;
     $generator = new PatternGenerator();
-    
-    $error = $generator->validate($pattern);
-    if ($error !== null) {
-      // Fallback to a safe default pattern if the configured one is invalid
-      \Log::warning("Invalid share URL pattern configured: {$error}. Using default.");
-      $pattern = '******';
+
+    // Invalid, or too short to keep its links from being guessed (saved before the minimum)
+    if (!$generator->isStrongEnough($pattern)) {
+      \Log::warning('Share URL pattern invalid or too short, links use ' . PatternGenerator::SAFE_PATTERN . ' instead', ['pattern' => $pattern]);
+      $pattern = PatternGenerator::SAFE_PATTERN;
     }
-    
+
     return $generator->generate($pattern);
   }
 

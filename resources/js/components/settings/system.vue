@@ -38,6 +38,7 @@ import { SHIPPED_LOGIN_MESSAGE } from '../../lib/loginMessage'
 
 import { useToast } from 'vue-toastification'
 import { mapSettings, niceFileSize } from '../../utils'
+import { patternBits, MIN_PATTERN_BITS } from '../../lib/patternBits'
 import { notifySettingsChanged } from '../../composables/useSetting'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 
@@ -87,7 +88,7 @@ const settings = ref({
   max_share_size_unit: '',
   clean_files_after_days: '',
   share_url_mode: 'haiku',
-  share_url_pattern: '******',
+  share_url_pattern: '********',
   emails_share_downloaded_enabled: '',
   smtp_host: '',
   smtp_port: '',
@@ -101,16 +102,23 @@ const settings = ref({
   self_registration_allowed_domains: ''
 })
 
-// Pattern presets for share URL generation
-const patternPresets = [
-  { id: 'shortcode', name: 'Shortcode (6 chars)', pattern: '******' },
-  { id: 'random16', name: 'Random (16 chars)', pattern: '****************' },
-  { id: 'uuid', name: 'UUID-style', pattern: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' },
-  { id: 'hex8', name: 'Hex (8 chars)', pattern: 'XXXXXXXX' },
-  { id: 'custom', name: 'Custom', pattern: '' }
+// Pattern presets for share URL generation: each one strong enough (45 bits, PatternGenerator)
+const PATTERN_PRESETS = [
+  { id: 'short', pattern: '********' },
+  { id: 'random16', pattern: '****************' },
+  { id: 'uuid', pattern: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' },
+  { id: 'hex12', pattern: 'XXXXXXXXXXXX' },
+  { id: 'custom', pattern: '' }
 ]
+const patternPresets = computed(() => PATTERN_PRESETS.map((preset) => ({ ...preset, name: t.value(`settings.system.pattern_preset.${preset.id}`) })))
 
-const selectedPreset = ref('shortcode')
+// How much chance the links of the pattern carry: the server refuses one under the minimum
+const patternStrength = computed(() => {
+  const bits = Math.round(patternBits(settings.value.share_url_pattern || ''))
+  return { bits, strong: bits >= MIN_PATTERN_BITS }
+})
+
+const selectedPreset = ref('short')
 const patternPreview = ref('')
 
 // Generate a preview of the pattern
@@ -239,7 +247,7 @@ const generatePatternPreview = () => {
 watch(() => settings.value.share_url_pattern, () => {
   generatePatternPreview()
   // Update selected preset to 'custom' if pattern doesn't match any preset
-  const matchingPreset = patternPresets.find(p => p.pattern === settings.value.share_url_pattern)
+  const matchingPreset = PATTERN_PRESETS.find(p => p.pattern === settings.value.share_url_pattern)
   if (matchingPreset) {
     selectedPreset.value = matchingPreset.id
   } else {
@@ -249,7 +257,7 @@ watch(() => settings.value.share_url_pattern, () => {
 
 // Handle preset selection
 const handlePresetChange = () => {
-  const preset = patternPresets.find(p => p.id === selectedPreset.value)
+  const preset = PATTERN_PRESETS.find(p => p.id === selectedPreset.value)
   if (preset && preset.pattern) {
     settings.value.share_url_pattern = preset.pattern
   }
@@ -293,6 +301,9 @@ const saveFailureMessage = (error) => {
   }
   if (error.code === 'storage_key_missing') {
     return t.value('settings.system.security.encryption_key_absent')
+  }
+  if (error.code === 'share_url_pattern_weak') {
+    return t.value('settings.system.share_url_pattern_weak', { bits: Math.round(error.data?.bits ?? 0), min: error.data?.minimum_bits ?? MIN_PATTERN_BITS })
   }
   if (error.code === 'ip_allowlist_invalid') {
     return t.value('settings.system.security.invalid_entries', { entries: error.data?.invalid?.join(', ') })
@@ -577,6 +588,11 @@ defineExpose({
                       :placeholder="$t('settings.system.share_url_pattern_placeholder')"
                     />
                     <p class="help-text">{{ $t('settings.system.share_url_pattern_description') }}</p>
+                    <p class="help-text pattern-strength" :class="{ 'is-weak': !patternStrength.strong }" aria-live="polite" v-if="settings.share_url_pattern">
+                      {{ patternStrength.strong
+                        ? $t('settings.system.share_url_pattern_strong', { bits: patternStrength.bits })
+                        : $t('settings.system.share_url_pattern_weak', { bits: patternStrength.bits, min: MIN_PATTERN_BITS }) }}
+                    </p>
 <div v-if="settings.share_url_mode === 'pattern'">
                 <div class="pattern-syntax-help">
                   <h6>{{ $t('settings.system.share_url_pattern_syntax') }}</h6>
@@ -1002,6 +1018,11 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
+// Under the minimum the line says so in the colour of an error, not only in words
+.pattern-strength.is-weak {
+  color: var(--ot-danger-text);
+}
+
 // The size and its unit on one line, the unit as wide as its two letters need
 .size-with-unit {
   display: flex;

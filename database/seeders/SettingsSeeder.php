@@ -332,7 +332,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'share_url_pattern',
-                'value' => '******',
+                'value' => '********',
                 'previous_value' => null,
                 'group' => 'system.shares',
                 'created_at' => now(),

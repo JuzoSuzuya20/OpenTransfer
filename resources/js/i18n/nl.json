@@ -682,7 +682,16 @@
       "smtp_username_description": "Vaak het adres van het verzendaccount.",
       "upload_modes": "Upload opties",
       "your_auth_providers": "Uw autorisatoren",
-      "delete_auth_provider_confirmation": "Deze identiteitsprovider verwijderen? De instellingen gaan verloren en niemand kan er nog mee inloggen."
+      "delete_auth_provider_confirmation": "Deze identiteitsprovider verwijderen? De instellingen gaan verloren en niemand kan er nog mee inloggen.",
+      "pattern_preset": {
+        "short": "Kort (8 tekens)",
+        "random16": "Willekeurig (16 tekens)",
+        "uuid": "UUID-stijl",
+        "hex12": "Hexadecimaal (12 tekens)",
+        "custom": "Eigen"
+      },
+      "share_url_pattern_strong": "Ongeveer {bits} bits toeval: genoeg om niet geraden te worden.",
+      "share_url_pattern_weak": "Ongeveer {bits} bits toeval: te kort, links zouden geraden kunnen worden. Er zijn er minstens {min} nodig (8 tekens *)."
     },
     "system_auth_provider_info_link": "Over {name}",
     "table": {

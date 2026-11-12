@@ -682,7 +682,16 @@
       "smtp_username_description": "Spesso l'indirizzo dell'account di invio.",
       "upload_modes": "Modalità di caricamento",
       "your_auth_providers": "I vostri fornitori di autorizzazioni",
-      "delete_auth_provider_confirmation": "Eliminare questo provider di identità? Le sue impostazioni vanno perse e nessuno potrà più accedere tramite esso."
+      "delete_auth_provider_confirmation": "Eliminare questo provider di identità? Le sue impostazioni vanno perse e nessuno potrà più accedere tramite esso.",
+      "pattern_preset": {
+        "short": "Breve (8 caratteri)",
+        "random16": "Casuale (16 caratteri)",
+        "uuid": "Stile UUID",
+        "hex12": "Esadecimale (12 caratteri)",
+        "custom": "Personalizzato"
+      },
+      "share_url_pattern_strong": "Circa {bits} bit di casualità: abbastanza per non essere indovinato.",
+      "share_url_pattern_weak": "Circa {bits} bit di casualità: troppo corto, i link potrebbero essere indovinati. Ne servono almeno {min} (8 caratteri *)."
     },
     "system_auth_provider_info_link": "Informazioni su {name}",
     "table": {

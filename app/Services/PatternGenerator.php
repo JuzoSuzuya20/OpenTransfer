@@ -35,6 +35,64 @@ class PatternGenerator
     private const SPECIAL_TOKENS = ['#', 'A', 'a', '*', 'X'];
 
     /**
+     * The chance a share link must carry at least: anyone who has the link of a share without
+     * a password reads it. 45 bits is eight alphanumeric characters; six (36 bits) can be
+     * enumerated. The haiku mode carries about 66.
+     */
+    public const MIN_BITS = 45;
+
+    // What a pattern too short is replaced by when one was saved before the minimum existed
+    public const SAFE_PATTERN = '********';
+
+    /**
+     * The chance a pattern carries, in bits: what a person who does not know the link has to
+     * guess. Literal characters and escapes carry none.
+     */
+    public function bits(string $pattern): float
+    {
+        $bits = 0.0;
+        $length = strlen($pattern);
+        $i = 0;
+
+        while ($i < $length) {
+            $char = $pattern[$i];
+
+            if ($char === '\\' && $i + 1 < $length) {
+                $i += 2;
+                continue;
+            }
+
+            if ($char === '[') {
+                $closePos = $this->findClosingBracket($pattern, $i);
+                if ($closePos !== false) {
+                    $choices = count($this->expandCharacterClass(substr($pattern, $i + 1, $closePos - $i - 1)));
+                    $bits += $choices > 1 ? log($choices, 2) : 0;
+                    $i = $closePos + 1;
+                    continue;
+                }
+            }
+
+            $choices = match ($char) {
+                '#' => strlen(self::DIGITS),
+                'A' => strlen(self::UPPERCASE),
+                'a' => strlen(self::LOWERCASE),
+                '*' => strlen(self::ALPHANUMERIC),
+                'X' => strlen(self::HEX),
+                default => 1,
+            };
+            $bits += log($choices, 2);
+            $i++;
+        }
+
+        return $bits;
+    }
+
+    public function isStrongEnough(string $pattern): bool
+    {
+        return $this->validate($pattern) === null && $this->bits($pattern) >= self::MIN_BITS;
+    }
+
+    /**
      * Generate a string based on the provided pattern
      */
     public function generate(string $pattern): string

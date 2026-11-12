@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Utils\FileHelper;
 use App\Services\SettingsService;
+use App\Services\PatternGenerator;
 use Illuminate\Support\Str;
 class SettingsController extends Controller
 {
@@ -26,7 +27,7 @@ class SettingsController extends Controller
         ]);
 
         // Before anything is saved: a refused request must not be half applied
-        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request);
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseWeakSharePattern($request);
         if ($refusal) {
             return $refusal;
         }
@@ -171,6 +172,33 @@ class SettingsController extends Controller
             'status' => 'error',
             'code' => 'storage_key_missing',
             'message' => 'Set the STORAGE_ENCRYPTION_KEY environment variable before turning this on',
+        ], 422);
+    }
+
+    /**
+     * In the "pattern" mode the links of the shares follow the pattern of the admin: one too short
+     * would let them be guessed (see PatternGenerator::MIN_BITS).
+     */
+    private function refuseWeakSharePattern(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+        if (!$incoming->hasAny(['share_url_mode', 'share_url_pattern'])) {
+            return null;
+        }
+
+        $settings = app(SettingsService::class);
+        $mode = $incoming->get('share_url_mode', $settings->get('share_url_mode'));
+        $pattern = (string) $incoming->get('share_url_pattern', $settings->get('share_url_pattern'));
+        $generator = new PatternGenerator();
+        if ($mode !== 'pattern' || $generator->isStrongEnough($pattern)) {
+            return null;
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'code' => 'share_url_pattern_weak',
+            'message' => 'This pattern gives links that could be guessed: it needs ' . PatternGenerator::MIN_BITS . ' bits of chance',
+            'data' => ['bits' => round($generator->bits($pattern), 1), 'minimum_bits' => PatternGenerator::MIN_BITS],
         ], 422);
     }
 
