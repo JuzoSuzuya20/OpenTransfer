@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { Info, ExternalLink, Server, Database, HardDrive, Loader2 } from 'lucide-vue-next'
+import { ExternalLink } from 'lucide-vue-next'
 import { domData } from '../../domData'
 import { getSystemInfo } from '../../api'
 import { store } from '../../store'
@@ -46,351 +46,198 @@ const databaseDisplayName = computed(() => {
   }
   return names[driver] || driver
 })
-
-const emit = defineEmits(['navItemClicked'])
-const handleNavItemClicked = (item) => {
-  emit('navItemClicked', item)
-}
-
-const OpenExternalLink = (url) => {
-  window.open(url, '_blank')
-}
 </script>
 
 <template>
-  <div class="container-fluid">
-    <div class="row mb-5">
-     
-      <div class="col-12 col-md-12 pt-5">
-        <div class="row mb-5">
-          <div class="col-12 col-md-8 offset-md-2 pe-0 ps-0 ps-md-3">
-            <div class="setting-group" id="about_erugo">
-              <div class="setting-group-body">
-                <p>{{ $t('settings.about.intro') }}</p>
-                <p>{{ $t('settings.about.created_by') }} <a href="https://github.com/deanward" target="_blank" rel="noopener noreferrer">Dean Ward</a>. {{ $t('settings.about.support_cta') }} <a href="https://ko-fi.com/deanward" target="_blank" rel="noopener noreferrer">{{ $t('settings.about.support_link') }}</a>.</p>
-                
-                <div class="about-info">
-                  <div class="version-display">
-                    <span class="version-label">{{ $t('settings.about.version') }}</span>
-                    <span class="version-value">{{ version }}</span>
-                  </div>
+  <div class="about-layout">
+    <section class="ot-card about-card" aria-labelledby="h-about">
+      <h2 class="ot-card-title" id="h-about">{{ $t('settings.about.title') }}</h2>
+      <p class="about-intro">{{ $t('settings.about.intro') }}</p>
+      <p class="about-credit">
+        {{ $t('settings.about.created_by') }}
+        <a href="https://github.com/deanward" target="_blank" rel="noopener noreferrer">Dean Ward</a>.
+        {{ $t('settings.about.support_cta') }}
+        <a href="https://ko-fi.com/deanward" target="_blank" rel="noopener noreferrer">{{ $t('settings.about.support_link') }}</a>.
+      </p>
 
-                  <div class="license-display">
-                    <span class="license-label">{{ $t('settings.about.license') }}</span>
-                    <a href="https://github.com/DeanWard/erugo/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="license-value">MIT</a>
-                  </div>
-
-                  <div class="button-row">
-                    <button type="button" @click="OpenExternalLink(erugoWebsiteUrl)">
-                      <ExternalLink />
-                      {{ $t('settings.about.visit_website') }}
-                    </button>
-                    <button type="button" @click="OpenExternalLink('https://github.com/DeanWard/erugo')">
-                      <ExternalLink />
-                      {{ $t('settings.about.visit_github') }}
-                    </button>
-                    <button type="button" @click="OpenExternalLink('https://erugo.app/docs/')">
-                      <ExternalLink />
-                      {{ $t('settings.about.documentation') }}
-                    </button>
-                    <button type="button" @click="OpenExternalLink('https://discord.gg/M74X2wmqY8')">
-                      <ExternalLink />
-                      {{ $t('settings.about.discord') }}
-                    </button>
-                    <button type="button" class="donate-button" @click="OpenExternalLink('https://ko-fi.com/deanward')">
-                      <ExternalLink />
-                      {{ $t('settings.about.donate') }}
-                    </button>
-                  </div>
-                </div>
-
-                <div class="credits-section">
-                  <h4>{{ $t('settings.about.built_with') }}</h4>
-                  <div class="credits-list">
-                    <a href="https://laravel.com" target="_blank" rel="noopener noreferrer" class="credit-item">
-                      <span class="credit-name">Laravel</span>
-                      <span class="credit-desc">{{ $t('settings.about.credits.laravel') }}</span>
-                    </a>
-                    <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer" class="credit-item">
-                      <span class="credit-name">Vue.js</span>
-                      <span class="credit-desc">{{ $t('settings.about.credits.vue') }}</span>
-                    </a>
-                    <a href="https://tus.io" target="_blank" rel="noopener noreferrer" class="credit-item">
-                      <span class="credit-name">tus</span>
-                      <span class="credit-desc">{{ $t('settings.about.credits.tus') }}</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="system-info-section" v-if="store.isAdmin()">
-                  <h4>{{ $t('settings.about.system_info') }}</h4>
-                  
-                  <div v-if="loading" class="loading-state">
-                    <Loader2 class="spinner" />
-                    {{ $t('settings.about.loading') }}
-                  </div>
-                  
-                  <div v-else-if="systemInfo" class="system-info-grid">
-                    <div class="info-item">
-                      <Server class="info-icon" />
-                      <div class="info-content">
-                        <span class="info-label">PHP</span>
-                        <span class="info-value">{{ systemInfo.php_version }}</span>
-                      </div>
-                    </div>
-                    
-                    <div class="info-item">
-                      <Server class="info-icon" />
-                      <div class="info-content">
-                        <span class="info-label">Laravel</span>
-                        <span class="info-value">{{ systemInfo.laravel_version }}</span>
-                      </div>
-                    </div>
-                    
-                    <div class="info-item">
-                      <Database class="info-icon" />
-                      <div class="info-content">
-                        <span class="info-label">{{ $t('settings.about.database') }}</span>
-                        <span class="info-value">{{ databaseDisplayName }} {{ systemInfo.database_version }}</span>
-                      </div>
-                    </div>
-                    
-                    <div class="info-item">
-                      <HardDrive class="info-icon" />
-                      <div class="info-content">
-                        <span class="info-label">{{ $t('settings.about.max_upload') }}</span>
-                        <span class="info-value">{{ systemInfo.max_upload_size.formatted }}</span>
-                      </div>
-                    </div>
-                    
-                    <div class="info-item storage-item">
-                      <HardDrive class="info-icon" />
-                      <div class="info-content">
-                        <span class="info-label">{{ $t('settings.about.storage') }}</span>
-                        <span class="info-value">{{ systemInfo.storage.used_formatted }} {{ $t('settings.about.of') }} {{ systemInfo.storage.disk_total_formatted }}</span>
-                        <div class="storage-bar">
-                          <div class="storage-fill" :style="{ width: systemInfo.storage.disk_usage_percent + '%' }"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+      <dl class="month-figures">
+        <div>
+          <dt>{{ $t('settings.about.version') }}</dt>
+          <dd>{{ version }}</dd>
         </div>
+        <div>
+          <dt>{{ $t('settings.about.license') }}</dt>
+          <dd>
+            <a href="https://github.com/DeanWard/erugo/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT</a>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="about-links">
+        <a class="ot-act" :href="erugoWebsiteUrl" target="_blank" rel="noopener noreferrer">
+          <ExternalLink aria-hidden="true" />
+          {{ $t('settings.about.visit_website') }}
+        </a>
+        <a class="ot-act" href="https://github.com/DeanWard/erugo" target="_blank" rel="noopener noreferrer">
+          <ExternalLink aria-hidden="true" />
+          {{ $t('settings.about.visit_github') }}
+        </a>
+        <a class="ot-act" href="https://erugo.app/docs/" target="_blank" rel="noopener noreferrer">
+          <ExternalLink aria-hidden="true" />
+          {{ $t('settings.about.documentation') }}
+        </a>
+        <a class="ot-act" href="https://discord.gg/M74X2wmqY8" target="_blank" rel="noopener noreferrer">
+          <ExternalLink aria-hidden="true" />
+          {{ $t('settings.about.discord') }}
+        </a>
+        <a class="ot-act" href="https://ko-fi.com/deanward" target="_blank" rel="noopener noreferrer">
+          <ExternalLink aria-hidden="true" />
+          {{ $t('settings.about.donate') }}
+        </a>
       </div>
-    </div>
+
+      <div class="about-sub">
+        <h3>{{ $t('settings.about.built_with') }}</h3>
+        <ul class="about-credits">
+          <li>
+            <a href="https://laravel.com" target="_blank" rel="noopener noreferrer">Laravel</a>
+            <span>{{ $t('settings.about.credits.laravel') }}</span>
+          </li>
+          <li>
+            <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer">Vue.js</a>
+            <span>{{ $t('settings.about.credits.vue') }}</span>
+          </li>
+          <li>
+            <a href="https://tus.io" target="_blank" rel="noopener noreferrer">tus</a>
+            <span>{{ $t('settings.about.credits.tus') }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ot-card about-card" v-if="store.isAdmin()" aria-labelledby="h-system-info">
+      <h2 class="ot-card-title" id="h-system-info">{{ $t('settings.about.system_info') }}</h2>
+      <p class="about-loading" v-if="loading">{{ $t('settings.about.loading') }}</p>
+      <template v-else-if="systemInfo">
+        <dl class="month-figures">
+          <div>
+            <dt>PHP</dt>
+            <dd>{{ systemInfo.php_version }}</dd>
+          </div>
+          <div>
+            <dt>Laravel</dt>
+            <dd>{{ systemInfo.laravel_version }}</dd>
+          </div>
+          <div>
+            <dt>{{ $t('settings.about.database') }}</dt>
+            <dd>{{ databaseDisplayName }} {{ systemInfo.database_version }}</dd>
+          </div>
+          <div>
+            <dt>{{ $t('settings.about.max_upload') }}</dt>
+            <dd>{{ systemInfo.max_upload_size.formatted }}</dd>
+          </div>
+          <div>
+            <dt>{{ $t('settings.about.storage') }}</dt>
+            <dd>{{ systemInfo.storage.used_formatted }} {{ $t('settings.about.of') }} {{ systemInfo.storage.disk_total_formatted }}</dd>
+          </div>
+        </dl>
+        <div
+          class="about-meter"
+          role="meter"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          :aria-valuenow="systemInfo.storage.disk_usage_percent"
+          :aria-label="$t('settings.about.storage')"
+        >
+          <span :style="{ width: `${Math.min(100, systemInfo.storage.disk_usage_percent)}%` }"></span>
+        </div>
+      </template>
+    </section>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.about-info {
-  padding: 10px 0;
-}
-
-.version-display,
-.license-display {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 16px;
-  background: var(--panel-section-background-color-alt);
-  border-radius: var(--panel-border-radius);
-
-  .version-label,
-  .license-label {
-    font-weight: 600;
-    color: var(--panel-text-color);
-  }
-
-  .version-value,
-  .license-value {
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-    font-size: 1.1rem;
-    color: var(--link-color);
-    background: var(--panel-section-background-color);
-    padding: 4px 12px;
-    border-radius: 4px;
-    text-decoration: none;
-    
-    &:hover {
-      color: var(--link-color-hover);
-    }
-  }
-}
-
-.button-row {
+<style scoped lang="scss">
+.about-layout {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-  
-  button {
-    flex: 0 0 auto;
+  align-items: flex-start;
+  gap: 20px;
+}
+.about-card {
+  flex: 1 1 340px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &:first-child {
+    flex: 1.6 1 480px;
   }
-  
-  .donate-button {
-    background: var(--color-success);
-    color: white;
-    
-    &:hover {
-      filter: brightness(1.1);
-    }
+  p {
+    margin: 0;
+    max-width: 70ch;
   }
 }
-
-.credits-section {
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--panel-section-background-color-alt);
-  
-  h4 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--panel-text-color-alt);
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+.about-intro {
+  color: var(--ot-text);
 }
-
-.credits-list {
+.about-credit,
+.about-loading {
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+}
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.about-sub {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
+  padding-top: 14px;
+  border-top: 1px solid var(--ot-line-soft);
 
-.credit-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--panel-section-background-color-alt);
-  border-radius: var(--panel-border-radius);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: var(--panel-section-background-color);
-    transform: translateX(4px);
-  }
-  
-  .credit-name {
-    font-weight: 600;
-    color: var(--link-color);
-    min-width: 80px;
-  }
-  
-  .credit-desc {
-    font-size: 0.9rem;
-    color: var(--panel-text-color-alt);
+  h3 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--ot-heading);
   }
 }
-
-.system-info-section {
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--panel-section-background-color-alt);
-  
-  h4 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--panel-text-color-alt);
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-}
-
-.loading-state {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--panel-text-color-alt);
-  padding: 16px;
-  
-  .spinner {
-    animation: spin 1s linear infinite;
-    width: 18px;
-    height: 18px;
-  }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.system-info-grid {
+.about-credits {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--panel-section-background-color-alt);
-  border-radius: var(--panel-border-radius);
-  
-  .info-icon {
-    width: 18px;
-    height: 18px;
-    color: var(--link-color);
-    flex-shrink: 0;
-  }
-  
-  .info-content {
+  li {
     display: flex;
-    align-items: center;
-    gap: 8px;
     flex-wrap: wrap;
-    flex: 1;
+    gap: 4px 12px;
+    font-size: 0.875rem;
   }
-  
-  .info-label {
-    font-weight: 600;
-    color: var(--panel-text-color);
-    min-width: 100px;
+  a {
+    min-width: 72px;
+    font-weight: 700;
   }
-  
-  .info-value {
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-    font-size: 0.9rem;
-    color: var(--panel-text-color-alt);
-  }
-  
-  &.storage-item {
-    .info-content {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-      
-      > span {
-        display: flex;
-        gap: 8px;
-      }
-    }
+  span {
+    color: var(--ot-muted);
   }
 }
-
-.storage-bar {
-  width: 100%;
-  height: 6px;
-  background: var(--panel-section-background-color);
-  border-radius: 3px;
+.about-meter {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ot-field);
   overflow: hidden;
-  
-  .storage-fill {
+
+  span {
+    display: block;
     height: 100%;
-    background: var(--link-color);
-    border-radius: 3px;
-    transition: width 0.3s ease;
+    border-radius: 4px;
+    background: var(--ot-accent);
   }
 }
 </style>

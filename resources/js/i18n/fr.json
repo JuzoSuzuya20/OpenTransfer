@@ -224,12 +224,12 @@
       },
       "failed_to_save_settings": "L'enregistrement des paramètres a échoué.",
       "favicon": "Favicon",
-      "favicon_description": "Envoyez un favicon personnalisé pour remplacer l’icône OpenTransfer par défaut dans l’onglet du navigateur. »",
+      "favicon_description": "Envoyez un favicon personnalisé pour remplacer l’icône OpenTransfer par défaut dans l’onglet du navigateur.",
       "favicon_reset_failed": "Échec de la réinitialisation du favicon",
       "favicon_reset_success": "Favicon réinitialisé avec succès",
       "favicon_upload_failed": "Le téléchargement du favicon a échoué",
       "favicon_uploaded": "Favicon téléchargé",
-      "in_pixels": "En pixels",
+      "in_pixels": "en pixels",
       "in_seconds": "secondes",
       "install_custom_theme": "Installer un thème personnalisé\n",
       "install_custom_theme_description": "Installer un thème personnalisé à partir d'un fichier JSON.\n\nIl peut s'agir d'un thème que vous avez modifié ou créé vous-même ou que vous avez téléchargé.",
@@ -668,7 +668,7 @@
       "name": "Nom"
     },
     "title": {
-      "about": "A propos de",
+      "about": "À propos",
       "allShares": "Tous les partages",
       "branding": "Marque",
       "cloudConnect": "Erugo Connect",

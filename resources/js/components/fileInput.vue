@@ -1,6 +1,10 @@
 <script setup>
+// A file chooser that shows what is chosen (or in place) and a Browse button; the page adds its
+// own actions (reset to default) beside it
 import { ref, computed } from 'vue'
-import { Search } from 'lucide-vue-next'
+import { FolderOpen } from 'lucide-vue-next'
+import { useTranslate } from '@tolgee/vue'
+
 const props = defineProps({
   modelValue: {
     type: [File, null, String],
@@ -12,7 +16,7 @@ const props = defineProps({
   },
   label: {
     type: String,
-    default: 'Select File'
+    default: ''
   },
   preview: {
     type: Object,
@@ -21,53 +25,43 @@ const props = defineProps({
       if (!value) return true
       return value.url && typeof value.url === 'string'
     }
+  },
+  // The id a <label for> points at: the Browse button
+  id: {
+    type: String,
+    default: undefined
   }
 })
 
+const { t } = useTranslate()
 const fileInput = ref(null)
-
-//emit
 const emit = defineEmits(['update:modelValue'])
 
-//methods
 const handleFileChange = (event) => {
   emit('update:modelValue', event.target.files[0])
 }
-
 const triggerFileInput = () => {
   fileInput.value.click()
 }
 
-const buttonMessage = computed(() => {
-  let message = ''
-  if (props.modelValue) {
-    message = sensibleButtonMessage(typeof props.modelValue === 'string' ? props.modelValue : props.modelValue.name)
-  } else {
-    message = props.label
-  }
-  return message
+const fileName = computed(() => {
+  if (props.modelValue) return typeof props.modelValue === 'string' ? props.modelValue : props.modelValue.name
+  return props.label
 })
-
-const sensibleButtonMessage = (message) => {
-  const maxLength = 25
-  if (message.length > maxLength) {
-    return message.slice(0, maxLength) + `&hellip;`
-  }
-  return message
-}
 </script>
 
 <template>
   <div class="file-input">
-    <input type="file" @change="handleFileChange" ref="fileInput" :accept="accept" />
-    <div class="file-input-button" @click="triggerFileInput">
+    <input type="file" @change="handleFileChange" ref="fileInput" :accept="accept" tabindex="-1" aria-hidden="true" />
+    <div class="file-input-box" @click="triggerFileInput">
       <div class="file-input-preview" v-if="preview">
-        <img :src="preview.url" :alt="preview.filename || 'Preview'" class="preview-img" />
+        <img :src="preview.url" alt="" />
       </div>
-      <div class="file-label" v-html="buttonMessage"></div>
-      <div class="file-input-actions">
-        <button class="file-input-search" @click.stop="triggerFileInput">
-          <Search />
+      <span class="file-label" :title="fileName">{{ fileName }}</span>
+      <div class="file-input-actions" @click.stop>
+        <button type="button" class="ot-act" :id="id" @click="triggerFileInput">
+          <FolderOpen aria-hidden="true" />
+          {{ t('send.browse') }}
         </button>
         <slot name="actions" />
       </div>
@@ -77,76 +71,63 @@ const sensibleButtonMessage = (message) => {
 
 <style lang="scss" scoped>
 .file-input {
-  position: relative;
   width: 100%;
 }
 input[type='file'] {
   display: none;
 }
-.file-input-button {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  background: var(--input-background-color);
-  color: var(--input-text-color);
-  margin-bottom: 10px;
-  border: 1px solid var(--input-border-color);
-  transition: all 0.3s ease-in-out;
-  outline: 2px solid transparent;
-  height: 50px;
-  cursor: pointer;
+.file-input-box {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  .file-input-preview {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    .preview-img {
-      width: 32px;
-      height: 32px;
-      object-fit: contain;
-      border-radius: 3px;
-    }
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 56px;
+  padding: 7px 8px 7px 7px;
+  background: var(--ot-field);
+  border: 1px solid var(--ot-line-field);
+  border-radius: var(--ot-radius);
+  cursor: pointer;
+  transition: border-color 0.12s ease;
+
+  &:hover {
+    border-color: var(--ot-line-strong);
   }
-  .file-label {
-    flex: 1;
-    font-style: italic;
-    padding-right: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+}
+// The logo or icon on a ground of its own, so a white logo still shows
+.file-input-preview {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  min-width: 40px;
+  max-width: 96px;
+  height: 40px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  background: var(--ot-raised);
+  border: 1px solid var(--ot-line-soft);
+  border-radius: var(--ot-btn-radius);
+
+  img {
+    max-width: 84px;
+    max-height: 28px;
+    object-fit: contain;
   }
-  .file-input-actions {
-    display: flex;
-    align-items: center;
-    gap: 0px;
-    flex-shrink: 0;
-    :deep(button) {
-      height: 40px;
-      width: 40px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      svg {
-        width: 20px;
-        height: 20px;
-        margin: 0;
-      }
-    }
-  }
-  button {
-    height: 40px;
-    width: 40px;
-    padding:0;
-    svg {
-      width: 20px;
-      height: 20px;
-      margin: 0;
-    }
-  }
+}
+.file-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.875rem;
+  color: var(--ot-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.file-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  cursor: default;
 }
 </style>

@@ -276,79 +276,90 @@ defineExpose({
 </script>
 
 <template>
-  <div class="admin-sections">
+  <div class="admin-sections branding-settings">
     <section class="ot-card setting-group" id="logo-settings" aria-labelledby="h-logo">
       <h2 class="ot-card-title" id="h-logo">{{ $t('settings.branding.logo_and_favicon') }}</h2>
 
-      <div class="setting-row">
-        <div class="setting-fields">
-          <div class="input-container">
-            <label for="logoFile">{{ $t('settings.branding.logo_image') }}</label>
-            <FileInput v-model="settings.logo" accept="image/png, image/svg+xml" :preview="logoPreview">
-              <template #actions>
-                <button
-                  class="icon-only secondary"
-                  @click.stop="handleResetLogo"
-                  :title="$t('settings.branding.reset_logo_to_default')"
-                  :aria-label="$t('settings.branding.reset_logo_to_default')"
-                >
-                  <RotateCcw />
-                </button>
-              </template>
-            </FileInput>
-          </div>
-
-          <div class="input-container">
-            <label for="logoWidth">
-              {{ $t('settings.branding.logo_width') }}
-              <small>({{ $t('settings.branding.in_pixels') }})</small>
-            </label>
-            <input type="number" id="logoWidth" v-model="settings.logo_width" />
-          </div>
-
-          <div class="input-container">
-            <label for="faviconFile">{{ $t('settings.branding.favicon') }}</label>
-            <FileInput
-              v-model="pendingFavicon"
-              accept="image/png, image/svg+xml"
-              :label="faviconPreview.filename || $t('settings.branding.upload_favicon')"
-              :preview="faviconPreview"
-            >
-              <template #actions>
-                <button
-                  class="icon-only secondary"
-                  @click.stop="handleResetFavicon"
-                  :title="$t('settings.branding.reset_favicon_to_default')"
-                  :aria-label="$t('settings.branding.reset_favicon_to_default')"
-                >
-                  <RotateCcw />
-                </button>
-              </template>
-            </FileInput>
-          </div>
+      <div class="branding-fields">
+        <div class="input-container">
+          <label for="logoFile">{{ $t('settings.branding.logo_image') }}</label>
+          <FileInput id="logoFile" v-model="settings.logo" accept="image/png, image/svg+xml" :preview="logoPreview">
+            <template #actions>
+              <button
+                type="button"
+                class="ot-act icon-only"
+                @click="handleResetLogo"
+                :title="$t('settings.branding.reset_logo_to_default')"
+                :aria-label="$t('settings.branding.reset_logo_to_default')"
+              >
+                <RotateCcw aria-hidden="true" />
+              </button>
+            </template>
+          </FileInput>
+          <p class="help-text">{{ $t('settings.branding.logo_description') }}</p>
         </div>
-        <div class="section-help">
-          <h3>{{ $t('settings.branding.logo') }}</h3>
-          <p>{{ $t('settings.branding.logo_description') }}</p>
-          <h3>{{ $t('settings.branding.favicon') }}</h3>
-          <p>{{ $t('settings.branding.favicon_description') }}</p>
+
+        <div class="input-container">
+          <label for="faviconFile">{{ $t('settings.branding.favicon') }}</label>
+          <FileInput
+            id="faviconFile"
+            v-model="pendingFavicon"
+            accept="image/png, image/svg+xml"
+            :label="faviconPreview.filename || $t('settings.branding.upload_favicon')"
+            :preview="faviconPreview"
+          >
+            <template #actions>
+              <button
+                type="button"
+                class="ot-act icon-only"
+                @click="handleResetFavicon"
+                :title="$t('settings.branding.reset_favicon_to_default')"
+                :aria-label="$t('settings.branding.reset_favicon_to_default')"
+              >
+                <RotateCcw aria-hidden="true" />
+              </button>
+            </template>
+          </FileInput>
+          <p class="help-text">{{ $t('settings.branding.favicon_description') }}</p>
+        </div>
+
+        <div class="input-container logo-width">
+          <label for="logoWidth">
+            {{ $t('settings.branding.logo_width') }}
+            <small>({{ $t('settings.branding.in_pixels') }})</small>
+          </label>
+          <input type="number" id="logoWidth" min="1" v-model="settings.logo_width" />
         </div>
       </div>
     </section>
 
     <section class="ot-card setting-group" id="other-ui-settings" aria-labelledby="h-other-ui">
       <h2 class="ot-card-title" id="h-other-ui">{{ $t('settings.branding.other_ui_settings') }}</h2>
-      <div class="setting-row">
-        <div class="setting-fields">
-          <div class="checkbox-container">
-            <input type="checkbox" v-model="settings.show_powered_by" id="showPoweredBy" />
-            <label for="showPoweredBy">{{ $t('settings.branding.show_powered_by') }}</label>
-          </div>
-        </div>
-        <div class="section-help">
-          <p>{{ $t('settings.branding.show_powered_by_description') }}</p>
-        </div>
+      <div class="checkbox-container">
+        <input type="checkbox" v-model="settings.show_powered_by" id="showPoweredBy" />
+        <label for="showPoweredBy">{{ $t('settings.branding.show_powered_by') }}</label>
       </div>
+      <p class="help-text">{{ $t('settings.branding.show_powered_by_description') }}</p>
     </section>
   </div>
 </template>
+
+<style scoped lang="scss">
+// Each choice with its explanation right under it, two columns on a wide screen
+.branding-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 22px 40px;
+  align-items: start;
+}
+.logo-width input {
+  max-width: 160px;
+}
+.help-text {
+  margin: 6px 0 0;
+  max-width: 65ch;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ot-muted);
+}
+</style>

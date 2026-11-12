@@ -229,7 +229,7 @@
       "favicon_reset_success": "Favicon resettata con successo",
       "favicon_upload_failed": "Caricamento della favicon non riuscito",
       "favicon_uploaded": "Favicon caricata",
-      "in_pixels": "In pixel",
+      "in_pixels": "in pixel",
       "in_seconds": "secondi",
       "install_custom_theme": "Installa un tema personalizzato\n",
       "install_custom_theme_description": "Installa un tema personalizzato da un file JSON.\n\nPuò trattarsi di un tema modificato o creato da te stesso o di uno scaricato.",
@@ -668,7 +668,7 @@
       "name": "Nome"
     },
     "title": {
-      "about": "Circa",
+      "about": "Informazioni",
       "allShares": "Tutte le condivisioni",
       "branding": "Marchio",
       "cloudConnect": "Erugo Connect",

@@ -229,7 +229,7 @@
       "favicon_reset_success": "Redefinição do favicon com êxito",
       "favicon_upload_failed": "O carregamento do favicon falhou",
       "favicon_uploaded": "Favicon carregado",
-      "in_pixels": "Em pixels",
+      "in_pixels": "em pixels",
       "in_seconds": "segundos",
       "install_custom_theme": "Instalar um Tema Personalizado",
       "install_custom_theme_description": "Instalar um tema personalizado a partir de um ficheiro JSON.\n\nEste pode ser um tema que tenha você modificado, criado ou descarregado.",

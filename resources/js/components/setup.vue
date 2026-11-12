@@ -283,7 +283,8 @@ const skipAndLogin = async () => {
 
           <div class="input-container mt-2">
             <label for="logo">{{ t('setup.logo') }}</label>
-            <FileInput 
+            <FileInput
+              id="logo"
               v-model="optionalSettings.logo"
               accept="image/png, image/svg+xml"
               :preview="logoPreview"
