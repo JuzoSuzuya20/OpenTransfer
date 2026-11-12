@@ -80,10 +80,7 @@
       font-size: 1.375rem;
       font-weight: 800;
       color: var(--ot-heading);
-    }
-    > p {
-      margin: 0;
-      color: var(--ot-muted);
+      text-wrap: balance;
     }
 
     .input-container {
@@ -95,14 +92,54 @@
       }
     }
     button.block {
+      width: 100%;
       margin-right: 0;
     }
   }
+}
 
-  // Bootstrap rows of the other steps: no negative gutter inside the card
-  .row {
-    margin-left: 0;
-    margin-right: 0;
+// A step opens on its title and what to do, centred like the brand above it
+.auth-step-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    max-width: 42ch;
+    color: var(--ot-muted);
+    text-wrap: pretty;
+  }
+}
+
+// The other ways out of a step, one under the other, back to sign-in last
+.auth-step-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .auth-back {
+    color: var(--ot-text);
+
+    &:hover {
+      color: var(--ot-heading);
+    }
+    svg {
+      width: 14px;
+      height: 14px;
+    }
   }
 }
 
@@ -114,6 +151,7 @@
 
   .ot-card-title {
     margin-bottom: -2px;
+    text-align: center;
   }
 }
 

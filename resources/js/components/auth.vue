@@ -453,22 +453,18 @@ const switchToLogin = () => {
   <!-- Second factor -->
   <div class="auth-container" v-else-if="mfaToken">
     <div class="auth-container-inner">
-      <h1>{{ $t('auth.mfa.title') }}</h1>
+      <div class="auth-step-head">
+        <h1>{{ $t('auth.mfa.title') }}</h1>
+        <p v-if="mfaMethod === 'passkey'">{{ $t('auth.mfa.use_passkey_prompt') }}</p>
+        <p v-else>{{ mfaMethod === 'recovery' ? $t('auth.mfa.enter_recovery_code') : $t('auth.mfa.enter_code') }}</p>
+      </div>
 
-      <template v-if="mfaMethod === 'passkey'">
-        <p>{{ $t('auth.mfa.use_passkey_prompt') }}</p>
-        <div class="row mt-3 align-items-center w-100">
-          <div class="col-12 ps-0 pe-0 mb-2">
-            <button class="block" @click="attemptMfaPasskey" :disabled="mfaBusy">
-              <Fingerprint />
-              {{ $t('auth.mfa.use_passkey') }}
-            </button>
-          </div>
-        </div>
-      </template>
+      <button v-if="mfaMethod === 'passkey'" class="block cta" @click="attemptMfaPasskey" :disabled="mfaBusy">
+        <Fingerprint aria-hidden="true" />
+        {{ $t('auth.mfa.use_passkey') }}
+      </button>
 
       <template v-else>
-        <p>{{ mfaMethod === 'recovery' ? $t('auth.mfa.enter_recovery_code') : $t('auth.mfa.enter_code') }}</p>
         <div class="input-container">
           <label for="mfa_code">{{ mfaMethod === 'recovery' ? $t('settings.two_factor.recovery_codes') : $t('auth.mfa.code') }}</label>
           <input
@@ -483,34 +479,26 @@ const switchToLogin = () => {
             @keyup.enter="attemptMfaCode"
           />
         </div>
-        <div class="row mt-3 align-items-center w-100">
-          <div class="col-12 ps-0 pe-0 mb-2">
-            <button class="block" @click="attemptMfaCode" :disabled="mfaBusy || !mfaCode">
-              <ShieldCheck />
-              {{ $t('auth.mfa.verify') }}
-            </button>
-          </div>
-        </div>
+        <button class="block cta" @click="attemptMfaCode" :disabled="mfaBusy || !mfaCode">
+          <ShieldCheck aria-hidden="true" />
+          {{ $t('auth.mfa.verify') }}
+        </button>
       </template>
 
-      <div class="row mt-2 align-items-center w-100">
-        <div class="col-7 ps-0">
-          <a href="" class="d-block" v-if="mfaMethod !== 'passkey' && canUsePasskey" @click.prevent="chooseMfaMethod('passkey')">
-            {{ $t('auth.mfa.use_passkey') }}
-          </a>
-          <a href="" class="d-block" v-if="mfaMethod !== 'totp' && mfaMethods.includes('totp')" @click.prevent="chooseMfaMethod('totp')">
-            {{ $t('auth.mfa.use_authenticator') }}
-          </a>
-          <a href="" class="d-block" v-if="mfaMethod !== 'recovery' && mfaMethods.includes('recovery')" @click.prevent="chooseMfaMethod('recovery')">
-            {{ $t('auth.mfa.use_recovery_code') }}
-          </a>
-        </div>
-        <div class="col-5 pe-0 text-end">
-          <a href="" @click.prevent="leaveMfa">
-            <ArrowLeft style="width: 14px; height: 14px; margin-top: -2px;" />
-            {{ $t('auth.back_to_login') }}
-          </a>
-        </div>
+      <div class="auth-step-links">
+        <a href="" v-if="mfaMethod !== 'passkey' && canUsePasskey" @click.prevent="chooseMfaMethod('passkey')">
+          {{ $t('auth.mfa.use_passkey') }}
+        </a>
+        <a href="" v-if="mfaMethod !== 'totp' && mfaMethods.includes('totp')" @click.prevent="chooseMfaMethod('totp')">
+          {{ $t('auth.mfa.use_authenticator') }}
+        </a>
+        <a href="" v-if="mfaMethod !== 'recovery' && mfaMethods.includes('recovery')" @click.prevent="chooseMfaMethod('recovery')">
+          {{ $t('auth.mfa.use_recovery_code') }}
+        </a>
+        <a href="" class="auth-back" @click.prevent="leaveMfa">
+          <ArrowLeft aria-hidden="true" />
+          {{ $t('auth.back_to_login') }}
+        </a>
       </div>
     </div>
   </div>
@@ -518,39 +506,35 @@ const switchToLogin = () => {
   <!-- Verification Code Screen -->
   <div class="auth-container" v-else-if="verificationMode">
     <div class="auth-container-inner">
-      <h1>{{ $t('auth.verify_email') }}</h1>
-      <p>{{ $t('auth.verification_code_sent', { email: registrationEmail }) }}</p>
+      <div class="auth-step-head">
+        <h1>{{ $t('auth.verify_email') }}</h1>
+        <p>{{ $t('auth.verification_code_sent', { email: registrationEmail }) }}</p>
+      </div>
       <div class="input-container">
         <label for="verification_code">{{ $t('auth.verification_code') }}</label>
         <input
+          id="verification_code"
           type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
           v-model="verificationCode"
-          :placeholder="$t('auth.enter_6_digit_code')"
           @keyup.enter="attemptVerifyEmail"
           maxlength="6"
           class="verification-code-input"
         />
       </div>
-      <div class="row mt-3 align-items-center w-100">
-        <div class="col-12 ps-0 pe-0 mb-2">
-          <button class="block" @click="attemptVerifyEmail" :disabled="isVerifying">
-            <Mail />
-            {{ isVerifying ? $t('auth.verifying') : $t('auth.verify_email') }}
-          </button>
-        </div>
-      </div>
-      <div class="row mt-2 align-items-center w-100">
-        <div class="col-6 ps-0">
-          <a href="" @click.prevent="attemptResendCode" :class="{ disabled: isResending }">
-            {{ isResending ? $t('auth.sending') : $t('auth.resend_code') }}
-          </a>
-        </div>
-        <div class="col-6 pe-0 text-end">
-          <a href="" @click.prevent="switchToLogin">
-            <ArrowLeft style="width: 14px; height: 14px; margin-top: -2px;" />
-            {{ $t('auth.back_to_login') }}
-          </a>
-        </div>
+      <button class="block cta" @click="attemptVerifyEmail" :disabled="isVerifying">
+        <Mail aria-hidden="true" />
+        {{ isVerifying ? $t('auth.verifying') : $t('auth.verify_email') }}
+      </button>
+      <div class="auth-step-links">
+        <a href="" @click.prevent="attemptResendCode" :class="{ disabled: isResending }">
+          {{ isResending ? $t('auth.sending') : $t('auth.resend_code') }}
+        </a>
+        <a href="" class="auth-back" @click.prevent="switchToLogin">
+          <ArrowLeft aria-hidden="true" />
+          {{ $t('auth.back_to_login') }}
+        </a>
       </div>
     </div>
   </div>
@@ -614,60 +598,63 @@ const switchToLogin = () => {
 
       <!-- Forgot Password Mode -->
       <template v-else-if="forgotPasswordMode">
-        <h1>{{ $t('auth.forgot_password') }}</h1>
-        <p>{{ $t('auth.please_enter_email_to_reset_password') }}</p>
-        <div class="input-container">
-          <label for="email">{{ $t('auth.email') }}</label>
-          <input type="text" v-model="email" :placeholder="$t('auth.email')" @keyup.enter="attemptForgotPassword" />
+        <div class="auth-step-head">
+          <h1>{{ $t('auth.forgot_password') }}</h1>
+          <p>{{ $t('auth.please_enter_email_to_reset_password') }}</p>
         </div>
-        <div class="row mt-3 align-items-center w-100">
-          <div class="col-6 ps-0">
-            <button class="block" @click="attemptForgotPassword">
-              <KeyRound />
-              {{ $t('auth.request_reset') }}
-            </button>
-          </div>
-          <div class="col-6 pe-0">
-            <a href="" @click.prevent="switchToLogin">{{ $t('auth.back_to_login') }}</a>
-          </div>
+        <div class="input-container">
+          <label for="forgot_email">{{ $t('auth.email') }}</label>
+          <input id="forgot_email" type="email" autocomplete="email" v-model="email" @keyup.enter="attemptForgotPassword" />
+        </div>
+        <button class="block cta" @click="attemptForgotPassword">
+          <KeyRound aria-hidden="true" />
+          {{ $t('auth.request_reset') }}
+        </button>
+        <div class="auth-step-links">
+          <a href="" class="auth-back" @click.prevent="switchToLogin">
+            <ArrowLeft aria-hidden="true" />
+            {{ $t('auth.back_to_login') }}
+          </a>
         </div>
       </template>
 
       <!-- Registration Mode -->
       <template v-else-if="registrationMode">
-        <h1>{{ $t('auth.create_account') }}</h1>
-        <p>{{ $t('auth.create_account_description') }}</p>
-        <div class="input-container">
-          <label for="name">{{ $t('auth.name') }}</label>
-          <input type="text" v-model="name" :placeholder="$t('auth.name')" />
+        <div class="auth-step-head">
+          <h1>{{ $t('auth.create_account') }}</h1>
+          <p>{{ $t('auth.create_account_description') }}</p>
         </div>
         <div class="input-container">
-          <label for="email">{{ $t('auth.email') }}</label>
-          <input type="email" v-model="email" :placeholder="$t('auth.email')" />
+          <label for="register_name">{{ $t('auth.name') }}</label>
+          <input id="register_name" type="text" autocomplete="name" v-model="name" />
         </div>
         <div class="input-container">
-          <label for="password">{{ $t('auth.password') }}</label>
-          <input type="password" v-model="password" :placeholder="$t('auth.password')" />
+          <label for="register_email">{{ $t('auth.email') }}</label>
+          <input id="register_email" type="email" autocomplete="email" v-model="email" />
         </div>
         <div class="input-container">
-          <label for="password_confirmation">{{ $t('auth.confirm_password') }}</label>
+          <label for="register_password">{{ $t('auth.password') }}</label>
+          <input id="register_password" type="password" autocomplete="new-password" v-model="password" />
+        </div>
+        <div class="input-container">
+          <label for="register_password_confirmation">{{ $t('auth.confirm_password') }}</label>
           <input
+            id="register_password_confirmation"
             type="password"
+            autocomplete="new-password"
             v-model="password_confirmation"
-            :placeholder="$t('auth.confirm_password')"
             @keyup.enter="attemptRegister"
           />
         </div>
-        <div class="row mt-3 align-items-center w-100">
-          <div class="col-6 ps-0">
-            <button class="block" @click="attemptRegister" :disabled="isRegistering">
-              <UserPlus />
-              {{ isRegistering ? $t('auth.registering') : $t('auth.register') }}
-            </button>
-          </div>
-          <div class="col-6 pe-0">
-            <a href="" @click.prevent="switchToLogin">{{ $t('auth.back_to_login') }}</a>
-          </div>
+        <button class="block cta" @click="attemptRegister" :disabled="isRegistering">
+          <UserPlus aria-hidden="true" />
+          {{ isRegistering ? $t('auth.registering') : $t('auth.register') }}
+        </button>
+        <div class="auth-step-links">
+          <a href="" class="auth-back" @click.prevent="switchToLogin">
+            <ArrowLeft aria-hidden="true" />
+            {{ $t('auth.back_to_login') }}
+          </a>
         </div>
       </template>
 
@@ -683,44 +670,49 @@ const switchToLogin = () => {
   <!-- Password Reset Token Screen -->
   <div class="auth-container" v-else-if="!waitingForRedirect">
     <div class="auth-container-inner">
-      <h1>{{ t('auth.forgot_password_create_password') }}</h1>
-      <p>{{ t('auth.forgot_password_create_password_description') }}</p>
-      <div class="input-container">
-        <label for="email">{{ t('auth.email') }}</label>
-        <input type="text" v-model="email" :placeholder="t('auth.email')" @keyup.enter="moveToPassword" />
+      <div class="auth-step-head">
+        <h1>{{ t('auth.forgot_password_create_password') }}</h1>
+        <p>{{ t('auth.forgot_password_create_password_description') }}</p>
       </div>
       <div class="input-container">
-        <label for="password">{{ t('auth.password') }}</label>
+        <label for="reset_email">{{ t('auth.email') }}</label>
+        <input id="reset_email" type="email" autocomplete="username" v-model="email" @keyup.enter="moveToPassword" />
+      </div>
+      <div class="input-container">
+        <label for="reset_password">{{ t('auth.password') }}</label>
         <input
+          id="reset_password"
+          ref="passwordInput"
           type="password"
+          autocomplete="new-password"
           v-model="password"
-          :placeholder="t('auth.password')"
           @keyup.enter="attemptResetPassword"
         />
-        <label for="password_confirmation">{{ t('auth.confirm_password') }}</label>
+      </div>
+      <div class="input-container">
+        <label for="reset_password_confirmation">{{ t('auth.confirm_password') }}</label>
         <input
+          id="reset_password_confirmation"
           type="password"
+          autocomplete="new-password"
           v-model="password_confirmation"
-          :placeholder="t('auth.confirm_password')"
           @keyup.enter="attemptResetPassword"
         />
       </div>
-      <div class="row mt-3 align-items-center">
-        <div class="col">
-          <button class="block" @click="attemptResetPassword">
-            <KeyRound />
-            {{ t('auth.save_new_password') }}
-          </button>
-        </div>
-      </div>
+      <button class="block cta" @click="attemptResetPassword">
+        <KeyRound aria-hidden="true" />
+        {{ t('auth.save_new_password') }}
+      </button>
     </div>
   </div>
 
   <!-- Waiting for Redirect Screen -->
   <div class="auth-container" v-else>
     <div class="auth-container-inner">
-      <h1>{{ t('auth.password_set') }}</h1>
-      <p>{{ t('auth.password_set_description') }}</p>
+      <div class="auth-step-head">
+        <h1>{{ t('auth.password_set') }}</h1>
+        <p>{{ t('auth.password_set_description') }}</p>
+      </div>
     </div>
   </div>
   </div>

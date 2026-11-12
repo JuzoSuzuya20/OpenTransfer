@@ -820,7 +820,7 @@
       "password": "Password",
       "password_confirmation": "Confirm Password"
     },
-    "intro": "Thank you for installing OpenTransfer! Lets get started!",
+    "intro": "Thank you for installing OpenTransfer! Let's get started.",
     "logo": "Logo",
     "logo_placeholder": "Select logo image (PNG or SVG)",
     "save_and_login": "Save Settings & Log In",

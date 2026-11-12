@@ -159,9 +159,7 @@ const skipAndLogin = async () => {
 
       <!-- Step 1: Create Admin Account -->
       <div v-if="currentStep === 1">
-        <p>
-          {{ t('setup.intro') }}
-        </p>
+        <p class="setup-intro">{{ t('setup.intro') }}</p>
 
         <div class="seperator"></div>
 
@@ -171,8 +169,8 @@ const skipAndLogin = async () => {
             <label for="email">{{ t('setup.first_user.email') }}</label>
             <input
               type="email"
+              autocomplete="email"
               v-model="newUser.email"
-              :placeholder="t('setup.first_user.email')"
               required
               id="email"
               :class="{ error: errors.email }"
@@ -189,8 +187,8 @@ const skipAndLogin = async () => {
             <label for="name">{{ t('setup.first_user.name') }}</label>
             <input
               type="text"
+              autocomplete="name"
               v-model="newUser.name"
-              :placeholder="t('setup.first_user.name')"
               required
               id="name"
               :class="{ error: errors.name }"
@@ -206,8 +204,8 @@ const skipAndLogin = async () => {
             <label for="password">{{ t('setup.first_user.password') }}</label>
             <input
               type="password"
+              autocomplete="new-password"
               v-model="newUser.password"
-              :placeholder="t('setup.first_user.password')"
               required
               id="password"
               :class="{ error: errors.password }"
@@ -223,8 +221,8 @@ const skipAndLogin = async () => {
             <label for="password_confirmation">{{ t('setup.first_user.password_confirmation') }}</label>
             <input
               type="password"
+              autocomplete="new-password"
               v-model="newUser.password_confirmation"
-              :placeholder="t('setup.first_user.password_confirmation')"
               required
               id="password_confirmation"
               :class="{ error: errors.password_confirmation }"
@@ -236,8 +234,8 @@ const skipAndLogin = async () => {
           </div>
 
           <div class="button-bar mt-3">
-            <button @click="createAccount">
-              <UserPlus />
+            <button class="cta" @click="createAccount">
+              <UserPlus aria-hidden="true" />
               {{ t('setup.create_admin_account') }}
             </button>
           </div>
@@ -246,9 +244,7 @@ const skipAndLogin = async () => {
 
       <!-- Step 2: Optional Settings -->
       <div v-if="currentStep === 2">
-        <p>
-          {{ t('setup.step2_intro') }}
-        </p>
+        <p class="setup-intro">{{ t('setup.step2_intro') }}</p>
 
         <div class="seperator"></div>
 
@@ -296,15 +292,15 @@ const skipAndLogin = async () => {
           </div>
 
           <div class="button-bar mt-3">
-            <button @click="saveSettingsAndLogin" :disabled="isLoggingIn">
-              <Settings />
+            <button class="cta" @click="saveSettingsAndLogin" :disabled="isLoggingIn">
+              <Settings aria-hidden="true" />
               {{ t('setup.save_and_login') }}
             </button>
           </div>
 
           <div class="button-bar mt-2">
-            <button class="skip-button" @click="skipAndLogin" :disabled="isLoggingIn">
-              <LogIn />
+            <button class="ghost" @click="skipAndLogin" :disabled="isLoggingIn">
+              <LogIn aria-hidden="true" />
               {{ t('setup.skip_and_login') }}
             </button>
           </div>
@@ -345,6 +341,12 @@ const skipAndLogin = async () => {
       margin: 0;
       color: var(--ot-muted);
     }
+    .setup-intro {
+      margin: 0 auto;
+      max-width: 44ch;
+      text-align: center;
+      text-wrap: pretty;
+    }
   }
 }
 
@@ -373,65 +375,51 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  gap: 0;
+  margin-bottom: 6px;
 
   .step {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--panel-item-background-color);
-    color: var(--panel-text-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85em;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    opacity: 0.5;
+    width: 28px;
+    height: 28px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: var(--ot-raised);
+    border: 1px solid var(--ot-line-strong);
+    color: var(--ot-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    transition:
+      background-color var(--ot-dur) var(--ot-ease-out),
+      color var(--ot-dur) var(--ot-ease-out),
+      transform var(--ot-dur) var(--ot-ease-spring);
 
-    &.active {
-      background: var(--ot-accent-fill);
-      color: var(--ot-on-accent);
-      opacity: 1;
-    }
-
+    &.active,
     &.completed {
       background: var(--ot-accent-fill);
+      border-color: transparent;
       color: var(--ot-on-accent);
-      opacity: 0.7;
+    }
+    &.active {
+      transform: scale(calc(1 + 0.08 * var(--ot-motion)));
     }
   }
-
   .step-line {
     width: 40px;
     height: 2px;
-    background: var(--panel-item-background-color);
-    transition: background 0.3s ease;
+    background: var(--ot-line-strong);
+    transition: background-color var(--ot-dur-slow) var(--ot-ease-out);
 
     &.completed {
       background: var(--ot-accent);
     }
   }
 }
-
 .seperator {
   width: 100%;
   height: 1px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  background: var(--panel-item-background-color);
-}
-
-.skip-button {
-  background: transparent;
-  border: 1px solid var(--input-border-color);
-  color: var(--panel-text-color);
-  opacity: 0.8;
-
-  &:hover:not(:disabled) {
-    opacity: 1;
-    background: var(--panel-item-hover-background-color);
-  }
+  margin: 14px 0 16px;
+  background: var(--ot-line-soft);
 }
 </style>
