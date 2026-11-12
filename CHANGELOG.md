@@ -5,6 +5,41 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.1.0] — 2026-11-12
+
+### Added
+
+- "New share" opens a quick send window; "More options" carries the files over to the Send page
+- A sign-in background image, under Administration → Customisation
+- A 404 page, and error pages in the design and the language of the instance
+- An eye button on every password field
+- My shares updates by itself, without reloading the page
+- Changing the address of an account now asks for a code sent to the new address
+
+### Changed
+
+- The Send, File requests and Administration pages are redesigned; the administration has a sidebar
+  grouped by Instance, Access and Data, with shorter help texts in every language
+- Statistics: the four figures share one band; sizes everywhere are in the units of the language (Mo, Go)
+- The language menu of the sign-in screens sits in the top right corner; toasts close again
+- The first page loads about a third of what it did (138 kB instead of 394 kB compressed): languages,
+  pages, avatars, the zip library and the QR code arrive when they are needed, and only Bootstrap's
+  base is kept
+- In the "pattern" mode of share links, the presets and the default are longer, and the screen shows
+  how much chance a pattern carries
+
+### Security
+
+- A share behind a password shows nothing of its name, message, size or files before the password;
+  the password travels in the body of the request, never in an address
+- Signing out ends both the access token and the refresh cookie on the server; the cookie is
+  `Secure` when the instance is served over HTTPS
+- A pattern of share links under 45 bits of chance is refused (one saved before falls back to
+  `********`), and looking up shares that do not exist is rate limited
+- Uploaded backgrounds keep the extension of their content, and the files the web server serves from
+  uploads carry a sandboxing Content-Security-Policy
+- phpseclib 3.0.58 (GHSA-w3p9-g4p2-h3rr)
+
 ## [1.0.0] — 2026-11-12
 
 The first version of OpenTransfer, the maintained fork of [Erugo](https://github.com/ErugoOSS/Erugo).
