@@ -213,7 +213,7 @@ defineExpose({ open, close })
 
 <template>
   <Teleport to="body">
-    <Transition name="fade">
+    <Transition name="ot-dialog">
       <div v-if="isOpen" class="command-palette-overlay" @click="clickOutside">
         <div class="command-palette">
           <div class="command-palette-header">
@@ -349,7 +349,7 @@ defineExpose({ open, close })
   border-radius: 8px;
   cursor: pointer;
   gap: 14px;
-  transition: background 0.15s ease;
+  transition: background var(--ot-dur-fast) var(--ot-ease-out);
   
   &:hover,
   &.selected {
@@ -436,16 +436,6 @@ defineExpose({ open, close })
   }
 }
 
-// Transition
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.15s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 
 // Scrollbar styling
 .command-palette-body {

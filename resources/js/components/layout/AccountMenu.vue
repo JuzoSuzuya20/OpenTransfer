@@ -70,6 +70,7 @@ onBeforeUnmount(() => {
       <ChevronDown class="chevron" aria-hidden="true" />
     </button>
 
+    <Transition name="ot-pop">
     <div class="account-menu-panel" v-show="open">
       <div class="account-menu-who" v-if="name">
         <UserAvatar :seed="avatarSeed" :name="name" :size="36" />
@@ -91,5 +92,6 @@ onBeforeUnmount(() => {
         {{ t('auth.logout') }}
       </button>
     </div>
+    </Transition>
   </div>
 </template>

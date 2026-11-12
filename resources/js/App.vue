@@ -244,14 +244,17 @@ onBeforeUnmount(() => {
       <ThankGuestForUpload v-else-if="page === 'thanks'" />
       <Downloader v-else-if="page === 'download'" :downloadShareCode="route.params.code" />
       <template v-else-if="page !== 'auth'">
-        <Uploader v-if="page === 'send'" />
-        <MySharesPage v-else-if="page === 'my-shares'" />
-        <RequestsPage v-else-if="page === 'requests'" />
-        <StatsPage v-else-if="page === 'stats'" />
-        <AdminPage v-else-if="page === 'admin'" :section="route.params.section" />
-        <ProfilePage v-else-if="page === 'profile'" />
-        <AboutPage v-else-if="page === 'about'" />
-        <NotFoundPage v-else />
+        <!-- From one page to the next: the old one goes at once, the new one settles (styles/_motion.scss) -->
+        <Transition name="ot-page" mode="out-in">
+          <Uploader v-if="page === 'send'" />
+          <MySharesPage v-else-if="page === 'my-shares'" />
+          <RequestsPage v-else-if="page === 'requests'" />
+          <StatsPage v-else-if="page === 'stats'" />
+          <AdminPage v-else-if="page === 'admin'" :section="route.params.section" />
+          <ProfilePage v-else-if="page === 'profile'" />
+          <AboutPage v-else-if="page === 'about'" />
+          <NotFoundPage v-else />
+        </Transition>
       </template>
     </main>
 

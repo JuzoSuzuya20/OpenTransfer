@@ -1,5 +1,9 @@
 // The send screen: what is online, then the files on one card and who gets them on the other.
 
+.send-page {
+  width: 100%;
+}
+
 .send {
   display: flex;
   flex-direction: column;
@@ -36,7 +40,7 @@
   .input-container {
     input,
     textarea,
-    select {
+    .ot-select {
       margin-bottom: 0;
     }
     .error-message {
@@ -71,8 +75,8 @@
   border-radius: var(--ot-radius-lg);
   cursor: pointer;
   transition:
-    border-color 0.15s ease,
-    background-color 0.15s ease;
+    border-color var(--ot-dur-fast) var(--ot-ease-out),
+    background-color var(--ot-dur-fast) var(--ot-ease-out);
 
   &:hover {
     border-color: var(--ot-accent);
@@ -173,7 +177,7 @@
     height: 100%;
     border-radius: 4px;
     background: var(--ot-accent);
-    transition: width 0.2s ease;
+    transition: width var(--ot-dur) var(--ot-ease-out);
   }
   &.is-waiting .basket-progress {
     visibility: hidden;
@@ -269,7 +273,7 @@
   border: 1px solid var(--ot-line-field);
   border-radius: var(--ot-radius);
   cursor: text;
-  transition: border-color 0.15s ease;
+  transition: border-color var(--ot-dur-fast) var(--ot-ease-out);
 
   &:hover {
     border-color: var(--ot-line-strong);
@@ -347,6 +351,8 @@
   padding: 16px;
   background: var(--overlay-background-color);
 
+  // The share is made: its slip is stamped (pressed down on a spring, a hair askew at first),
+  // then its link inked (a ring of the accent that spreads and fades)
   .share-created-card {
     width: 100%;
     max-width: 520px;
@@ -354,18 +360,23 @@
     flex-direction: column;
     gap: 14px;
     box-shadow: var(--ot-shadow);
+    text-align: center;
+    animation: ot-stamp-in 520ms var(--ot-ease-spring) both;
 
     p {
       margin: 0;
       color: var(--ot-muted);
+      text-wrap: pretty;
     }
     input {
       margin: 0;
+      animation: ot-stamp-ink 900ms var(--ot-ease-out) 260ms both;
     }
   }
   .share-created-actions {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
 
     button {

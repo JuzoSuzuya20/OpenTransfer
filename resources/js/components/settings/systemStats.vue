@@ -317,7 +317,7 @@ const diskTone = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  transition: opacity 0.15s ease;
+  transition: opacity var(--ot-dur-fast) var(--ot-ease-out);
 
   &.is-loading {
     opacity: 0.6;
@@ -459,13 +459,37 @@ const diskTone = computed(() => {
   font-size: 0.8125rem;
 
   summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
+    list-style: none;
     color: var(--ot-accent-text);
     font-weight: 600;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+    // A chevron that turns on a spring as the table opens
+    &::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border: solid currentColor;
+      border-width: 0 2px 2px 0;
+      transform: rotate(-45deg);
+      transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
+    }
+  }
+  &[open] summary::before {
+    transform: rotate(45deg);
   }
   table {
     margin-top: 8px;
     max-height: 260px;
+  }
+  &[open] table {
+    animation: ot-rise-in var(--ot-dur-slow) var(--ot-ease-out) both;
   }
   td:last-child,
   th:last-child {

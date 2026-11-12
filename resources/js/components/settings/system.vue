@@ -31,6 +31,7 @@ import {
 } from '../../api'
 import HelpTip from '../helpTip.vue'
 import AppLink from '../layout/AppLink.vue'
+import OtSelect from '../layout/OtSelect.vue'
 
 import { useToast } from 'vue-toastification'
 import { mapSettings } from '../../utils'
@@ -40,6 +41,19 @@ import { useConfirmDialog } from '../../composables/useConfirmDialog'
 import { useTranslate } from '@tolgee/vue'
 
 const { t } = useTranslate()
+
+// Each language under its name in the admin's language, in the order of the other lists
+const defaultLanguageOptions = computed(() =>
+  [
+    ['en', 'english'],
+    ['de', 'german'],
+    ['es', 'spanish'],
+    ['fr', 'french'],
+    ['it', 'italian'],
+    ['nl', 'dutch'],
+    ['pt', 'portuguese']
+  ].map(([value, name]) => ({ value, label: t.value(`settings.system.languages.${name}`) }))
+)
 
 const showHelpTip = inject('showHelpTip')
 const toast = useToast()
@@ -471,22 +485,7 @@ defineExpose({
 
                 <div class="setting-group-body-item">
                   <label for="default_language">{{ $t('settings.system.default_language') }}</label>
-                  <select id="default_language" v-model="settings.default_language">
-                    <!-- English-->
-                    <option value="en">{{ t('settings.system.languages.english') }}</option>
-                    <!-- German-->
-                    <option value="de">{{ t('settings.system.languages.german') }}</option>
-                    <!-- Spanish-->
-                    <option value="es">{{ t('settings.system.languages.spanish') }}</option>
-                    <!-- French-->
-                    <option value="fr">{{ t('settings.system.languages.french') }}</option>
-                    <!-- Italian-->
-                    <option value="it">{{ t('settings.system.languages.italian') }}</option>
-                    <!-- Dutch-->
-                    <option value="nl">{{ t('settings.system.languages.dutch') }}</option>
-                    <!-- Portuguese-->
-                    <option value="pt">{{ t('settings.system.languages.portuguese') }}</option>
-                  </select>
+                  <OtSelect id="default_language" v-model="settings.default_language" :options="defaultLanguageOptions" />
                   <p class="help-text">{{ $t('settings.system.default_language_description') }}</p>
                 </div>
 
@@ -533,14 +532,12 @@ defineExpose({
                     </div>
                     <div class="col-auto ps-1">
                       <label for="max_share_size_unit">&nbsp;</label>
-                      <select
-                        name="max_share_size_unit"
+                      <OtSelect
                         id="max_share_size_unit"
                         v-model="settings.max_share_size_unit"
-                      >
-                        <option value="MB">MB</option>
-                        <option value="GB">GB</option>
-                      </select>
+                        :options="[{ value: 'MB', label: 'MB' }, { value: 'GB', label: 'GB' }]"
+                        :aria-label="$t('settings.system.max_share_size')"
+                      />
                     </div>
                   </div>
                   <p class="help-text">{{ $t('settings.system.max_share_size_description') }}</p>
@@ -570,21 +567,26 @@ defineExpose({
                 <h3 id="share_url_generation" class="setting-subtitle">{{ $t('settings.system.share_url_generation') }}</h3>
                 <div class="setting-group-body-item">
                   <label for="share_url_mode">{{ $t('settings.system.share_url_mode') }}</label>
-                  <select id="share_url_mode" v-model="settings.share_url_mode">
-                    <option value="haiku">{{ $t('settings.system.share_url_mode_haiku') }}</option>
-                    <option value="pattern">{{ $t('settings.system.share_url_mode_pattern') }}</option>
-                  </select>
+                  <OtSelect
+                    id="share_url_mode"
+                    v-model="settings.share_url_mode"
+                    :options="[
+                      { value: 'haiku', label: $t('settings.system.share_url_mode_haiku') },
+                      { value: 'pattern', label: $t('settings.system.share_url_mode_pattern') }
+                    ]"
+                  />
                   <p class="help-text">{{ $t('settings.system.share_url_mode_description') }}</p>
                 </div>
 
                 <div v-if="settings.share_url_mode === 'pattern'" class="pattern-url-settings">
                   <div class="setting-group-body-item">
                     <label for="share_url_preset">{{ $t('settings.system.share_url_preset') }}</label>
-                    <select id="share_url_preset" v-model="selectedPreset" @change="handlePresetChange">
-                      <option v-for="preset in patternPresets" :key="preset.id" :value="preset.id">
-                        {{ preset.name }}
-                      </option>
-                    </select>
+                    <OtSelect
+                      id="share_url_preset"
+                      v-model="selectedPreset"
+                      :options="patternPresets.map((preset) => ({ value: preset.id, label: preset.name }))"
+                      @change="handlePresetChange"
+                    />
                   </div>
                   <div class="setting-group-body-item">
                     <label for="share_url_pattern">{{ $t('settings.system.share_url_pattern') }}</label>
@@ -732,11 +734,15 @@ defineExpose({
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_encryption">{{ $t('settings.system.smtp_encryption') }}</label>
-                  <select id="smtp_encryption" v-model="settings.smtp_encryption">
-                    <option value="tls">TLS</option>
-                    <option value="ssl">SSL</option>
-                    <option value="">{{ $t('settings.system.smtp_encryption_none') }}</option>
-                  </select>
+                  <OtSelect
+                    id="smtp_encryption"
+                    v-model="settings.smtp_encryption"
+                    :options="[
+                      { value: 'tls', label: 'TLS' },
+                      { value: 'ssl', label: 'SSL' },
+                      { value: '', label: $t('settings.system.smtp_encryption_none') }
+                    ]"
+                  />
                   <p class="help-text">{{ $t('settings.system.smtp_encryption_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">
@@ -868,11 +874,15 @@ defineExpose({
 
                 <div class="setting-group-body-item">
                   <label for="mfa_required_for">{{ $t('settings.system.security.mfa_policy_label') }}</label>
-                  <select id="mfa_required_for" v-model="settings.mfa_required_for">
-                    <option value="none">{{ $t('settings.system.security.mfa_policy_none') }}</option>
-                    <option value="admins">{{ $t('settings.system.security.mfa_policy_admins') }}</option>
-                    <option value="everyone">{{ $t('settings.system.security.mfa_policy_everyone') }}</option>
-                  </select>
+                  <OtSelect
+                    id="mfa_required_for"
+                    v-model="settings.mfa_required_for"
+                    :options="[
+                      { value: 'none', label: $t('settings.system.security.mfa_policy_none') },
+                      { value: 'admins', label: $t('settings.system.security.mfa_policy_admins') },
+                      { value: 'everyone', label: $t('settings.system.security.mfa_policy_everyone') }
+                    ]"
+                  />
                   <p class="help-text">{{ $t('settings.system.security.mfa_policy_help') }}</p>
                 </div>
 
@@ -1071,7 +1081,7 @@ defineExpose({
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: all 0.5s ease;
+  transition: all var(--ot-dur-slow) var(--ot-ease-out);
   &.open {
     margin-bottom: 10px;
     opacity: 1;
@@ -1116,7 +1126,7 @@ defineExpose({
   padding-right: 15px;
   select {
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all var(--ot-dur-slow) var(--ot-ease-out);
     margin-top: 10px;
     width: calc(100% - 70px);
     pointer-events: none;
@@ -1126,7 +1136,7 @@ defineExpose({
     right: 50%;
     top: 50%;
     transform: translateX(50%) translateY(-50%);
-    transition: all 0.3s ease;
+    transition: all var(--ot-dur-slow) var(--ot-ease-out);
     filter: grayscale(100%);
     opacity: 0.4;
   }
@@ -1207,8 +1217,8 @@ defineExpose({
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.2s ease;
-      
+      transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
+
       &:hover {
         transform: rotate(180deg);
       }
@@ -1320,7 +1330,7 @@ defineExpose({
 }
 
 .spinner {
-  animation: spin 1s linear infinite;
+  animation: spin 1s var(--ot-ease-loop) infinite;
 }
 
 @keyframes spin {

@@ -1,4 +1,5 @@
 <script setup>
+import OtSelect from '../layout/OtSelect.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
@@ -302,10 +303,12 @@ defineExpose({ save })
 
       <div class="sso-add">
         <label class="visually-hidden-label" for="new-provider-type">{{ t('settings.system.select_auth_provider') }}</label>
-        <select id="new-provider-type" v-model="newType">
-          <option value="">{{ t('settings.system.select_auth_provider') }}</option>
-          <option v-for="type in types" :key="type.class" :value="type.class">{{ type.name }}</option>
-        </select>
+        <OtSelect
+          id="new-provider-type"
+          v-model="newType"
+          :options="types.map((type) => ({ value: type.class, label: type.name }))"
+          :placeholder="t('settings.system.select_auth_provider')"
+        />
         <button type="button" @click="addProvider" :disabled="!newType">
           <Plus aria-hidden="true" />
           {{ t('sso.add_provider') }}
@@ -514,11 +517,13 @@ defineExpose({ save })
   flex-wrap: wrap;
   gap: 8px;
 
-  select {
+  .ot-select {
     width: auto;
     min-width: 220px;
-    height: var(--ot-control);
     margin: 0;
+  }
+  :deep(.ot-select-trigger) {
+    height: var(--ot-control);
   }
   button {
     margin: 0;

@@ -233,7 +233,7 @@ defineExpose({
   z-index: 9998;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s ease;
+  transition: all var(--ot-dur-slow) var(--ot-ease-out);
 
   .markdown-modal-form {
     position: absolute;
@@ -250,7 +250,7 @@ defineExpose({
     display: flex;
     flex-direction: column;
     gap: 15px;
-    transition: all 0.3s ease;
+    transition: all var(--ot-dur-slow) var(--ot-ease-out);
   }
 
   &.active {

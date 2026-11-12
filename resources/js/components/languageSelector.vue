@@ -5,6 +5,7 @@ import { Languages as LanguageIcon } from 'lucide-vue-next'
 import { domData } from '../domData'
 import { store } from '../store'
 import { updateMyProfile } from '../api'
+import OtSelect from './layout/OtSelect.vue'
 
 const tolgee = useTolgee(['language'])
 const { t } = useTranslate()
@@ -23,56 +24,38 @@ const languages = [
 ]
 
 const currentLanguage = computed(() => tolgee.value.getLanguage())
+const options = languages.map((language) => ({ value: language.code, label: language.name, lang: language.code }))
 
-const setLanguage = (event) => {
-  tolgee.value.changeLanguage(event.target.value)
-  localStorage.setItem('language', event.target.value)
+const setLanguage = (code) => {
+  tolgee.value.changeLanguage(code)
+  localStorage.setItem('language', code)
   // An account gets its emails in its language: the server keeps it
   if (store.isLoggedIn() && !store.isGuest()) {
-    updateMyProfile({ language: event.target.value }).catch((error) => console.error('Failed to save the language', error))
+    updateMyProfile({ language: code }).catch((error) => console.error('Failed to save the language', error))
   }
 }
 </script>
 
 <template>
-  <label class="language-selector" v-if="showLanguageSelector">
-    <LanguageIcon aria-hidden="true" />
-    <span class="visually-hidden-label">{{ t('nav.language') }}</span>
-    <select :value="currentLanguage" @change="setLanguage">
-      <option v-for="language in languages" :key="language.code" :value="language.code" :lang="language.code">
-        {{ language.name }}
-      </option>
-    </select>
-  </label>
+  <div class="language-selector" v-if="showLanguageSelector">
+    <OtSelect
+      :model-value="currentLanguage"
+      :options="options"
+      :icon="LanguageIcon"
+      :aria-label="t('nav.language')"
+      size="sm"
+      @change="setLanguage"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss">
 .language-selector {
-  position: relative;
   display: inline-flex;
-  align-items: center;
-  margin: 0;
 
-  svg {
-    position: absolute;
-    left: 12px;
-    width: 16px;
-    height: 16px;
-    color: var(--ot-muted);
-    pointer-events: none;
-  }
-
-  select {
+  .ot-select {
     width: auto;
-    height: 32px;
     margin: 0;
-    padding: 0 32px 0 34px;
-    border-radius: var(--ot-btn-radius);
-    background-color: var(--ot-raised);
-    border-color: var(--ot-line-field);
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
   }
 }
 </style>

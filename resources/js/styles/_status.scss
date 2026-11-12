@@ -94,7 +94,7 @@
       color: var(--ot-danger-text);
     }
     &.is-working svg {
-      animation: status-turn 1.1s linear infinite;
+      animation: status-turn 1.1s var(--ot-ease-loop) infinite;
     }
     @media (prefers-reduced-motion: reduce) {
       &.is-working svg {

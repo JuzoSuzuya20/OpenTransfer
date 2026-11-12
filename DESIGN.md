@@ -209,6 +209,18 @@ titres de carte en 12 px/700 capitales espacées de 0,06 em, libellés de champ 
 À plat, par paliers de fond et bordures de 1 px. L'ombre ne sert qu'à ce qui flotte au-dessus de la page :
 menus déroulants et fenêtres (`--ot-shadow`).
 
+## Motion
+
+Ce qui arrive décélère (`--ot-ease-out`), ce qui part accélère et part plus vite qu'il n'est venu (`--ot-ease-in`,
+`--ot-dur-exit`) ; l'interface répond à la main par un petit ressort qui dépasse un peu (`--ot-ease-spring`) :
+appui d'un bouton, coche, chevron, soulignement de l'onglet courant, option d'un filtre. Rien ne bouge à vitesse
+constante, pas même ce qui tourne en attendant (`--ot-ease-loop`). Durées : 120 ms pour un retour, 200 ms pour un
+changement d'état, 320 ms pour une fenêtre ou une page. Transitions partagées dans `styles/_motion.scss` :
+`ot-pop` (menus, listes), `ot-dialog` (fenêtres), `ot-page` (changement de page), `ot-toast`, `ot-check-pop`.
+Un seul moment signé : le partage créé, son bordereau tamponné (léger dépassement, une pointe de biais) puis son lien
+encré d'un anneau d'accent. `--ot-motion` multiplie tout déplacement ; il vaut 0 quand le système demande moins de
+mouvement : les fondus et changements de couleur restent, rien ne se déplace.
+
 ## Shapes
 
 Coins de 4 px pour les boutons et filtres, 6 px pour les cartes et champs, 8 px pour la zone de dépôt et les menus,
@@ -226,6 +238,11 @@ zone de dépôt et aux champs en lecture seule.
   (en attente, en cours, envoyé), la ligne d'un partage teinte son fond selon son état (actif, expire bientôt, expiré).
 - **Filtres segmentés** (`ot-segmented`) : groupe sur fond de champ, option choisie teintée de l'accent.
 - **Pastille** (`ot-pill`) : 12 px/700, fond teinté de l'état.
+- **Liste de choix** (`OtSelect`) : jamais de `<select>` natif. Bouton à l'allure d'un champ, liste en surplomb de
+  la page (rien ne la coupe), option courante cochée ; clavier d'un select natif (flèches, début/fin, pages, lettres
+  tapées, Entrée, Échap). Variante compacte (`size="sm"`) pour la langue.
+- **Écrans hors application** (connexion et ses étapes, installation, attente) : titre et explication centrés, action
+  principale pleine largeur, liens de retour centrés dessous.
 - **Champ** : 40 px, bordure de 1 px, survol plus marqué, focus en bordure et anneau d'accent ; erreur sous le champ,
   dans un encadré teinté à liseré gauche.
 - **Fenêtre** (`user-form-overlay`) : carte centrée de 520 px au plus, sans flou, sur un voile de la couleur de la page.

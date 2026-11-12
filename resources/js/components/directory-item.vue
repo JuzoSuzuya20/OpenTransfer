@@ -247,7 +247,7 @@ function getDirectories(structure) {
 
 .upload-basket-item.clickable {
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--ot-dur-fast) var(--ot-ease-out);
   
   &:hover {
     background-color: var(--panel-section-background-color-alt, rgba(255, 255, 255, 0.05));
@@ -280,7 +280,7 @@ function getDirectories(structure) {
     }
     
     &.spin {
-      animation: spin 1s linear infinite;
+      animation: spin 1s var(--ot-ease-loop) infinite;
     }
   }
   

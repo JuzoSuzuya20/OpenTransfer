@@ -9,6 +9,7 @@ import { mapSettings } from '../../utils'
 
 import { useTranslate } from '@tolgee/vue'
 import EmailTemplateEditor from '../emailTemplateEditor.vue'
+import OtSelect from '../layout/OtSelect.vue'
 
 const { t } = useTranslate()
 
@@ -60,12 +61,12 @@ const loadTemplates = async () => {
   }
 }
 
-const changeLanguage = async (event) => {
-  if (emailTemplates.value.some(isTemplateDirty) && !confirm(t.value('emails.admin.unsaved'))) {
-    event.target.value = locale.value
-    return
-  }
-  locale.value = event.target.value
+const languageOptions = LANGUAGES.map((language) => ({ value: language.code, label: language.name, lang: language.code }))
+
+// The select shows the language being edited until the change is confirmed
+const changeLanguage = async (code) => {
+  if (emailTemplates.value.some(isTemplateDirty) && !confirm(t.value('emails.admin.unsaved'))) return
+  locale.value = code
   await loadTemplates()
 }
 
@@ -245,9 +246,7 @@ defineExpose({
         <div class="setting-group-body email-language">
           <div class="setting-group-body-item">
             <label for="email-language">{{ $t('emails.admin.language_label') }}</label>
-            <select id="email-language" :value="locale" @change="changeLanguage">
-              <option v-for="language in LANGUAGES" :key="language.code" :value="language.code" :lang="language.code">{{ language.name }}</option>
-            </select>
+            <OtSelect id="email-language" :model-value="locale" :options="languageOptions" @change="changeLanguage" />
           </div>
           <p class="card-description">{{ $t('emails.admin.language_help') }}</p>
         </div>

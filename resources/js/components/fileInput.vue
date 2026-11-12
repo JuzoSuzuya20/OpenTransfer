@@ -88,7 +88,7 @@ input[type='file'] {
   border: 1px solid var(--ot-line-field);
   border-radius: var(--ot-radius);
   cursor: pointer;
-  transition: border-color 0.12s ease;
+  transition: border-color var(--ot-dur-fast) var(--ot-ease-out);
 
   &:hover {
     border-color: var(--ot-line-strong);

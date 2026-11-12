@@ -54,6 +54,7 @@ onBeforeUnmount(() => {
     >
       <MoreHorizontal aria-hidden="true" />
     </button>
+    <Transition name="ot-pop">
     <div class="row-menu-panel" v-show="open">
       <button
         v-for="item in items"
@@ -68,6 +69,7 @@ onBeforeUnmount(() => {
         {{ item.label }}
       </button>
     </div>
+    </Transition>
   </div>
 </template>
 
@@ -86,6 +88,7 @@ onBeforeUnmount(() => {
   border: 1px solid var(--ot-line);
   border-radius: var(--ot-radius-lg);
   box-shadow: var(--ot-shadow);
+  transform-origin: top right;
 }
 .row-menu-item {
   display: flex;

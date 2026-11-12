@@ -73,7 +73,7 @@ const handleChangeColor = (color) => {
   color: var(--input-text-color);
   margin-bottom: 10px;
   border: 1px solid var(--input-border-color);
-  transition: all 0.3s ease-in-out;
+  transition: all var(--ot-dur-slow) var(--ot-ease-out);
   outline: 2px solid transparent;
   height: 50px;
   cursor: pointer;
@@ -112,7 +112,7 @@ const handleChangeColor = (color) => {
   align-items: center;
   justify-content: center;
 
-  transition: all 0.3s ease-in-out;
+  transition: all var(--ot-dur-slow) var(--ot-ease-out);
 
   border-radius: 5px;
 
@@ -138,7 +138,7 @@ const handleChangeColor = (color) => {
   z-index: 230;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s ease-in-out;
+  transition: all var(--ot-dur-slow) var(--ot-ease-out);
   &.show {
     opacity: 1;
     pointer-events: auto;

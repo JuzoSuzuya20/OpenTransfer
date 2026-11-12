@@ -1,0 +1,200 @@
+// Motion. What arrives decelerates (ease-out); what leaves accelerates and goes sooner than it came
+// (ease-in); the interface answers a hand with a small spring that overshoots a little. Nothing
+// moves at a constant speed.
+//
+// --ot-motion scales every movement. It is 0 for people who asked their system for less motion:
+// they keep the fades and the colour changes that carry a state, without anything travelling.
+
+:root {
+  --ot-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ot-ease-in: cubic-bezier(0.55, 0, 0.8, 0.2);
+  --ot-ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  // Loops (a spinner): speeds up and slows down on each turn
+  --ot-ease-loop: cubic-bezier(0.5, 0.15, 0.5, 0.85);
+
+  --ot-dur-fast: 120ms;
+  --ot-dur: 200ms;
+  --ot-dur-slow: 320ms;
+  --ot-dur-exit: 140ms;
+
+  --ot-motion: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ot-motion: 0;
+    // A spring without anything moving would only delay the end state
+    --ot-ease-spring: var(--ot-ease-out);
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  // Long names that slide on hover stay put
+  .needs-slide:hover {
+    animation: none !important;
+  }
+}
+
+// --- Shared Vue transitions
+
+// A list or a menu that drops from its button
+.ot-pop-enter-active {
+  transition:
+    opacity var(--ot-dur) var(--ot-ease-out),
+    transform var(--ot-dur) var(--ot-ease-out);
+}
+.ot-pop-leave-active {
+  transition:
+    opacity var(--ot-dur-exit) var(--ot-ease-in),
+    transform var(--ot-dur-exit) var(--ot-ease-in);
+}
+.ot-pop-enter-from,
+.ot-pop-leave-to {
+  opacity: 0;
+  transform: translateY(calc(-6px * var(--ot-motion))) scale(calc(1 - 0.04 * var(--ot-motion)));
+}
+// A list that opens upwards rises instead
+.is-above.ot-pop-enter-from,
+.is-above.ot-pop-leave-to {
+  transform: translateY(calc(6px * var(--ot-motion))) scale(calc(1 - 0.04 * var(--ot-motion)));
+}
+
+// A dialog: the veil fades, the card rises into place
+.ot-dialog-enter-active {
+  transition: opacity var(--ot-dur-slow) var(--ot-ease-out);
+  > * {
+    transition: transform var(--ot-dur-slow) var(--ot-ease-out);
+  }
+}
+.ot-dialog-leave-active {
+  transition: opacity var(--ot-dur-exit) var(--ot-ease-in);
+  > * {
+    transition: transform var(--ot-dur-exit) var(--ot-ease-in);
+  }
+}
+.ot-dialog-enter-from,
+.ot-dialog-leave-to {
+  opacity: 0;
+  > * {
+    transform: translateY(calc(12px * var(--ot-motion))) scale(calc(1 - 0.02 * var(--ot-motion)));
+  }
+}
+
+// From one page to the next: the old one goes at once, the new one settles
+.ot-page-enter-active {
+  transition:
+    opacity var(--ot-dur) var(--ot-ease-out),
+    transform var(--ot-dur-slow) var(--ot-ease-out);
+}
+.ot-page-leave-active {
+  transition: opacity 90ms var(--ot-ease-in);
+}
+.ot-page-enter-from {
+  opacity: 0;
+  transform: translateY(calc(8px * var(--ot-motion)));
+}
+.ot-page-leave-to {
+  opacity: 0;
+}
+
+// Notifications come in from their edge and leave towards it
+.ot-toast-enter-active {
+  animation: ot-toast-in var(--ot-dur-slow) var(--ot-ease-out) both;
+}
+.ot-toast-leave-active {
+  animation: ot-toast-out var(--ot-dur-exit) var(--ot-ease-in) both;
+}
+.ot-toast-move {
+  transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
+}
+@keyframes ot-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(32px * var(--ot-motion))) scale(calc(1 - 0.04 * var(--ot-motion)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ot-toast-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(calc(24px * var(--ot-motion)));
+  }
+}
+
+// A check mark that confirms something (copied, chosen) pops in on a spring
+.ot-check-pop {
+  animation: ot-check-pop var(--ot-dur-slow) var(--ot-ease-spring) both;
+}
+@keyframes ot-check-pop {
+  from {
+    opacity: 0;
+    transform: scale(calc(1 - 0.6 * var(--ot-motion))) rotate(calc(-20deg * var(--ot-motion)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// The moment of the product: the share is made, its slip is stamped and its link inked
+.ot-stamp-enter-active {
+  transition: opacity var(--ot-dur) var(--ot-ease-out);
+}
+.ot-stamp-leave-active {
+  transition: opacity var(--ot-dur-exit) var(--ot-ease-in);
+  > * {
+    transition: transform var(--ot-dur-exit) var(--ot-ease-in);
+  }
+}
+.ot-stamp-enter-from,
+.ot-stamp-leave-to {
+  opacity: 0;
+}
+.ot-stamp-leave-to > * {
+  transform: scale(calc(1 - 0.03 * var(--ot-motion)));
+}
+@keyframes ot-stamp-in {
+  0% {
+    opacity: 0;
+    transform: scale(calc(1 + 0.07 * var(--ot-motion))) rotate(calc(-1.6deg * var(--ot-motion)));
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ot-stamp-ink {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ot-accent) 55%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--ot-accent) 0%, transparent);
+  }
+}
+
+// Content that unfolds under what opened it
+@keyframes ot-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-4px * var(--ot-motion)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// Something that waits turns on itself, speeding up and slowing down on each turn
+.spin {
+  animation: spin 0.9s var(--ot-ease-loop) infinite;
+}

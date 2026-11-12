@@ -6,6 +6,7 @@ import { useToast } from 'vue-toastification'
 import { SquareArrowOutUpRight, HardDriveDownload, CalendarPlus, CalendarX2, Gauge, Copy, Check } from 'lucide-vue-next'
 import RowMenu from './RowMenu.vue'
 import UserAvatar from './UserAvatar.vue'
+import OtSelect from './OtSelect.vue'
 import { expireShare, extendShare, setDownloadLimit } from '../../api'
 import { niceFileSize } from '../../utils'
 import { shareState } from '../../lib/shares'
@@ -66,6 +67,10 @@ const run = async (promise, success, failure) => {
 const editingLimit = ref(false)
 const limitValue = ref('')
 const LIMITS = [1, 3, 5, 10, 25, 50, 100]
+const limitOptions = computed(() => [
+  { value: '', label: t.value('send.unlimited') },
+  ...LIMITS.map((limit) => ({ value: String(limit), label: String(limit) }))
+])
 const startLimit = () => {
   editingLimit.value = true
   limitValue.value = props.share.download_limit ? String(props.share.download_limit) : ''
@@ -125,7 +130,7 @@ const menuItems = computed(() => [
     </div>
     <div class="share-row-actions">
       <button type="button" class="ot-act" @click="copyLink" :disabled="state === 'deleted'">
-        <Check v-if="copied" aria-hidden="true" />
+        <Check v-if="copied" class="ot-check-pop" aria-hidden="true" />
         <Copy v-else aria-hidden="true" />
         {{ copied ? t('send.copied') : t('send.copy_link') }}
       </button>
@@ -134,10 +139,7 @@ const menuItems = computed(() => [
 
     <form class="share-row-limit" v-if="editingLimit" @submit.prevent="saveLimit">
       <label :for="`limit-${share.id}`">{{ t('send.downloads') }}</label>
-      <select :id="`limit-${share.id}`" v-model="limitValue">
-        <option value="">{{ t('send.unlimited') }}</option>
-        <option v-for="limit in LIMITS" :key="limit" :value="String(limit)">{{ limit }}</option>
-      </select>
+      <OtSelect :id="`limit-${share.id}`" v-model="limitValue" :options="limitOptions" />
       <button type="submit">{{ t('admin.save') }}</button>
       <button type="button" class="ghost" @click="editingLimit = false">{{ t('send.close') }}</button>
     </form>

@@ -4,6 +4,7 @@ import { useTranslate } from '@tolgee/vue'
 import { Save, UserPlus, Info } from 'lucide-vue-next'
 import PageHead from '../components/layout/PageHead.vue'
 import AppLink from '../components/layout/AppLink.vue'
+import OtSelect from '../components/layout/OtSelect.vue'
 import SystemSettings from '../components/settings/system.vue'
 import SsoSettings from '../components/settings/SsoSettings.vue'
 import BrandingSettings from '../components/settings/branding.vue'
@@ -68,8 +69,12 @@ const applyAllSharesFilters = () => {
   allSharesPanel.value?.setUserFilter(selectedUserId.value || null)
 }
 
-const onUserFilter = (event) => {
-  selectedUserId.value = event.target.value || null
+const userOptions = computed(() => [
+  { value: '', label: t.value('settings.allShares.allUsers') },
+  ...users.value.map((user) => ({ value: user.id, label: `${user.name} (${user.email})` }))
+])
+const onUserFilter = (value) => {
+  selectedUserId.value = value || null
   const query = selectedUserId.value ? `?user=${selectedUserId.value}` : ''
   history.replaceState(history.state, '', `${location.pathname}${query}`)
   allSharesPanel.value?.setUserFilter(selectedUserId.value)
@@ -140,10 +145,13 @@ onMounted(() => {
             <label for="show_deleted_shares_all">{{ t('settings.system.show_deleted_shares') }}</label>
           </div>
           <label class="visually-hidden-label" for="user-filter-all">{{ t('settings.allShares.allUsers') }}</label>
-          <select id="user-filter-all" class="user-filter-select" @change="onUserFilter" :value="selectedUserId || ''">
-            <option value="">{{ t('settings.allShares.allUsers') }}</option>
-            <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }} ({{ user.email }})</option>
-          </select>
+          <OtSelect
+            id="user-filter-all"
+            class="user-filter-select"
+            :model-value="selectedUserId || ''"
+            :options="userOptions"
+            @change="onUserFilter"
+          />
         </template>
       </template>
     </PageHead>

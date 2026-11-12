@@ -114,7 +114,7 @@ const handleItemClick = (item) => {
   border-radius: 5px;
   z-index: 100;
   opacity: 0;
-  transition: all 0.3s ease-in-out;
+  transition: all var(--ot-dur-slow) var(--ot-ease-out);
   transform: translateY(-10px);
   pointer-events: none;
 

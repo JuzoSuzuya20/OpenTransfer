@@ -149,8 +149,13 @@
   background: var(--ot-accent-fill);
   color: var(--ot-on-accent);
   font-weight: 700;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color var(--ot-dur-fast) var(--ot-ease-out),
+    transform var(--ot-dur) var(--ot-ease-spring);
 
+  &:active {
+    transform: scale(calc(1 - 0.04 * var(--ot-motion)));
+  }
   &:hover {
     background: var(--ot-accent-fill-hover);
     color: var(--ot-on-accent);
@@ -210,6 +215,10 @@
       height: 16px;
       margin: 0;
       color: var(--ot-muted);
+      transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
+    }
+    &[aria-expanded="true"] .chevron {
+      transform: rotate(180deg);
     }
 
     @media (max-width: 720px) {
@@ -234,6 +243,7 @@
     border: 1px solid var(--ot-line);
     border-radius: var(--ot-radius-lg);
     box-shadow: var(--ot-shadow);
+    transform-origin: top right;
   }
 
   .account-menu-who {
@@ -292,7 +302,7 @@
 
     .language-selector {
       width: 100%;
-      select {
+      .ot-select {
         width: 100%;
       }
     }
@@ -309,6 +319,7 @@
 
 .app-nav-item,
 .sub-nav-item {
+  position: relative;
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
@@ -317,6 +328,24 @@
   font-size: 0.875rem;
   font-weight: 600;
   white-space: nowrap;
+  transition: color var(--ot-dur-fast) var(--ot-ease-out);
+
+  // The underline of the current tab: it grows from the middle on a spring
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--ot-accent);
+    opacity: 0;
+    transform: scaleX(calc(1 - var(--ot-motion)));
+    transition:
+      transform var(--ot-dur-exit) var(--ot-ease-in),
+      opacity var(--ot-dur-exit) var(--ot-ease-in);
+  }
 
   &:hover {
     color: var(--ot-heading);
@@ -326,7 +355,14 @@
   }
   &.active {
     color: var(--ot-heading);
-    box-shadow: inset 0 -2px 0 0 var(--ot-accent);
+
+    &::after {
+      opacity: 1;
+      transform: none;
+      transition:
+        transform var(--ot-dur-slow) var(--ot-ease-spring),
+        opacity var(--ot-dur-fast) var(--ot-ease-out);
+    }
   }
 }
 
@@ -392,12 +428,15 @@
     gap: 10px;
 
     button,
-    select {
+    .ot-select {
       margin: 0;
     }
-    select {
+    .ot-select {
       width: auto;
+      min-width: 200px;
       max-width: 320px;
+    }
+    .ot-select-trigger {
       height: var(--ot-control);
     }
   }

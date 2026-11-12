@@ -11,6 +11,8 @@
 @use "./styles/auth";
 @use "./styles/shares";
 @use "./styles/status";
+@use "./styles/motion";
+@use "./styles/select";
 
 
 /*
@@ -318,7 +320,7 @@ body {
   z-index: 101;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(--ot-dur-slow) var(--ot-ease-out);
   .sharePanel-content {
     position: absolute;
     top: 50%;
@@ -368,6 +370,9 @@ body {
   &.visible {
     opacity: 1;
     pointer-events: all;
+    transition:
+      opacity var(--ot-dur) var(--ot-ease-out),
+      transform var(--ot-dur) var(--ot-ease-out);
   }
 }
 
@@ -460,7 +465,7 @@ body {
       width: 100%;
     }
     input,
-    select,
+    .ot-select,
     .file-input {
       width: 100%;
     }
@@ -638,7 +643,7 @@ body {
       cursor: pointer;
       color: var(--input-text-color);
       opacity: 0.7;
-      transition: opacity 0.2s;
+      transition: opacity var(--ot-dur) var(--ot-ease-out);
 
       &:hover {
         opacity: 1;
@@ -717,10 +722,10 @@ body {
   .content {
     display: inline-block;
     &.needs-slide {
-      transition: all 0.3s ease-in-out;
+      transition: all var(--ot-dur-slow) var(--ot-ease-out);
       transform: translateX(5px);
       &:hover {
-        animation: slide-text var(--animation-time) ease-in-out infinite;
+        animation: slide-text var(--animation-time) var(--ot-ease-loop) infinite;
       }
     }
   }
@@ -752,13 +757,15 @@ body {
   box-shadow: var(--ot-shadow);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.12s ease, transform 0.12s ease;
+  transition:
+    opacity var(--ot-dur-exit) var(--ot-ease-in),
+    transform var(--ot-dur-exit) var(--ot-ease-in);
 
   &.no-transition {
     transition: none;
   }
   &.shifted-up {
-    transform: translateY(-15px);
+    transform: translateY(calc(-15px * var(--ot-motion)));
   }
   &.visible {
     opacity: 1;
@@ -864,9 +871,9 @@ body {
 
 * {
   transition:
-    scrollbar-color 0.1s ease-in-out,
-    -webkit-scrollbar-color 0.1s ease-in-out,
-    -webkit-scrollbar-track 0.1s ease-in-out;
+    scrollbar-color var(--ot-dur-fast) var(--ot-ease-out),
+    -webkit-scrollbar-color var(--ot-dur-fast) var(--ot-ease-out),
+    -webkit-scrollbar-track var(--ot-dur-fast) var(--ot-ease-out);
 }
 
 //hide scrollbar when the mouse is not over the scrollable element
@@ -892,15 +899,6 @@ a:focus-visible,
   border-radius: 2px;
 }
 
-// People who asked their system for less motion get state changes without the animation.
+// People who asked their system for less motion: see styles/_motion.scss. Nothing travels
+// (--ot-motion is 0) but fades and colour changes stay, as they carry a state.
 // No script waits for a transition or an animation to end.
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}

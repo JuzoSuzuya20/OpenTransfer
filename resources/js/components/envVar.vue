@@ -81,7 +81,7 @@ const copyToClipboard = () => {
     background: var(--panel-section-background-color);
     color: var(--panel-text-color);
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity var(--ot-dur-slow) var(--ot-ease-out);
     pointer-events: none;
     svg {
       width: 16px;
