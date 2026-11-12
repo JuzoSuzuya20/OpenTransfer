@@ -156,7 +156,7 @@
   "settings": {
     "about": {
       "built_with": "Desarrollado con",
-      "created_by": "Creado y mantenido por",
+      "created_by": "Mantenido por",
       "credits": {
         "laravel": "Framework PHP",
         "tus": "Subidas de archivos reanudables",
@@ -164,22 +164,19 @@
       },
       "database": "Base de datos",
       "description": "Información sobre su instalación de OpenTransfer.",
-      "discord": "Discord",
       "documentation": "Documentación",
-      "donate": "Apoyar el desarrollo",
       "intro": "OpenTransfer es una plataforma de intercambio de archivos libre, de código abierto y autoalojada. Sin rastreo ni métricas: un intercambio de archivos sencillo y privado que respeta sus datos.",
       "license": "Licencia",
       "loading": "Cargando la información del sistema...",
       "max_upload": "Subida máxima",
       "of": "de",
       "storage": "Almacenamiento",
-      "support_cta": "Si OpenTransfer le resulta útil, considere",
-      "support_link": "apoyar su desarrollo",
       "system_info": "Información del sistema",
       "title": "Acerca de OpenTransfer",
       "version": "Versión",
       "visit_github": "GitHub",
-      "visit_website": "Sitio web"
+      "changelog": "Novedades",
+      "report_issue": "Informar de un problema"
     },
     "account": {
       "change_password": "Cambiar mi contraseña",

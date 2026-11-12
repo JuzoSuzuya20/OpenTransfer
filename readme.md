@@ -191,6 +191,20 @@ cosign verify ghcr.io/juzosuzuya20/opentransfer:latest \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
+### Versions
+
+Each large update is a version (`vX.Y.Z`, [Semantic Versioning](https://semver.org/)), described in
+[CHANGELOG.md](CHANGELOG.md). The image is published under three kinds of tags:
+
+| Tag | Follows |
+|---|---|
+| `:1.0.0` | that version only |
+| `:1.0` | the latest fixes of 1.0 |
+| `:latest` | the `main` branch, as soon as its CI is green |
+
+Pin `:1.0` (or an exact version) to choose when you move to a new version. The About page shows the
+version an instance runs: `1.0.0`, or `1.0.0-3-g096bfb7` for a build of `main` three commits after it.
+
 ## Key Features
 
 ### Effortless Uploads
@@ -210,9 +224,8 @@ cosign verify ghcr.io/juzosuzuya20/opentransfer:latest \
 - Only authorized users can create shares
 
 ### Customizable Branding
-- Built-in themes (light and dark modes)
-- Custom themes via the web interface
-- Logo and color customization
+- One identity, dark or light after the system
+- Your logo and favicon
 - Easy white-labeling for your organization
 
 ### Powerful Dashboard

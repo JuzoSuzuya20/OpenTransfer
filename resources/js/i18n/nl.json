@@ -158,28 +158,25 @@
       "description": "Informatie over uw OpenTransfer installatie.",
       "title": "Over OpenTransfer",
       "version": "Versie",
-      "visit_website": "Bezoek erugo.app",
       "built_with": "Gebouwd met",
-      "created_by": "Gemaakt en onderhouden door",
+      "created_by": "Onderhouden door",
       "credits": {
         "laravel": "PHP-framework",
         "tus": "Hervatbare bestandsuploads",
         "vue": "Frontend-framework"
       },
       "database": "Database",
-      "discord": "Discord",
       "documentation": "Documentatie",
-      "donate": "Steun de ontwikkeling",
       "intro": "OpenTransfer is een gratis, opensource en zelfgehost platform voor het delen van bestanden. Geen tracking, geen statistieken: gewoon eenvoudig en privé bestanden delen, met respect voor je gegevens.",
       "license": "Licentie",
       "loading": "Systeeminformatie laden…",
       "max_upload": "Maximale upload",
       "of": "van",
       "storage": "Opslag",
-      "support_cta": "Vind je OpenTransfer nuttig? Overweeg dan",
-      "support_link": "de ontwikkeling te steunen",
       "system_info": "Systeeminformatie",
-      "visit_github": "GitHub"
+      "visit_github": "GitHub",
+      "changelog": "Wat is er nieuw",
+      "report_issue": "Probleem melden"
     },
     "account": {
       "change_password": "Mijn wachtwoord wijzigen",

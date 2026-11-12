@@ -158,28 +158,25 @@
       "description": "Informations sur votre installation OpenTransfer.",
       "title": "À propos d'OpenTransfer",
       "version": "Version",
-      "visit_website": "Visitez erugo.app",
       "built_with": "Construit avec",
-      "created_by": "Créé et maintenu par",
+      "created_by": "Maintenu par",
       "credits": {
         "laravel": "Framework PHP",
         "tus": "Envois de fichiers reprenables",
         "vue": "Framework de l'interface"
       },
       "database": "Base de données",
-      "discord": "Discord",
       "documentation": "Documentation",
-      "donate": "Soutenir le développement",
       "intro": "OpenTransfer est une plateforme de partage de fichiers libre, open source et auto-hébergée. Aucun pistage, aucune mesure d'audience : un partage de fichiers simple et privé, qui respecte vos données.",
       "license": "Licence",
       "loading": "Chargement des informations système…",
       "max_upload": "Envoi maximal",
       "of": "sur",
       "storage": "Stockage",
-      "support_cta": "Si OpenTransfer vous est utile, pensez à",
-      "support_link": "soutenir son développement",
       "system_info": "Informations système",
-      "visit_github": "GitHub"
+      "visit_github": "GitHub",
+      "changelog": "Nouveautés",
+      "report_issue": "Signaler un problème"
     },
     "account": {
       "change_password": "Modifier mon mot de passe",

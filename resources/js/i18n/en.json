@@ -156,7 +156,7 @@
   "settings": {
     "about": {
       "built_with": "Built With",
-      "created_by": "Created and maintained by",
+      "created_by": "Maintained by",
       "credits": {
         "laravel": "PHP framework",
         "tus": "Resumable file uploads",
@@ -164,22 +164,19 @@
       },
       "database": "Database",
       "description": "Information about your OpenTransfer installation.",
-      "discord": "Discord",
       "documentation": "Documentation",
-      "donate": "Support Development",
       "intro": "OpenTransfer is a free, open-source, self-hosted file sharing platform. No tracking, no metrics — just simple, private file sharing that respects your data.",
       "license": "License",
       "loading": "Loading system info...",
       "max_upload": "Max Upload",
       "of": "of",
       "storage": "Storage",
-      "support_cta": "If you find OpenTransfer useful, consider",
-      "support_link": "supporting its development",
       "system_info": "System Information",
       "title": "About OpenTransfer",
       "version": "Version",
       "visit_github": "GitHub",
-      "visit_website": "Website"
+      "changelog": "What’s new",
+      "report_issue": "Report a problem"
     },
     "account": {
       "change_password": "Change my password",

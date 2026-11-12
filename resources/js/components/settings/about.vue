@@ -4,6 +4,7 @@ import { ExternalLink } from 'lucide-vue-next'
 import { domData } from '../../domData'
 import { getSystemInfo } from '../../api'
 import { store } from '../../store'
+import { versionUrl, REPOSITORY } from '../../lib/version'
 
 const version = ref('unknown')
 const systemInfo = ref(null)
@@ -27,13 +28,8 @@ onMounted(async () => {
   }
 })
 
-const erugoWebsiteUrl = computed(() => {
-  const baseUrl = 'https://erugo.app'
-  if (version.value && version.value !== 'unknown') {
-    return `${baseUrl}?version=${encodeURIComponent(version.value)}`
-  }
-  return baseUrl
-})
+// The version links to its release, or to its commit for a build of main between two releases
+const versionLink = computed(() => versionUrl(version.value))
 
 const databaseDisplayName = computed(() => {
   if (!systemInfo.value) return ''
@@ -55,44 +51,41 @@ const databaseDisplayName = computed(() => {
       <p class="about-intro">{{ $t('settings.about.intro') }}</p>
       <p class="about-credit">
         {{ $t('settings.about.created_by') }}
-        <a href="https://github.com/deanward" target="_blank" rel="noopener noreferrer">Dean Ward</a>.
-        {{ $t('settings.about.support_cta') }}
-        <a href="https://ko-fi.com/deanward" target="_blank" rel="noopener noreferrer">{{ $t('settings.about.support_link') }}</a>.
+        <a href="https://github.com/JuzoSuzuya20" target="_blank" rel="noopener noreferrer">JuzoSuzuya20</a>
       </p>
 
       <dl class="month-figures">
         <div>
           <dt>{{ $t('settings.about.version') }}</dt>
-          <dd>{{ version }}</dd>
+          <dd>
+            <a v-if="versionLink" :href="versionLink" target="_blank" rel="noopener noreferrer">{{ version }}</a>
+            <template v-else>{{ version }}</template>
+          </dd>
         </div>
         <div>
           <dt>{{ $t('settings.about.license') }}</dt>
           <dd>
-            <a href="https://github.com/DeanWard/erugo/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT</a>
+            <a :href="`${REPOSITORY}/blob/main/LICENSE`" target="_blank" rel="noopener noreferrer">MIT</a>
           </dd>
         </div>
       </dl>
 
       <div class="about-links">
-        <a class="ot-act" :href="erugoWebsiteUrl" target="_blank" rel="noopener noreferrer">
-          <ExternalLink aria-hidden="true" />
-          {{ $t('settings.about.visit_website') }}
-        </a>
-        <a class="ot-act" href="https://github.com/DeanWard/erugo" target="_blank" rel="noopener noreferrer">
+        <a class="ot-act" :href="REPOSITORY" target="_blank" rel="noopener noreferrer">
           <ExternalLink aria-hidden="true" />
           {{ $t('settings.about.visit_github') }}
         </a>
-        <a class="ot-act" href="https://erugo.app/docs/" target="_blank" rel="noopener noreferrer">
+        <a class="ot-act" :href="`${REPOSITORY}#readme`" target="_blank" rel="noopener noreferrer">
           <ExternalLink aria-hidden="true" />
           {{ $t('settings.about.documentation') }}
         </a>
-        <a class="ot-act" href="https://discord.gg/M74X2wmqY8" target="_blank" rel="noopener noreferrer">
+        <a class="ot-act" :href="`${REPOSITORY}/blob/main/CHANGELOG.md`" target="_blank" rel="noopener noreferrer">
           <ExternalLink aria-hidden="true" />
-          {{ $t('settings.about.discord') }}
+          {{ $t('settings.about.changelog') }}
         </a>
-        <a class="ot-act" href="https://ko-fi.com/deanward" target="_blank" rel="noopener noreferrer">
+        <a class="ot-act" :href="`${REPOSITORY}/issues`" target="_blank" rel="noopener noreferrer">
           <ExternalLink aria-hidden="true" />
-          {{ $t('settings.about.donate') }}
+          {{ $t('settings.about.report_issue') }}
         </a>
       </div>
 

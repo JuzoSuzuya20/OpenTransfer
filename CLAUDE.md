@@ -18,6 +18,9 @@ Utilisé en production par une entreprise : la stabilité du SSO et des partages
 - Le code, les commentaires de code et les messages d'API restent en anglais, comme le code d'origine.
 - Tout correctif de sécurité arrive avec un test qui échoue sans lui.
 - `main` est déployée automatiquement : rien n'y arrive sans CI verte.
+- Versions (SemVer, `CHANGELOG.md`) : chaque grosse mise à jour poussée sur `main` reçoit sa version. Entrée dans
+  `CHANGELOG.md`, puis étiquette `vX.Y.Z` sur le commit de `main`, poussée avec lui : la CI publie `:X.Y.Z` et `:X.Y`
+  (`:latest` suit `main`) et l'image affiche la version de `git describe` (À propos).
 
 ## Points sensibles (ne pas casser)
 
