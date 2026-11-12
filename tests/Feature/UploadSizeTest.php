@@ -50,6 +50,14 @@ class UploadSizeTest extends TestCase
         $this->assertSame(413, $this->preCreate($this->member(), 2 * 1024 * 1024)->status());
     }
 
+    public function test_a_disabled_account_cannot_start_an_upload(): void
+    {
+        $user = $this->member();
+        $user->forceFill(['active' => false])->save();
+
+        $this->assertSame(401, $this->preCreate($user, 1024)->status());
+    }
+
     public function test_an_upload_that_says_its_size_goes_through(): void
     {
         $this->preCreate($this->member(), 1024)->assertOk();

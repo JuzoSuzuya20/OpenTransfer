@@ -93,7 +93,8 @@ class TusdHooksController extends Controller
             // Validate the JWT token
             $user = JWTAuth::setToken($token)->authenticate();
 
-            if (!$user) {
+            // A disabled account (someone who left) uploads nothing more, token or not
+            if (!$user || !$user->active) {
                 Log::warning('tusd pre-create: Invalid token');
                 return response()->json([
                     'ok' => false,
