@@ -290,6 +290,17 @@ class ExternalAuthController extends Controller
     {
         $user = null;
 
+        // Matching or creating an account by its address trusts that the provider checked it. A
+        // provider may let its users change their address without verifying it (the Keycloak
+        // account console does): such an address would open the account of whoever really has it.
+        // An account already linked by its identifier never comes here.
+        if (!$authProviderUser->verified && ($provider->trust_email || $provider->allow_registration)) {
+            Log::warning('SSO sign-in with an address the provider has not verified', [
+                'provider' => $provider->uuid,
+            ]);
+            return redirect('/')->with('error', 'Your identity provider has not verified your email address. Ask your administrator to verify it there, or link this account from your profile.');
+        }
+
         // If trust_email is enabled, try to find a user with the same email
         if ($provider->trust_email) {
             $user = User::where('email', $authProviderUser->email)->first();

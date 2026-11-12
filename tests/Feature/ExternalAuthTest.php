@@ -55,14 +55,14 @@ class ExternalAuthTest extends TestCase
         ], $attributes));
     }
 
-    private function identityProviderReturns(string $sub, string $email): void
+    private function identityProviderReturns(string $sub, string $email, bool $verified = true): void
     {
         TestingAuthProvider::$nextUser = new AuthProviderUser([
             'sub' => $sub,
             'name' => 'Jane Doe',
             'email' => $email,
             'avatar' => null,
-            'verified' => true,
+            'verified' => $verified,
         ]);
     }
 
@@ -151,6 +151,39 @@ class ExternalAuthTest extends TestCase
             'auth_provider_id' => $provider->id,
             'provider_user_id' => 'sub-456',
         ]);
+    }
+
+    // An identity provider may let its users change their address without verifying it (the
+    // Keycloak account console does): such an address must not open the account that has it
+    public function test_an_unverified_address_does_not_open_the_account_that_has_it(): void
+    {
+        $provider = $this->makeProvider(['trust_email' => true]);
+        $user = $this->makeUser();
+        $this->identityProviderReturns('sub-attacker', $user->email, false);
+
+        $this->completeLogin($provider)->assertCookieMissing('refresh_token');
+
+        $this->assertDatabaseMissing('user_auth_provider', ['provider_user_id' => 'sub-attacker']);
+    }
+
+    public function test_an_unverified_address_does_not_create_an_account(): void
+    {
+        $provider = $this->makeProvider(['allow_registration' => true]);
+        $this->identityProviderReturns('sub-789', 'new.colleague@example.test', false);
+
+        $this->completeLogin($provider)->assertCookieMissing('refresh_token');
+
+        $this->assertDatabaseMissing('users', ['email' => 'new.colleague@example.test']);
+    }
+
+    public function test_an_account_already_linked_signs_in_whatever_its_address_says(): void
+    {
+        $provider = $this->makeProvider(['trust_email' => true]);
+        $user = $this->makeUser();
+        $this->link($user, $provider, 'sub-123');
+        $this->identityProviderReturns('sub-123', $user->email, false);
+
+        $this->completeLogin($provider)->assertPlainCookie('refresh_token');
     }
 
     public function test_registration_creates_an_account_when_allowed(): void
