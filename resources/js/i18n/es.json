@@ -1254,5 +1254,16 @@
     "decrease": "Disminuir",
     "increase": "Aumentar"
   },
-  "Email Change": "Cambio de dirección"
+  "Email Change": "Cambio de dirección",
+  "flash": {
+    "account_not_found": "Ninguna cuenta está vinculada a esta identidad. Vincúlela desde su perfil o consulte a un administrador.",
+    "account_exists": "Una cuenta ya usa esta dirección. Inicie sesión en ella y vincule este proveedor desde su perfil.",
+    "authentication_failed": "No se ha podido iniciar sesión. Inténtelo de nuevo.",
+    "provider_failed": "El proveedor de identidad no ha completado el inicio de sesión. Inténtelo de nuevo.",
+    "provider_not_found": "Este método de inicio de sesión no está disponible.",
+    "account_disabled": "Esta cuenta está desactivada.",
+    "user_not_found": "Cuenta no encontrada.",
+    "email_not_verified": "Su proveedor de identidad no ha verificado su dirección de correo. Pida a su administrador que la verifique allí, o vincule esta cuenta desde su perfil.",
+    "account_linked": "Cuenta vinculada."
+  }
 }

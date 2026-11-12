@@ -1254,5 +1254,16 @@
     "decrease": "Decrease",
     "increase": "Increase"
   },
-  "Email Change": "Address Change"
+  "Email Change": "Address Change",
+  "flash": {
+    "account_not_found": "No account is linked to this identity. Link it from your profile, or ask an administrator.",
+    "account_exists": "An account already uses this address. Sign in to it, then link this provider from your profile.",
+    "authentication_failed": "Sign-in failed. Try again.",
+    "provider_failed": "The identity provider did not complete the sign-in. Try again.",
+    "provider_not_found": "This sign-in method is not available.",
+    "account_disabled": "This account is disabled.",
+    "user_not_found": "Account not found.",
+    "email_not_verified": "Your identity provider has not verified your email address. Ask your administrator to verify it there, or link this account from your profile.",
+    "account_linked": "Account linked."
+  }
 }

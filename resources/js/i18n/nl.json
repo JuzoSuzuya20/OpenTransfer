@@ -1254,5 +1254,16 @@
     "decrease": "Verlagen",
     "increase": "Verhogen"
   },
-  "Email Change": "Adreswijziging"
+  "Email Change": "Adreswijziging",
+  "flash": {
+    "account_not_found": "Er is geen account aan deze identiteit gekoppeld. Koppel het via je profiel of vraag een beheerder.",
+    "account_exists": "Een account gebruikt dit adres al. Meld je daar aan en koppel deze provider via je profiel.",
+    "authentication_failed": "Aanmelden is mislukt. Probeer het opnieuw.",
+    "provider_failed": "De identiteitsprovider heeft het aanmelden niet afgerond. Probeer het opnieuw.",
+    "provider_not_found": "Deze aanmeldmethode is niet beschikbaar.",
+    "account_disabled": "Dit account is uitgeschakeld.",
+    "user_not_found": "Account niet gevonden.",
+    "email_not_verified": "Je identiteitsprovider heeft je e-mailadres niet bevestigd. Vraag je beheerder het daar te bevestigen, of koppel dit account via je profiel.",
+    "account_linked": "Account gekoppeld."
+  }
 }

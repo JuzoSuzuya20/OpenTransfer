@@ -1254,5 +1254,16 @@
     "decrease": "Diminuer",
     "increase": "Augmenter"
   },
-  "Email Change": "Changement d’adresse"
+  "Email Change": "Changement d’adresse",
+  "flash": {
+    "account_not_found": "Aucun compte n'est lié à cette identité. Liez-le depuis votre profil, ou demandez à un administrateur.",
+    "account_exists": "Un compte utilise déjà cette adresse. Connectez-vous à ce compte, puis liez ce fournisseur depuis votre profil.",
+    "authentication_failed": "La connexion a échoué. Réessayez.",
+    "provider_failed": "Le fournisseur d'identité n'a pas terminé la connexion. Réessayez.",
+    "provider_not_found": "Ce moyen de connexion n'est pas disponible.",
+    "account_disabled": "Ce compte est désactivé.",
+    "user_not_found": "Compte introuvable.",
+    "email_not_verified": "Votre fournisseur d'identité n'a pas vérifié votre adresse e-mail. Demandez à votre administrateur de la vérifier chez lui, ou liez ce compte depuis votre profil.",
+    "account_linked": "Compte lié."
+  }
 }

@@ -1254,5 +1254,16 @@
     "decrease": "Diminuisci",
     "increase": "Aumenta"
   },
-  "Email Change": "Cambio di indirizzo"
+  "Email Change": "Cambio di indirizzo",
+  "flash": {
+    "account_not_found": "Nessun account è collegato a questa identità. Collegalo dal tuo profilo o chiedi a un amministratore.",
+    "account_exists": "Un account usa già questo indirizzo. Accedi a quell’account, poi collega questo provider dal tuo profilo.",
+    "authentication_failed": "Accesso non riuscito. Riprova.",
+    "provider_failed": "Il provider di identità non ha completato l’accesso. Riprova.",
+    "provider_not_found": "Questo metodo di accesso non è disponibile.",
+    "account_disabled": "Questo account è disattivato.",
+    "user_not_found": "Account non trovato.",
+    "email_not_verified": "Il tuo provider di identità non ha verificato il tuo indirizzo e-mail. Chiedi al tuo amministratore di verificarlo lì, oppure collega questo account dal tuo profilo.",
+    "account_linked": "Account collegato."
+  }
 }

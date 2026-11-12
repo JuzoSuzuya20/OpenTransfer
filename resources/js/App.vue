@@ -19,6 +19,7 @@ import { emitter, store } from './store'
 import { logout, getMyProfile, updateMyProfile } from './api'
 import { resolveRoute, settingsTabToPath, legacyHashToPath } from './lib/router'
 import { whenIdle } from './lib/idle'
+import { flashMessageKey } from './lib/flashMessages'
 
 // What opens first stays in the main file (sign-in, sending, a share's page); every other page
 // is a file of its own, so that the visitor of a share never downloads the administration
@@ -39,7 +40,7 @@ const AboutPage = defineAsyncComponent(signedInPages.about)
 const Setup = defineAsyncComponent(() => import('./components/setup.vue'))
 const ThankGuestForUpload = defineAsyncComponent(() => import('./components/thankGuestForUpload.vue'))
 
-const { t } = useTranslate()
+const { t, isLoading: translationsLoading } = useTranslate()
 const toast = useToast()
 
 const settings = domData()
@@ -240,12 +241,25 @@ onMounted(() => {
     scrollToAnchor(decodeURIComponent(location.hash.slice(1)))
   }
 
+  // The sentence the server left after a round trip to an identity provider, in the language
+  // of the screen when the app knows it
+  // (the language arrives in a file of its own: the message waits for it)
+  const flash = (message) => (flashMessageKey(message) ? t.value(flashMessageKey(message)) : message)
+  const whenTranslated = (show) => {
+    if (!translationsLoading.value) return nextTick(show)
+    const stop = watch(translationsLoading, (loading) => {
+      if (!loading) {
+        stop()
+        show()
+      }
+    })
+  }
   if (domError().length > 0) {
-    nextTick(() => toast.error(domError()))
+    whenTranslated(() => toast.error(flash(domError())))
   }
   if (domSuccess().length > 0) {
-    nextTick(() => {
-      toast.success(domSuccess())
+    whenTranslated(() => {
+      toast.success(flash(domSuccess()))
       if (domSuccess() == 'Account linked successfully') {
         navigate('/profile#linked_accounts')
       }

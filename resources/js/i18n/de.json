@@ -1254,5 +1254,16 @@
     "decrease": "Verringern",
     "increase": "Erhöhen"
   },
-  "Email Change": "Adressänderung"
+  "Email Change": "Adressänderung",
+  "flash": {
+    "account_not_found": "Mit dieser Identität ist kein Konto verknüpft. Verknüpfen Sie es in Ihrem Profil oder wenden Sie sich an einen Administrator.",
+    "account_exists": "Diese Adresse gehört bereits zu einem Konto. Melden Sie sich dort an und verknüpfen Sie den Anbieter in Ihrem Profil.",
+    "authentication_failed": "Die Anmeldung ist fehlgeschlagen. Versuchen Sie es erneut.",
+    "provider_failed": "Der Identitätsanbieter hat die Anmeldung nicht abgeschlossen. Versuchen Sie es erneut.",
+    "provider_not_found": "Diese Anmeldemethode ist nicht verfügbar.",
+    "account_disabled": "Dieses Konto ist deaktiviert.",
+    "user_not_found": "Konto nicht gefunden.",
+    "email_not_verified": "Ihr Identitätsanbieter hat Ihre E-Mail-Adresse nicht bestätigt. Bitten Sie Ihren Administrator, sie dort zu bestätigen, oder verknüpfen Sie dieses Konto in Ihrem Profil.",
+    "account_linked": "Konto verknüpft."
+  }
 }

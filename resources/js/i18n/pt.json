@@ -1254,5 +1254,16 @@
     "decrease": "Diminuir",
     "increase": "Aumentar"
   },
-  "Email Change": "Alteração de endereço"
+  "Email Change": "Alteração de endereço",
+  "flash": {
+    "account_not_found": "Nenhuma conta está ligada a esta identidade. Ligue-a a partir do seu perfil ou peça a um administrador.",
+    "account_exists": "Uma conta já usa este endereço. Inicie sessão nessa conta e ligue este fornecedor a partir do seu perfil.",
+    "authentication_failed": "O início de sessão falhou. Tente novamente.",
+    "provider_failed": "O fornecedor de identidade não concluiu o início de sessão. Tente novamente.",
+    "provider_not_found": "Este método de início de sessão não está disponível.",
+    "account_disabled": "Esta conta está desativada.",
+    "user_not_found": "Conta não encontrada.",
+    "email_not_verified": "O seu fornecedor de identidade não verificou o seu endereço de e-mail. Peça ao seu administrador que o verifique lá, ou ligue esta conta a partir do seu perfil.",
+    "account_linked": "Conta ligada."
+  }
 }
