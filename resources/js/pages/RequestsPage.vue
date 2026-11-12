@@ -1,19 +1,22 @@
 <script setup>
+// File requests (piste B): ask in one line, then follow what is waiting and what came back.
+// Both lists stay current while the page is open.
 import { ref, computed, onMounted } from 'vue'
-import { pinLeaving } from '../lib/motion'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
-import { Send } from 'lucide-vue-next'
+import { Send, SquareArrowOutUpRight } from 'lucide-vue-next'
 import PageHead from '../components/layout/PageHead.vue'
 import AppLink from '../components/layout/AppLink.vue'
-import { sendReverseShareInvite, getMyShares } from '../api'
+import { pinLeaving } from '../lib/motion'
+import { useLiveRefresh } from '../composables/useLiveRefresh'
+import { sendReverseShareInvite, getMyShares, getMyReverseShareInvites } from '../api'
 import { niceFileSize } from '../utils'
 
 const { t } = useTranslate()
 const tolgee = useTolgee(['language'])
 const toast = useToast()
 
-// Ask someone outside the organisation to drop files; what they send lands in "My shares"
+// --- Asking
 const invite = ref({ email: '', name: '', message: '' })
 const sending = ref(false)
 const sendInvite = async () => {
@@ -22,6 +25,7 @@ const sendInvite = async () => {
     await sendReverseShareInvite(invite.value.email, invite.value.name, invite.value.message)
     toast.success(t.value('reverse_invite_send.success'))
     invite.value = { email: '', name: '', message: '' }
+    load()
   } catch (error) {
     console.error(error)
     toast.error(t.value('reverse_invite_send.error'))
@@ -29,62 +33,247 @@ const sendInvite = async () => {
     sending.value = false
   }
 }
+// Waiting too long, or expired: the same request once more
+const askAgain = async (request) => {
+  try {
+    await sendReverseShareInvite(request.recipient_email, request.recipient_name, request.message ?? '')
+    toast.success(t.value('requests.resent', { name: request.recipient_name }))
+    load()
+  } catch (error) {
+    toast.error(t.value('reverse_invite_send.error'))
+  }
+}
 
+// --- Following
+const invites = ref([])
 const received = ref([])
 const loaded = ref(false)
-onMounted(async () => {
+const load = async () => {
   try {
-    received.value = (await getMyShares()).filter((share) => share.shared_with_me)
+    const [sent, shares] = await Promise.all([getMyReverseShareInvites(), getMyShares()])
+    invites.value = sent
+    received.value = shares.filter((share) => share.shared_with_me)
   } catch (error) {
-    console.error('Failed to load the shares', error)
+    console.error('Failed to load the requests', error)
   } finally {
     loaded.value = true
   }
-})
+}
+onMounted(load)
+useLiveRefresh(load)
+
+// A request that came back is one of the received shares: "waiting" keeps the others
+const waiting = computed(() => invites.value.filter((request) => request.state !== 'received'))
+const receivedBytes = computed(() => received.value.reduce((total, share) => total + share.size, 0))
+
 const dateFormat = computed(() => new Intl.DateTimeFormat(tolgee.value.getLanguage(), { day: 'numeric', month: 'short' }))
+const day = (value) => dateFormat.value.format(new Date(value))
+// A share received in the last two days is marked new
+const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 * 24 * 3600 * 1000
 </script>
 
 <template>
   <div class="page requests">
     <PageHead :title="t('nav.file_requests')" :description="t('requests.description')" />
 
-    <div class="requests-layout">
-      <section class="ot-card requests-form" aria-labelledby="h-request">
-        <h2 class="ot-card-title" id="h-request">{{ t('requests.new') }}</h2>
-        <form @submit.prevent="sendInvite">
-          <div class="input-container">
-            <label for="invite-email">{{ t('settings.users.email') }}</label>
-            <input type="email" id="invite-email" v-model="invite.email" required autocomplete="email" />
-          </div>
-          <div class="input-container">
-            <label for="invite-name">{{ t('settings.users.name') }}</label>
-            <input type="text" id="invite-name" v-model="invite.name" autocomplete="name" />
-          </div>
-          <div class="input-container">
-            <label for="invite-message">{{ t('invite.labels.message') }}</label>
-            <textarea id="invite-message" v-model="invite.message" rows="3" />
-          </div>
-          <button type="submit" class="block cta" :disabled="sending || !invite.email">
-            <Send aria-hidden="true" />
-            {{ t('button.reverse_share_invite_send') }}
-          </button>
-        </form>
+    <form class="ot-card requests-ask" aria-labelledby="h-request" @submit.prevent="sendInvite">
+      <h2 class="ot-card-title" id="h-request">{{ t('requests.title_new') }}</h2>
+      <div class="requests-ask-row">
+        <div class="input-container">
+          <label for="invite-email">{{ t('settings.users.email') }}</label>
+          <input type="email" id="invite-email" v-model="invite.email" required autocomplete="email" />
+        </div>
+        <div class="input-container">
+          <label for="invite-name">{{ t('settings.users.name') }}</label>
+          <input type="text" id="invite-name" v-model="invite.name" required autocomplete="name" />
+        </div>
+        <div class="input-container requests-ask-message">
+          <label for="invite-message">
+            {{ t('invite.labels.message') }}
+            <small>({{ t('requests.optional') }})</small>
+          </label>
+          <input type="text" id="invite-message" v-model="invite.message" :placeholder="t('requests.message_placeholder')" />
+        </div>
+        <button type="submit" :disabled="sending || !invite.email || !invite.name">
+          <Send aria-hidden="true" />
+          {{ t('button.reverse_share_invite_send') }}
+        </button>
+      </div>
+    </form>
+
+    <div class="requests-columns">
+      <section class="ot-card requests-waiting" aria-labelledby="h-waiting">
+        <div class="requests-card-head">
+          <h2 class="ot-card-title" id="h-waiting">{{ t('requests.waiting') }}</h2>
+          <span class="ot-pill" v-if="waiting.length">{{ waiting.length }}</span>
+        </div>
+        <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="requests-list ot-list-host" v-if="waiting.length">
+          <li v-for="(request, index) in waiting" :key="request.id" class="requests-item" :style="{ '--ot-i': index }">
+            <div class="requests-item-main">
+              <strong>{{ request.recipient_name }}</strong>
+              <span>
+                {{ t('requests.sent_on', { date: day(request.created_at) }) }} ·
+                <span v-if="request.state === 'expired'" class="is-expired">{{ t('requests.expired_on', { date: day(request.expires_at) }) }}</span>
+                <template v-else>{{ t('requests.valid_until', { date: day(request.expires_at) }) }}</template>
+              </span>
+            </div>
+            <button type="button" class="ot-act" @click="askAgain(request)">
+              {{ request.state === 'expired' ? t('requests.ask_again') : t('requests.resend') }}
+            </button>
+          </li>
+        </TransitionGroup>
+        <p class="requests-empty" v-else-if="loaded">{{ t('requests.no_waiting') }}</p>
       </section>
 
       <section class="ot-card requests-received" aria-labelledby="h-received">
-        <h2 class="ot-card-title" id="h-received">{{ t('requests.received') }}</h2>
-        <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="received-list ot-list-host" v-if="received.length > 0">
-          <li v-for="(share, index) in received" :key="share.id" class="received-row" :style="{ '--ot-i': index }">
-            <div class="received-name">{{ share.name }}</div>
-            <div class="received-meta">
-              {{ t('shares.items', { count: share.file_count }) }} · {{ niceFileSize(share.size) }} ·
-              {{ dateFormat.format(new Date(share.created_at)) }}
+        <div class="requests-card-head">
+          <h2 class="ot-card-title" id="h-received">{{ t('requests.received') }}</h2>
+          <span class="requests-total" v-if="received.length">
+            {{ t('shares.items', { count: received.length }) }} · {{ niceFileSize(receivedBytes) }}
+          </span>
+        </div>
+        <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="requests-list ot-list-host" v-if="received.length">
+          <li v-for="(share, index) in received" :key="share.id" class="requests-item" :style="{ '--ot-i': index }">
+            <div class="requests-item-main">
+              <strong>{{ share.name }}</strong>
+              <span>
+                {{ t('requests.from_name', { name: share.user?.name }) }} · {{ t('shares.items', { count: share.file_count }) }} ·
+                {{ niceFileSize(share.size) }} · {{ day(share.created_at) }}
+              </span>
             </div>
+            <span class="ot-pill is-success" v-if="isNew(share)">{{ t('requests.new_badge') }}</span>
+            <a class="ot-act" :href="`/shares/${share.long_id}`" target="_blank" rel="noopener">
+              <SquareArrowOutUpRight aria-hidden="true" />
+              {{ t('requests.open') }}
+            </a>
           </li>
         </TransitionGroup>
-        <p class="received-empty" v-else-if="loaded">{{ t('requests.none') }}</p>
-        <AppLink to="/my-shares" class="received-link" v-if="received.length > 0">{{ t('requests.see_all') }}</AppLink>
+        <p class="requests-empty" v-else-if="loaded">{{ t('requests.none') }}</p>
+        <AppLink to="/my-shares" class="requests-link" v-if="received.length">{{ t('requests.see_all') }}</AppLink>
       </section>
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.requests-ask {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+// Asking fits on one line on a wide screen: address, name, message, button
+.requests-ask-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.6fr) auto;
+  gap: 12px;
+  align-items: end;
+
+  .input-container input {
+    margin-bottom: 0;
+  }
+  button {
+    margin: 0;
+    height: var(--button-height);
+  }
+  label small {
+    font-weight: 400;
+    color: var(--ot-muted);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    .requests-ask-message {
+      grid-column: 1 / -1;
+    }
+    button {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 560px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.requests-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+
+  > section {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .requests-waiting {
+    flex: 1 1 380px;
+  }
+  .requests-received {
+    flex: 1.4 1 480px;
+  }
+}
+.requests-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.requests-total {
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+}
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.requests-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--ot-radius);
+  background: var(--ot-field);
+
+  .ot-act {
+    flex-shrink: 0;
+    margin: 0;
+  }
+}
+.requests-item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    overflow: hidden;
+    color: var(--ot-heading);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  > span {
+    font-size: 0.8125rem;
+    color: var(--ot-muted);
+  }
+  .is-expired {
+    color: var(--ot-danger-text);
+  }
+}
+.requests-empty {
+  margin: 0;
+  color: var(--ot-muted);
+  font-size: 0.875rem;
+}
+.requests-link {
+  align-self: flex-start;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+</style>

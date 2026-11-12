@@ -20,7 +20,7 @@ const props = defineProps({
   logoWidth: { type: [Number, String], default: 0 },
   applicationName: { type: String, default: '' }
 })
-const emit = defineEmits(['search', 'logout'])
+const emit = defineEmits(['search', 'logout', 'new-share'])
 const { t } = useTranslate()
 
 const navItems = computed(() =>
@@ -48,10 +48,11 @@ const navItems = computed(() =>
           <span class="header-search-label">{{ t('nav.search_placeholder') }}</span>
           <kbd>Ctrl+K</kbd>
         </button>
-        <AppLink to="/" class="header-new-share" :aria-label="t('nav.new_share')">
+        <!-- A quick share in a window; its "More options" leads to the send page -->
+        <button type="button" class="header-new-share" @click="emit('new-share')" :aria-label="t('nav.new_share')">
           <Plus aria-hidden="true" />
           <span>{{ t('nav.new_share') }}</span>
-        </AppLink>
+        </button>
         <AccountMenu :name="userName" :avatar-seed="userAvatarSeed" @logout="emit('logout')" />
       </template>
 

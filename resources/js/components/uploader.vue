@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { pinLeaving } from '../lib/motion'
-import { Upload, Copy, X, Loader, Check, Pause, Play, Eye, EyeOff, Link as LinkIcon } from 'lucide-vue-next'
+import { Upload, Copy, X, Loader, Check, Pause, Play, Eye, EyeOff, Link as LinkIcon, Clock, HardDriveDownload, Lock, Mail, ChevronDown, ArrowRight } from 'lucide-vue-next'
 import { niceFileSize, niceFileType, niceFileName, simpleUUID } from '../utils'
 import { getHealth, getMyProfile, uploadFilesInChunks, logout, getMyShares, setDownloadLimit } from '../api'
 import { basketRows } from '../lib/basket'
@@ -9,11 +9,20 @@ import { sendSummary } from '../lib/shares'
 import AppLink from './layout/AppLink.vue'
 import OtSelect from './layout/OtSelect.vue'
 import OtNumber from './layout/OtNumber.vue'
+import PageHead from './layout/PageHead.vue'
+import { handedOverFiles } from '../lib/quickSendHandoff'
 import { uploadController } from '../store'
 import { domData } from '../domData'
 import { useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../store'
+// compact: the quick "New share" window (the files, the default access, one button); the page
+// otherwise (piste A: one column, the access options as chips, one open at a time)
+const props = defineProps({
+  compact: { type: Boolean, default: false }
+})
+const emit = defineEmits(['more-options', 'close'])
+
 const { t } = useTranslate()
 const toast = useToast()
 const fileInput = ref(null)
@@ -226,11 +235,50 @@ onMounted(async () => {
   const health = await getHealth()
   maxShareSize.value = health.max_share_size
 
-  // Check for interrupted upload
-  checkForInterruptedUpload()
+  // Check for interrupted upload (the page only: the quick window does not take one over)
+  if (!props.compact) checkForInterruptedUpload()
 })
 
-onMounted(loadMyShares)
+onMounted(() => !props.compact && loadMyShares())
+
+// The files chosen in the quick window when the person asked for more options
+watch(
+  handedOverFiles,
+  (files) => {
+    if (props.compact || files.length === 0) return
+    files.forEach(pushFile)
+    handedOverFiles.value = []
+  },
+  { immediate: true }
+)
+
+// --- The access, as chips: one option open at a time
+const openOption = ref(null)
+const toggleOption = (name) => (openOption.value = openOption.value === name ? null : name)
+const expiryLabel = computed(() =>
+  t.value(`send.expires_${expiryUnit.value}`, { count: Number(expiryValue.value) || 0 })
+)
+const downloadsLabel = computed(() =>
+  downloadLimit.value ? t.value('send.downloads_count', { count: Number(downloadLimit.value) }) : t.value('send.downloads_unlimited')
+)
+const passwordLabel = computed(() => (sharePasswordInput.value ? t.value('send.password_set') : t.value('send.password')))
+const recipientsLabel = computed(() =>
+  recipients.value.length ? t.value('send.recipients_count', { count: recipients.value.length }) : t.value('send.send_by_email')
+)
+// The quick window says what the link will be without asking
+const quickDefaults = computed(() =>
+  [expiryLabel.value, downloadsLabel.value, sharePasswordInput.value ? t.value('send.password_set') : t.value('send.no_password')].join(' · ')
+)
+const ctaLabel = computed(() => {
+  if (currentlyUploading.value) return t.value('send.creating', { progress: Math.round(uploadProgress.value) })
+  if (uploadBasket.value.length === 0) return t.value('send.add_files_first')
+  return t.value('send.create_with', { count: uploadBasket.value.length, size: niceFileSize(totalSize.value) })
+})
+const startAnother = () => {
+  sharePanelVisible.value = false
+  shareUrl.value = ''
+}
+defineExpose({ isBusy: () => currentlyUploading.value })
 
 const showFilePicker = () => {
   fileInput.value.webkitdirectory = false
@@ -814,70 +862,38 @@ const filesByDirectory = computed(() => {
 <template>
   <!-- One root: the page can fade in and out as a whole -->
   <div class="send-page">
-    <div class="send">
-      <div class="send-stats" v-if="!store.isGuest()">
-        <div class="ot-card ot-card--tight ot-stat">
-          <h2 class="ot-card-title">{{ $t('send.stats.active') }}</h2>
-          <div class="ot-stat-value">
-            <span class="ot-figure">{{ summary.active }}</span>
-            <span class="ot-stat-sub">
-              {{
-                summary.endingWithinADay > 0
-                  ? $t('send.stats.ending', { count: summary.endingWithinADay })
-                  : $t('send.stats.none_ending')
-              }}
-            </span>
-          </div>
+    <div class="send" :class="{ 'is-compact': compact }">
+      <PageHead v-if="!compact" :title="$t('nav.send')" :description="$t('send.lead')" />
+
+      <!-- The quick window, once the link exists -->
+      <div class="send-done" v-if="compact && sharePanelVisible" role="status">
+        <div class="send-done-head">
+          <span class="send-done-icon"><Check class="ot-check-pop" aria-hidden="true" /></span>
+          <h2>{{ $t('send.link_ready') }}</h2>
         </div>
-        <div class="ot-card ot-card--tight ot-stat">
-          <h2 class="ot-card-title">{{ $t('send.stats.online') }}</h2>
-          <div class="ot-stat-value">
-            <span class="ot-figure is-accent">{{ niceFileSize(summary.onlineBytes) }}</span>
-            <span class="ot-stat-sub">{{ $t('send.stats.online_sub') }}</span>
-          </div>
+        <div class="input-container">
+          <label for="quick-share-url">{{ $t('Share URL') }}</label>
+          <input id="quick-share-url" type="text" readonly :value="shareUrl" ref="shareUrlField" @focus="$event.target.select()" />
         </div>
-        <div class="ot-card ot-card--tight ot-stat">
-          <h2 class="ot-card-title">{{ $t('send.stats.downloads') }}</h2>
-          <div class="ot-stat-value">
-            <span class="ot-figure is-accent">{{ summary.downloads }}</span>
-            <span class="ot-stat-sub">
-              {{
-                summary.neverOpened > 0
-                  ? $t('send.stats.never_opened', { count: summary.neverOpened })
-                  : summary.active > 0
-                    ? $t('send.stats.all_opened')
-                    : $t('send.stats.no_share')
-              }}
-            </span>
-          </div>
+        <div class="send-done-actions">
+          <button type="button" @click="copyShareUrl">
+            <Check v-if="showCopySuccess" class="ot-check-pop" aria-hidden="true" />
+            <Copy v-else aria-hidden="true" />
+            {{ showCopySuccess ? $t('send.copied') : $t('send.copy_link') }}
+          </button>
+          <button type="button" class="ghost" @click="startAnother">{{ $t('send.another') }}</button>
         </div>
+        <AppLink to="/my-shares" class="send-done-link" @click="emit('close')">{{ $t('send.see_in_my_shares') }}</AppLink>
       </div>
 
-      <div class="send-columns">
-        <section class="ot-card send-files" aria-labelledby="h-files">
-          <h2 class="ot-card-title" id="h-files">{{ $t('uploader.files_title') }}</h2>
-
-          <div
-            class="dropzone"
-            @drop="handleDrop"
-            @dragenter="handleDragOver"
-            @dragover.prevent.stop
-            @dragleave="handleDragLeave($event)"
-            @click="handleDropzoneClick"
-            ref="dropzone"
-          >
-            <Upload class="dropzone-icon" aria-hidden="true" />
-            <div class="dropzone-title">{{ $t('send.drop_title') }}</div>
-            <div class="dropzone-sub">{{ $t('send.drop_sub', { size: niceFileSize(maxShareSize) }) }}</div>
-            <div class="dropzone-actions">
-              <button type="button" @click.stop="showFilePicker" :disabled="currentlyUploading">
-                {{ $t('send.browse') }}
-              </button>
-              <button type="button" class="ghost" @click.stop="showFolderPicker" :disabled="currentlyUploading">
-                {{ $t('send.choose_folder') }}
-              </button>
-            </div>
-          </div>
+      <template v-else>
+        <section class="ot-card send-files" :class="{ 'has-files': rows.length > 0 }" aria-labelledby="h-files">
+          <h2 class="ot-card-title" id="h-files">
+            <template v-if="rows.length > 0">
+              {{ $t('send.total', { count: uploadBasket.length, size: niceFileSize(totalSize), max: niceFileSize(maxShareSize) }) }}
+            </template>
+            <template v-else>{{ $t('uploader.files_title') }}</template>
+          </h2>
 
           <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="basket ot-list-host" v-if="rows.length > 0" :aria-label="$t('uploader.files_title')">
             <li v-for="(row, index) in rows" :key="row.key" class="basket-row" :class="`is-${row.state}`" :style="{ '--ot-i': index }">
@@ -917,6 +933,31 @@ const filesByDirectory = computed(() => {
             </li>
           </TransitionGroup>
 
+
+          <!-- Big while nothing is chosen, a line under the files afterwards -->
+          <div
+            class="dropzone"
+            :class="{ 'is-compact': rows.length > 0 || compact }"
+            @drop="handleDrop"
+            @dragenter="handleDragOver"
+            @dragover.prevent.stop
+            @dragleave="handleDragLeave($event)"
+            @click="handleDropzoneClick"
+            ref="dropzone"
+          >
+            <Upload class="dropzone-icon" aria-hidden="true" />
+            <div class="dropzone-title">{{ rows.length > 0 ? $t('send.drop_more') : $t('send.drop_title') }}</div>
+            <div class="dropzone-sub" v-if="rows.length === 0 && !compact">{{ $t('send.drop_sub', { size: niceFileSize(maxShareSize) }) }}</div>
+            <div class="dropzone-actions">
+              <button type="button" :class="{ 'ot-act': rows.length > 0 || compact }" @click.stop="showFilePicker" :disabled="currentlyUploading">
+                {{ $t('send.browse') }}
+              </button>
+              <button type="button" :class="rows.length > 0 || compact ? 'ot-act' : 'ghost'" @click.stop="showFolderPicker" :disabled="currentlyUploading">
+                {{ $t('send.choose_folder') }}
+              </button>
+            </div>
+          </div>
+
           <div class="send-files-foot" v-if="rows.length > 0 || currentlyUploading">
             <span class="send-total">
               {{ $t('send.total', { count: uploadBasket.length, size: niceFileSize(totalSize), max: niceFileSize(maxShareSize) }) }}
@@ -945,29 +986,24 @@ const filesByDirectory = computed(() => {
           </div>
         </section>
 
-        <section class="ot-card send-access" aria-labelledby="h-access">
+        <section class="ot-card send-access" v-if="!compact" aria-labelledby="h-access">
           <h2 class="ot-card-title" id="h-access">{{ $t('uploader.access_title') }}</h2>
-
-          <div class="input-container" v-if="!store.isGuest()">
-            <label for="share-name">{{ $t('Share Name') }}</label>
-            <input
-              type="text"
-              v-model="shareName"
-              required
-              :class="{ error: errors.shareName }"
-              id="share-name"
-              name="share-name"
-              autocomplete="off"
-            />
-            <div class="error-message" v-if="errors.shareName">{{ errors.shareName }}</div>
+          <div class="send-chips">
+            <button type="button" class="send-chip" :class="{ 'is-open': openOption === 'expiry' }" :aria-expanded="openOption === 'expiry'" aria-controls="send-opt-expiry" @click="toggleOption('expiry')">
+              <Clock aria-hidden="true" />{{ expiryLabel }}<ChevronDown class="send-chip-chevron" aria-hidden="true" />
+            </button>
+            <button v-if="!store.isGuest()" type="button" class="send-chip" :class="{ 'is-open': openOption === 'downloads', 'is-set': downloadLimit }" :aria-expanded="openOption === 'downloads'" aria-controls="send-opt-downloads" @click="toggleOption('downloads')">
+              <HardDriveDownload aria-hidden="true" />{{ downloadsLabel }}<ChevronDown class="send-chip-chevron" aria-hidden="true" />
+            </button>
+            <button type="button" class="send-chip" :class="{ 'is-open': openOption === 'password', 'is-set': sharePasswordInput }" :aria-expanded="openOption === 'password'" aria-controls="send-opt-password" @click="toggleOption('password')">
+              <Lock aria-hidden="true" />{{ passwordLabel }}<ChevronDown class="send-chip-chevron" aria-hidden="true" />
+            </button>
+            <button v-if="!store.isGuest()" type="button" class="send-chip" :class="{ 'is-open': openOption === 'recipients', 'is-set': recipients.length }" :aria-expanded="openOption === 'recipients'" aria-controls="send-opt-recipients" @click="toggleOption('recipients')">
+              <Mail aria-hidden="true" />{{ recipientsLabel }}<ChevronDown class="send-chip-chevron" aria-hidden="true" />
+            </button>
           </div>
 
-          <div class="input-container" v-if="!store.isGuest()">
-            <label for="share-description">{{ $t('send.message') }}</label>
-            <textarea v-model="shareDescription" rows="3" id="share-description" />
-          </div>
-
-          <div class="send-access-pair">
+          <div class="send-option" id="send-opt-expiry" v-if="openOption === 'expiry'">
             <div class="input-container">
               <label for="share-expiry">{{ $t('send.expires_in') }}</label>
               <div class="field-group">
@@ -980,19 +1016,20 @@ const filesByDirectory = computed(() => {
                 />
                 <OtSelect v-model="expiryUnit" :options="expiryUnitOptions" :aria-label="$t('send.expiry_unit')" />
               </div>
-              <!-- The maximum belongs to the expiry: under the downloads it would read as a download limit -->
               <p class="help-text" id="share-expiry-max" v-if="maxExpiryTimeInSelectedUnit != null">
                 {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
               </p>
             </div>
-            <div class="input-container" v-if="!store.isGuest()">
+          </div>
+          <div class="send-option" id="send-opt-downloads" v-if="openOption === 'downloads'">
+            <div class="input-container">
               <label for="share-limit">{{ $t('send.downloads') }}</label>
               <OtSelect id="share-limit" v-model="downloadLimit" :options="downloadLimitSelectOptions" />
             </div>
           </div>
-
-          <div class="input-container">
-            <label for="share-password">{{ $t('send.password') }}</label>
+          <div class="send-option" id="send-opt-password" v-if="openOption === 'password'">
+            <div class="input-container">
+              <label for="share-password">{{ $t('send.password') }}</label>
             <div class="field-with-action">
               <input
                 :type="showPassword ? 'text' : 'password'"
@@ -1015,8 +1052,10 @@ const filesByDirectory = computed(() => {
             <p class="help-text" id="share-password-help">{{ $t('send.password_help') }}</p>
           </div>
 
-          <div class="input-container" v-if="!store.isGuest()">
-            <label for="share-recipient">{{ $t('send.send_to') }}</label>
+          </div>
+          <div class="send-option" id="send-opt-recipients" v-if="openOption === 'recipients'">
+            <div class="input-container">
+              <label for="share-recipient">{{ $t('send.send_to') }}</label>
             <div class="recipients-field" :class="{ error: recipientError }" @click="$refs.recipientField.focus()">
               <span class="recipient-chip" v-for="recipient in recipients" :key="recipient.id">
                 {{ recipient.email }}
@@ -1045,19 +1084,48 @@ const filesByDirectory = computed(() => {
             </p>
           </div>
 
-          <button
-            type="button"
-            class="upload-button block cta"
-            :disabled="uploadBasket.length === 0 || currentlyUploading"
-            @click="uploadFiles"
-          >
-            <Loader class="spin" v-if="currentlyUploading" aria-hidden="true" />
-            <template v-if="currentlyUploading">{{ $t('send.creating', { progress: Math.round(uploadProgress) }) }}</template>
-            <template v-else-if="uploadBasket.length === 0">{{ $t('send.add_files_first') }}</template>
-            <template v-else>{{ $t('send.create') }}</template>
-          </button>
+          </div>
+
+          <details class="send-more" v-if="!store.isGuest()">
+            <summary>
+              {{ $t('send.name_and_message') }}
+              <span class="send-more-name" v-if="shareName">· {{ shareName }}</span>
+            </summary>
+            <div class="send-more-fields">
+              <div class="input-container">
+                <label for="share-name">{{ $t('Share Name') }}</label>
+                <input type="text" v-model="shareName" id="share-name" name="share-name" autocomplete="off" />
+              </div>
+              <div class="input-container">
+                <label for="share-description">{{ $t('send.message') }}</label>
+                <textarea v-model="shareDescription" rows="3" id="share-description" />
+              </div>
+            </div>
+          </details>
         </section>
-      </div>
+
+        <p class="send-defaults" v-if="compact && rows.length > 0">{{ quickDefaults }}</p>
+
+        <button
+          type="button"
+          class="upload-button block cta"
+          :disabled="uploadBasket.length === 0 || currentlyUploading"
+          @click="uploadFiles"
+        >
+          <Loader class="spin" v-if="currentlyUploading" aria-hidden="true" />
+          {{ ctaLabel }}
+        </button>
+
+        <a v-if="compact" href="/" class="send-more-options" @click.prevent="emit('more-options', [...uploadBasket])">
+          {{ $t('send.more_options') }}
+          <ArrowRight aria-hidden="true" />
+        </a>
+
+        <p class="send-summary" v-if="!compact && !store.isGuest() && summary.active > 0">
+          {{ $t('send.summary_line', { active: summary.active, downloads: summary.downloads }) }} ·
+          <AppLink to="/my-shares">{{ $t('nav.my_shares') }}</AppLink>
+        </p>
+      </template>
     </div>
 
     <input
@@ -1070,7 +1138,7 @@ const filesByDirectory = computed(() => {
       multiple
     />
     <Transition name="ot-stamp">
-    <div class="share-created" v-if="sharePanelVisible" @click.self="sharePanelVisible = false" @keydown.esc="sharePanelVisible = false">
+    <div class="share-created" v-if="sharePanelVisible && !compact" @click.self="sharePanelVisible = false" @keydown.esc="sharePanelVisible = false">
       <section class="ot-card share-created-card" role="dialog" aria-modal="true" aria-labelledby="h-share-created">
         <h2 class="ot-card-title" id="h-share-created">{{ $t('send.created_title') }}</h2>
         <p>{{ $t('send.created_text') }}</p>

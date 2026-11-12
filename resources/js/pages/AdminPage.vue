@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, inject, onMounted } from 'vue'
 import { useTranslate } from '@tolgee/vue'
-import { Save, UserPlus, Info } from 'lucide-vue-next'
+import { Save, UserPlus, Info, SlidersHorizontal, Share2, Bell, AtSign, Mail, Palette, KeyRound, UserRoundPlus, ShieldCheck, Users as UsersIcon, FolderOpen, Database } from 'lucide-vue-next'
 import PageHead from '../components/layout/PageHead.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import OtSelect from '../components/layout/OtSelect.vue'
@@ -21,6 +21,7 @@ const props = defineProps({
 const { t } = useTranslate()
 const navigate = inject('navigate')
 const scrollToAnchor = inject('scrollToAnchor')
+const currentHash = inject('currentHash')
 
 const systemSettings = ref(null)
 const ssoSettings = ref(null)
@@ -31,19 +32,56 @@ const allSharesPanel = ref(null)
 
 const { value: selfRegistrationEnabled } = useSetting('self_registration_enabled', 'system.auth', false)
 
-const sections = computed(() => [
-  { id: 'system', label: t.value('settings.title.system'), description: t.value('settings.description.system') },
-  { id: 'sso', label: t.value('sso.title'), description: t.value('sso.description') },
-  { id: 'branding', label: t.value('settings.title.branding'), description: t.value('settings.description.branding') },
+// Piste A: a menu in three groups. The system settings show one section at a time (the anchor
+// of the address says which); the other entries are pages of their own.
+const SYSTEM_PARTS = ['general', 'shares', 'emails', 'smtp', 'auth', 'security', 'backups']
+// Older anchors (command palette, e-mails, bookmarks) inside a section
+const PART_OF_ANCHOR = { reverse_shares: 'shares', share_url_generation: 'shares', self_registration: 'auth', auth: 'auth' }
+const systemPart = computed(() => {
+  const anchor = decodeURIComponent((currentHash.value || '').slice(1))
+  return SYSTEM_PARTS.includes(anchor) ? anchor : PART_OF_ANCHOR[anchor] ?? 'general'
+})
+
+const item = (id, icon, to, part = null) => ({
+  id,
+  icon,
+  to,
+  part,
+  label: t.value(`admin.nav.${id}`),
+  description: t.value(`admin.desc.${id}`)
+})
+const groups = computed(() => [
   {
-    id: 'email-templates',
-    label: t.value('settings.title.emailTemplates'),
-    description: t.value('settings.description.emailTemplates')
+    id: 'instance',
+    label: t.value('admin.group.instance'),
+    items: [
+      item('general', SlidersHorizontal, '/admin/system#general', 'general'),
+      item('shares', Share2, '/admin/system#shares', 'shares'),
+      item('notifications', Bell, '/admin/system#emails', 'emails'),
+      item('smtp', AtSign, '/admin/system#smtp', 'smtp'),
+      item('templates', Mail, '/admin/email-templates'),
+      item('customization', Palette, '/admin/branding')
+    ]
   },
-  { id: 'users', label: t.value('settings.title.users'), description: t.value('settings.description.users') },
-  { id: 'all-shares', label: t.value('settings.title.allShares'), description: t.value('settings.description.allShares') }
+  {
+    id: 'access',
+    label: t.value('admin.group.access'),
+    items: [
+      item('sso', KeyRound, '/admin/sso'),
+      item('signup', UserRoundPlus, '/admin/system#auth', 'auth'),
+      item('security', ShieldCheck, '/admin/system#security', 'security'),
+      item('users', UsersIcon, '/admin/users')
+    ]
+  },
+  {
+    id: 'data',
+    label: t.value('admin.group.data'),
+    items: [item('all_shares', FolderOpen, '/admin/all-shares'), item('backups', Database, '/admin/system#backups', 'backups')]
+  }
 ])
-const current = computed(() => sections.value.find((section) => section.id === props.section))
+const isActive = (entry) =>
+  entry.part ? props.section === 'system' && systemPart.value === entry.part : entry.to === `/admin/${props.section}`
+const current = computed(() => groups.value.flatMap((group) => group.items).find(isActive) ?? groups.value[0].items[0])
 
 // The sections of a settings page link to an anchor of the page
 const onSection = (anchor) => {
@@ -111,9 +149,28 @@ onMounted(() => {
 
 <template>
   <div class="page page-admin">
-    <PageHead :title="t('nav.administration')">
+    <div class="admin-layout">
+    <nav class="admin-side" :aria-label="t('nav.administration')">
+      <div class="admin-side-group" v-for="group in groups" :key="group.id">
+        <h2>{{ group.label }}</h2>
+        <AppLink
+          v-for="entry in group.items"
+          :key="entry.id"
+          :to="entry.to"
+          class="admin-side-item"
+          :class="{ active: isActive(entry) }"
+          :aria-current="isActive(entry) ? 'page' : null"
+        >
+          <component :is="entry.icon" aria-hidden="true" />
+          {{ entry.label }}
+        </AppLink>
+      </div>
+    </nav>
+
+    <div class="admin-main">
+    <PageHead :title="current.label" :description="current.description">
       <template #actions>
-        <button v-if="section === 'system'" @click="systemSettings?.saveSettings()">
+        <button v-if="section === 'system' && systemPart !== 'backups'" @click="systemSettings?.saveSettings()">
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
         </button>
@@ -130,7 +187,7 @@ onMounted(() => {
           {{ t('admin.save') }}
         </button>
         <template v-else-if="section === 'users'">
-          <AppLink class="admin-tip" to="/admin/system#self_registration">
+          <AppLink class="admin-tip" to="/admin/system#auth">
             <Info aria-hidden="true" />
             {{ selfRegistrationEnabled ? t('settings.users.self_registration_on') : t('settings.users.self_registration_off') }}
           </AppLink>
@@ -156,29 +213,19 @@ onMounted(() => {
       </template>
     </PageHead>
 
-    <nav class="sub-nav" :aria-label="t('nav.administration')">
-      <AppLink
-        v-for="item in sections"
-        :key="item.id"
-        :to="`/admin/${item.id}`"
-        class="sub-nav-item"
-        :class="{ active: section === item.id }"
-        :aria-current="section === item.id ? 'page' : null"
-      >
-        {{ item.label }}
-      </AppLink>
-    </nav>
 
-    <p class="page-description" v-if="current">{{ current.description }}</p>
+
 
     <!-- From one section to the next as from one page to the next -->
     <Transition name="ot-page" mode="out-in">
-      <SystemSettings v-if="section === 'system'" ref="systemSettings" @navItemClicked="onSection" />
+      <SystemSettings v-if="section === 'system'" ref="systemSettings" :part="systemPart" />
       <SsoSettings v-else-if="section === 'sso'" ref="ssoSettings" />
       <BrandingSettings v-else-if="section === 'branding'" ref="brandingSettings" />
       <EmailTemplates v-else-if="section === 'email-templates'" ref="emailTemplates" @navItemClicked="onSection" />
       <Users v-else-if="section === 'users'" ref="usersPanel" @viewUserShares="viewUserShares" />
       <AllShares v-else-if="section === 'all-shares'" ref="allSharesPanel" />
     </Transition>
+    </div>
+    </div>
   </div>
 </template>

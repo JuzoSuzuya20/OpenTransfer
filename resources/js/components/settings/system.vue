@@ -43,6 +43,11 @@ import { useConfirmDialog } from '../../composables/useConfirmDialog'
 
 import { useTranslate } from '@tolgee/vue'
 
+// The section the administration's menu opened
+defineProps({
+  part: { type: String, default: 'general' }
+})
+
 const { t } = useTranslate()
 
 // Each language under its name in the admin's language, in the order of the other lists
@@ -421,16 +426,6 @@ const shareSettingsLookOk = () => {
   return true
 }
 
-const sectionIndex = computed(() => [
-  { id: 'general', icon: Settings, label: t.value('settings.system.general') },
-  { id: 'shares', icon: Share2, label: t.value('settings.system.shares') },
-  { id: 'emails', icon: Send, label: t.value('settings.system.emails') },
-  { id: 'smtp', icon: AtSign, label: t.value('settings.system.smtp') },
-  { id: 'auth', icon: Fingerprint, label: t.value('settings.system.auth') },
-  { id: 'security', icon: ShieldCheck, label: t.value('settings.system.security.title') },
-  { id: 'backups', icon: Database, label: t.value('settings.system.backups.title') }
-])
-
 const handleNavItemClicked = (item) => {
   emit('navItemClicked', item)
 }
@@ -444,20 +439,9 @@ defineExpose({
 <template>
   <div class="system-settings">
     <!-- A long page: its sections, one link each -->
-    <nav class="section-index" :aria-label="$t('settings.title.system')">
-      <a
-        v-for="section in sectionIndex"
-        :key="section.id"
-        :href="`#${section.id}`"
-        class="ot-act"
-        @click.prevent="handleNavItemClicked(section.id)"
-      >
-        <component :is="section.icon" aria-hidden="true" />
-        {{ section.label }}
-      </a>
-    </nav>
+    <!-- One section at a time: the menu of the administration says which (prop part) -->
     <div class="admin-sections">
-        <div class="setting-group" id="general">
+        <div class="setting-group" id="general" v-show="part === 'general'">
               <div class="setting-group-header">
                 <h3>
                   <Settings />
@@ -506,7 +490,7 @@ defineExpose({
             </div>
 
 
-        <div class="setting-group" id="shares">
+        <div class="setting-group" id="shares" v-show="part === 'shares'">
               <div class="setting-group-header">
                 <h3>
                   <Share2 />
@@ -628,7 +612,7 @@ defineExpose({
             </div>
 
 
-        <div class="setting-group" id="emails">
+        <div class="setting-group" id="emails" v-show="part === 'emails'">
               <div class="setting-group-header">
                 <h3>
                   <Send />
@@ -710,7 +694,7 @@ defineExpose({
             </div>
 
 
-        <div class="setting-group" id="smtp">
+        <div class="setting-group" id="smtp" v-show="part === 'smtp'">
               <div class="setting-group-header">
                 <h3>
                   <AtSign />
@@ -770,7 +754,7 @@ defineExpose({
             </div>
 
 
-        <div class="setting-group" id="auth">
+        <div class="setting-group" id="auth" v-show="part === 'auth'">
               <div class="setting-group-header">
                 <h3>
                   <Fingerprint />
@@ -831,7 +815,7 @@ defineExpose({
             </div>
 
 
-        <div class="setting-group" id="security">
+        <div class="setting-group" id="security" v-show="part === 'security'">
               <div class="setting-group-header">
                 <h3>
                   <ShieldCheck />
@@ -931,7 +915,7 @@ defineExpose({
             </div>
 
 
-        <div class="setting-group" id="backups">
+        <div class="setting-group" id="backups" v-show="part === 'backups'">
               <div class="setting-group-header">
                 <h3>
                   <Database />

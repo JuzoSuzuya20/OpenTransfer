@@ -17,6 +17,32 @@ use App\Models\Setting;
 
 class ReverseSharesController extends Controller
 {
+    // The requests the signed-in account sent (the latest 100), each with where it is: waiting,
+    // received (the guest delivered) or expired. Nothing about the guest account behind it.
+    public function listInvites()
+    {
+        $invites = ReverseShareInvite::where('user_id', Auth::id())
+            ->latest()
+            ->limit(100)
+            ->get()
+            ->map(fn (ReverseShareInvite $invite) => [
+                'id' => $invite->id,
+                'recipient_name' => $invite->recipient_name,
+                'recipient_email' => $invite->recipient_email,
+                'message' => $invite->message,
+                'state' => $invite->isCompleted() ? 'received' : ($invite->isExpired() ? 'expired' : 'pending'),
+                'created_at' => $invite->created_at,
+                'expires_at' => $invite->expires_at,
+                'completed_at' => $invite->completed_at,
+            ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Invites retrieved',
+            'data' => ['invites' => $invites],
+        ]);
+    }
+
     public function createInvite(Request $request)
     {
 

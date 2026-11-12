@@ -5,6 +5,8 @@ import { useToast } from 'vue-toastification'
 
 import AppHeader from './components/layout/AppHeader.vue'
 import Uploader from './components/uploader.vue'
+import { X } from 'lucide-vue-next'
+import { handedOverFiles } from './lib/quickSendHandoff'
 import Downloader from './components/downloader.vue'
 import Auth from './components/auth.vue'
 import Setup from './components/setup.vue'
@@ -42,11 +44,31 @@ const logoTimestamp = ref(Date.now())
 const logoUrl = computed(() => `/images/logo.png?t=${logoTimestamp.value}`)
 
 const commandPalette = ref(null)
+
+// The quick "New share" window (the send component, compact). It does not close while it sends.
+const quickSendOpen = ref(false)
+const quickUploader = ref(null)
+const quickClose = ref(null)
+const openQuickSend = async () => {
+  quickSendOpen.value = true
+  await nextTick()
+  quickClose.value?.focus()
+}
+const closeQuickSend = () => {
+  if (quickUploader.value?.isBusy()) return
+  quickSendOpen.value = false
+}
+const quickMoreOptions = (files) => {
+  handedOverFiles.value = files
+  quickSendOpen.value = false
+  navigate('/')
+}
 const userName = ref('')
 const userAvatarSeed = ref('')
 
 // --- Addresses -------------------------------------------------------------------------------
 const route = ref(resolveRoute(location.pathname))
+const currentHash = ref(location.hash)
 
 // Waits for the element of an anchor, which a page may render after its data arrives
 const scrollToAnchor = (id, attempts = 40) => {
@@ -67,6 +89,7 @@ const navigate = (target, { replace = false } = {}) => {
     history[replace ? 'replaceState' : 'pushState']({}, '', url.pathname + url.search + url.hash)
   }
   route.value = resolveRoute(url.pathname)
+  currentHash.value = url.hash
   nextTick(() => {
     if (url.hash) {
       scrollToAnchor(decodeURIComponent(url.hash.slice(1)))
@@ -78,9 +101,11 @@ const navigate = (target, { replace = false } = {}) => {
 
 const onPopState = () => {
   route.value = resolveRoute(location.pathname)
+  currentHash.value = location.hash
 }
 
 provide('navigate', navigate)
+provide('currentHash', currentHash)
 provide('scrollToAnchor', scrollToAnchor)
 
 // --- Who is here --------------------------------------------------------------------------------
@@ -257,6 +282,7 @@ onBeforeUnmount(() => {
       :logo-width="logoWidth"
       :application-name="applicationName"
       @search="commandPalette?.open()"
+      @new-share="openQuickSend"
       @logout="handleLogout"
     />
 
@@ -288,6 +314,22 @@ onBeforeUnmount(() => {
     </footer>
 
     <ConfirmDialog />
+    <Teleport to="body">
+      <Transition name="ot-dialog">
+        <div v-if="quickSendOpen" class="quick-send-overlay" @click.self="closeQuickSend" @keydown.esc="closeQuickSend">
+          <section class="ot-card quick-send" role="dialog" aria-modal="true" aria-labelledby="h-quick-send">
+            <header class="quick-send-head">
+              <h2 id="h-quick-send">{{ t('nav.new_share') }}</h2>
+              <button ref="quickClose" type="button" class="ot-act icon-only" :aria-label="t('send.close')" :title="t('send.close')" @click="closeQuickSend">
+                <X aria-hidden="true" />
+              </button>
+            </header>
+            <Uploader ref="quickUploader" compact @more-options="quickMoreOptions" @close="quickSendOpen = false" />
+          </section>
+        </div>
+      </Transition>
+    </Teleport>
+
     <CommandPalette ref="commandPalette" v-if="store.isLoggedIn() && !store.isGuest()" />
   </TolgeeProvider>
 </template>

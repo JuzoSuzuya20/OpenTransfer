@@ -559,6 +559,18 @@ export const sendReverseShareInvite = async (email, name, message) => {
   return data
 }
 
+// The requests this account sent, each with its state (pending, received, expired)
+export const getMyReverseShareInvites = async () => {
+  const response = await fetchWithAuth(`${apiUrl}/api/reverse-shares/invites`, {
+    headers: { ...addJsonHeader() }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data.data.invites
+}
+
 export const acceptReverseShareInvite = async (token) => {
   const response = await fetch(`${apiUrl}/api/reverse-shares/accept?token=${token}`, {
     method: 'GET',
