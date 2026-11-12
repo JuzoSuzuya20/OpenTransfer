@@ -359,13 +359,13 @@
     },
     "stats": {
       "downloads": {
-        "all_time": "Nombre total de téléchargement(s)",
+        "all_time": "Téléchargements depuis le début",
         "chart_title": "Évolution des téléchargements",
         "days_option": "{days} jours",
-        "downloads": "téléchargement(s)",
-        "downloads_in_period": "Téléchargement(s) ({days} jours)",
+        "downloads": "téléchargements",
+        "downloads_in_period": "Téléchargements ({days} jours)",
         "time_period": "Période:",
-        "title": "Télécharger l'activité",
+        "title": "Activité de téléchargement",
         "top_shares": "Partages les plus téléchargés",
         "unique_downloaders": "Téléchargeurs uniques"
       },
@@ -381,7 +381,7 @@
           "videos": "Vidéos"
         },
         "files": "dossiers",
-        "title": "Type de fichier Distribution"
+        "title": "Répartition par type de fichier"
       },
       "help": {
         "active_vs_expired_description": "Les partages actifs sont accessibles, tandis que les partages expirés sont en attente de suppression en fonction de vos paramètres de nettoyage.",
@@ -411,18 +411,18 @@
         "file_types": "Types de fichiers",
         "shares": "Partages",
         "storage": "Stockage",
-        "users": "Utilisateur(s)"
+        "users": "Utilisateurs"
       },
       "refresh": "Rafraîchir",
       "shares": {
-        "active_shares": "Partage(s) actif(s)",
-        "deleted": "Supprimé(s)",
-        "expired": "Expiré(s)",
+        "active_shares": "Partages actifs",
+        "deleted": "Supprimés",
+        "expired": "Expirés",
         "last_7_days": "7 derniers jours",
         "per_share": "par partage",
-        "protected": "Protégé(s)",
+        "protected": "Protégés",
         "title": "Statistiques de partage",
-        "total_files": "Total des dossiers",
+        "total_files": "Fichiers au total",
         "total_shares": "Total des partages"
       },
       "storage": {
@@ -433,17 +433,28 @@
         "of_disk": "de disque",
         "share_storage": "Stockage utilisé par les partages\n",
         "title": "Aperçu du stockage",
-        "used": "utilisé(s)"
+        "used": "utilisés"
       },
       "users": {
-        "active": "Actif",
+        "active": "Actifs",
         "admins": "Administrateurs",
         "guests": "Invités",
         "shares": "partages",
         "title": "Statistiques sur les utilisateurs",
         "top_users": "Utilisateurs les plus actifs",
         "total_users": "Total des utilisateurs",
-        "with_shares": "Utilisateur(s) disposant de partage(s)"
+        "with_shares": "Utilisateurs avec des partages"
+      },
+      "figures": {
+        "storage_sub": "{percent} % du disque · {free} libres",
+        "shares_sub": "{expired, plural, one {# expiré} other {# expirés}} · {total} au total",
+        "downloads_sub": "sur {days} jours · {unique, plural, one {# adresse} other {# adresses}}",
+        "users_sub": "{admins, plural, one {# admin} other {# admins}} · {guests, plural, one {# invité} other {# invités}}",
+        "chart_summary": "{total} téléchargements sur {days} jours, {max} au plus en un jour",
+        "table": "Afficher en tableau",
+        "day": "Jour",
+        "share_of_files": "{percent} % des fichiers",
+        "files_per_share": "Fichiers par partage"
       }
     },
     "success": {

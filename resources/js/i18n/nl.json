@@ -365,7 +365,7 @@
         "downloads": "downloads",
         "downloads_in_period": "Downloads ({days} dagen)",
         "time_period": "Periode:",
-        "title": "Activiteit downloaden",
+        "title": "Downloadactiviteit",
         "top_shares": "Meest gedownloade shares",
         "unique_downloaders": "Unieke downloaders"
       },
@@ -381,7 +381,7 @@
           "videos": "Video's"
         },
         "files": "bestanden",
-        "title": "Bestandstype Distributie"
+        "title": "Verdeling per bestandstype"
       },
       "help": {
         "active_vs_expired_description": "Actieve shares zijn toegankelijk, terwijl verlopen shares in afwachting zijn van verwijdering op basis van je opruiminstellingen.",
@@ -422,7 +422,7 @@
         "per_share": "per aandeel",
         "protected": "Beschermd",
         "title": "Statistieken delen",
-        "total_files": "Totaal Bestanden",
+        "total_files": "Bestanden in totaal",
         "total_shares": "Totaal aantal shares"
       },
       "storage": {
@@ -444,6 +444,17 @@
         "top_users": "Meest actieve gebruikers",
         "total_users": "Totaal gebruikers",
         "with_shares": "Gebruikers met shares"
+      },
+      "figures": {
+        "storage_sub": "{percent} % van de schijf · {free} vrij",
+        "shares_sub": "{expired} verlopen · {total} in totaal",
+        "downloads_sub": "in {days} dagen · {unique, plural, one {# adres} other {# adressen}}",
+        "users_sub": "{admins, plural, one {# beheerder} other {# beheerders}} · {guests, plural, one {# gast} other {# gasten}}",
+        "chart_summary": "{total} downloads in {days} dagen, hoogstens {max} op één dag",
+        "table": "Als tabel tonen",
+        "day": "Dag",
+        "share_of_files": "{percent} % van de bestanden",
+        "files_per_share": "Bestanden per share"
       }
     },
     "success": {

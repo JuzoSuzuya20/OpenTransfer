@@ -436,7 +436,7 @@
         "used": "usato"
       },
       "users": {
-        "active": "Attivo",
+        "active": "Attivi",
         "admins": "Amministratori",
         "guests": "Ospiti",
         "shares": "condivisioni",
@@ -444,6 +444,17 @@
         "top_users": "Utenti più attivi",
         "total_users": "Utenti totali",
         "with_shares": "Utenti con condivisioni"
+      },
+      "figures": {
+        "storage_sub": "{percent} % del disco · {free} liberi",
+        "shares_sub": "{expired, plural, one {# scaduto} other {# scaduti}} · {total} in totale",
+        "downloads_sub": "in {days} giorni · {unique, plural, one {# indirizzo} other {# indirizzi}}",
+        "users_sub": "{admins, plural, one {# amministratore} other {# amministratori}} · {guests, plural, one {# ospite} other {# ospiti}}",
+        "chart_summary": "{total} download in {days} giorni, al massimo {max} in un giorno",
+        "table": "Mostra come tabella",
+        "day": "Giorno",
+        "share_of_files": "{percent} % dei file",
+        "files_per_share": "File per condivisione"
       }
     },
     "success": {

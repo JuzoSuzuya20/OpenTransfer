@@ -1,55 +1,20 @@
 <script setup>
+// The instance at a glance, for an admin: four headline figures, then downloads over time beside
+// storage, file types, shares and users. Every figure comes from the server: nothing is estimated.
 import { ref, onMounted, computed, watch } from 'vue'
-import {
-  HardDrive,
-  Share2,
-  Download,
-  Users,
-  FileType,
-  TrendingUp,
-  Calendar,
-  Lock,
-  Trash2,
-  Clock,
-  Activity,
-  RefreshCw,
-  Image,
-  FileText,
-  Video,
-  Music,
-  Archive,
-  Code,
-  File
-} from 'lucide-vue-next'
-import { getSystemStats } from '../../api'
+import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
-import { useTranslate } from '@tolgee/vue'
+import { getSystemStats } from '../../api'
+import UserAvatar from '../layout/UserAvatar.vue'
 
 const { t } = useTranslate()
+const tolgee = useTolgee(['language'])
 const toast = useToast()
 
 const stats = ref(null)
 const loading = ref(true)
 const selectedDays = ref(30)
-const refreshing = ref(false)
-
-const daysOptions = computed(() => [
-  { label: t.value('settings.stats.downloads.days_option', { days: 7 }), value: 7 },
-  { label: t.value('settings.stats.downloads.days_option', { days: 14 }), value: 14 },
-  { label: t.value('settings.stats.downloads.days_option', { days: 30 }), value: 30 },
-  { label: t.value('settings.stats.downloads.days_option', { days: 60 }), value: 60 },
-  { label: t.value('settings.stats.downloads.days_option', { days: 90 }), value: 90 }
-])
-
-const emit = defineEmits(['navItemClicked'])
-
-onMounted(async () => {
-  await loadStats()
-})
-
-watch(selectedDays, async () => {
-  await loadStats()
-})
+const PERIODS = [7, 14, 30, 60, 90]
 
 const loadStats = async () => {
   try {
@@ -57,877 +22,566 @@ const loadStats = async () => {
     stats.value = await getSystemStats(selectedDays.value)
   } catch (error) {
     toast.error(t.value('settings.stats.error_loading'))
-    console.error(error)
   } finally {
     loading.value = false
-    refreshing.value = false
   }
 }
+onMounted(loadStats)
+watch(selectedDays, loadStats)
 
-const refreshStats = async () => {
-  refreshing.value = true
-  await loadStats()
-}
+const refreshStats = () => loadStats()
+defineExpose({ refreshStats })
+defineEmits(['navItemClicked'])
 
-const handleNavItemClicked = (item) => {
-  emit('navItemClicked', item)
-}
+// --- Downloads by day: one series, one hue, no legend; the table holds every value
+const language = computed(() => tolgee.value.getLanguage())
+const shortDay = computed(() => new Intl.DateTimeFormat(language.value, { day: 'numeric', month: 'short' }))
+const longDay = computed(() => new Intl.DateTimeFormat(language.value, { weekday: 'long', day: 'numeric', month: 'long' }))
+const days = computed(() =>
+  Object.entries(stats.value?.downloads?.by_day ?? {}).map(([date, count]) => ({ date: new Date(`${date}T12:00:00`), count }))
+)
+const maxCount = computed(() => Math.max(1, ...days.value.map((day) => day.count)))
+const busiest = computed(() => Math.max(0, ...days.value.map((day) => day.count)))
+// About six dates under the axis, whatever the period
+const labelEvery = computed(() => Math.max(1, Math.ceil(days.value.length / 6)))
+const hovered = ref(null)
+const barHeight = (count) => `${(count / maxCount.value) * 100}%`
 
-//define exposed methods
-defineExpose({
-  refreshStats
+// --- Files by category: magnitudes of one kind, one hue, largest first
+const totalFiles = computed(() => Object.values(stats.value?.file_types?.by_category ?? {}).reduce((sum, c) => sum + c.count, 0))
+const categories = computed(() =>
+  Object.entries(stats.value?.file_types?.by_category ?? {})
+    .map(([key, data]) => ({ key, ...data }))
+    .filter((category) => category.count > 0)
+    .sort((a, b) => b.count - a.count)
+)
+const percentOf = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0)
+
+const diskTone = computed(() => {
+  const used = stats.value?.storage?.disk_usage_percent ?? 0
+  return used > 95 ? 'is-danger' : used > 80 ? 'is-warning' : ''
 })
-
-// Chart data for downloads
-const downloadChartData = computed(() => {
-  if (!stats.value?.downloads?.by_day) return []
-  return Object.entries(stats.value.downloads.by_day).map(([date, count]) => ({
-    date: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    count
-  }))
-})
-
-const maxDownloadCount = computed(() => {
-  if (!downloadChartData.value.length) return 1
-  return Math.max(...downloadChartData.value.map(d => d.count), 1)
-})
-
-// File category icons
-const categoryIcons = {
-  images: Image,
-  documents: FileText,
-  videos: Video,
-  audio: Music,
-  archives: Archive,
-  code: Code,
-  other: File
-}
-
-const categoryColors = {
-  images: '#10b981',
-  documents: '#3b82f6',
-  videos: '#8b5cf6',
-  audio: '#f59e0b',
-  archives: '#ef4444',
-  code: '#06b6d4',
-  other: '#6b7280'
-}
 </script>
 
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-2 d-none d-md-block">
-        <ul class="settings-nav pt-5">
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('storage-stats')">
-              <HardDrive />
-              {{ $t('settings.stats.nav.storage') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('share-stats')">
-              <Share2 />
-              {{ $t('settings.stats.nav.shares') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('download-stats')">
-              <Download />
-              {{ $t('settings.stats.nav.downloads') }}
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('user-stats')">
-              <Users />
-              {{ $t('settings.stats.nav.users') }}
-            </a>
-          </li>
-          <!-- File Type Stats
-          <li>
-            <a href="#" @click.prevent="handleNavItemClicked('file-type-stats')">
-              <FileType />
-              {{ $t('settings.stats.nav.file_types') }}
-            </a>
-          </li> -->
-        </ul>
-      </div>
-      <div class="col-12 col-md-10 pt-5">
-        <!-- Loading State -->
-        <div v-if="loading && !stats" class="loading-container">
-          <RefreshCw class="spin" />
-          <p>{{ $t('settings.stats.loading') }}</p>
+  <p class="stats-loading" v-if="loading && !stats">{{ $t('settings.stats.loading') }}</p>
+
+  <div class="stats" v-if="stats" :class="{ 'is-loading': loading }">
+    <div class="send-stats stats-figures">
+      <div class="ot-card ot-card--tight ot-stat">
+        <h2 class="ot-card-title">{{ $t('settings.stats.nav.storage') }}</h2>
+        <div class="ot-stat-value">
+          <span class="ot-figure is-accent">{{ stats.storage.used_formatted }}</span>
+          <span class="ot-stat-sub">
+            {{ $t('settings.stats.figures.storage_sub', { percent: stats.storage.shares_usage_percent, free: stats.storage.disk_free_formatted }) }}
+          </span>
         </div>
+      </div>
+      <div class="ot-card ot-card--tight ot-stat">
+        <h2 class="ot-card-title">{{ $t('settings.stats.shares.active_shares') }}</h2>
+        <div class="ot-stat-value">
+          <span class="ot-figure is-success">{{ stats.shares.active }}</span>
+          <span class="ot-stat-sub">{{ $t('settings.stats.figures.shares_sub', { expired: stats.shares.expired, total: stats.shares.total }) }}</span>
+        </div>
+      </div>
+      <div class="ot-card ot-card--tight ot-stat">
+        <h2 class="ot-card-title">{{ $t('settings.stats.nav.downloads') }}</h2>
+        <div class="ot-stat-value">
+          <span class="ot-figure is-accent">{{ stats.downloads.total_in_period }}</span>
+          <span class="ot-stat-sub">
+            {{ $t('settings.stats.figures.downloads_sub', { days: selectedDays, unique: stats.downloads.unique_downloaders }) }}
+          </span>
+        </div>
+      </div>
+      <div class="ot-card ot-card--tight ot-stat">
+        <h2 class="ot-card-title">{{ $t('settings.stats.nav.users') }}</h2>
+        <div class="ot-stat-value">
+          <span class="ot-figure">{{ stats.users.total }}</span>
+          <span class="ot-stat-sub">{{ $t('settings.stats.figures.users_sub', { admins: stats.users.admins, guests: stats.users.guests }) }}</span>
+        </div>
+      </div>
+    </div>
 
-        <template v-else-if="stats">
-          <!-- Storage Stats -->
-          <div class="row mb-5">
-            <div class="col-12 col-lg-8 pe-0 ps-0 ps-md-3">
-              <div class="setting-group" id="storage-stats">
-                <div class="setting-group-header">
-                  <h3>
-                    <HardDrive />
-                    {{ $t('settings.stats.storage.title') }}
-                  </h3>
-                </div>
-                <div class="setting-group-body">
-                  <div class="stats-grid">
-                    <div class="stat-card large">
-                      <div class="stat-label">{{ $t('settings.stats.storage.disk_usage') }}</div>
-                      <div class="progress-container">
-                        <div class="progress-bar-wrapper">
-                          <div 
-                            class="progress-bar-fill" 
-                            :style="{ width: stats.storage.disk_usage_percent + '%' }"
-                            :class="{ warning: stats.storage.disk_usage_percent > 80, danger: stats.storage.disk_usage_percent > 95 }"
-                          ></div>
-                        </div>
-                        <div class="progress-labels">
-                          <span>{{ stats.storage.disk_used_formatted }} {{ $t('settings.stats.storage.used') }}</span>
-                          <span>{{ stats.storage.disk_free_formatted }} {{ $t('settings.stats.storage.free') }}</span>
-                        </div>
-                      </div>
-                      <div class="stat-value">{{ stats.storage.disk_usage_percent }}%</div>
-                      <div class="stat-sublabel">{{ $t('settings.stats.storage.of') }} {{ stats.storage.disk_total_formatted }}</div>
-                    </div>
-
-                    <div class="stat-card">
-                      <div class="stat-icon">
-                        <Share2 />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.storage.used_formatted }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.storage.share_storage') }}</div>
-                        <div class="stat-sublabel">{{ stats.storage.shares_usage_percent }}% {{ $t('settings.stats.storage.of_disk') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card">
-                      <div class="stat-icon free">
-                        <HardDrive />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.storage.disk_free_formatted }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.storage.available_space') }}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="d-none d-lg-block col ps-0">
-              <div class="section-help">
-                <h6>{{ $t('settings.stats.help.storage_title') }}</h6>
-                <p>{{ $t('settings.stats.help.storage_description') }}</p>
-                <h6>{{ $t('settings.stats.help.disk_usage_title') }}</h6>
-                <p>{{ $t('settings.stats.help.disk_usage_description') }}</p>
-              </div>
+    <div class="stats-columns">
+      <div class="stats-column is-wide">
+        <section class="ot-card stats-card" id="downloads" aria-labelledby="h-downloads">
+          <div class="stats-card-head">
+            <h2 class="ot-card-title" id="h-downloads">{{ $t('settings.stats.downloads.title') }}</h2>
+            <div class="ot-segmented" role="tablist" :aria-label="$t('settings.stats.downloads.time_period')">
+              <button
+                v-for="period in PERIODS"
+                :key="period"
+                type="button"
+                role="tab"
+                :aria-selected="selectedDays === period"
+                @click="selectedDays = period"
+              >
+                {{ $t('settings.stats.downloads.days_option', { days: period }) }}
+              </button>
             </div>
           </div>
 
-          <!-- Share Stats -->
-          <div class="row mb-5">
-            <div class="col-12 col-lg-8 pe-0 ps-0 ps-md-3">
-              <div class="setting-group" id="share-stats">
-                <div class="setting-group-header">
-                  <h3>
-                    <Share2 />
-                    {{ $t('settings.stats.shares.title') }}
-                  </h3>
-                </div>
-                <div class="setting-group-body">
-                  <div class="stats-grid four-col">
-                    <div class="stat-card compact">
-                      <div class="stat-icon active">
-                        <Activity />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.shares.active }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.shares.active_shares') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card compact">
-                      <div class="stat-icon warning">
-                        <Clock />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.shares.expired }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.shares.expired') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card compact">
-                      <div class="stat-icon danger">
-                        <Trash2 />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.shares.deleted }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.shares.deleted') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card compact">
-                      <div class="stat-icon secure">
-                        <Lock />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.shares.password_protected }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.shares.protected') }}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="stats-grid mt-4">
-                    <div class="stat-card">
-                      <div class="stat-icon">
-                        <Share2 />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.shares.total }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.shares.total_shares') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card">
-                      <div class="stat-icon">
-                        <TrendingUp />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.shares.recent_7_days }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.shares.last_7_days') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card">
-                      <div class="stat-icon">
-                        <FileType />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.shares.total_files }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.shares.total_files') }}</div>
-                        <div class="stat-sublabel">~{{ stats.shares.avg_files_per_share }} {{ $t('settings.stats.shares.per_share') }}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div class="downloads-chart">
+            <div
+              class="chart-plot"
+              role="img"
+              :aria-label="$t('settings.stats.figures.chart_summary', { total: stats.downloads.total_in_period, days: selectedDays, max: busiest })"
+              @pointerleave="hovered = null"
+            >
+              <span class="chart-max" aria-hidden="true">{{ maxCount }}</span>
+              <div
+                v-for="(day, index) in days"
+                :key="index"
+                class="chart-slot"
+                :class="{ 'is-hovered': hovered === index }"
+                @pointerenter="hovered = index"
+              >
+                <div class="chart-bar" v-if="day.count > 0" :style="{ height: barHeight(day.count) }"></div>
+              </div>
+              <div class="chart-tip" v-if="hovered !== null && days[hovered]" :style="{ left: `${((hovered + 0.5) / days.length) * 100}%` }" aria-hidden="true">
+                <strong>{{ days[hovered].count }}</strong>
+                <span>{{ longDay.format(days[hovered].date) }}</span>
               </div>
             </div>
-            <div class="d-none d-lg-block col ps-0">
-              <div class="section-help">
-                <h6>{{ $t('settings.stats.help.shares_title') }}</h6>
-                <p>{{ $t('settings.stats.help.shares_description') }}</p>
-                <h6>{{ $t('settings.stats.help.active_vs_expired_title') }}</h6>
-                <p>{{ $t('settings.stats.help.active_vs_expired_description') }}</p>
-              </div>
+            <div class="chart-axis" aria-hidden="true">
+              <span v-for="(day, index) in days" :key="index">{{ index % labelEvery === 0 ? shortDay.format(day.date) : '' }}</span>
             </div>
           </div>
 
-          <!-- Download Stats -->
-          <div class="row mb-5">
-            <div class="col-12 col-lg-8 pe-0 ps-0 ps-md-3">
-              <div class="setting-group" id="download-stats">
-                <div class="setting-group-header">
-                  <h3>
-                    <Download />
-                    {{ $t('settings.stats.downloads.title') }}
-                  </h3>
-                </div>
-                <div class="setting-group-body">
-                  <div class="period-selector mb-4">
-                    <label>{{ $t('settings.stats.downloads.time_period') }}</label>
-                    <select v-model="selectedDays">
-                      <option v-for="opt in daysOptions" :key="opt.value" :value="opt.value">
-                        {{ opt.label }}
-                      </option>
-                    </select>
-                  </div>
+          <details class="chart-table">
+            <summary>{{ $t('settings.stats.figures.table') }}</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">{{ $t('settings.stats.figures.day') }}</th>
+                  <th scope="col">{{ $t('settings.stats.nav.downloads') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(day, index) in days" :key="index">
+                  <td>{{ longDay.format(day.date) }}</td>
+                  <td>{{ day.count }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
 
-                  <div class="stats-grid">
-                    <div class="stat-card">
-                      <div class="stat-icon">
-                        <Download />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.downloads.total_in_period }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.downloads.downloads_in_period', { days: selectedDays }) }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card">
-                      <div class="stat-icon">
-                        <TrendingUp />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.downloads.all_time }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.downloads.all_time') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card">
-                      <div class="stat-icon">
-                        <Users />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.downloads.unique_downloaders }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.downloads.unique_downloaders') }}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Download Chart -->
-                  <div class="download-chart mt-4" v-if="downloadChartData.length > 0">
-                    <h4>{{ $t('settings.stats.downloads.chart_title') }}</h4>
-                    <div class="chart-container">
-                      <div class="chart-bars">
-                        <div 
-                          v-for="(item, index) in downloadChartData" 
-                          :key="index"
-                          class="chart-bar-wrapper"
-                          :title="`${item.date}: ${item.count} ${t('settings.stats.downloads.downloads')}`"
-                        >
-                          <div 
-                            class="chart-bar"
-                            :style="{ height: (item.count / maxDownloadCount * 100) + '%' }"
-                          >
-                            <span class="chart-bar-value" v-if="item.count > 0">{{ item.count }}</span>
-                          </div>
-                          <span class="chart-label" v-if="index % Math.ceil(downloadChartData.length / 7) === 0">
-                            {{ item.date }}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Top Downloads -->
-                  <div class="top-downloads mt-4" v-if="stats.downloads.top_shares?.length > 0">
-                    <h4>{{ $t('settings.stats.downloads.top_shares') }}</h4>
-                    <div class="top-list">
-                      <div 
-                        v-for="(share, index) in stats.downloads.top_shares" 
-                        :key="share.id"
-                        class="top-item"
-                      >
-                        <span class="rank">#{{ index + 1 }}</span>
-                        <span class="name">{{ share.name || share.long_id }}</span>
-                        <span class="count">{{ share.download_count }} {{ $t('settings.stats.downloads.downloads') }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <dl class="month-figures">
+            <div>
+              <dt>{{ $t('settings.stats.downloads.all_time') }}</dt>
+              <dd>{{ stats.downloads.all_time }}</dd>
             </div>
-            <div class="d-none d-lg-block col ps-0">
-              <div class="section-help">
-                <h6>{{ $t('settings.stats.help.downloads_title') }}</h6>
-                <p>{{ $t('settings.stats.help.downloads_description') }}</p>
-                <h6>{{ $t('settings.stats.help.unique_downloaders_title') }}</h6>
-                <p>{{ $t('settings.stats.help.unique_downloaders_description') }}</p>
-              </div>
+            <div>
+              <dt>{{ $t('settings.stats.downloads.unique_downloaders') }}</dt>
+              <dd>{{ stats.downloads.unique_downloaders }}</dd>
+            </div>
+          </dl>
+
+          <div class="stats-sub" v-if="stats.downloads.top_shares?.length">
+            <h3>{{ $t('settings.stats.downloads.top_shares') }}</h3>
+            <ol class="stats-ranking">
+              <li v-for="share in stats.downloads.top_shares" :key="share.id">
+                <span class="stats-ranking-name">{{ share.name || share.long_id }}</span>
+                <span class="stats-ranking-value">{{ share.download_count }}</span>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="ot-card stats-card" id="shares" aria-labelledby="h-shares">
+          <h2 class="ot-card-title" id="h-shares">{{ $t('settings.stats.shares.title') }}</h2>
+          <dl class="month-figures is-two">
+            <div>
+              <dt>{{ $t('settings.stats.shares.active_shares') }}</dt>
+              <dd class="is-success">{{ stats.shares.active }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.shares.total_shares') }}</dt>
+              <dd>{{ stats.shares.total }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.shares.expired') }}</dt>
+              <dd>{{ stats.shares.expired }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.shares.last_7_days') }}</dt>
+              <dd>{{ stats.shares.recent_7_days }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.shares.deleted') }}</dt>
+              <dd>{{ stats.shares.deleted }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.shares.total_files') }}</dt>
+              <dd>{{ stats.shares.total_files }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.shares.protected') }}</dt>
+              <dd>{{ stats.shares.password_protected }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.figures.files_per_share') }}</dt>
+              <dd>{{ stats.shares.avg_files_per_share }}</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+
+      <div class="stats-column">
+        <section class="ot-card stats-card" id="storage" aria-labelledby="h-storage">
+          <h2 class="ot-card-title" id="h-storage">{{ $t('settings.stats.storage.disk_usage') }}</h2>
+          <div class="ot-stat">
+            <div class="ot-stat-value">
+              <span class="ot-figure" :class="diskTone">{{ stats.storage.disk_usage_percent }} %</span>
+              <span class="ot-stat-sub">{{ $t('settings.stats.storage.of') }} {{ stats.storage.disk_total_formatted }}</span>
             </div>
           </div>
-
-          <!-- User Stats -->
-          <div class="row mb-5">
-            <div class="col-12 col-lg-8 pe-0 ps-0 ps-md-3">
-              <div class="setting-group" id="user-stats">
-                <div class="setting-group-header">
-                  <h3>
-                    <Users />
-                    {{ $t('settings.stats.users.title') }}
-                  </h3>
-                </div>
-                <div class="setting-group-body">
-                  <div class="stats-grid four-col">
-                    <div class="stat-card compact">
-                      <div class="stat-icon">
-                        <Users />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.users.total }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.users.total_users') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card compact">
-                      <div class="stat-icon active">
-                        <Activity />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.users.active }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.users.active') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card compact">
-                      <div class="stat-icon admin">
-                        <Lock />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.users.admins }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.users.admins') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="stat-card compact">
-                      <div class="stat-icon guest">
-                        <Users />
-                      </div>
-                      <div class="stat-content">
-                        <div class="stat-value">{{ stats.users.guests }}</div>
-                        <div class="stat-label">{{ $t('settings.stats.users.guests') }}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="stat-card mt-4">
-                    <div class="stat-icon">
-                      <Share2 />
-                    </div>
-                    <div class="stat-content">
-                      <div class="stat-value">{{ stats.users.with_shares }}</div>
-                      <div class="stat-label">{{ $t('settings.stats.users.with_shares') }}</div>
-                    </div>
-                  </div>
-
-                  <!-- Top Users -->
-                  <div class="top-users mt-4" v-if="stats.users.top_users?.length > 0">
-                    <h4>{{ $t('settings.stats.users.top_users') }}</h4>
-                    <div class="top-list">
-                      <div 
-                        v-for="(user, index) in stats.users.top_users" 
-                        :key="user.id"
-                        class="top-item"
-                      >
-                        <span class="rank">#{{ index + 1 }}</span>
-                        <span class="name">{{ user.name }}</span>
-                        <span class="count">{{ user.shares_count }} {{ $t('settings.stats.users.shares') }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="d-none d-lg-block col ps-0">
-              <div class="section-help">
-                <h6>{{ $t('settings.stats.help.users_title') }}</h6>
-                <p>{{ $t('settings.stats.help.users_description') }}</p>
-                <h6>{{ $t('settings.stats.help.guest_users_title') }}</h6>
-                <p>{{ $t('settings.stats.help.guest_users_description') }}</p>
-              </div>
-            </div>
+          <div
+            class="stats-meter"
+            role="meter"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            :aria-valuenow="stats.storage.disk_usage_percent"
+            :aria-label="$t('settings.stats.storage.disk_usage')"
+          >
+            <span :class="diskTone" :style="{ width: `${Math.min(100, stats.storage.disk_usage_percent)}%` }"></span>
           </div>
+          <dl class="month-figures">
+            <div>
+              <dt>{{ $t('settings.stats.storage.share_storage') }}</dt>
+              <dd class="is-accent">{{ stats.storage.used_formatted }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.storage.available_space') }}</dt>
+              <dd>{{ stats.storage.disk_free_formatted }}</dd>
+            </div>
+          </dl>
+        </section>
 
-          <!-- File Type Stats 
-          <div class="row mb-5">
-            <div class="col-12 col-lg-8 pe-0 ps-0 ps-md-3">
-              <div class="setting-group" id="file-type-stats">
-                <div class="setting-group-header">
-                  <h3>
-                    <FileType />
-                    {{ $t('settings.stats.file_types.title') }}
-                  </h3>
-                </div>
-                <div class="setting-group-body">
-                  <div class="file-categories">
-                    <div 
-                      v-for="(data, category) in stats.file_types.by_category" 
-                      :key="category"
-                      class="category-card"
-                      v-show="data.count > 0"
-                    >
-                      <div class="category-icon" :style="{ backgroundColor: categoryColors[category] + '20', color: categoryColors[category] }">
-                        <component :is="categoryIcons[category]" />
-                      </div>
-                      <div class="category-content">
-                        <div class="category-name">{{ $t('settings.stats.file_types.categories.' + category) }}</div>
-                        <div class="category-stats">
-                          <span class="count">{{ data.count }} {{ $t('settings.stats.file_types.files') }}</span>
-                          <span class="size">{{ data.total_size_formatted }}</span>
-                        </div>
-                      </div>
-                      <div class="category-bar">
-                        <div 
-                          class="category-bar-fill" 
-                          :style="{ 
-                            width: Math.max((data.count / stats.shares.total_files * 100), 2) + '%',
-                            backgroundColor: categoryColors[category]
-                          }"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        <section class="ot-card stats-card" id="file_types" aria-labelledby="h-file-types">
+          <h2 class="ot-card-title" id="h-file-types">{{ $t('settings.stats.file_types.title') }}</h2>
+          <ul class="stats-categories" v-if="categories.length">
+            <li v-for="category in categories" :key="category.key">
+              <div class="stats-category-line">
+                <span class="stats-category-name">{{ $t(`settings.stats.file_types.categories.${category.key}`) }}</span>
+                <span class="stats-category-value">{{ category.count }}</span>
               </div>
-            </div>
-            <div class="d-none d-lg-block col ps-0">
-              <div class="section-help">
-                <h6>{{ $t('settings.stats.help.file_types_title') }}</h6>
-                <p>{{ $t('settings.stats.help.file_types_description') }}</p>
-                <h6>{{ $t('settings.stats.help.categories_title') }}</h6>
-                <p>{{ $t('settings.stats.help.categories_description') }}</p>
+              <div class="stats-meter is-thin" aria-hidden="true">
+                <span :style="{ width: `${Math.max(2, percentOf(category.count, totalFiles))}%` }"></span>
               </div>
+              <div class="stats-category-sub">
+                {{ $t('settings.stats.figures.share_of_files', { percent: percentOf(category.count, totalFiles) }) }} · {{ category.total_size_formatted }}
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="ot-card stats-card" id="users" aria-labelledby="h-users">
+          <h2 class="ot-card-title" id="h-users">{{ $t('settings.stats.users.title') }}</h2>
+          <dl class="month-figures">
+            <div>
+              <dt>{{ $t('settings.stats.users.active') }}</dt>
+              <dd>{{ stats.users.active }}</dd>
             </div>
-          </div>-->
-        </template>
+            <div>
+              <dt>{{ $t('settings.stats.users.admins') }}</dt>
+              <dd>{{ stats.users.admins }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.users.guests') }}</dt>
+              <dd>{{ stats.users.guests }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t('settings.stats.users.with_shares') }}</dt>
+              <dd>{{ stats.users.with_shares }}</dd>
+            </div>
+          </dl>
+          <div class="stats-sub" v-if="stats.users.top_users?.length">
+            <h3>{{ $t('settings.stats.users.top_users') }}</h3>
+            <ol class="stats-ranking">
+              <li v-for="user in stats.users.top_users" :key="user.id">
+                <UserAvatar :seed="user.avatar_seed ?? ''" :name="user.name" :size="20" />
+                <span class="stats-ranking-name">{{ user.name }}</span>
+                <span class="stats-ranking-value">{{ user.shares_count }}</span>
+              </li>
+            </ol>
+          </div>
+        </section>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.loading-container {
+<style scoped lang="scss">
+.stats {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: var(--panel-text-color);
-  
-  svg {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 16px;
-  }
-  
-  p {
-    font-size: 1rem;
-    opacity: 0.7;
+  gap: 20px;
+  transition: opacity 0.15s ease;
+
+  &.is-loading {
+    opacity: 0.6;
   }
 }
-
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  
-  &.four-col {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-}
-
-// A figure inside a card: a thin outline, a label, the number in heavy tabular figures.
-// The state colour moves from the former icon tile onto the number itself.
-.stat-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  background: none;
-  border: 1px solid var(--ot-line);
-  border-radius: var(--ot-radius);
-
-  &.large {
-    grid-column: 1 / -1;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  &.compact {
-    padding: 12px 14px;
-
-    .stat-value {
-      font-size: 1.375rem;
-      white-space: nowrap;
-    }
-  }
-}
-
-.stat-icon {
-  display: none;
-}
-
-.stat-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.stat-value {
-  font-size: 1.75rem;
-  font-weight: 800;
-  line-height: 1.15;
-  font-variant-numeric: tabular-nums;
-  color: var(--ot-heading);
-  white-space: nowrap;
-}
-
-.stat-icon.active + .stat-content .stat-value,
-.stat-icon.free + .stat-content .stat-value {
-  color: var(--ot-success);
-}
-.stat-icon.warning + .stat-content .stat-value {
-  color: var(--ot-warning);
-}
-.stat-icon.danger + .stat-content .stat-value {
-  color: var(--ot-danger);
-}
-.stat-icon.secure + .stat-content .stat-value,
-.stat-icon.admin + .stat-content .stat-value {
-  color: var(--ot-accent-text);
-}
-
-.stat-label {
-  margin-top: 2px;
-  font-size: 0.8125rem;
+.stats-loading {
   color: var(--ot-muted);
 }
-
-.stat-sublabel {
-  margin-top: 2px;
-  font-size: 0.75rem;
-  color: var(--ot-faint);
-}
-
-.progress-container {
-  width: 100%;
-  margin: 12px 0;
-}
-
-.progress-bar-wrapper {
-  height: 12px;
-  background: var(--progress-bar-background-color);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background: var(--progress-bar-fill-color);
-  border-radius: 6px;
-  transition: width 0.5s ease;
-  
-  &.warning {
-    background: #f59e0b;
-  }
-  
-  &.danger {
-    background: #ef4444;
-  }
-}
-
-.progress-labels {
+.stats-columns {
   display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  font-size: 0.8rem;
-  color: var(--panel-text-color);
-  opacity: 0.7;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
 }
-
-.period-selector {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  
-  label {
-    font-size: 0.9rem;
-    color: var(--panel-text-color);
-  }
-  
-  select {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--input-border-color);
-    background: var(--input-background-color);
-    color: var(--input-text-color);
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-}
-
-.download-chart {
-  background: var(--panel-section-background-color-alt);
-  border-radius: 10px;
-  padding: 20px;
-  
-  h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: var(--panel-text-color);
-  }
-}
-
-.chart-container {
-  height: 180px;
-  position: relative;
-}
-
-.chart-bars {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  height: 100%;
-  gap: 2px;
-  padding-bottom: 24px;
-}
-
-.chart-bar-wrapper {
-  flex: 1;
+.stats-column {
+  flex: 1 1 320px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 20px;
+
+  &.is-wide {
+    flex: 2 1 560px;
+  }
+}
+.stats-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.stats-card-head {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  position: relative;
-  min-width: 0;
+  justify-content: space-between;
+  gap: 10px;
+
+  // Five periods do not fit a phone: they scroll rather than leave the card
+  .ot-segmented {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+.ot-figure.is-warning {
+  color: var(--ot-warning);
+}
+.ot-figure.is-danger {
+  color: var(--ot-danger);
+}
+.month-figures.is-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px 32px;
+}
+.month-figures dd.is-success {
+  color: var(--ot-success);
 }
 
+// --- The chart: thin bars from one baseline, 4 px rounded data-ends, 2 px of surface between
+.downloads-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.chart-plot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 180px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ot-line-soft);
+  border-bottom: 1px solid var(--ot-line);
+}
+.chart-max {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ot-muted);
+}
+.chart-slot {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 1px;
+}
 .chart-bar {
   width: 100%;
   max-width: 24px;
-  min-height: 4px;
-  background: var(--primary-button-background-color);
-  border-radius: 3px 3px 0 0;
-  position: relative;
-  transition: height 0.3s ease;
-  
-  &:hover {
-    opacity: 0.8;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+  background: var(--ot-accent);
+}
+.chart-slot.is-hovered .chart-bar {
+  background: var(--ot-accent-hover);
+}
+.chart-tip {
+  position: absolute;
+  top: 0;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  background: var(--ot-raised);
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius-sm);
+  box-shadow: var(--ot-shadow);
+
+  strong {
+    font-size: 0.9375rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--ot-heading);
+  }
+  span {
+    font-size: 0.75rem;
+    color: var(--ot-muted);
   }
 }
+.chart-axis {
+  display: flex;
 
-.chart-bar-value {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.7rem;
-  color: var(--panel-text-color);
-  white-space: nowrap;
+  span {
+    flex: 1;
+    min-width: 0;
+    overflow: visible;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    color: var(--ot-muted);
+  }
 }
+.chart-table {
+  font-size: 0.8125rem;
 
-.chart-label {
-  position: absolute;
-  bottom: -20px;
-  font-size: 0.65rem;
-  color: var(--panel-text-color);
-  opacity: 0.6;
-  white-space: nowrap;
-}
-
-.top-downloads,
-.top-users {
-  background: var(--panel-section-background-color-alt);
-  border-radius: 10px;
-  padding: 20px;
-  
-  h4 {
-    font-size: 1rem;
+  summary {
+    cursor: pointer;
+    color: var(--ot-accent-text);
     font-weight: 600;
-    margin-bottom: 16px;
-    color: var(--panel-text-color);
+  }
+  table {
+    margin-top: 8px;
+    max-height: 260px;
+  }
+  td:last-child,
+  th:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
   }
 }
 
-.top-list {
+// --- Meters: a thin rounded track, the accent for a share, a status colour for a full disk
+.stats-meter {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ot-field);
+  overflow: hidden;
+
+  &.is-thin {
+    height: 6px;
+  }
+  span {
+    display: block;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--ot-accent);
+
+    &.is-warning {
+      background: var(--ot-warning);
+    }
+    &.is-danger {
+      background: var(--ot-danger);
+    }
+  }
+}
+.stats-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stats-category-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+  font-size: 0.875rem;
+}
+.stats-category-name {
+  color: var(--ot-text);
+}
+.stats-category-value {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--ot-heading);
+}
+.stats-category-sub {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--ot-muted);
+}
+
+// --- Rankings: the five shares most downloaded, the five people who share most
+.stats-sub {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
+  padding-top: 14px;
+  border-top: 1px solid var(--ot-line-soft);
 
-.top-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: var(--panel-section-background-color);
-  border-radius: 8px;
-  
-  .rank {
+  h3 {
+    margin: 0;
+    font-size: 0.875rem;
     font-weight: 700;
-    color: var(--primary-button-background-color);
-    min-width: 30px;
-  }
-  
-  .name {
-    flex: 1;
-    color: var(--panel-text-color);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .count {
-    font-size: 0.85rem;
-    color: var(--panel-text-color);
-    opacity: 0.7;
-    white-space: nowrap;
+    color: var(--ot-heading);
   }
 }
-
-.file-categories {
+.stats-ranking {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rank;
 
-.category-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: var(--panel-section-background-color-alt);
-  border-radius: 10px;
-}
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--ot-field);
+    border: 1px solid var(--ot-line-soft);
+    border-radius: var(--ot-radius-sm);
+    font-size: 0.875rem;
+    counter-increment: rank;
 
-.category-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  
-  svg {
-    width: 22px;
-    height: 22px;
+    &::before {
+      content: counter(rank);
+      min-width: 1.2em;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--ot-muted);
+    }
   }
 }
-
-.category-content {
+.stats-ranking-name {
   flex: 1;
   min-width: 0;
-}
-
-.category-name {
-  font-weight: 600;
-  color: var(--panel-text-color);
-  margin-bottom: 4px;
-}
-
-.category-stats {
-  display: flex;
-  gap: 16px;
-  font-size: 0.85rem;
-  color: var(--panel-text-color);
-  opacity: 0.7;
-}
-
-.category-bar {
-  width: 100px;
-  height: 8px;
-  background: var(--progress-bar-background-color);
-  border-radius: 4px;
   overflow: hidden;
-  flex-shrink: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ot-text);
 }
-
-.category-bar-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s ease;
+.stats-ranking-value {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--ot-heading);
 }
 </style>
-

@@ -444,6 +444,17 @@
         "top_users": "Usuarios más activos",
         "total_users": "Usuarios en total",
         "with_shares": "Usuarios con envíos"
+      },
+      "figures": {
+        "storage_sub": "{percent} % del disco · {free} libres",
+        "shares_sub": "{expired, plural, one {# caducado} other {# caducados}} · {total} en total",
+        "downloads_sub": "en {days} días · {unique, plural, one {# dirección} other {# direcciones}}",
+        "users_sub": "{admins, plural, one {# administrador} other {# administradores}} · {guests, plural, one {# invitado} other {# invitados}}",
+        "chart_summary": "{total} descargas en {days} días, {max} como máximo en un día",
+        "table": "Ver como tabla",
+        "day": "Día",
+        "share_of_files": "{percent} % de los archivos",
+        "files_per_share": "Archivos por envío"
       }
     },
     "success": {

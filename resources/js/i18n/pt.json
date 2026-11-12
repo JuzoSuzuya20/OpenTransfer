@@ -365,7 +365,7 @@
         "downloads": "descarregamentos",
         "downloads_in_period": "Descargas ({days} dias)",
         "time_period": "Período de tempo:",
-        "title": "Descarregar atividade",
+        "title": "Atividade de transferências",
         "top_shares": "Partilhas mais transferidas",
         "unique_downloaders": "Descarregadores únicos"
       },
@@ -381,7 +381,7 @@
           "videos": "Vídeos"
         },
         "files": "ficheiros",
-        "title": "Distribuição do tipo de ficheiro"
+        "title": "Distribuição por tipo de ficheiro"
       },
       "help": {
         "active_vs_expired_description": "As partilhas activas estão acessíveis, enquanto as expiradas estão pendentes de eliminação com base nas suas definições de limpeza.",
@@ -436,7 +436,7 @@
         "used": "utilizado"
       },
       "users": {
-        "active": "Ativar",
+        "active": "Ativos",
         "admins": "Administradores",
         "guests": "Convidados",
         "shares": "partilhas",
@@ -444,6 +444,17 @@
         "top_users": "Utilizadores mais activos",
         "total_users": "Total de utilizadores",
         "with_shares": "Utilizadores com partilhas"
+      },
+      "figures": {
+        "storage_sub": "{percent} % do disco · {free} livres",
+        "shares_sub": "{expired, plural, one {# expirado} other {# expirados}} · {total} no total",
+        "downloads_sub": "em {days} dias · {unique, plural, one {# endereço} other {# endereços}}",
+        "users_sub": "{admins, plural, one {# administrador} other {# administradores}} · {guests, plural, one {# convidado} other {# convidados}}",
+        "chart_summary": "{total} transferências em {days} dias, no máximo {max} num dia",
+        "table": "Ver como tabela",
+        "day": "Dia",
+        "share_of_files": "{percent} % dos ficheiros",
+        "files_per_share": "Ficheiros por partilha"
       }
     },
     "success": {

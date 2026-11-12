@@ -444,6 +444,17 @@
         "top_users": "Most Active Users",
         "total_users": "Total Users",
         "with_shares": "Users with Shares"
+      },
+      "figures": {
+        "storage_sub": "{percent} % of the disk · {free} free",
+        "shares_sub": "{expired} expired · {total} in all",
+        "downloads_sub": "over {days} days · {unique, plural, one {# address} other {# addresses}}",
+        "users_sub": "{admins, plural, one {# admin} other {# admins}} · {guests, plural, one {# guest} other {# guests}}",
+        "chart_summary": "{total} downloads over {days} days, {max} at most in one day",
+        "table": "Show as a table",
+        "day": "Day",
+        "share_of_files": "{percent} % of the files",
+        "files_per_share": "Files per share"
       }
     },
     "success": {

@@ -365,7 +365,7 @@
         "downloads": "Downloads",
         "downloads_in_period": "Downloads ({days} Tage)",
         "time_period": "Zeitspanne:",
-        "title": "Aktivität herunterladen",
+        "title": "Download-Aktivität",
         "top_shares": "Am häufigsten heruntergeladene Freigaben",
         "unique_downloaders": "Einzigartige Downloader"
       },
@@ -381,7 +381,7 @@
           "videos": "Videos"
         },
         "files": "Dateien",
-        "title": "Dateityp Verteilung"
+        "title": "Verteilung nach Dateityp"
       },
       "help": {
         "active_vs_expired_description": "Aktive Freigaben sind zugänglich, während abgelaufene Freigaben gemäß Ihren Bereinigungseinstellungen zum Löschen anstehen.",
@@ -444,6 +444,17 @@
         "top_users": "Aktivste Benutzer",
         "total_users": "Benutzer insgesamt",
         "with_shares": "Benutzer mit Anteilen"
+      },
+      "figures": {
+        "storage_sub": "{percent} % der Festplatte · {free} frei",
+        "shares_sub": "{expired} abgelaufen · {total} insgesamt",
+        "downloads_sub": "in {days} Tagen · {unique, plural, one {# Adresse} other {# Adressen}}",
+        "users_sub": "{admins, plural, one {# Admin} other {# Admins}} · {guests, plural, one {# Gast} other {# Gäste}}",
+        "chart_summary": "{total} Downloads in {days} Tagen, höchstens {max} an einem Tag",
+        "table": "Als Tabelle anzeigen",
+        "day": "Tag",
+        "share_of_files": "{percent} % der Dateien",
+        "files_per_share": "Dateien pro Freigabe"
       }
     },
     "success": {
