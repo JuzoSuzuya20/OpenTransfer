@@ -147,6 +147,7 @@ jobs:
           check "PHP 8.5 dans l'image" sh -c 'docker exec ot php -v | grep -q "^PHP 8\.5"'
           check "tusd installé" docker exec ot tusd -version
           check "pas de dépendances de dev dans l'image" docker exec ot test ! -d /var/www/html/vendor/phpunit
+          check "fichiers déposés servis inertes (CSP sandbox)" sh -c 'curl -sI http://localhost:8080/images/logo.png | grep -qi "^content-security-policy:.*sandbox"'
           # Vu du conteneur, l'hôte arrive depuis une IP privée, comme un reverse proxy.
           hook='{"Type":"post-receive"}'
           ext=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$hook" http://localhost:8080/api/tusd-hooks || true)

@@ -107,6 +107,24 @@ class LoginBackgroundTest extends TestCase
         Storage::disk('backgrounds')->assertExists($this->stored());
     }
 
+    // The web server serves these files itself, with the type of their extension: a valid image
+    // named page.html would open as a page of the application, scripts included
+    public function test_a_background_image_keeps_the_extension_of_what_it_is(): void
+    {
+        // A real file, typed from its content as the server does (a fake one is typed from its name)
+        $path = tempnam(sys_get_temp_dir(), 'bg');
+        imagepng(imagecreatetruecolor(40, 40), $path);
+        $png = new UploadedFile($path, 'page.html', null, null, true);
+
+        $this->actingAs($this->user(true), 'api')
+            ->postJson('/api/settings/backgrounds', ['background_image' => $png])
+            ->assertOk()
+            ->assertJsonPath('data.file', 'page.png');
+
+        Storage::disk('backgrounds')->assertExists('page.png');
+        Storage::disk('backgrounds')->assertMissing('page.html');
+    }
+
     public function test_removing_the_image_brings_back_the_plain_screen(): void
     {
         $admin = $this->user(true);

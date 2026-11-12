@@ -76,7 +76,12 @@
     @user_assets {
         path /images/* /backgrounds/* /storage/*
     }
-    header @user_assets Cache-Control "public, max-age=300, must-revalidate"
+    header @user_assets {
+        Cache-Control "public, max-age=300, must-revalidate"
+        # Opened on their own, files an admin uploaded stay inert: an SVG favicon that carries a
+        # script is still only an image (the Laravel routes that serve them do the same)
+        Content-Security-Policy "default-src 'none'; img-src 'self' data:; media-src 'self'; style-src 'unsafe-inline'; sandbox"
+    }
 
     # tusd runs in this container and calls http://localhost/api/tusd-hooks.
     # Behind a reverse proxy every external request comes from a private IP,

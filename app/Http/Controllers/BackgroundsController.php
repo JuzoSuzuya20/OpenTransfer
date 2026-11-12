@@ -79,8 +79,11 @@ class BackgroundsController extends Controller
 
         try {
             $file = $request->file('background_image');
-            $fileName = $file->getClientOriginalName();
-            $safeFilename = FileHelper::sanitizeFilename($fileName);
+            // The web server serves these files itself, with the type of their extension: the name
+            // takes the extension of what the file is, never the one it was sent with
+            $extension = $file->guessExtension();
+            $base = pathinfo(FileHelper::sanitizeFilename($file->getClientOriginalName()), PATHINFO_FILENAME);
+            $safeFilename = ($base !== '' ? $base : 'background') . '.' . $extension;
             $file->storeAs('', $safeFilename, 'backgrounds');
 
             return response()->json([
