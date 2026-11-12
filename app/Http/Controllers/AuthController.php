@@ -272,6 +272,15 @@ class AuthController extends Controller
             ]);
         }
 
+        // createToken() skips the broker's own wait: one message a minute per address, the same
+        // answer either way (asked again and again, the form would fill a mailbox)
+        if (Password::broker()->getRepository()->recentlyCreatedToken($user)) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Password reset email sent'
+            ]);
+        }
+
         $token = Password::createToken($user);
 
         sendEmail::dispatch($user->email, passwordResetMail::class, ['token' => $token, 'user' => $user]);

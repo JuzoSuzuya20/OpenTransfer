@@ -238,6 +238,15 @@ class SelfRegistrationController extends Controller
             ]);
         }
 
+        // One code a minute per address: the one that just left is still the one to use
+        $sentAt = $user->email_verification_code_expires_at?->copy()->subMinutes(15);
+        if ($sentAt && $sentAt->greaterThan(Carbon::now()->subMinute())) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'If an unverified account exists with this email, a new verification code has been sent.'
+            ]);
+        }
+
         // Generate new code
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $expiresAt = Carbon::now()->addMinutes(15);
