@@ -5,6 +5,32 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.1.1] — 2026-11-13
+
+### Fixed
+
+- The link of a file request works for the seven days of the request: it stopped working an hour
+  after it was sent
+- The messages shown after a round trip to the identity provider are in the language of the screen
+- "Extend" keeps a share within the longest time the administrator allows
+
+### Security
+
+- A session lasts seven days from its sign-in, renewals included (it lasted 60 days, renewed at every
+  use); sessions open today get their week at their next renewal
+- An address the identity provider has not verified no longer opens or creates an account by e-mail
+  matching (`trust_email`, `allow_registration`); accounts already linked are unchanged. Make sure
+  your provider marks the addresses of its accounts as verified (Keycloak: "Email verified", or
+  "Trust Email" on an LDAP federation)
+- The guest account of a file request only drops files: it no longer sends requests, changes its
+  account or sets up a second factor
+- A disabled account loses the API, its file requests and uploads at once
+- An upload must declare its size, so the largest share size can no longer be bypassed
+- Forms that send e-mails are paced: one password reset or code a minute per address, ten requests a
+  minute per network address, twenty file requests a minute per account, fifty recipients per share
+- Keys, database and backups are readable by the application only; secrets passed in addresses
+  (share passwords, tokens) are masked in the web server log
+
 ## [1.1.0] — 2026-11-12
 
 ### Added
