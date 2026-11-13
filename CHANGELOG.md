@@ -5,6 +5,17 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.1.5] — 2026-11-13
+
+### Added
+
+- A burst of confetti of every colour when files are dropped on the send area, and when a share or
+  one of its files is downloaded; nothing when the system asks for less motion
+
+### Fixed
+
+- In the quick send window, the sides of the drop zone were cut off while a file was dragged over it
+
 ## [1.1.4] — 2026-11-13
 
 ### Fixed
