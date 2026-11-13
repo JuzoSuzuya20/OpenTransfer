@@ -573,11 +573,11 @@ const switchToLogin = () => {
           </button>
         </section>
 
-        <section class="ot-card auth-card" aria-labelledby="h-local">
+        <form class="ot-card auth-card" aria-labelledby="h-local" @submit.prevent="attemptLogin">
           <h2 class="ot-card-title" id="h-local">{{ $t('auth.local_account') }}</h2>
           <div class="input-container">
             <label for="email">{{ $t('auth.email') }}</label>
-            <input type="email" id="email" v-model="email" autocomplete="username" @keyup.enter="moveToPassword" aria-describedby="sso-domain-note" />
+            <input type="email" id="email" v-model="email" autocomplete="username" @keydown.enter.prevent="moveToPassword" aria-describedby="sso-domain-note" />
             <p class="auth-sso-note" id="sso-domain-note" v-if="ssoDomain" role="status">
               {{ $t('auth.sso_domain_note', { domain: ssoDomain }) }}
             </p>
@@ -588,17 +588,16 @@ const switchToLogin = () => {
               id="password"
               v-model="password"
               autocomplete="current-password"
-              @keyup.enter="attemptLogin"
               ref="passwordInput"
             />
           </div>
-          <button class="block cta" @click="attemptLogin">{{ $t('auth.login') }}</button>
-          <button class="block secondary" v-if="passkeyLoginEnabled" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
+          <button type="submit" class="block cta">{{ $t('auth.login') }}</button>
+          <button type="button" class="block secondary" v-if="passkeyLoginEnabled" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
             <Fingerprint aria-hidden="true" />
             {{ $t('auth.sign_in_with_passkey') }}
           </button>
           <a href="" class="auth-link" @click.prevent="forgotPasswordMode = true">{{ $t('auth.forgot_password_question') }}</a>
-        </section>
+        </form>
 
         <p class="auth-register" v-if="selfRegistrationEnabled">
           {{ $t('auth.no_account') }}
@@ -634,6 +633,7 @@ const switchToLogin = () => {
           <h1>{{ $t('auth.create_account') }}</h1>
           <p>{{ $t('auth.create_account_description') }}</p>
         </div>
+        <form class="auth-form" @submit.prevent="attemptRegister">
         <div class="input-container">
           <label for="register_name">{{ $t('auth.name') }}</label>
           <input id="register_name" type="text" autocomplete="name" v-model="name" />
@@ -652,13 +652,13 @@ const switchToLogin = () => {
             id="register_password_confirmation"
             autocomplete="new-password"
             v-model="password_confirmation"
-            @keyup.enter="attemptRegister"
           />
         </div>
-        <button class="block cta" @click="attemptRegister" :disabled="isRegistering">
+        <button type="submit" class="block cta" :disabled="isRegistering">
           <UserPlus aria-hidden="true" />
           {{ isRegistering ? $t('auth.registering') : $t('auth.register') }}
         </button>
+        </form>
         <div class="auth-step-links">
           <a href="" class="auth-back" @click.prevent="switchToLogin">
             <ArrowLeft aria-hidden="true" />
@@ -684,9 +684,10 @@ const switchToLogin = () => {
         <h1>{{ t('auth.forgot_password_create_password') }}</h1>
         <p>{{ t('auth.forgot_password_create_password_description') }}</p>
       </div>
+      <form class="auth-form" @submit.prevent="attemptResetPassword">
       <div class="input-container">
         <label for="reset_email">{{ t('auth.email') }}</label>
-        <input id="reset_email" type="email" autocomplete="username" v-model="email" @keyup.enter="moveToPassword" />
+        <input id="reset_email" type="email" autocomplete="username" v-model="email" @keydown.enter.prevent="moveToPassword" />
       </div>
       <div class="input-container">
         <label for="reset_password">{{ t('auth.password') }}</label>
@@ -695,7 +696,6 @@ const switchToLogin = () => {
           ref="passwordInput"
           autocomplete="new-password"
           v-model="password"
-          @keyup.enter="attemptResetPassword"
         />
       </div>
       <div class="input-container">
@@ -704,13 +704,13 @@ const switchToLogin = () => {
           id="reset_password_confirmation"
           autocomplete="new-password"
           v-model="password_confirmation"
-          @keyup.enter="attemptResetPassword"
         />
       </div>
-      <button class="block cta" @click="attemptResetPassword">
+      <button type="submit" class="block cta">
         <KeyRound aria-hidden="true" />
         {{ t('auth.save_new_password') }}
       </button>
+      </form>
     </div>
   </div>
 

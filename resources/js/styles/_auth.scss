@@ -143,6 +143,13 @@
   }
 }
 
+// The fields of a step and its button, in a form of their own (password managers read forms)
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 .auth-card {
   display: flex;
   flex-direction: column;
