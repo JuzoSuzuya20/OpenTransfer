@@ -327,3 +327,13 @@ a {
     animation: none !important;
   }
 }
+
+// A burst of confetti (lib/confetti.js): above everything, never in the way of a click
+.ot-confetti {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  pointer-events: none;
+}

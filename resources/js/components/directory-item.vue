@@ -3,6 +3,7 @@ import { Folder, Trash, File, Loader, Check, Clock } from 'lucide-vue-next'
 import { niceFileSize, niceFileType, niceFileName, getApiUrl } from '../utils'
 import { ref, computed } from 'vue'
 import { postDownload } from '../lib/postDownload'
+import { burst } from '../lib/confetti'
 
 const apiUrl = getApiUrl()
 
@@ -71,8 +72,9 @@ const openDirectories = ref([])
 defineEmits(['remove-file'])
 
 // Build the full path for a file and trigger download
-function downloadFile(file, dirName = null) {
+function downloadFile(file, dirName = null, event = null) {
   if (!props.shareCode) return
+  if (event) burst({ x: event.clientX, y: event.clientY })
   
   let filePath
   if (dirName) {
@@ -124,7 +126,7 @@ function getDirectories(structure) {
         }"
         v-for="file in structure.files" 
         :key="file.fullPath || file.name"
-        @click="readOnly && shareCode ? downloadFile(file) : null"
+        @click="readOnly && shareCode ? downloadFile(file, null, $event) : null"
       >
         <div class="name">
           {{ file.name }}
@@ -178,7 +180,7 @@ function getDirectories(structure) {
             }"
             v-for="file in dirContent.files" 
             :key="file.fullPath || file.name"
-            @click="readOnly && shareCode ? downloadFile(file, dirName) : null"
+            @click="readOnly && shareCode ? downloadFile(file, dirName, $event) : null"
           >
             <div class="name">
               <div class="icon">

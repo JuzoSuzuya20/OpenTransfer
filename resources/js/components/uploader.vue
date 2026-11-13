@@ -17,6 +17,7 @@ import { useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../store'
 import { positiveNumber } from '../lib/positiveNumber'
+import { burst } from '../lib/confetti'
 // compact: the quick "New share" window (the files, the default access, one button); the page
 // otherwise (piste A: one column, the access options as chips, one open at a time)
 const props = defineProps({
@@ -313,6 +314,11 @@ const handleDrop = (e) => {
   dropBoxRemoveActiveClass()
 
   const items = e.dataTransfer.items || []
+
+  // Files let go over the zone: confetti from the point where they fell
+  if ([...items].some((item) => item.kind === 'file')) {
+    burst({ x: e.clientX, y: e.clientY })
+  }
 
   for (const item of items) {
     if (item.kind === 'file') {

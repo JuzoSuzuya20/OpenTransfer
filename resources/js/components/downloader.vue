@@ -10,6 +10,7 @@ import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
 import DirectoryItem from './directory-item.vue'
 import UserAvatar from './layout/UserAvatar.vue'
+import { burst, centreOf } from '../lib/confetti'
 
 // How long the share stays online, in its largest unit: 6 d, 4 h, 12 min
 const expiresInShort = computed(() => {
@@ -81,7 +82,10 @@ const fetchShare = async () => {
   }
 }
 
-const downloadFiles = () => {
+const celebrate = (event) => event?.currentTarget && burst(centreOf(event.currentTarget))
+
+const downloadFiles = (event) => {
+  celebrate(event)
   const downloadUrl = `${apiUrl}/api/shares/${props.downloadShareCode}/download`
   window.location.href = downloadUrl
 }
@@ -129,7 +133,8 @@ const unlock = async () => {
 }
 
 // The password goes in the body of the request, never in the address
-const downloadPasswordProtectedFiles = () => {
+const downloadPasswordProtectedFiles = (event) => {
+  celebrate(event)
   postDownload(`${apiUrl}/api/shares/${props.downloadShareCode}/download`, { password: password.value })
 }
 
@@ -254,7 +259,7 @@ const filesByDirectory = computed(() => {
           :share-code="downloadShareCode"
           :password="share.password_protected ? password : ''"
         />
-        <button class="download-button block cta" @click="share.password_protected ? downloadPasswordProtectedFiles() : downloadFiles()">
+        <button class="download-button block cta" @click="share.password_protected ? downloadPasswordProtectedFiles($event) : downloadFiles($event)">
           <Download aria-hidden="true" />
           {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}
         </button>

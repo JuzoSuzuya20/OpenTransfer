@@ -10,6 +10,7 @@ import OtSelect from './OtSelect.vue'
 import { expireShare, extendShare, setDownloadLimit } from '../../api'
 import { niceFileSize } from '../../utils'
 import { shareState } from '../../lib/shares'
+import { burst, centreOf } from '../../lib/confetti'
 
 const props = defineProps({
   share: { type: Object, required: true },
@@ -92,7 +93,12 @@ const menuItems = computed(() => [
     label: t.value('shares.download'),
     icon: HardDriveDownload,
     disabled: !online.value,
-    action: () => (window.location.href = `/api/shares/${props.share.long_id}/download`)
+    action: () => {
+      // From the entry of the menu that was chosen (it has the focus), else the middle of the screen
+      const chosen = document.activeElement
+      burst(chosen && chosen !== document.body ? centreOf(chosen) : { x: window.innerWidth / 2, y: window.innerHeight / 2 })
+      window.location.href = `/api/shares/${props.share.long_id}/download`
+    }
   },
   {
     label: t.value('shares.extend'),
