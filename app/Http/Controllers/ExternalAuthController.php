@@ -15,6 +15,7 @@ use App\Models\AuthProvider;
 use App\Models\UserAuthProvider;
 use App\Services\SsoSessions;
 use Jumbojett\OpenIDConnectClient;
+use App\Support\SessionLifetime;
 
 /**
  * Controller for handling social authentication methods
@@ -414,17 +415,17 @@ class ExternalAuthController extends Controller
      */
     private function createAuthCookieAndRedirect($user)
     {
-        // Set refresh token with 24 hour expiry
-        $twentyFourHours = 60 * 60 * 24;
+        // Seven days from this sign-in, renewals included (SessionLifetime)
+        $week = SessionLifetime::DAYS * 24 * 60;
         // Marked as SSO: renewals are not subject to the second factor policy
-        $claims = ['amr' => 'sso'];
+        $claims = ['amr' => 'sso', SessionLifetime::CLAIM => now()->getTimestamp()];
         if ($sid = SsoSessions::remember($this->signingInWith['provider'] ?? null, $this->signingInWith['id_token'] ?? null)) {
             $claims['sid'] = $sid;
         }
-        $refreshToken = Auth::claims($claims)->setTTL($twentyFourHours)->tokenById($user->id);
+        $refreshToken = Auth::claims($claims)->setTTL($week)->tokenById($user->id);
 
         // Create HTTP-only secure cookie with refresh token
-        $cookie = cookie('refresh_token', urlencode($refreshToken), $twentyFourHours, null, null, true, true);
+        $cookie = cookie('refresh_token', urlencode($refreshToken), $week, null, null, true, true);
 
         // Redirect to home with the cookie
         return redirect('/')->withCookie($cookie);

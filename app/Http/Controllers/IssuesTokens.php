@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Support\RefreshCookie;
+use App\Support\SessionLifetime;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -13,8 +14,9 @@ trait IssuesTokens
     /**
      * @param string $amr how the session was opened ("pwd", "passkey" or "sso"), kept across
      *                    renewals: the second factor policy only covers passwords
+     * @param int|null $signedInAt when the session was opened, kept across renewals too
      */
-    protected function respondWithToken($user, string $amr = 'pwd', ?string $sid = null)
+    protected function respondWithToken($user, string $amr = 'pwd', ?string $sid = null, ?int $signedInAt = null)
     {
         $token = Auth::login($user);
 
@@ -25,10 +27,13 @@ trait IssuesTokens
             ], 401);
         }
 
-        $twentyFourHours = 60 * 60 * 24;
-        $refreshToken = Auth::claims(array_filter(['amr' => $amr, 'sid' => $sid]))->setTTL($twentyFourHours)->tokenById($user->id);
+        // Seven days from the sign-in, renewals included (SessionLifetime)
+        $signedInAt ??= now()->getTimestamp();
+        $minutes = SessionLifetime::minutesLeft($signedInAt);
+        $claims = array_filter(['amr' => $amr, 'sid' => $sid]) + [SessionLifetime::CLAIM => $signedInAt];
+        $refreshToken = Auth::claims($claims)->setTTL($minutes)->tokenById($user->id);
 
-        $cookie = RefreshCookie::make($refreshToken, $twentyFourHours);
+        $cookie = RefreshCookie::make($refreshToken, $minutes);
 
         return response()->json([
             'status' => 'success',

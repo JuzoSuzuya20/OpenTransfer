@@ -20,6 +20,7 @@ use App\Services\SsoPolicy;
 use App\Services\SsoSessions;
 use App\Services\TwoFactor;
 use App\Support\RefreshCookie;
+use App\Support\SessionLifetime;
 
 
 class AuthController extends Controller
@@ -163,7 +164,17 @@ class AuthController extends Controller
 
         $sid = $amr === 'sso' ? rescue(fn () => Auth::getPayload()->get('sid'), null, false) : null;
 
-        return $this->respondWithToken($user, $amr, is_string($sid) ? $sid : null);
+        // A renewal keeps the end of the session: seven days after its sign-in
+        $signedInAt = SessionLifetime::signedInAt(rescue(fn () => Auth::getPayload()->get(SessionLifetime::CLAIM), null, false));
+        if (SessionLifetime::minutesLeft($signedInAt) === 0) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 'session_ended',
+                'message' => 'The session has ended: please sign in again'
+            ], 401);
+        }
+
+        return $this->respondWithToken($user, $amr, is_string($sid) ? $sid : null, $signedInAt);
     }
 
     //logout the user
@@ -335,7 +346,6 @@ class AuthController extends Controller
             }
         );
 
-        $twentyFourHours = 60 * 60 * 24;
         if ($status === Password::PASSWORD_RESET) {
             $user = User::where('email', $request->email)->first();
 
@@ -349,11 +359,12 @@ class AuthController extends Controller
                 ]);
             }
 
-            $refreshToken = Auth::setTTL($twentyFourHours)->tokenById($user->id);
+            $week = SessionLifetime::DAYS * 24 * 60;
+            $refreshToken = Auth::claims([SessionLifetime::CLAIM => now()->getTimestamp()])->setTTL($week)->tokenById($user->id);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Password reset successfully'
-            ])->withCookie(RefreshCookie::make($refreshToken, $twentyFourHours));
+            ])->withCookie(RefreshCookie::make($refreshToken, $week));
         }
 
         return response()->json([
