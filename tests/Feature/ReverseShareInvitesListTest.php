@@ -62,7 +62,7 @@ class ReverseShareInvitesListTest extends TestCase
 
         $invite = $this->actingAs($me, 'api')->getJson('/api/reverse-shares/invites')->json('data.invites.0');
 
-        $this->assertSame(['id', 'recipient_name', 'recipient_email', 'message', 'state', 'created_at', 'expires_at', 'completed_at'], array_keys($invite));
+        $this->assertSame(['id', 'recipient_name', 'recipient_email', 'delivery', 'message', 'state', 'created_at', 'expires_at', 'completed_at'], array_keys($invite));
     }
 
     public function test_the_list_needs_an_account(): void

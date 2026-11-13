@@ -13,10 +13,14 @@ use Illuminate\Support\Facades\Crypt;
 use App\Jobs\sendEmail;
 use App\Mail\reverseShareInviteMail;
 use App\Models\Setting;
+use App\Services\SettingsService;
 
 
 class ReverseSharesController extends Controller
 {
+    // How long a request stays open, in days, as the page offers it
+    private const VALIDITY_DAYS = [1, 3, 7, 14, 30];
+
     // The requests the signed-in account sent (the latest 100), each with where it is: waiting,
     // received (the guest delivered) or expired. Nothing about the guest account behind it.
     public function listInvites()
@@ -29,6 +33,8 @@ class ReverseSharesController extends Controller
                 'id' => $invite->id,
                 'recipient_name' => $invite->recipient_name,
                 'recipient_email' => $invite->recipient_email,
+                // Passed on by the member as a link: no address (see createInvite)
+                'delivery' => $invite->recipient_email === '' ? 'link' : 'email',
                 'message' => $invite->message,
                 'state' => $invite->isCompleted() ? 'received' : ($invite->isExpired() ? 'expired' : 'pending'),
                 'created_at' => $invite->created_at,
@@ -56,10 +62,16 @@ class ReverseSharesController extends Controller
             ], 400);
         }
 
+        // By e-mail (the address gets the link), or by link (the member passes it on: no address,
+        // kept as an empty one, the column has no null)
+        $byLink = $request->input('delivery') === 'link';
+
         $validator = Validator::make($request->all(), [
+            'delivery' => ['nullable', 'in:email,link'],
             'recipient_name' => ['required', 'string', 'max:255'],
-            'recipient_email' => ['required', 'email', 'max:255'],
-            'message' => ['nullable', 'string', 'max:5000']
+            'recipient_email' => $byLink ? ['nullable'] : ['required', 'email', 'max:255'],
+            'message' => ['nullable', 'string', 'max:5000'],
+            'expires_in_days' => ['nullable', 'integer', 'in:' . implode(',', self::VALIDITY_DAYS)],
         ]);
 
         if ($validator->fails()) {
@@ -81,8 +93,10 @@ class ReverseSharesController extends Controller
             ], 401);
         }
 
-        // Check if recipient is an existing non-guest user
-        $existingUser = User::where('email', $request->recipient_email)
+        $days = (int) ($request->input('expires_in_days') ?: 7);
+
+        // Check if recipient is an existing non-guest user (a link has no recipient to look up)
+        $existingUser = $byLink ? null : User::where('email', $request->recipient_email)
             ->where(function ($query) {
                 $query->where('is_guest', false)
                     ->orWhereNull('is_guest');
@@ -109,7 +123,7 @@ class ReverseSharesController extends Controller
 
             // Generate a token only for guest users, valid as long as the request: with the default
             // lifetime of an access token (an hour) the link stopped working the same day
-            $token = auth()->setTTL(7 * 24 * 60)->tokenById($guestUser->id);
+            $token = auth()->setTTL($days * 24 * 60)->tokenById($guestUser->id);
             $encryptedToken = Crypt::encryptString($token);
         }
 
@@ -117,22 +131,28 @@ class ReverseSharesController extends Controller
             'user_id' => $user->id,
             'guest_user_id' => $guestUserId,
             'recipient_name' => $request->recipient_name,
-            'recipient_email' => $request->recipient_email,
+            'recipient_email' => $byLink ? '' : $request->recipient_email,
             'message' => $request->message,
-            'expires_at' => now()->addDays(7)
+            'expires_at' => now()->addDays($days)
         ]);
 
-        sendEmail::dispatch($request->recipient_email, reverseShareInviteMail::class, [
-            'user' => $user,
-            'invite' => $invite,
-            'token' => $encryptedToken, // Will be null for existing users
-            'isExistingUser' => $existingUser !== null
-        ]);
+        if (!$byLink) {
+            sendEmail::dispatch($request->recipient_email, reverseShareInviteMail::class, [
+                'user' => $user,
+                'invite' => $invite,
+                'token' => $encryptedToken, // Will be null for existing users
+                'isExistingUser' => $existingUser !== null
+            ]);
+        }
+
+        // The same address an e-mail would hold, for the member to pass on
+        $address = rtrim((string) (app(SettingsService::class)->get('application_url') ?: config('app.url')), '/');
 
         return response()->json([
             'status' => 'success',
             'data' => [
-                'invite' => $invite
+                'invite' => $invite,
+                'link' => $byLink ? $address . '/?invite_token=' . urlencode($encryptedToken) : null,
             ]
         ]);
     }
