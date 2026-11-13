@@ -20,3 +20,11 @@ test('without a seed there is no avatar', () => {
   assert.equal(avatarDataUri(''), null)
   assert.equal(avatarDataUri(null), null)
 })
+
+test('a face does not change from one version of the app to the next', async () => {
+  const { createHash } = await import('node:crypto')
+  // Drawn with @dicebear/core 10.7 and the Line Face style 10.6: an update that redraws every
+  // account's face shows here before it ships
+  const face = createHash('sha256').update(avatarDataUri('3f9a0c1d2e4b5a6c7d8e')).digest('hex').slice(0, 16)
+  assert.equal(face, 'b0b0aa5e0cc31da2')
+})
