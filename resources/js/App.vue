@@ -123,20 +123,24 @@ provide('scrollToAnchor', scrollToAnchor)
 
 // --- Who is here --------------------------------------------------------------------------------
 const isDownload = computed(() => route.value.name === 'download')
+// The first renewal of the session is still under way (store.restoringSession)
+const restoring = computed(() => store.restoringSession && !store.isLoggedIn())
 const needsSignIn = computed(
   () =>
     !store.isLoggedIn() &&
+    !restoring.value &&
     !isDownload.value &&
     store.mode !== 'setup' &&
     store.mode !== 'thank_guest_for_upload'
 )
-const showAuth = computed(() => needsSignIn.value || (route.value.name === 'reset-password' && !store.isLoggedIn()))
+const showAuth = computed(() => needsSignIn.value || (route.value.name === 'reset-password' && !store.isLoggedIn() && !restoring.value))
 
 // Guests only upload what they were asked for; the administration belongs to admins
 const page = computed(() => {
   if (store.mode === 'setup') return 'setup'
   if (store.mode === 'thank_guest_for_upload') return 'thanks'
   if (isDownload.value) return 'download'
+  if (restoring.value) return 'restoring'
   if (showAuth.value) return 'auth'
   if (store.isGuest()) return 'send'
   const name = route.value.name
@@ -300,6 +304,7 @@ onBeforeUnmount(() => {
     </Transition>
 
     <AppHeader
+      v-if="page !== 'restoring'"
       :variant="headerVariant"
       :route-name="route.name"
       :user-name="userName"
@@ -322,7 +327,7 @@ onBeforeUnmount(() => {
       <Setup v-if="page === 'setup'" />
       <ThankGuestForUpload v-else-if="page === 'thanks'" />
       <Downloader v-else-if="page === 'download'" :downloadShareCode="route.params.code" />
-      <template v-else-if="page !== 'auth'">
+      <template v-else-if="page !== 'auth' && page !== 'restoring'">
         <!-- From one page to the next: the old one goes at once, the new one settles (styles/_motion.scss) -->
         <Transition name="ot-page" mode="out-in">
           <Uploader v-if="page === 'send'" />
@@ -337,7 +342,7 @@ onBeforeUnmount(() => {
       </template>
     </main>
 
-    <footer class="app-footer" v-if="showPoweredBy">
+    <footer class="app-footer" v-if="showPoweredBy && page !== 'restoring'">
       {{ $t('Powered by') }}
       <a href="https://github.com/JuzoSuzuya20/OpenTransfer" rel="noopener">OpenTransfer</a>
     </footer>

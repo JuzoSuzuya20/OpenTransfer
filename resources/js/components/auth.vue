@@ -11,6 +11,7 @@ import BrandMark from './layout/BrandMark.vue'
 import { ssoDomainOf } from '../lib/ssoDomains'
 import { passkeysSupported, passkeyCancelled, getPasskeyAssertion } from '../webauthn'
 import { store } from '../store'
+import { settleWithin } from '../lib/settleWithin'
 import {
   login,
   verifyMfaCode,
@@ -123,8 +124,9 @@ onMounted(async () => {
     window.history.replaceState({}, document.title, window.location.pathname)
   }
 
-  // Now try to refresh (if user is already logged in, this will accept the pending invite)
-  attemptRefresh()
+  // Now try to refresh (if user is already logged in, this will accept the pending invite).
+  // Its answer, or four seconds without one, ends the wait of the app (store.restoringSession)
+  settleWithin(attemptRefresh(), 4000, () => (store.restoringSession = false))
 
   getAvailableAuthProviders().then((data) => {
     authProviders.value = data
