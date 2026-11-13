@@ -485,7 +485,6 @@
       }
     },
     "success": {
-      "pruneExpiredShares": "La eliminación de los envíos caducados está programada y se hará en segundo plano.",
       "shareExpired": "Envío caducado",
       "shareExtended": "Envío prolongado"
     },
@@ -1118,7 +1117,8 @@
       "ending": "Termina pronto",
       "expired": "Caducado",
       "deleted": "Eliminado",
-      "failed": "Fallido"
+      "failed": "Fallido",
+      "deleting": "Eliminando…"
     },
     "items": "{count, plural, one {# elemento} other {# elementos}}",
     "received": "recibido mediante una solicitud",
@@ -1139,7 +1139,12 @@
     "load_failed": "No se pudieron cargar sus envíos",
     "empty": "Aún no ha enviado nada.",
     "empty_filter": "Ningún envío coincide con este filtro.",
-    "max_expiry_reached": "Este envío ya permanece en línea el tiempo máximo permitido ({days} días desde su envío)"
+    "max_expiry_reached": "Este envío ya permanece en línea el tiempo máximo permitido ({days} días desde su envío)",
+    "deleting_title": "Eliminando los envíos caducados…",
+    "deleting_count": "{done} de {total}",
+    "deleting_done": "{count, plural, one {# envío eliminado} other {# envíos eliminados}}",
+    "deleting_slow": "La eliminación continúa en segundo plano: la lista se actualizará sola.",
+    "nothing_to_delete": "No hay envíos caducados que eliminar."
   },
   "requests": {
     "description": "Pida a alguien de fuera de la organización que le envíe archivos. Lo que envíe llegará a Mis envíos.",

@@ -485,7 +485,6 @@
       }
     },
     "success": {
-      "pruneExpiredShares": "Verlopen shares zijn ingepland voor verwijdering en worden op de achtergrond verwerkt.",
       "shareExpired": "Aandeel verlopen",
       "shareExtended": "Aandeel uitgebreid"
     },
@@ -1118,7 +1117,8 @@
       "ending": "Verloopt binnenkort",
       "expired": "Verlopen",
       "deleted": "Verwijderd",
-      "failed": "Mislukt"
+      "failed": "Mislukt",
+      "deleting": "Verwijderen…"
     },
     "items": "{count, plural, one {# item} other {# items}}",
     "received": "ontvangen via een verzoek",
@@ -1139,7 +1139,12 @@
     "load_failed": "Je shares konden niet worden geladen",
     "empty": "Je hebt nog niets verzonden.",
     "empty_filter": "Geen share past bij dit filter.",
-    "max_expiry_reached": "Deze share blijft al zo lang online als toegestaan ({days} dagen na verzending)"
+    "max_expiry_reached": "Deze share blijft al zo lang online als toegestaan ({days} dagen na verzending)",
+    "deleting_title": "Verlopen shares verwijderen…",
+    "deleting_count": "{done} van {total}",
+    "deleting_done": "{count, plural, one {# share verwijderd} other {# shares verwijderd}}",
+    "deleting_slow": "Het verwijderen gaat op de achtergrond verder: de lijst werkt zichzelf bij.",
+    "nothing_to_delete": "Geen verlopen share om te verwijderen."
   },
   "requests": {
     "description": "Vraag iemand buiten de organisatie om je bestanden te sturen. Wat die stuurt, komt in Mijn shares.",

@@ -485,7 +485,6 @@
       }
     },
     "success": {
-      "pruneExpiredShares": "Les partages expirés ont été programmées pour être supprimées et seront traités en arrière-plan.",
       "shareExpired": "Partage expiré",
       "shareExtended": "Partage étendu"
     },
@@ -1118,7 +1117,8 @@
       "ending": "Expire bientôt",
       "expired": "Expiré",
       "deleted": "Supprimé",
-      "failed": "Échec"
+      "failed": "Échec",
+      "deleting": "Suppression…"
     },
     "items": "{count, plural, one {# élément} other {# éléments}}",
     "received": "reçu via une demande",
@@ -1139,7 +1139,12 @@
     "load_failed": "Vos partages n'ont pas pu être chargés",
     "empty": "Vous n'avez encore rien envoyé.",
     "empty_filter": "Aucun partage ne correspond à ce filtre.",
-    "max_expiry_reached": "Ce partage reste déjà en ligne aussi longtemps que permis ({days} jours depuis son envoi)"
+    "max_expiry_reached": "Ce partage reste déjà en ligne aussi longtemps que permis ({days} jours depuis son envoi)",
+    "deleting_title": "Suppression des partages expirés…",
+    "deleting_count": "{done} sur {total}",
+    "deleting_done": "{count, plural, one {# partage supprimé} other {# partages supprimés}}",
+    "deleting_slow": "La suppression continue en arrière-plan : la liste se mettra à jour d'elle-même.",
+    "nothing_to_delete": "Aucun partage expiré à supprimer."
   },
   "requests": {
     "description": "Demandez à une personne extérieure de vous envoyer des fichiers. Ce qu'elle envoie arrive dans Mes partages.",

@@ -485,7 +485,6 @@
       }
     },
     "success": {
-      "pruneExpiredShares": "Abgelaufene geteilten Dateien sind zur Löschung vorgesehen und werden im Hintergrund verarbeitet.",
       "shareExpired": "Der Zeitraum zum Download der geteilten Dateien ist abgelaufen",
       "shareExtended": "Der Zeitraum zum Download der geteilten Dateien wurde verlängert"
     },
@@ -1118,7 +1117,8 @@
       "ending": "Läuft bald ab",
       "expired": "Abgelaufen",
       "deleted": "Gelöscht",
-      "failed": "Fehlgeschlagen"
+      "failed": "Fehlgeschlagen",
+      "deleting": "Wird gelöscht…"
     },
     "items": "{count, plural, one {# Element} other {# Elemente}}",
     "received": "über eine Anfrage erhalten",
@@ -1139,7 +1139,12 @@
     "load_failed": "Ihre Freigaben konnten nicht geladen werden",
     "empty": "Sie haben noch nichts gesendet.",
     "empty_filter": "Keine Freigabe entspricht diesem Filter.",
-    "max_expiry_reached": "Diese Freigabe bleibt bereits so lange online wie erlaubt ({days} Tage ab dem Versand)"
+    "max_expiry_reached": "Diese Freigabe bleibt bereits so lange online wie erlaubt ({days} Tage ab dem Versand)",
+    "deleting_title": "Abgelaufene Freigaben werden gelöscht…",
+    "deleting_count": "{done} von {total}",
+    "deleting_done": "{count, plural, one {# Freigabe gelöscht} other {# Freigaben gelöscht}}",
+    "deleting_slow": "Das Löschen läuft im Hintergrund weiter: Die Liste aktualisiert sich von selbst.",
+    "nothing_to_delete": "Keine abgelaufene Freigabe zu löschen."
   },
   "requests": {
     "description": "Bitten Sie eine externe Person, Ihnen Dateien zu senden. Was sie sendet, landet in Meine Freigaben.",

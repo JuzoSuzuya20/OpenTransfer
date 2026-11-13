@@ -339,3 +339,80 @@
     font-weight: 700;
   }
 }
+
+// "Delete expired shares", followed while the background job clears them away
+.prune-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+
+  // Its accent line would read as a second bar, already full
+  &::after {
+    content: none;
+  }
+}
+.prune-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+.prune-progress-title {
+  font-weight: 700;
+  color: var(--ot-heading);
+}
+.prune-progress-count {
+  color: var(--ot-muted);
+  font-variant-numeric: tabular-nums;
+}
+.prune-progress-track {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--ot-raised);
+}
+.prune-progress-bar {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  border-radius: inherit;
+  background: var(--ot-accent);
+  // Each share done moves it on, decelerating
+  transition: transform var(--ot-dur-slow) var(--ot-ease-out);
+  overflow: hidden;
+
+  // A glint runs along it while the job works: something is happening even before a share is done
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+    transform: translateX(-100%);
+    animation: prune-glint 1.4s var(--ot-ease-in-out, cubic-bezier(0.65, 0, 0.35, 1)) infinite;
+  }
+}
+.prune-progress.is-over .prune-progress-bar {
+  background: var(--ot-success);
+
+  &::after {
+    animation: none;
+  }
+}
+.prune-progress-slow {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+}
+@keyframes prune-glint {
+  to {
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prune-progress-bar::after {
+    animation: none;
+  }
+}

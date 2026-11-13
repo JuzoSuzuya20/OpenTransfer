@@ -485,7 +485,6 @@
       }
     },
     "success": {
-      "pruneExpiredShares": "Le condivisioni scadute sono state contrassegnate per l'eliminazione e verranno elaborate in background.",
       "shareExpired": "Quota scaduta",
       "shareExtended": "Quota estesa"
     },
@@ -1118,7 +1117,8 @@
       "ending": "Scade presto",
       "expired": "Scaduta",
       "deleted": "Eliminata",
-      "failed": "Non riuscita"
+      "failed": "Non riuscita",
+      "deleting": "Eliminazione…"
     },
     "items": "{count, plural, one {# elemento} other {# elementi}}",
     "received": "ricevuta tramite una richiesta",
@@ -1139,7 +1139,12 @@
     "load_failed": "Le tue condivisioni non sono state caricate",
     "empty": "Non hai ancora inviato nulla.",
     "empty_filter": "Nessuna condivisione corrisponde a questo filtro.",
-    "max_expiry_reached": "Questa condivisione resta già online quanto consentito ({days} giorni dall’invio)"
+    "max_expiry_reached": "Questa condivisione resta già online quanto consentito ({days} giorni dall’invio)",
+    "deleting_title": "Eliminazione delle condivisioni scadute…",
+    "deleting_count": "{done} su {total}",
+    "deleting_done": "{count, plural, one {# condivisione eliminata} other {# condivisioni eliminate}}",
+    "deleting_slow": "L'eliminazione continua in background: l'elenco si aggiornerà da solo.",
+    "nothing_to_delete": "Nessuna condivisione scaduta da eliminare."
   },
   "requests": {
     "description": "Chiedi a una persona esterna di inviarti dei file. Ciò che invia arriva in Le mie condivisioni.",

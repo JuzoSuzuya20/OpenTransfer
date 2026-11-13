@@ -485,7 +485,6 @@
       }
     },
     "success": {
-      "pruneExpiredShares": "Expired shares have been scheduled for deletion and will be processed in the background.",
       "shareExpired": "Share expired",
       "shareExtended": "Share extended"
     },
@@ -1118,7 +1117,8 @@
       "ending": "Ending soon",
       "expired": "Expired",
       "deleted": "Deleted",
-      "failed": "Failed"
+      "failed": "Failed",
+      "deleting": "Deleting…"
     },
     "items": "{count, plural, one {# item} other {# items}}",
     "received": "received through a request",
@@ -1139,7 +1139,12 @@
     "load_failed": "Your shares could not be loaded",
     "empty": "You have not sent anything yet.",
     "empty_filter": "No share matches this filter.",
-    "max_expiry_reached": "This share already stays online as long as allowed ({days} days from its sending)"
+    "max_expiry_reached": "This share already stays online as long as allowed ({days} days from its sending)",
+    "deleting_title": "Deleting expired shares…",
+    "deleting_count": "{done} of {total}",
+    "deleting_done": "{count, plural, one {# share deleted} other {# shares deleted}}",
+    "deleting_slow": "The deletion goes on in the background: the list will update by itself.",
+    "nothing_to_delete": "No expired share to delete."
   },
   "requests": {
     "description": "Ask someone outside the organisation to send you files. What they send lands in My shares.",

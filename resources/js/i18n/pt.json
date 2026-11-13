@@ -485,7 +485,6 @@
       }
     },
     "success": {
-      "pruneExpiredShares": "As transferências expiradas foram agendadas para eliminação e serão processadas em segundo plano.",
       "shareExpired": "Partilha expirada",
       "shareExtended": "Partilha extendida"
     },
@@ -1118,7 +1117,8 @@
       "ending": "Expira em breve",
       "expired": "Expirada",
       "deleted": "Eliminada",
-      "failed": "Falhou"
+      "failed": "Falhou",
+      "deleting": "A eliminar…"
     },
     "items": "{count, plural, one {# elemento} other {# elementos}}",
     "received": "recebida através de um pedido",
@@ -1139,7 +1139,12 @@
     "load_failed": "Não foi possível carregar as suas partilhas",
     "empty": "Ainda não enviou nada.",
     "empty_filter": "Nenhuma partilha corresponde a este filtro.",
-    "max_expiry_reached": "Esta partilha já fica online o tempo máximo permitido ({days} dias desde o envio)"
+    "max_expiry_reached": "Esta partilha já fica online o tempo máximo permitido ({days} dias desde o envio)",
+    "deleting_title": "A eliminar as partilhas expiradas…",
+    "deleting_count": "{done} de {total}",
+    "deleting_done": "{count, plural, one {# partilha eliminada} other {# partilhas eliminadas}}",
+    "deleting_slow": "A eliminação continua em segundo plano: a lista atualiza-se sozinha.",
+    "nothing_to_delete": "Nenhuma partilha expirada para eliminar."
   },
   "requests": {
     "description": "Peça a uma pessoa externa que lhe envie ficheiros. O que ela enviar chega a As minhas partilhas.",

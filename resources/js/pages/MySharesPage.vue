@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { pinLeaving } from '../lib/motion'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
@@ -11,6 +11,7 @@ import { useConfirmDialog } from '../composables/useConfirmDialog'
 import { useLiveRefresh } from '../composables/useLiveRefresh'
 import { niceFileSize } from '../utils'
 import { shareState, monthSummary, groupByWeek } from '../lib/shares'
+import { pruneProgress, sharesToDelete } from '../lib/pruneProgress'
 
 const { t } = useTranslate()
 const tolgee = useTolgee(['language'])
@@ -64,16 +65,6 @@ const groupSummary = (group) => {
   return t.value('shares.group_summary', { count: group.shares.length, downloads })
 }
 
-const run = async (promise, success, failure) => {
-  try {
-    await promise
-    toast.success(t.value(success))
-    load()
-  } catch (error) {
-    toast.error(t.value(failure))
-  }
-}
-
 const toggleDeleted = (event) => {
   showDeleted.value = event.target.checked
   localStorage.setItem('showDeletedShares', showDeleted.value)
@@ -89,8 +80,50 @@ const prune = async () => {
     tone: 'danger'
   })
   if (!sure) return
-  run(pruneExpiredShares(), 'settings.success.pruneExpiredShares', 'settings.error.pruneExpiredShares')
+
+  let returned
+  try {
+    returned = await pruneExpiredShares()
+  } catch (error) {
+    toast.error(t.value('settings.error.pruneExpiredShares'))
+    return
+  }
+  const batch = sharesToDelete(returned)
+  if (batch.length === 0) {
+    toast.info(t.value('shares.nothing_to_delete'))
+    return
+  }
+  deleting.value = { batch, done: 0, total: batch.length, over: false, slow: false, startedAt: Date.now() }
+  followDeletion()
 }
+
+// The deletion runs in the background (a queued job): the page reads the list again every second
+// and shows how far it got, instead of saying it is done before it is
+const deleting = ref(null)
+let followTimer = null
+const followDeletion = async () => {
+  if (!deleting.value) return
+  await load()
+  if (!deleting.value) return
+  const progress = pruneProgress(deleting.value.batch, shares.value)
+  deleting.value = { ...deleting.value, ...progress }
+  if (progress.over) {
+    toast.success(t.value('shares.deleting_done', { count: progress.total }))
+    // The full bar stays a moment, then the panel goes
+    followTimer = setTimeout(() => (deleting.value = null), 1400)
+    return
+  }
+  // Two minutes on: the job is slow or the worker busy; the page keeps refreshing on its own
+  if (Date.now() - deleting.value.startedAt > 120000) {
+    deleting.value = { ...deleting.value, slow: true }
+    return
+  }
+  followTimer = setTimeout(followDeletion, 1000)
+}
+onBeforeUnmount(() => clearTimeout(followTimer))
+const isDeleting = (share) => Boolean(deleting.value && !deleting.value.over && deleting.value.batch.includes(share.id) && share.status !== 'deleted')
+// Never an empty bar: it moves from the start, then follows the shares done
+const deletingFraction = computed(() => (deleting.value ? Math.max(0.06, deleting.value.done / deleting.value.total) : 0))
 </script>
 
 <template>
@@ -153,11 +186,33 @@ const prune = async () => {
           <input type="checkbox" id="show_deleted_shares" :checked="showDeleted" @change="toggleDeleted" />
           <label for="show_deleted_shares">{{ t('settings.system.show_deleted_shares') }}</label>
         </div>
-        <button type="button" class="ot-act" @click="prune">
+        <button type="button" class="ot-act" @click="prune" :disabled="Boolean(deleting && !deleting.over)">
           <Trash2 aria-hidden="true" />
           {{ t('settings.button.myShares.pruneExpired') }}
         </button>
       </div>
+
+      <Transition name="ot-pop">
+        <div class="ot-card prune-progress" :class="{ 'is-over': deleting.over }" v-if="deleting" role="status" aria-live="polite">
+          <div class="prune-progress-head">
+            <span class="prune-progress-title">
+              {{ deleting.over ? t('shares.deleting_done', { count: deleting.total }) : t('shares.deleting_title') }}
+            </span>
+            <span class="prune-progress-count">{{ t('shares.deleting_count', { done: deleting.done, total: deleting.total }) }}</span>
+          </div>
+          <div
+            class="prune-progress-track"
+            role="progressbar"
+            :aria-label="t('shares.deleting_title')"
+            aria-valuemin="0"
+            :aria-valuemax="deleting.total"
+            :aria-valuenow="deleting.done"
+          >
+            <div class="prune-progress-bar" :style="{ transform: `scaleX(${deletingFraction})` }"></div>
+          </div>
+          <p class="prune-progress-slow" v-if="deleting.slow">{{ t('shares.deleting_slow') }}</p>
+        </div>
+      </Transition>
 
       <!-- The rows arrive one after the other, leave sideways, and the others close up on a spring -->
       <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="div" class="share-groups ot-list-host">
@@ -173,6 +228,7 @@ const prune = async () => {
               :key="share.id"
               :share="share"
               :now="now"
+              :deleting="isDeleting(share)"
               :style="{ '--ot-i': index }"
               @changed="load"
             />

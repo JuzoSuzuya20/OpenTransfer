@@ -13,6 +13,8 @@ import { shareState } from '../../lib/shares'
 import { burst, centreOf } from '../../lib/confetti'
 
 const props = defineProps({
+  // In the batch "Delete expired shares" is clearing away (MySharesPage)
+  deleting: { type: Boolean, default: false },
   share: { type: Object, required: true },
   now: { type: Date, required: true },
   // All shares: who owns it (user_name, user_avatar_seed)
@@ -24,8 +26,8 @@ const { t } = useTranslate()
 const tolgee = useTolgee(['language'])
 const toast = useToast()
 
-const state = computed(() => shareState(props.share, props.now))
-const STATE_PILL = { active: 'is-success', pending: '', ending: 'is-warning', expired: 'is-danger', failed: 'is-danger', deleted: '' }
+const state = computed(() => (props.deleting ? 'deleting' : shareState(props.share, props.now)))
+const STATE_PILL = { active: 'is-success', pending: '', ending: 'is-warning', expired: 'is-danger', failed: 'is-danger', deleted: '', deleting: 'is-warning' }
 const online = computed(() => ['active', 'ending', 'pending'].includes(state.value))
 
 const dateFormat = computed(() => new Intl.DateTimeFormat(tolgee.value.getLanguage(), { day: 'numeric', month: 'short' }))
@@ -103,10 +105,10 @@ const menuItems = computed(() => [
   {
     label: t.value('shares.extend'),
     icon: CalendarPlus,
-    disabled: state.value === 'deleted',
+    disabled: state.value === 'deleted' || state.value === 'deleting',
     action: () => run(extendShare(props.share.id), 'settings.success.shareExtended', 'settings.error.shareExtended')
   },
-  { label: t.value('shares.set_limit'), icon: Gauge, disabled: state.value === 'deleted', action: startLimit },
+  { label: t.value('shares.set_limit'), icon: Gauge, disabled: state.value === 'deleted' || state.value === 'deleting', action: startLimit },
   {
     label: t.value('shares.expire_now'),
     icon: CalendarX2,
