@@ -8,6 +8,8 @@ use App\Models\Setting;
 use App\Mail\shareDeletedWarningMail;
 use App\Jobs\sendEmail;
 use App\Services\SettingsService;
+// The facade under another name: File is the model of the files of a share
+use Illuminate\Support\Facades\File as Filesystem;
 class Share extends Model
 {
 
@@ -113,24 +115,23 @@ class Share extends Model
   public function cleanFiles($disableEmail = false)
   {
     try {
-      $filePath = $this->path;
+      // Never the whole folder of the shares: a share always has a path of its own
+      $filePath = trim((string) $this->path, '/');
+      if ($filePath === '' || str_contains($filePath, '..')) {
+        return false;
+      }
       $completePath = storage_path('app/shares/' . $filePath);
 
+      // Subfolders included: a folder sent as it was keeps its tree on the disk
       if (is_dir($completePath)) {
-        //delete all files in the directory
-        $files = glob($completePath . '/*');
-        foreach ($files as $file) {
-          unlink($file);
-        }
-        //delete the directory
-        rmdir($completePath);
-      } else {
+        Filesystem::deleteDirectory($completePath);
       }
-      //or is it a zip file?
       if (is_file($completePath . '.zip')) {
         unlink($completePath . '.zip');
-      } else {
       }
+
+      // Who is told: the owner, or for the files a guest dropped, the member who asked them
+      $recipient = $this->user ?? $this->invite?->user;
 
       $this->status = 'deleted';
       $this->save();
@@ -143,8 +144,8 @@ class Share extends Model
 
       $shouldSend = $settingsService->get('emails_share_deleted_enabled') ?? true;
 
-      if (!$disableEmail && $shouldSend) {
-        sendEmail::dispatch($this->user->email, shareDeletedWarningMail::class, ['share' => $this]);
+      if (!$disableEmail && $shouldSend && $recipient) {
+        sendEmail::dispatch($recipient->email, shareDeletedWarningMail::class, ['share' => $this]);
       }
 
       return true;
