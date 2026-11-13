@@ -19,6 +19,7 @@ import { emitter, store } from './store'
 import { logout, getMyProfile, updateMyProfile } from './api'
 import { resolveRoute, settingsTabToPath, legacyHashToPath } from './lib/router'
 import { whenIdle } from './lib/idle'
+import { scrollAfterNavigation } from './lib/navigationScroll'
 import { flashMessageKey } from './lib/flashMessages'
 
 // What opens first stays in the main file (sign-in, sending, a share's page); every other page
@@ -95,7 +96,7 @@ const scrollToAnchor = (id, attempts = 40) => {
   }
 }
 
-const navigate = (target, { replace = false } = {}) => {
+const navigate = (target, { replace = false, keepScroll = false } = {}) => {
   const url = new URL(target, location.origin)
   const changed = url.pathname + url.search + url.hash !== location.pathname + location.search + location.hash
   if (changed) {
@@ -104,9 +105,10 @@ const navigate = (target, { replace = false } = {}) => {
   route.value = resolveRoute(url.pathname)
   currentHash.value = url.hash
   nextTick(() => {
-    if (url.hash) {
-      scrollToAnchor(decodeURIComponent(url.hash.slice(1)))
-    } else if (changed) {
+    const scroll = scrollAfterNavigation({ hash: url.hash, changed, keepScroll })
+    if (scroll.to === 'anchor') {
+      scrollToAnchor(scroll.id)
+    } else if (scroll.to === 'top') {
       window.scrollTo({ top: 0 })
     }
   })

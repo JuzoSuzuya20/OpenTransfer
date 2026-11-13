@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, inject, onMounted } from 'vue'
+import { ref, computed, watch, inject, onMounted, nextTick } from 'vue'
 import { useTranslate } from '@tolgee/vue'
 import { Save, UserPlus, Info, SlidersHorizontal, Share2, Bell, AtSign, Mail, Palette, KeyRound, UserRoundPlus, ShieldCheck, Users as UsersIcon, FolderOpen, Database } from 'lucide-vue-next'
 import PageHead from '../components/layout/PageHead.vue'
@@ -37,6 +37,15 @@ const { value: selfRegistrationEnabled } = useSetting('self_registration_enabled
 const SYSTEM_PARTS = ['general', 'shares', 'emails', 'smtp', 'auth', 'security', 'backups']
 // Older anchors (command palette, e-mails, bookmarks) inside a section
 const PART_OF_ANCHOR = { reverse_shares: 'shares', share_url_generation: 'shares', self_registration: 'auth', auth: 'auth' }
+// A tab shows its part in place. Only when the page was scrolled past the start of the content
+// does that start come back into view, at once, beside the sticky menu (16 px from the top)
+const mainColumn = ref(null)
+const revealStart = () =>
+  nextTick(() => {
+    const top = mainColumn.value?.getBoundingClientRect().top
+    if (top !== undefined && top < 0) window.scrollBy({ top: top - 16, behavior: 'instant' })
+  })
+
 const systemPart = computed(() => {
   const anchor = decodeURIComponent((currentHash.value || '').slice(1))
   return SYSTEM_PARTS.includes(anchor) ? anchor : PART_OF_ANCHOR[anchor] ?? 'general'
@@ -126,6 +135,9 @@ const onShowDeleted = (event) => {
 
 const viewUserShares = (user) => navigate(`/admin/all-shares?user=${user.id}`)
 
+// Another tab: its part is shown in place (revealStart)
+watch([() => props.section, systemPart], revealStart)
+
 watch(
   () => props.section,
   (section) => {
@@ -157,6 +169,7 @@ onMounted(() => {
           v-for="entry in group.items"
           :key="entry.id"
           :to="entry.to"
+          keep-scroll
           class="admin-side-item"
           :class="{ active: isActive(entry) }"
           :aria-current="isActive(entry) ? 'page' : null"
@@ -167,7 +180,7 @@ onMounted(() => {
       </div>
     </nav>
 
-    <div class="admin-main">
+    <div class="admin-main" ref="mainColumn">
     <PageHead :title="current.label" :description="current.description">
       <template #actions>
         <button v-if="section === 'system' && systemPart !== 'backups'" @click="systemSettings?.saveSettings()">

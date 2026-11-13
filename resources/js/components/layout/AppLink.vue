@@ -2,7 +2,9 @@
 import { inject } from 'vue'
 
 const props = defineProps({
-  to: { type: String, required: true }
+  to: { type: String, required: true },
+  // The window stays where it is (the tabs of the administration: their anchor names a part)
+  keepScroll: { type: Boolean, default: false }
 })
 const emit = defineEmits(['click'])
 const navigate = inject('navigate')
@@ -14,7 +16,7 @@ const onClick = (event) => {
     return
   }
   event.preventDefault()
-  navigate(props.to)
+  navigate(props.to, { keepScroll: props.keepScroll })
 }
 </script>
 
