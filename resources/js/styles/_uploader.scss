@@ -28,6 +28,9 @@
     padding: 0;
     border: 0;
     background: none;
+    // Nothing of its own to clip here, and the drop zone grows a little under a dragged file:
+    // its sides were cut off at the edge of the quick send window
+    overflow: visible;
 
     &::after {
       content: none;
