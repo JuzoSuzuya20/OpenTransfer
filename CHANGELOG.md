@@ -5,6 +5,24 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.1.2] — 2026-11-13
+
+### Fixed
+
+- Reloading a page no longer shows the sign-in screen for an instant before the page
+- An emptied number field of the administration no longer breaks anything: an empty longest time
+  online (« Empty: no limit ») refused every share, and an empty warning delay or file deletion delay
+  crashed the hourly jobs
+- Folders sent with their subfolders, and files dropped by the guest of a file request, are cleaned
+  away when they expire: they used to stay on the disk, and the member who asked for the files is
+  now told
+- A share whose files were cleaned away can no longer be extended back to an empty active share
+- Until a mail server is set up, an e-mail is set aside with one line saying why, instead of failing
+  three times with an error
+- Eight administration messages showed their raw key; sign-in, registration and the new password
+  are real forms, which password managers save and fill
+- DiceBear avatars without a deprecated call, faces unchanged
+
 ## [1.1.1] — 2026-11-13
 
 ### Fixed
