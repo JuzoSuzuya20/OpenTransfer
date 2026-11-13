@@ -16,6 +16,7 @@ import { domData } from '../domData'
 import { useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../store'
+import { positiveNumber } from '../lib/positiveNumber'
 // compact: the quick "New share" window (the files, the default access, one button); the page
 // otherwise (piste A: one column, the access options as chips, one open at a time)
 const props = defineProps({
@@ -82,9 +83,10 @@ const timeRemaining = computed(() => {
   const bytesRemaining = totalBytes.value - uploadedBytes.value
   return bytesRemaining / uploadSpeed.value // seconds
 })
-const expiryValue = ref(domData().default_expiry_time)
+// Cleared in the administration, these fields save an empty value: the default, and no limit
+const expiryValue = ref(positiveNumber(domData().default_expiry_time, 7))
 const expiryUnit = ref('days')
-const maxExpiryTime = ref(domData().max_expiry_time)
+const maxExpiryTime = ref(positiveNumber(domData().max_expiry_time, null))
 const errors = ref({
   shareName: null
 })

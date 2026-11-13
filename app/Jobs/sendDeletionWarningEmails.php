@@ -34,8 +34,9 @@ class sendDeletionWarningEmails implements ShouldQueue
       return;
     }
 
-    $deletion_warning_days = $settingsService->get('deletion_warning_days') ?? 7;
-    $clean_files_after_days = $settingsService->get('clean_files_after_days') ?? 30;
+    // A cleared field means the default, not a crash every hour
+    $deletion_warning_days = $settingsService->positiveInt('deletion_warning_days', 7);
+    $clean_files_after_days = $settingsService->positiveInt('clean_files_after_days', 30);
 
     $shares = Share::where('expires_at', '<=', now()->subDays($clean_files_after_days - $deletion_warning_days))
       ->where('sent_deletion_warning', false)

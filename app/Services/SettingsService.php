@@ -85,6 +85,17 @@ class SettingsService
     return $this->getMany($required_keys);
   }
 
+  /**
+   * A number of the administration as a whole number above zero, or $default. Its fields can be
+   * cleared, and save an empty value: that means the default (or, with null, no limit).
+   */
+  public function positiveInt(string $key, ?int $default): ?int
+  {
+    $value = $this->get($key);
+
+    return is_numeric($value) && (int) $value > 0 ? (int) $value : $default;
+  }
+
   public function getMaxUploadSize()
   {
     $max_upload_size = $this->get('max_share_size');

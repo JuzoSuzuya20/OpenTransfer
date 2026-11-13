@@ -34,7 +34,8 @@ class sendExpiryWarningEmails implements ShouldQueue
             return;
         }
 
-        $expiry_warning_days = $settingsService->get('expiry_warning_days') ?? 3;
+        // A cleared field means the default, not a crash every hour
+        $expiry_warning_days = $settingsService->positiveInt('expiry_warning_days', 3);
         $shares = Share::where('expires_at', '<', now()->addDays($expiry_warning_days))
             ->where('expires_at', '>', now())
             ->where('sent_expiry_warning', false)

@@ -18,6 +18,7 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Support\RefreshCookie;
+use App\Services\SettingsService;
 
 class UploadsController extends Controller
 {
@@ -99,7 +100,8 @@ class UploadsController extends Controller
       ], 422);
     }
 
-    $maxExpiryTime = Setting::where('key', 'max_expiry_time')->first()->value;
+    // Empty in the administration means no limit ("Empty: no limit")
+    $maxExpiryTime = app(SettingsService::class)->positiveInt('max_expiry_time', null);
     $expiryDate = Carbon::parse($request->expiry_date);
 
     if ($maxExpiryTime !== null) {
