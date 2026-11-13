@@ -7,6 +7,7 @@ import * as tus from 'tus-js-client'
 import { watch } from 'vue'
 import { domData } from './domData'
 import { solveChallenge } from './proofOfWork'
+import { settingValueAsText } from './lib/settingValue'
 
 // Bundling configuration for small files
 const BUNDLE_CONFIG = {
@@ -799,30 +800,8 @@ export const getSettingById = async (id) => {
 }
 
 export const saveSettingsById = async (settings) => {
-  console.log('save settings', settings)
-  const settingsArray = []
-  const keys = Object.keys(settings)
-  for (const key of keys) {
-    //if the value is a file, convert it to a string
-    if (settings[key] instanceof File) {
-      settings[key] = settings[key].name
-    }
-
-    //if it's an array, convert it to a string
-    if (Array.isArray(settings[key])) {
-      settings[key] = settings[key].join(',')
-    }
-
-    //if it's an object, convert it to a string
-    if (typeof settings[key] === 'object') {
-      settings[key] = JSON.stringify(settings[key])
-    }
-
-    settingsArray.push({
-      key: key,
-      value: settings[key] + ''
-    })
-  }
+  // Each setting as the text the server keeps: an empty one goes out empty (lib/settingValue.js)
+  const settingsArray = Object.keys(settings).map((key) => ({ key, value: settingValueAsText(settings[key]) }))
 
   const response = await fetchWithAuth(`${apiUrl}/api/settings`, {
     method: 'PUT',

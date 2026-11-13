@@ -26,6 +26,14 @@ class SettingsController extends Controller
             'settings.*.value' => 'string|nullable|max:65535',
         ]);
 
+        // An empty setting is kept empty: Laravel turns an empty field into null, which the
+        // screen sent back as the text "null" on its next save, where the checks below read it
+        // as an entry ("Not a domain name: null") and nothing could be saved any more
+        $request->merge(['settings' => array_map(
+            fn (array $setting) => in_array($setting['value'] ?? null, [null, 'null'], true) ? ['key' => $setting['key'], 'value' => ''] : $setting,
+            $request->input('settings')
+        )]);
+
         // Before anything is saved: a refused request must not be half applied
         $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseWeakSharePattern($request);
         if ($refusal) {
