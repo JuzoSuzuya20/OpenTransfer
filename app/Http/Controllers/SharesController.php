@@ -655,6 +655,15 @@ class SharesController extends Controller
         'message' => 'Unauthorized'
       ], 401);
     }
+    // Its files were cleaned away: extended, it would show as active with nothing to download
+    if ($share->status === 'deleted') {
+      return response()->json([
+        'status' => 'error',
+        'code' => 'share_deleted',
+        'message' => 'The files of this share were deleted: it cannot be extended',
+      ], 422);
+    }
+
     // Seven more days, never past the longest time the admin lets a share stay online, counted
     // from the day it was sent like at its creation: extending again and again stays within it
     $extended = Carbon::now()->addDays(7);

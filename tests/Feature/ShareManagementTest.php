@@ -96,6 +96,19 @@ class ShareManagementTest extends TestCase
         $this->assertEqualsWithDelta(now()->addDays(7)->timestamp, $share->fresh()->expires_at->timestamp, 5);
     }
 
+    // Its files were cleaned away: extended, it would show as active with nothing to download
+    public function test_a_share_whose_files_were_deleted_is_not_extended(): void
+    {
+        $owner = $this->member();
+        $share = $this->share($owner, ['expires_at' => now()->subDays(40), 'status' => 'deleted']);
+
+        $this->postJson("/api/shares/{$share->id}/extend", [], $this->bearer($owner))
+            ->assertUnprocessable()
+            ->assertJsonPath('code', 'share_deleted');
+
+        $this->assertTrue($share->fresh()->expires_at->isPast());
+    }
+
     public function test_someone_else_cannot_change_a_share(): void
     {
         $share = $this->share($this->member());
