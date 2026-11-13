@@ -5,6 +5,18 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.1.6] — 2026-11-13
+
+### Added
+
+- "Delete expired shares" is followed by a progress bar: the shares deleted so far, the rows being
+  deleted, then how many were deleted, instead of a message saying it was done before it was
+
+### Fixed
+
+- "Delete expired shares" also deletes the files guests dropped for the member: they were announced
+  as deleted and stayed
+
 ## [1.1.5] — 2026-11-13
 
 ### Added
