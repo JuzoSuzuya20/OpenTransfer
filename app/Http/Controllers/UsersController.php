@@ -40,6 +40,17 @@ class UsersController extends Controller
 
     unset($user->authProviders);
 
+    // A guest drops files for one request: who asks, what for and until when. By link, this is
+    // the only place the message of the member reaches them.
+    if ($user->is_guest && $user->invite) {
+      $user->request = [
+        'from' => $user->invite->user?->name,
+        'message' => $user->invite->message,
+        'expires_at' => $user->invite->expires_at,
+      ];
+    }
+    unset($user->invite);
+
     return response()->json([
       'status' => 'success',
       'message' => 'User fetched successfully',

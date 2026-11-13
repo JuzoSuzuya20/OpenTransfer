@@ -113,6 +113,28 @@ class FileRequestLinkTest extends TestCase
         $this->assertTrue(ReverseShareInvite::first()->expires_at->between(now()->addDays(3)->subMinute(), now()->addDays(3)->addMinute()));
     }
 
+    // By link, the page where the guest drops the files is the only place the message reaches them
+    public function test_the_guest_sees_who_asks_for_the_files_and_why(): void
+    {
+        $member = User::factory()->create(['name' => 'Camille Martin', 'admin' => false, 'active' => true, 'must_change_password' => false, 'is_guest' => false]);
+        $link = $this->postJson('/api/reverse-shares/invite', ['delivery' => 'link', 'recipient_name' => 'Dossier Martin', 'message' => 'Les pièces signées', 'expires_in_days' => 3], $this->bearer($member))->json('data.link');
+
+        $session = $this->open($link)->json('data.access_token');
+        $this->app['auth']->forgetGuards();
+
+        $this->getJson('/api/users/me', ['Authorization' => "Bearer {$session}"])
+            ->assertOk()
+            ->assertJsonPath('data.user.request.from', 'Camille Martin')
+            ->assertJsonPath('data.user.request.message', 'Les pièces signées');
+    }
+
+    public function test_a_member_has_no_request_in_their_profile(): void
+    {
+        $member = $this->member();
+
+        $this->getJson('/api/users/me', $this->bearer($member))->assertOk()->assertJsonMissingPath('data.user.request');
+    }
+
     public function test_the_list_says_which_requests_went_by_link(): void
     {
         $member = $this->member();

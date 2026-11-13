@@ -1095,7 +1095,9 @@
     "another": "Nog een share versturen",
     "see_in_my_shares": "Bekijken in Mijn shares",
     "drop_more": "Zet meer bestanden neer, of",
-    "recipients_max": "Een share gaat naar hoogstens {max} ontvangers."
+    "recipients_max": "Een share gaat naar hoogstens {max} ontvangers.",
+    "request_from": "{name} vraagt je om bestanden",
+    "request_until": "Te leveren vóór {date}"
   },
   "shares": {
     "this_month": "Deze maand",
@@ -1165,7 +1167,22 @@
     "resent": "Verzoek opnieuw verstuurd naar {name}",
     "from_name": "van {name}",
     "open": "Openen",
-    "new_badge": "Nieuw"
+    "new_badge": "Nieuw",
+    "by_email": "Per e-mail",
+    "by_link": "Via link",
+    "mode_label": "Hoe vragen",
+    "for_whom": "Voor wie",
+    "for_whom_placeholder": "Bijv. Dossier Martin, Dhr. Durand",
+    "validity": "Geldig",
+    "validity_days": "{count, plural, one {# dag} other {# dagen}}",
+    "create_link": "Link maken",
+    "link_ready": "Link voor {name}",
+    "copy_link": "Link kopiëren",
+    "copied": "Gekopieerd",
+    "link_help": "Hij opent één keer en blijft geldig tot {date}: kopieer hem nu, hij wordt niet opnieuw getoond.",
+    "link_created": "Link gemaakt",
+    "new_link": "Nieuwe link",
+    "via_link": "via link"
   },
   "sso": {
     "title": "Aanmelden (SSO)",

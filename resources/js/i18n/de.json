@@ -1095,7 +1095,9 @@
     "another": "Eine weitere Freigabe senden",
     "see_in_my_shares": "In Meine Freigaben ansehen",
     "drop_more": "Weitere Dateien hier ablegen, oder",
-    "recipients_max": "Eine Freigabe geht an höchstens {max} Empfänger."
+    "recipients_max": "Eine Freigabe geht an höchstens {max} Empfänger.",
+    "request_from": "{name} bittet Sie um Dateien",
+    "request_until": "Bitte bis zum {date} ablegen"
   },
   "shares": {
     "this_month": "Diesen Monat",
@@ -1165,7 +1167,22 @@
     "resent": "Anfrage erneut an {name} gesendet",
     "from_name": "von {name}",
     "open": "Öffnen",
-    "new_badge": "Neu"
+    "new_badge": "Neu",
+    "by_email": "Per E-Mail",
+    "by_link": "Per Link",
+    "mode_label": "Wie anfragen",
+    "for_whom": "Für wen",
+    "for_whom_placeholder": "z. B. Akte Martin, Herr Durand",
+    "validity": "Gültig",
+    "validity_days": "{count, plural, one {# Tag} other {# Tage}}",
+    "create_link": "Link erstellen",
+    "link_ready": "Link für {name}",
+    "copy_link": "Link kopieren",
+    "copied": "Kopiert",
+    "link_help": "Er öffnet sich einmal und bleibt bis {date} gültig: Kopieren Sie ihn jetzt, er wird nicht noch einmal angezeigt.",
+    "link_created": "Link erstellt",
+    "new_link": "Neuer Link",
+    "via_link": "per Link"
   },
   "sso": {
     "title": "Anmeldung (SSO)",

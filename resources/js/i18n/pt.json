@@ -1095,7 +1095,9 @@
     "another": "Enviar outra partilha",
     "see_in_my_shares": "Ver em As minhas partilhas",
     "drop_more": "Deposite mais ficheiros, ou",
-    "recipients_max": "Uma partilha vai para {max} destinatários no máximo."
+    "recipients_max": "Uma partilha vai para {max} destinatários no máximo.",
+    "request_from": "{name} pede-lhe ficheiros",
+    "request_until": "Para depositar até {date}"
   },
   "shares": {
     "this_month": "Este mês",
@@ -1165,7 +1167,22 @@
     "resent": "Pedido reenviado a {name}",
     "from_name": "de {name}",
     "open": "Abrir",
-    "new_badge": "Novo"
+    "new_badge": "Novo",
+    "by_email": "Por e-mail",
+    "by_link": "Por ligação",
+    "mode_label": "Como pedir",
+    "for_whom": "Para quem",
+    "for_whom_placeholder": "Ex. Processo Martin, Sr. Durand",
+    "validity": "Válido",
+    "validity_days": "{count, plural, one {# dia} other {# dias}}",
+    "create_link": "Criar a ligação",
+    "link_ready": "Ligação para {name}",
+    "copy_link": "Copiar a ligação",
+    "copied": "Copiado",
+    "link_help": "Abre uma única vez e fica válida até {date}: copie-a agora, não voltará a ser mostrada.",
+    "link_created": "Ligação criada",
+    "new_link": "Nova ligação",
+    "via_link": "por ligação"
   },
   "sso": {
     "title": "Início de sessão (SSO)",

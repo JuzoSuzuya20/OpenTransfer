@@ -1095,7 +1095,9 @@
     "another": "Hacer otro envío",
     "see_in_my_shares": "Verlo en Mis envíos",
     "drop_more": "Deposite más archivos, o",
-    "recipients_max": "Un envío llega a {max} destinatarios como máximo."
+    "recipients_max": "Un envío llega a {max} destinatarios como máximo.",
+    "request_from": "{name} le pide unos archivos",
+    "request_until": "Para depositar antes del {date}"
   },
   "shares": {
     "this_month": "Este mes",
@@ -1165,7 +1167,22 @@
     "resent": "Solicitud reenviada a {name}",
     "from_name": "de {name}",
     "open": "Abrir",
-    "new_badge": "Nuevo"
+    "new_badge": "Nuevo",
+    "by_email": "Por correo",
+    "by_link": "Por enlace",
+    "mode_label": "Cómo pedir",
+    "for_whom": "Para quién",
+    "for_whom_placeholder": "Ej. Expediente Martin, Sr. Durand",
+    "validity": "Válido",
+    "validity_days": "{count, plural, one {# día} other {# días}}",
+    "create_link": "Crear el enlace",
+    "link_ready": "Enlace para {name}",
+    "copy_link": "Copiar el enlace",
+    "copied": "Copiado",
+    "link_help": "Se abre una sola vez y es válido hasta el {date}: cópielo ahora, no se volverá a mostrar.",
+    "link_created": "Enlace creado",
+    "new_link": "Nuevo enlace",
+    "via_link": "por enlace"
   },
   "sso": {
     "title": "Inicio de sesión (SSO)",

@@ -605,3 +605,23 @@ button.send-chip {
   font-size: 0.8125rem;
   font-weight: 700;
 }
+
+// What the guest of a file request was asked for, above the files
+.send-request {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  p {
+    margin: 0;
+  }
+}
+.send-request-message {
+  color: var(--ot-heading);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.send-request-until {
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+}

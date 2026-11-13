@@ -150,6 +150,24 @@ const onRecipientKeydown = (event) => {
   }
 }
 
+// A guest drops files for one request: who asks, what for, until when (sent by link, the
+// message reaches them only here)
+const guestRequest = ref(null)
+const loadGuestRequest = async () => {
+  if (!store.isGuest()) return
+  try {
+    guestRequest.value = (await getMyProfile()).request ?? null
+  } catch (error) {
+    console.error('Failed to load the request', error)
+  }
+}
+onMounted(loadGuestRequest)
+const requestDeadline = computed(() =>
+  guestRequest.value?.expires_at
+    ? new Intl.DateTimeFormat(document.documentElement.lang || 'en', { day: 'numeric', month: 'long' }).format(new Date(guestRequest.value.expires_at))
+    : ''
+)
+
 // The figures above the form: what the person has online right now
 const myShares = ref([])
 const loadMyShares = async () => {
@@ -881,6 +899,12 @@ const filesByDirectory = computed(() => {
   <div class="send-page">
     <div class="send" :class="{ 'is-compact': compact }">
       <PageHead v-if="!compact" :title="$t('nav.send')" :description="$t('send.lead')" />
+
+      <section class="ot-card send-request" v-if="guestRequest && !compact" aria-labelledby="h-send-request">
+        <h2 class="ot-card-title" id="h-send-request">{{ $t('send.request_from', { name: guestRequest.from }) }}</h2>
+        <p class="send-request-message" v-if="guestRequest.message">{{ guestRequest.message }}</p>
+        <p class="send-request-until" v-if="requestDeadline">{{ $t('send.request_until', { date: requestDeadline }) }}</p>
+      </section>
 
       <!-- The quick window, once the link exists -->
       <div class="send-done" v-if="compact && sharePanelVisible" role="status">

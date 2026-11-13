@@ -542,16 +542,19 @@ export const registerPasskey = (name, credential) => twoFactorRequest('users/me/
 export const deletePasskey = (id, password) => twoFactorRequest(`users/me/passkeys/${id}`, 'DELETE', { password })
 export const resetUserTwoFactor = (userId) => twoFactorRequest(`users/${userId}/2fa`, 'DELETE')
 
-export const sendReverseShareInvite = async (email, name, message) => {
+// By e-mail (the address gets the link) or by link (it comes back, data.link, to be passed on)
+export const sendReverseShareInvite = async (email, name, message, { delivery = 'email', days = 7 } = {}) => {
   const response = await fetchWithAuth(`${apiUrl}/api/reverse-shares/invite`, {
     method: 'POST',
     headers: {
       ...addJsonHeader()
     },
     body: JSON.stringify({
+      delivery,
       recipient_name: name,
-      recipient_email: email,
-      message: message
+      recipient_email: delivery === 'link' ? null : email,
+      message: message,
+      expires_in_days: days
     })
   })
   const data = await response.json()

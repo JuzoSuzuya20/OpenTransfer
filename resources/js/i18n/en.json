@@ -1095,7 +1095,9 @@
     "another": "Send another share",
     "see_in_my_shares": "See it in My shares",
     "drop_more": "Drop more files here, or",
-    "recipients_max": "A share goes to {max} recipients at most."
+    "recipients_max": "A share goes to {max} recipients at most.",
+    "request_from": "{name} asks you for files",
+    "request_until": "To drop by {date}"
   },
   "shares": {
     "this_month": "This month",
@@ -1165,7 +1167,22 @@
     "resent": "Request sent again to {name}",
     "from_name": "from {name}",
     "open": "Open",
-    "new_badge": "New"
+    "new_badge": "New",
+    "by_email": "By e-mail",
+    "by_link": "By link",
+    "mode_label": "How to ask",
+    "for_whom": "For whom",
+    "for_whom_placeholder": "e.g. Martin file, Mr Durand",
+    "validity": "Valid for",
+    "validity_days": "{count, plural, one {# day} other {# days}}",
+    "create_link": "Create the link",
+    "link_ready": "Link for {name}",
+    "copy_link": "Copy the link",
+    "copied": "Copied",
+    "link_help": "It opens once and stays valid until {date}: copy it now, it will not be shown again.",
+    "link_created": "Link created",
+    "new_link": "New link",
+    "via_link": "by link"
   },
   "sso": {
     "title": "Sign-in (SSO)",

@@ -1095,7 +1095,9 @@
     "another": "Invia un'altra condivisione",
     "see_in_my_shares": "Vedila in Le mie condivisioni",
     "drop_more": "Trascina altri file, oppure",
-    "recipients_max": "Una condivisione va a {max} destinatari al massimo."
+    "recipients_max": "Una condivisione va a {max} destinatari al massimo.",
+    "request_from": "{name} ti chiede dei file",
+    "request_until": "Da depositare entro il {date}"
   },
   "shares": {
     "this_month": "Questo mese",
@@ -1165,7 +1167,22 @@
     "resent": "Richiesta reinviata a {name}",
     "from_name": "da {name}",
     "open": "Apri",
-    "new_badge": "Nuovo"
+    "new_badge": "Nuovo",
+    "by_email": "Per e-mail",
+    "by_link": "Tramite link",
+    "mode_label": "Come chiedere",
+    "for_whom": "Per chi",
+    "for_whom_placeholder": "Es. Pratica Martin, Sig. Durand",
+    "validity": "Valido",
+    "validity_days": "{count, plural, one {# giorno} other {# giorni}}",
+    "create_link": "Crea il link",
+    "link_ready": "Link per {name}",
+    "copy_link": "Copia il link",
+    "copied": "Copiato",
+    "link_help": "Si apre una sola volta e resta valido fino al {date}: copialo ora, non verrà mostrato di nuovo.",
+    "link_created": "Link creato",
+    "new_link": "Nuovo link",
+    "via_link": "tramite link"
   },
   "sso": {
     "title": "Accesso (SSO)",
