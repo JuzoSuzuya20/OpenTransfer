@@ -5,6 +5,7 @@ namespace App\Jobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Services\EmailConfigService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Mail\Mailable;
 class sendEmail implements ShouldQueue
 {
@@ -28,6 +29,16 @@ class sendEmail implements ShouldQueue
     public function handle(): void
     {
         $emailService = new EmailConfigService();
+
+        // Not an error to retry three times with a stack trace: the administrator has not set up
+        // the mail server yet. One line says which e-mail was set aside, and why.
+        if ($reason = $emailService->missingConfiguration()) {
+            Log::warning("E-mail not sent, {$reason}: set up the mail server under Administration", [
+                'mail' => class_basename($this->mailableClass),
+            ]);
+            return;
+        }
+
         $mailer = $emailService->configureMailer();
         $mailable = new $this->mailableClass(...$this->mailableData);
         $mailable = $emailService->configureMailable($mailable);

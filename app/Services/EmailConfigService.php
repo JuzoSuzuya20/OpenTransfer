@@ -17,6 +17,24 @@ class EmailConfigService
     $this->settings = $this->settingService->getMailSettings();
   }
 
+  /**
+   * Why an e-mail cannot leave yet, or null when it can: until an administrator sets up the mail
+   * server, the host is empty and the sender address may read "null" (the old interface saved
+   * empty fields that way).
+   */
+  public function missingConfiguration(): ?string
+  {
+    $host = trim((string) $this->settings['host']);
+    if ($host === '' || $host === 'null') {
+      return 'no mail server is set up';
+    }
+    if (!filter_var((string) $this->settings['from_address'], FILTER_VALIDATE_EMAIL)) {
+      return 'no valid sender address is set up';
+    }
+
+    return null;
+  }
+
   public function configureMailer()
   {
     $settings = $this->settings;
