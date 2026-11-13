@@ -5,6 +5,18 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.2.0] — 2026-11-13
+
+### Added
+
+- A file request can be a link instead of an e-mail: on the requests page, name the request, choose
+  how long it lasts (1 to 30 days), copy the link and pass it on yourself. Nothing is e-mailed, the
+  link opens once, like an e-mailed request
+- E-mailed requests can now last 1 to 30 days as well, instead of always 7
+- The guest who opens a request sees, above the drop zone, who asks for the files, their message and
+  the date to drop them by
+- The list of waiting requests tells which went by link, and gives a new link for one
+
 ## [1.1.6] — 2026-11-13
 
 ### Added
