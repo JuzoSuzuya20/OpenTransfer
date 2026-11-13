@@ -73,6 +73,27 @@ class ShareCleaningTest extends TestCase
         $this->assertSame('deleted', $share->fresh()->status);
     }
 
+    // "Delete expired shares" lists the files guests dropped for the member too: they go as well
+    public function test_deleting_expired_shares_takes_the_files_dropped_for_the_member(): void
+    {
+        $member = User::factory()->create(['admin' => false, 'active' => true, 'must_change_password' => false, 'is_guest' => false]);
+        $invite = ReverseShareInvite::create([
+            'user_id' => $member->id,
+            'recipient_name' => 'Marie Durand',
+            'recipient_email' => 'marie@fournisseur.example',
+            'expires_at' => now()->subDays(10),
+        ]);
+        $dropped = $this->shareOnDisk(['user_id' => null, 'invite_id' => $invite->id, 'public' => false, 'expires_at' => now()->subDay()], ['contrat.pdf']);
+        $own = $this->shareOnDisk(['user_id' => $member->id, 'expires_at' => now()->subDay()], ['rapport.pdf']);
+        $someoneElses = $this->shareOnDisk(['user_id' => User::factory()->create()->id, 'expires_at' => now()->subDay()], ['autre.pdf']);
+
+        (new \App\Jobs\cleanSpecificShares([$dropped->id, $own->id, $someoneElses->id], $member->id))->handle();
+
+        $this->assertSame('deleted', $dropped->fresh()->status);
+        $this->assertSame('deleted', $own->fresh()->status);
+        $this->assertSame('ready', $someoneElses->fresh()->status, 'never a share of someone else');
+    }
+
     public function test_a_share_without_a_path_never_cleans_the_others(): void
     {
         $owner = User::factory()->create();

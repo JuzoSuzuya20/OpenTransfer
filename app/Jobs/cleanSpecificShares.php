@@ -25,7 +25,10 @@ class cleanSpecificShares implements ShouldQueue
     {
         foreach ($this->shareIds as $shareId) {
             $share = Share::find($shareId);
-            if ($share && $share->user_id === $this->userId) {
+            // The member's own shares, and the files guests dropped for them (no owner of their
+            // own): the same shares "Delete expired shares" listed, never someone else's
+            $forThisMember = $share && ($share->user_id === $this->userId || $share->invite?->user_id === $this->userId);
+            if ($forThisMember) {
                 $share->cleanFiles(true);
             }
         }
