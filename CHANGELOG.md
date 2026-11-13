@@ -5,6 +5,14 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.1.3] — 2026-11-13
+
+### Fixed
+
+- The administration page saves again after a first save: an emptied text field (the SSO domains,
+  the IP allowlist) came back as the text "null" and refused every later save ("Not a domain
+  name: null"); instances already in that state save again without any action
+
 ## [1.1.2] — 2026-11-13
 
 ### Fixed
