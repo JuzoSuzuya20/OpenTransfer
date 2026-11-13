@@ -283,7 +283,10 @@
       "login_background_help": "JPEG, PNG of WebP, hoogstens 10 MB en 8000 px. Getoond achter het inlogscherm, verduisterd zodat de tekst leesbaar blijft.",
       "remove_login_background": "Achtergrondafbeelding verwijderen",
       "confirm_remove_login_background": "De afbeelding achter het inlogscherm verwijderen?",
-      "login_background_removed": "Achtergrondafbeelding verwijderd"
+      "login_background_removed": "Achtergrondafbeelding verwijderd",
+      "favicon_delete_failed": "Het favicon kon niet worden verwijderd",
+      "favicon_deleted": "Favicon verwijderd: het OpenTransfer-pictogram is terug",
+      "reset_favicon_to_default": "Terug naar het OpenTransfer-favicon"
     },
     "button": {
       "branding": {
@@ -705,7 +708,6 @@
       "about": "Over",
       "allShares": "Alle shares",
       "branding": "Aanpassing",
-      "cloudConnect": "OpenTransfer aansluiten",
       "emailTemplates": "E-mailsjablonen",
       "linked_accounts": "Verwante accounts",
       "manage": "Beheer",
@@ -838,8 +840,13 @@
       "created_on": "aangemaakt op {date}",
       "self_registration_on": "Zelfregistratie: aan",
       "self_registration_off": "Zelfregistratie: uit",
-      "two_factor_on": "Tweestapsverificatie aan"
-    }
+      "two_factor_on": "Tweestapsverificatie aan",
+      "cannot_force_reset_own_password": "Wijzig je eigen wachtwoord via je profiel",
+      "force_reset_password_failed": "Het wachtwoord kon niet worden opnieuw ingesteld",
+      "password_errors": "Controleer de wachtwoordvelden"
+    },
+    "failedToLoadSettings": "De instellingen konden niet worden geladen",
+    "failedToSaveSettings": "De instellingen konden niet worden opgeslagen"
   },
   "setup": {
     "account_created": "Account succesvol aangemaakt!",

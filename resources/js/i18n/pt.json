@@ -283,7 +283,10 @@
       "login_background_help": "JPEG, PNG ou WebP, no máximo 10 MB e 8000 px. Mostrada atrás do ecrã de início de sessão, escurecida para que o texto continue legível.",
       "remove_login_background": "Remover a imagem de fundo",
       "confirm_remove_login_background": "Remover a imagem atrás do ecrã de início de sessão?",
-      "login_background_removed": "Imagem de fundo removida"
+      "login_background_removed": "Imagem de fundo removida",
+      "favicon_delete_failed": "Não foi possível remover o favicon",
+      "favicon_deleted": "Favicon removido: o ícone do OpenTransfer está de volta",
+      "reset_favicon_to_default": "Voltar ao favicon do OpenTransfer"
     },
     "button": {
       "branding": {
@@ -705,7 +708,6 @@
       "about": "Sobre",
       "allShares": "Todas as partilhas",
       "branding": "Personalização",
-      "cloudConnect": "Erugo Connect",
       "emailTemplates": "Modelos de e-mail",
       "linked_accounts": "Contas Conectadas",
       "manage": "Gerir",
@@ -838,8 +840,13 @@
       "created_on": "criado em {date}",
       "self_registration_on": "Registo autónomo: ativo",
       "self_registration_off": "Registo autónomo: inativo",
-      "two_factor_on": "Autenticação de dois fatores ativa"
-    }
+      "two_factor_on": "Autenticação de dois fatores ativa",
+      "cannot_force_reset_own_password": "Altere a sua palavra-passe a partir do seu perfil",
+      "force_reset_password_failed": "Não foi possível repor a palavra-passe",
+      "password_errors": "Verifique os campos da palavra-passe"
+    },
+    "failedToLoadSettings": "Não foi possível carregar as definições",
+    "failedToSaveSettings": "Não foi possível guardar as definições"
   },
   "setup": {
     "account_created": "Conta criada com sucesso!",

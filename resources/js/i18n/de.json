@@ -283,7 +283,10 @@
       "login_background_help": "JPEG, PNG oder WebP, höchstens 10 MB und 8000 px. Wird hinter dem Anmeldebildschirm angezeigt, abgedunkelt, damit der Text lesbar bleibt.",
       "remove_login_background": "Hintergrundbild entfernen",
       "confirm_remove_login_background": "Das Bild hinter dem Anmeldebildschirm entfernen?",
-      "login_background_removed": "Hintergrundbild entfernt"
+      "login_background_removed": "Hintergrundbild entfernt",
+      "favicon_delete_failed": "Das Favicon konnte nicht entfernt werden",
+      "favicon_deleted": "Favicon entfernt: Das OpenTransfer-Symbol ist zurück",
+      "reset_favicon_to_default": "Zurück zum OpenTransfer-Favicon"
     },
     "button": {
       "branding": {
@@ -705,7 +708,6 @@
       "about": "Über",
       "allShares": "Alle Freigaben",
       "branding": "Anpassung",
-      "cloudConnect": "OpenTransfer Verbinden",
       "emailTemplates": "E-Mail-Vorlagen",
       "linked_accounts": "Verwandte Konten",
       "manage": "Verwalten Sie",
@@ -838,8 +840,13 @@
       "created_on": "angelegt am {date}",
       "self_registration_on": "Selbstregistrierung: an",
       "self_registration_off": "Selbstregistrierung: aus",
-      "two_factor_on": "Zwei-Faktor-Authentifizierung aktiv"
-    }
+      "two_factor_on": "Zwei-Faktor-Authentifizierung aktiv",
+      "cannot_force_reset_own_password": "Ändern Sie Ihr eigenes Passwort in Ihrem Profil",
+      "force_reset_password_failed": "Das Passwort konnte nicht zurückgesetzt werden",
+      "password_errors": "Prüfen Sie die Passwortfelder"
+    },
+    "failedToLoadSettings": "Die Einstellungen konnten nicht geladen werden",
+    "failedToSaveSettings": "Die Einstellungen konnten nicht gespeichert werden"
   },
   "setup": {
     "account_created": "Konto erfolgreich erstellt!",

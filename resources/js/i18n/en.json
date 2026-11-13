@@ -283,7 +283,10 @@
       "login_background_help": "JPEG, PNG or WebP, 10 MB and 8000 px at most. Shown behind the sign-in screen, darkened so the text stays readable.",
       "remove_login_background": "Remove the background image",
       "confirm_remove_login_background": "Remove the image behind the sign-in screen?",
-      "login_background_removed": "Background image removed"
+      "login_background_removed": "Background image removed",
+      "favicon_delete_failed": "The favicon could not be removed",
+      "favicon_deleted": "Favicon removed: the OpenTransfer icon is back",
+      "reset_favicon_to_default": "Back to the OpenTransfer favicon"
     },
     "button": {
       "branding": {
@@ -705,7 +708,6 @@
       "about": "About",
       "allShares": "All Shares",
       "branding": "Customization",
-      "cloudConnect": "Erugo Connect",
       "emailTemplates": "Email templates",
       "linked_accounts": "Linked Accounts",
       "manage": "Manage",
@@ -838,8 +840,13 @@
       "created_on": "created on {date}",
       "self_registration_on": "Self sign-up: on",
       "self_registration_off": "Self sign-up: off",
-      "two_factor_on": "Two-factor authentication is on"
-    }
+      "two_factor_on": "Two-factor authentication is on",
+      "cannot_force_reset_own_password": "Change your own password from your profile",
+      "force_reset_password_failed": "The password could not be reset",
+      "password_errors": "Check the password fields"
+    },
+    "failedToLoadSettings": "The settings could not be loaded",
+    "failedToSaveSettings": "The settings could not be saved"
   },
   "setup": {
     "account_created": "Account created successfully!",

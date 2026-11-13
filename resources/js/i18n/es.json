@@ -283,7 +283,10 @@
       "login_background_help": "JPEG, PNG o WebP, 10 MB y 8000 px como máximo. Se muestra detrás de la pantalla de inicio de sesión, oscurecida para que el texto siga siendo legible.",
       "remove_login_background": "Quitar la imagen de fondo",
       "confirm_remove_login_background": "¿Quitar la imagen de detrás de la pantalla de inicio de sesión?",
-      "login_background_removed": "Imagen de fondo quitada"
+      "login_background_removed": "Imagen de fondo quitada",
+      "favicon_delete_failed": "No se ha podido quitar el favicon",
+      "favicon_deleted": "Favicon quitado: vuelve el icono de OpenTransfer",
+      "reset_favicon_to_default": "Volver al favicon de OpenTransfer"
     },
     "button": {
       "branding": {
@@ -705,7 +708,6 @@
       "about": "Acerca de",
       "allShares": "Todos los envíos",
       "branding": "Personalización",
-      "cloudConnect": "Erugo Connect",
       "emailTemplates": "Plantillas de correo",
       "linked_accounts": "Cuentas vinculadas",
       "manage": "Gestionar",
@@ -838,8 +840,13 @@
       "created_on": "creado el {date}",
       "self_registration_on": "Autorregistro: activado",
       "self_registration_off": "Autorregistro: desactivado",
-      "two_factor_on": "Autenticación de dos factores activada"
-    }
+      "two_factor_on": "Autenticación de dos factores activada",
+      "cannot_force_reset_own_password": "Cambie su propia contraseña desde su perfil",
+      "force_reset_password_failed": "No se ha podido restablecer la contraseña",
+      "password_errors": "Revise los campos de la contraseña"
+    },
+    "failedToLoadSettings": "No se han podido cargar los ajustes",
+    "failedToSaveSettings": "No se han podido guardar los ajustes"
   },
   "setup": {
     "account_created": "¡Cuenta creada!",

@@ -283,7 +283,10 @@
       "login_background_help": "JPEG, PNG ou WebP, 10 Mo et 8000 px au plus. Affichée derrière l'écran de connexion, assombrie pour que le texte reste lisible.",
       "remove_login_background": "Retirer l'image de fond",
       "confirm_remove_login_background": "Retirer l'image derrière l'écran de connexion ?",
-      "login_background_removed": "Image de fond retirée"
+      "login_background_removed": "Image de fond retirée",
+      "favicon_delete_failed": "Le favicon n'a pas pu être supprimé",
+      "favicon_deleted": "Favicon supprimé : l'icône d'OpenTransfer revient",
+      "reset_favicon_to_default": "Revenir au favicon d'OpenTransfer"
     },
     "button": {
       "branding": {
@@ -705,7 +708,6 @@
       "about": "À propos",
       "allShares": "Tous les partages",
       "branding": "Personnalisation",
-      "cloudConnect": "Erugo Connect",
       "emailTemplates": "Modèles d’e-mails",
       "linked_accounts": "Comptes liés",
       "manage": "Gérer",
@@ -788,7 +790,7 @@
       "admin_help_text_2": "L'utilisateur aura les mêmes privilèges que vous.\n",
       "cannot_delete_yourself": "Vous ne pouvez pas vous supprimer vous-même",
       "close": "Fermer",
-      "confirm_force_reset_password": "Vous avez vraiment réinitialisé le mot de passe d'un utilisateur ? Il devra créer un nouveau mot de passe avant de pouvoir utiliser à nouveau le système.",
+      "confirm_force_reset_password": "Réinitialiser le mot de passe de cette personne ? Elle devra en créer un nouveau avant de pouvoir utiliser à nouveau OpenTransfer.",
       "confirm_reset_two_factor": "Retirer le second facteur de {name} ? Cette personne se connectera ensuite avec son seul mot de passe.",
       "created": "Créé",
       "current_password": "Mot de passe actuel",
@@ -838,8 +840,13 @@
       "created_on": "créé le {date}",
       "self_registration_on": "Inscription libre : activée",
       "self_registration_off": "Inscription libre : désactivée",
-      "two_factor_on": "Double authentification activée"
-    }
+      "two_factor_on": "Double authentification activée",
+      "cannot_force_reset_own_password": "Changez votre propre mot de passe depuis votre profil",
+      "force_reset_password_failed": "Le mot de passe n'a pas pu être réinitialisé",
+      "password_errors": "Vérifiez les champs du mot de passe"
+    },
+    "failedToLoadSettings": "Les réglages n'ont pas pu être chargés",
+    "failedToSaveSettings": "Les réglages n'ont pas pu être enregistrés"
   },
   "setup": {
     "account_created": "Compte créé avec succès !",
