@@ -5,6 +5,19 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.1] — 2026-11-17
+
+### Changed
+
+- The logo is a square, without text, and the name next to it is the one the admin chose (General >
+  Application name), as typed: in the header, on the sign-in page and in the emails. "OpenTransfer"
+  was written next to the mark whatever the name, and an uploaded logo showed without the name
+- The logo shipped is a square mark (512 × 512) instead of a banner with "OpenTransfer" written on
+  it. An instance that kept a shipped logo (the banner of OpenTransfer or of Erugo) gets the square
+  one at its next start; a logo an admin uploaded stays, held in the square without being stretched
+- The width of the logo is no longer set: the logo is square
+- The name of the default logo is no longer "erugo-logo.png"
+
 ## [1.5.0] — 2026-11-16
 
 ### Security

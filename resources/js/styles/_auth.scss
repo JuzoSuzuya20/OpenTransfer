@@ -14,19 +14,13 @@
   gap: 12px;
   text-align: center;
 
-  .auth-logo {
-    max-width: 100%;
-    max-height: 64px;
-    object-fit: contain;
-  }
   .auth-title {
     margin: 0;
     font-size: 1.75rem;
     font-weight: 800;
     line-height: 1.2;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
     color: var(--ot-heading);
+    overflow-wrap: anywhere;
   }
   .auth-subtitle {
     margin: 0;

@@ -17,7 +17,6 @@ const props = defineProps({
   allowFileRequests: { type: Boolean, default: false },
   defaultLogo: { type: Boolean, default: true },
   logoUrl: { type: String, default: '' },
-  logoWidth: { type: [Number, String], default: 0 },
   applicationName: { type: String, default: '' }
 })
 const emit = defineEmits(['search', 'logout', 'new-share'])
@@ -38,8 +37,7 @@ const navItems = computed(() =>
   <header class="app-header" :class="`is-${variant}`">
     <div class="app-header-bar">
       <AppLink v-if="variant !== 'bare'" class="brand" to="/" :aria-label="t('nav.home')">
-        <BrandMark v-if="defaultLogo" />
-        <img v-else :src="logoUrl" :alt="applicationName" id="logo" :style="{ width: `${logoWidth}px` }" />
+        <BrandMark :name="applicationName" :logo-url="defaultLogo ? '' : logoUrl" />
       </AppLink>
 
       <template v-if="variant === 'full'">

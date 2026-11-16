@@ -170,6 +170,9 @@ su-exec opentransfer php artisan db:seed --force
 echo "Clearing settings cache..."
 su-exec opentransfer php artisan clear-settings-cache
 
+# The square default logo for an instance that kept a shipped one (its own logo stays)
+su-exec opentransfer php artisan refresh-default-logo
+
 echo "Clearing templates cache..."
 su-exec opentransfer php artisan view:clear
 

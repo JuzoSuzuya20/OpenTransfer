@@ -55,7 +55,6 @@ const showPoweredBy = settings.show_powered_by === true
 const loginBackground = /^login-[a-z0-9]{16}\.(jpg|png|webp)$/.test(settings.login_background || '')
   ? `/api/backgrounds/${settings.login_background}`
   : null
-const logoWidth = settings.logo_width
 const defaultLogo = ref(settings.default_logo !== false)
 const logoTimestamp = ref(Date.now())
 const logoUrl = computed(() => `/images/logo.png?t=${logoTimestamp.value}`)
@@ -323,7 +322,6 @@ onBeforeUnmount(() => {
       :allow-file-requests="allowFileRequests"
       :default-logo="defaultLogo"
       :logo-url="logoUrl"
-      :logo-width="logoWidth"
       :application-name="applicationName"
       @search="commandPalette?.open()"
       @new-share="openQuickSend"

@@ -73,15 +73,17 @@ class EmailDesignTest extends TestCase
         $this->assertStringNotContainsString('/images/logo.png', $html);
     }
 
-    public function test_the_header_shows_the_logo_of_the_instance_once_an_admin_changed_it(): void
+    // A logo is square, with the name the admin chose next to it: "Drop Me" reads in the head of
+    // the email as it does in the application
+    public function test_the_header_shows_the_logo_of_the_instance_with_its_name_once_an_admin_changed_it(): void
     {
         Storage::disk('public')->put('images/logo.png', 'logo of the organisation');
-        $this->setting('logo_width', '150');
+        $this->setting('application_name', 'Drop Me');
 
         $html = (new passwordResetMail('token', User::factory()->create()))->render();
 
-        $this->assertStringContainsString('src="https://files.example.test/images/logo.png"', $html);
-        $this->assertStringContainsString('width="150"', $html);
+        $this->assertMatchesRegularExpression('/<img src="https:\/\/files\.example\.test\/images\/logo\.png" width="28" height="28"/', $html);
+        $this->assertMatchesRegularExpression('/>\s*Drop Me\s*<\/td>/', $html);
         $this->assertStringNotContainsString('brand-mark.png', $html);
     }
 
@@ -93,7 +95,7 @@ class EmailDesignTest extends TestCase
 
         $this->assertMatchesRegularExpression('/<td class="ot-brand" align="center"[^>]*>/', $mark);
         $this->assertMatchesRegularExpression('/<table role="presentation" align="center"[^>]*>\s*<tr>\s*<td width="28"/', $mark);
-        $this->assertMatchesRegularExpression('/<img src="https:\/\/files\.example\.test\/images\/logo\.png"[^>]*margin:0 auto/', $logo);
+        $this->assertMatchesRegularExpression('/<table role="presentation" align="center"[^>]*>\s*<tr>\s*<td width="28"/', $logo);
     }
 
     public function test_a_share_is_announced_as_its_download_page_shows_it(): void

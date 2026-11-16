@@ -85,6 +85,9 @@ as_app php artisan db:seed --force
 echo "Clearing settings cache..."
 as_app php artisan clear-settings-cache
 
+# The square default logo for an instance that kept a shipped one (its own logo stays)
+as_app php artisan refresh-default-logo
+
 echo "Clearing templates cache..."
 as_app php artisan view:clear
 

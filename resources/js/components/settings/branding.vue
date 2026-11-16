@@ -30,7 +30,6 @@ const confirmDialog = useConfirmDialog()
 
 const settings = ref({
   logo: null,
-  logo_width: '',
   show_powered_by: true
 })
 
@@ -183,7 +182,7 @@ const saveSettings = async () => {
     }
 
     // Only the settings this page shows: the colours and backgrounds of the former themes are left as stored
-    await saveSettingsById({ logo_width: settings.value.logo_width, show_powered_by: settings.value.show_powered_by })
+    await saveSettingsById({ show_powered_by: settings.value.show_powered_by })
 
     saving.value = false
     toast.success(t.value('settings.branding.settings_saved'))
@@ -294,10 +293,9 @@ const handleRemoveBackground = async () => {
 }
 
 const updateBrowserLogo = () => {
-  const logo = document.getElementById('logo')
-  if (logo) {
+  document.querySelectorAll('.brand-logo-img').forEach((logo) => {
     logo.src = `/images/logo.png?t=${Date.now()}`
-  }
+  })
 }
 
 const updateBrowserFavicon = () => {
@@ -375,13 +373,6 @@ defineExpose({
           <p class="help-text">{{ $t('settings.branding.favicon_description') }}</p>
         </div>
 
-        <div class="input-container logo-width">
-          <label for="logoWidth">
-            {{ $t('settings.branding.logo_width') }}
-            <small>({{ $t('settings.branding.in_pixels') }})</small>
-          </label>
-          <OtNumber id="logoWidth" v-model="settings.logo_width" :min="1" :increment="10" />
-        </div>
       </div>
     </section>
 

@@ -147,7 +147,7 @@ const skipAndLogin = async () => {
   <div class="setup-container">
     <div class="setup-inner">
       <div class="setup-logo-container">
-        <BrandMark :size="48" :with-name="false" />
+        <BrandMark :size="48" />
         <h1 class="setup-title">OpenTransfer</h1>
       </div>
 

@@ -69,7 +69,6 @@ const applicationName = domData().application_name
 // The accounts of these domains sign in through the identity provider: the screen says so as they type
 const ssoDomain = computed(() => ssoDomainOf(email.value, domData().sso_required_domains))
 const defaultLogo = domData().default_logo !== false
-const logoWidth = domData().logo_width
 const logoUrl = `/images/logo.png?t=${Date.now()}`
 const forgotPasswordMode = ref(false)
 const haveResetToken = ref(false)
@@ -493,8 +492,7 @@ const switchToLogin = () => {
 <template>
   <div class="auth">
     <div class="auth-brand">
-      <BrandMark v-if="defaultLogo" :size="56" :with-name="false" />
-      <img v-else :src="logoUrl" :alt="applicationName" class="auth-logo" :style="{ width: `${logoWidth}px` }" />
+      <BrandMark :size="56" :logo-url="defaultLogo ? '' : logoUrl" />
       <component :is="isSignInStep ? 'h1' : 'p'" class="auth-title">{{ applicationName }}</component>
       <p class="auth-subtitle" v-if="isSignInStep">{{ loginMessage }}</p>
     </div>

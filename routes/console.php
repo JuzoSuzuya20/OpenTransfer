@@ -58,6 +58,11 @@ Artisan::command('back-up-database', function () {
     backUpDatabase::dispatch();
 })->purpose('Back up the database');
 
+// At each start (start-container): the square logo for an instance that kept a shipped one
+Artisan::command('refresh-default-logo', function () {
+    \App\Support\DefaultLogo::refresh();
+})->purpose('Give the square default logo to an instance that kept a shipped one');
+
 Artisan::command('clear-settings-cache', function () {
     app(SettingsService::class)->clearCache();
     $this->info('Settings cache cleared.');

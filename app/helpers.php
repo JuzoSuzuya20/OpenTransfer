@@ -63,17 +63,12 @@ function getSettings()
 if (!function_exists('usesDefaultLogo')) {
 function usesDefaultLogo(): bool
 {
-    // SHA-256 of the logos shipped as storage_skell/app/public/images/logo.png
-    $shipped = [
-        'ab4413bc0a608b61bd164da038a0927c63c59882ab4b0ba9aa3aea1d20fb4093', // OpenTransfer
-        '768ff36a5c585ee6a643ccd039c82cb126ab040ed11207d2053b50b4f8bef3ee', // Erugo
-    ];
-
+    // One of the logos shipped (App\Support\DefaultLogo), or none at all
     $disk = Storage::disk('public');
     if (!$disk->exists('images/logo.png')) {
         return true;
     }
 
-    return in_array(hash('sha256', $disk->get('images/logo.png')), $shipped, true);
+    return \App\Support\DefaultLogo::isShipped($disk->get('images/logo.png'));
 }
 }

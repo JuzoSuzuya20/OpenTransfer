@@ -32,10 +32,9 @@ trait LocalizedEmail
     {
         $this->emailLocale = Locales::isSupported($locale) ? $locale : 'en';
         $this->layout = EmailTexts::layout($this->emailLocale);
+        // The logo is square, with the name the admin chose next to it, as in the application
         $this->brand = [
             'custom_logo' => !usesDefaultLogo(),
-            // As wide as in the header of the application, within the width of an email
-            'logo_width' => max(40, min(240, (int) (app(SettingsService::class)->get('logo_width') ?: 120))),
         ];
     }
 
