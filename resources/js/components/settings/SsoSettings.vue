@@ -1,5 +1,7 @@
 <script setup>
 import OtSelect from '../layout/OtSelect.vue'
+import Expand from '../layout/Expand.vue'
+import OtSkeleton from '../layout/OtSkeleton.vue'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 import { ref, computed, onMounted } from 'vue'
 import { useTranslate } from '@tolgee/vue'
@@ -230,6 +232,7 @@ defineExpose({ save })
     <section class="ot-card setting-group" id="auth_providers" aria-labelledby="h-providers">
       <h2 class="ot-card-title" id="h-providers">{{ t('sso.providers_title') }}</h2>
 
+      <OtSkeleton v-if="!loaded" variant="rows" :count="2" />
       <p class="sso-empty" v-if="loaded && providers.length === 0">{{ t('sso.no_provider') }}</p>
 
       <article v-for="provider in providers" :key="provider.uuid" class="sso-provider" :class="{ open: provider.editing }">
@@ -248,112 +251,114 @@ defineExpose({ save })
           </button>
         </header>
 
-        <div class="sso-provider-body" v-if="provider.editing">
-          <div class="sso-form">
-            <div class="input-container">
-              <label :for="`name-${provider.uuid}`">{{ t('sso.field.name') }}</label>
-              <input type="text" :id="`name-${provider.uuid}`" v-model="provider.name" />
-              <p class="help-text">{{ t('sso.field.name_help') }}</p>
-            </div>
-
-            <div class="input-container" v-for="key in fieldsOf(provider)" :key="key">
-              <label :for="`${key}-${provider.uuid}`">{{ fieldLabel(key) }}</label>
-              <div class="field-with-action" v-if="isSecret(key)">
+        <Expand :show="provider.editing">
+          <div class="sso-provider-body">
+            <div class="sso-form">
+              <div class="input-container">
+                <label :for="`name-${provider.uuid}`">{{ t('sso.field.name') }}</label>
+                <input type="text" :id="`name-${provider.uuid}`" v-model="provider.name" />
+                <p class="help-text">{{ t('sso.field.name_help') }}</p>
+              </div>
+  
+              <div class="input-container" v-for="key in fieldsOf(provider)" :key="key">
+                <label :for="`${key}-${provider.uuid}`">{{ fieldLabel(key) }}</label>
+                <div class="field-with-action" v-if="isSecret(key)">
+                  <input
+                    :type="shown[`${provider.uuid}-${key}`] ? 'text' : 'password'"
+                    :id="`${key}-${provider.uuid}`"
+                    v-model="provider.provider_config[key]"
+                    autocomplete="off"
+                  />
+                  <button
+                    type="button"
+                    class="field-action"
+                    @click="shown[`${provider.uuid}-${key}`] = !shown[`${provider.uuid}-${key}`]"
+                    :aria-label="shown[`${provider.uuid}-${key}`] ? t('send.hide_password') : t('send.show_password')"
+                  >
+                    <EyeOff v-if="shown[`${provider.uuid}-${key}`]" class="ot-check-pop" aria-hidden="true" />
+                    <Eye v-else class="ot-check-pop" aria-hidden="true" />
+                  </button>
+                </div>
                 <input
-                  :type="shown[`${provider.uuid}-${key}`] ? 'text' : 'password'"
+                  v-else
+                  type="text"
                   :id="`${key}-${provider.uuid}`"
                   v-model="provider.provider_config[key]"
+                  :placeholder="t(`sso.placeholder.${key}`, '')"
                   autocomplete="off"
                 />
-                <button
-                  type="button"
-                  class="field-action"
-                  @click="shown[`${provider.uuid}-${key}`] = !shown[`${provider.uuid}-${key}`]"
-                  :aria-label="shown[`${provider.uuid}-${key}`] ? t('send.hide_password') : t('send.show_password')"
-                >
-                  <EyeOff v-if="shown[`${provider.uuid}-${key}`]" class="ot-check-pop" aria-hidden="true" />
-                  <Eye v-else class="ot-check-pop" aria-hidden="true" />
-                </button>
+                <p class="help-text" v-if="t(`sso.hint.${provider.class}.${key}`, '')">{{ t(`sso.hint.${provider.class}.${key}`, '') }}</p>
               </div>
-              <input
-                v-else
-                type="text"
-                :id="`${key}-${provider.uuid}`"
-                v-model="provider.provider_config[key]"
-                :placeholder="t(`sso.placeholder.${key}`, '')"
-                autocomplete="off"
-              />
-              <p class="help-text" v-if="t(`sso.hint.${provider.class}.${key}`, '')">{{ t(`sso.hint.${provider.class}.${key}`, '') }}</p>
-            </div>
-
-            <div class="sso-options">
-              <div class="checkbox-container">
-                <input type="checkbox" :id="`enabled-${provider.uuid}`" v-model="provider.enabled" />
-                <label :for="`enabled-${provider.uuid}`">{{ t('sso.option.enabled') }}</label>
-              </div>
-              <div class="checkbox-container">
-                <input type="checkbox" :id="`trust-${provider.uuid}`" v-model="provider.trust_email" />
-                <label :for="`trust-${provider.uuid}`">{{ t('sso.option.trust_email') }}</label>
-              </div>
-              <p class="help-text">{{ t('sso.option.trust_email_help') }}</p>
-              <div class="checkbox-container">
-                <input type="checkbox" :id="`register-${provider.uuid}`" v-model="provider.allow_registration" />
-                <label :for="`register-${provider.uuid}`">{{ t('sso.option.allow_registration') }}</label>
-              </div>
-              <template v-if="'logout_at_provider' in provider.provider_config">
+  
+              <div class="sso-options">
                 <div class="checkbox-container">
-                  <input type="checkbox" :id="`logout-${provider.uuid}`" v-model="provider.provider_config.logout_at_provider" />
-                  <label :for="`logout-${provider.uuid}`">{{ t('sso.option.logout_at_provider', { name: provider.provider_name }) }}</label>
+                  <input type="checkbox" :id="`enabled-${provider.uuid}`" v-model="provider.enabled" />
+                  <label :for="`enabled-${provider.uuid}`">{{ t('sso.option.enabled') }}</label>
                 </div>
-              </template>
+                <div class="checkbox-container">
+                  <input type="checkbox" :id="`trust-${provider.uuid}`" v-model="provider.trust_email" />
+                  <label :for="`trust-${provider.uuid}`">{{ t('sso.option.trust_email') }}</label>
+                </div>
+                <p class="help-text">{{ t('sso.option.trust_email_help') }}</p>
+                <div class="checkbox-container">
+                  <input type="checkbox" :id="`register-${provider.uuid}`" v-model="provider.allow_registration" />
+                  <label :for="`register-${provider.uuid}`">{{ t('sso.option.allow_registration') }}</label>
+                </div>
+                <template v-if="'logout_at_provider' in provider.provider_config">
+                  <div class="checkbox-container">
+                    <input type="checkbox" :id="`logout-${provider.uuid}`" v-model="provider.provider_config.logout_at_provider" />
+                    <label :for="`logout-${provider.uuid}`">{{ t('sso.option.logout_at_provider', { name: provider.provider_name }) }}</label>
+                  </div>
+                </template>
+              </div>
+  
+              <div class="sso-test" v-if="testable(provider)">
+                <button type="button" class="secondary" @click="runTest(provider)" :disabled="testing[provider.uuid]">
+                  <PlugZap aria-hidden="true" />
+                  {{ testing[provider.uuid] ? t('sso.test.running') : t('sso.test.button') }}
+                </button>
+                <ul class="sso-test-results" v-if="results[provider.uuid]" aria-live="polite">
+                  <li v-for="line in resultLines(results[provider.uuid])" :key="line.text" :class="line.ok ? 'is-ok' : line.warn ? 'is-warn' : 'is-error'">
+                    {{ line.text }}
+                  </li>
+                </ul>
+              </div>
             </div>
-
-            <div class="sso-test" v-if="testable(provider)">
-              <button type="button" class="secondary" @click="runTest(provider)" :disabled="testing[provider.uuid]">
-                <PlugZap aria-hidden="true" />
-                {{ testing[provider.uuid] ? t('sso.test.running') : t('sso.test.button') }}
-              </button>
-              <ul class="sso-test-results" v-if="results[provider.uuid]" aria-live="polite">
-                <li v-for="line in resultLines(results[provider.uuid])" :key="line.text" :class="line.ok ? 'is-ok' : line.warn ? 'is-warn' : 'is-error'">
-                  {{ line.text }}
+  
+            <!-- What the admin declares at the provider, ready to copy -->
+            <aside class="sso-declare" :aria-label="t('sso.declare_title', { name: provider.provider_name })">
+              <h4>{{ t('sso.declare_title', { name: provider.provider_name }) }}</h4>
+              <ol>
+                <li v-if="provider.class === 'Keycloak'">{{ t('sso.declare.keycloak_client') }}</li>
+                <li>
+                  <span>{{ t('sso.declare.redirect_uri') }}</span>
+                  <span class="sso-copy">
+                    <code>{{ provider.callback_url }}</code>
+                    <button type="button" class="ot-act icon-only" @click="copy(provider.callback_url, `cb-${provider.uuid}`)" :aria-label="t('sso.copy')">
+                      <Check v-if="copied === `cb-${provider.uuid}`" class="ot-check-pop" aria-hidden="true" />
+                      <Copy v-else aria-hidden="true" />
+                    </button>
+                  </span>
                 </li>
-              </ul>
-            </div>
+                <li v-if="provider.provider_config.logout_at_provider">
+                  <span>{{ t('sso.declare.post_logout_uri') }}</span>
+                  <span class="sso-copy">
+                    <code>{{ provider.post_logout_redirect_uri }}</code>
+                    <button type="button" class="ot-act icon-only" @click="copy(provider.post_logout_redirect_uri, `pl-${provider.uuid}`)" :aria-label="t('sso.copy')">
+                      <Check v-if="copied === `pl-${provider.uuid}`" class="ot-check-pop" aria-hidden="true" />
+                      <Copy v-else aria-hidden="true" />
+                    </button>
+                  </span>
+                </li>
+                <li v-if="provider.class === 'Keycloak'">{{ t('sso.declare.keycloak_secret') }}</li>
+              </ol>
+              <button type="button" class="ghost sso-delete" @click="removeProvider(provider)">
+                <Trash2 aria-hidden="true" />
+                {{ t('settings.system.delete_auth_provider') }}
+              </button>
+            </aside>
           </div>
-
-          <!-- What the admin declares at the provider, ready to copy -->
-          <aside class="sso-declare" :aria-label="t('sso.declare_title', { name: provider.provider_name })">
-            <h4>{{ t('sso.declare_title', { name: provider.provider_name }) }}</h4>
-            <ol>
-              <li v-if="provider.class === 'Keycloak'">{{ t('sso.declare.keycloak_client') }}</li>
-              <li>
-                <span>{{ t('sso.declare.redirect_uri') }}</span>
-                <span class="sso-copy">
-                  <code>{{ provider.callback_url }}</code>
-                  <button type="button" class="ot-act icon-only" @click="copy(provider.callback_url, `cb-${provider.uuid}`)" :aria-label="t('sso.copy')">
-                    <Check v-if="copied === `cb-${provider.uuid}`" class="ot-check-pop" aria-hidden="true" />
-                    <Copy v-else aria-hidden="true" />
-                  </button>
-                </span>
-              </li>
-              <li v-if="provider.provider_config.logout_at_provider">
-                <span>{{ t('sso.declare.post_logout_uri') }}</span>
-                <span class="sso-copy">
-                  <code>{{ provider.post_logout_redirect_uri }}</code>
-                  <button type="button" class="ot-act icon-only" @click="copy(provider.post_logout_redirect_uri, `pl-${provider.uuid}`)" :aria-label="t('sso.copy')">
-                    <Check v-if="copied === `pl-${provider.uuid}`" class="ot-check-pop" aria-hidden="true" />
-                    <Copy v-else aria-hidden="true" />
-                  </button>
-                </span>
-              </li>
-              <li v-if="provider.class === 'Keycloak'">{{ t('sso.declare.keycloak_secret') }}</li>
-            </ol>
-            <button type="button" class="ghost sso-delete" @click="removeProvider(provider)">
-              <Trash2 aria-hidden="true" />
-              {{ t('settings.system.delete_auth_provider') }}
-            </button>
-          </aside>
-        </div>
+        </Expand>
       </article>
 
       <div class="sso-add">

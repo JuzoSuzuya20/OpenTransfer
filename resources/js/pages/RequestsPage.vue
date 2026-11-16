@@ -7,6 +7,8 @@ import { useToast } from 'vue-toastification'
 import { Send, SquareArrowOutUpRight, Link2, Copy, Check } from 'lucide-vue-next'
 import OtSelect from '../components/layout/OtSelect.vue'
 import OtPassword from '../components/layout/OtPassword.vue'
+import Expand from '../components/layout/Expand.vue'
+import OtSkeleton from '../components/layout/OtSkeleton.vue'
 import PageHead from '../components/layout/PageHead.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import { pinLeaving } from '../lib/motion'
@@ -230,8 +232,8 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
         </button>
       </div>
 
-      <Transition name="ot-pop">
-        <div class="requests-link-ready" v-if="createdLink" role="status">
+      <Expand :show="createdLink">
+        <div class="requests-link-ready" role="status">
           <label for="request-link">{{ t('requests.link_ready', { name: createdLink.name }) }}</label>
           <div class="requests-link-field">
             <input type="text" id="request-link" :value="createdLink.url" readonly @focus="$event.target.select()" />
@@ -243,7 +245,7 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
           <p class="help-text">{{ t('requests.link_help', { date: day(createdLink.until) }) }}</p>
           <p class="help-text" v-if="createdLink.protectedByPassword">{{ t('requests.password_apart') }}</p>
         </div>
-      </Transition>
+      </Expand>
     </form>
 
     <div class="requests-columns">
@@ -274,6 +276,7 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
           </li>
         </TransitionGroup>
         <p class="requests-empty" v-else-if="loaded">{{ t('requests.no_waiting') }}</p>
+        <OtSkeleton v-else variant="rows" :count="2" />
       </section>
 
       <section class="ot-card requests-received" aria-labelledby="h-received">
@@ -300,6 +303,7 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
           </li>
         </TransitionGroup>
         <p class="requests-empty" v-else-if="loaded">{{ t('requests.none') }}</p>
+        <OtSkeleton v-else variant="rows" :count="2" />
         <AppLink to="/my-shares" class="requests-link" v-if="received.length">{{ t('requests.see_all') }}</AppLink>
       </section>
     </div>

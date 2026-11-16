@@ -2,6 +2,7 @@
 import { emitter } from '../../store'
 import { ref, onMounted, watch, defineExpose, onBeforeUnmount, computed } from 'vue'
 import { RotateCcw, Trash2 } from 'lucide-vue-next'
+import OtSkeleton from '../layout/OtSkeleton.vue'
 
 import {
   getSettingsByGroup,
@@ -17,7 +18,6 @@ import {
 } from '../../api'
 import FileInput from '../fileInput.vue'
 import { domData } from '../../domData'
-import OtNumber from '../layout/OtNumber.vue'
 import { useToast } from 'vue-toastification'
 import { niceFileName, mapSettings } from '../../utils'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
@@ -326,7 +326,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="admin-sections branding-settings">
+  <div class="admin-sections branding-settings" v-if="settingsLoaded">
     <section class="ot-card setting-group" id="logo-settings" aria-labelledby="h-logo">
       <h2 class="ot-card-title" id="h-logo">{{ $t('settings.branding.logo_and_favicon') }}</h2>
 
@@ -414,6 +414,10 @@ defineExpose({
       </div>
       <p class="help-text">{{ $t('settings.branding.show_powered_by_description') }}</p>
     </section>
+  </div>
+  <!-- The settings on their way: the shape of a section -->
+  <div class="admin-sections branding-settings" v-else>
+    <section class="ot-card setting-group"><OtSkeleton variant="fields" :count="3" /></section>
   </div>
 </template>
 

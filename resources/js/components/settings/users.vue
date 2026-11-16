@@ -9,6 +9,7 @@ import { store } from '../../store'
 import { useToast } from 'vue-toastification'
 import { niceDate } from '../../utils'
 import UserAvatar from '../layout/UserAvatar.vue'
+import OtSkeleton from '../layout/OtSkeleton.vue'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 import { useSetting } from '../../composables/useSetting'
 
@@ -34,10 +35,15 @@ onMounted(async () => {
   newUser.value = getEmptyUser()
 })
 
+const usersLoaded = ref(false)
 const loadUsers = () => {
-  getUsers().then((data) => {
-    users.value = data.users
-  })
+  getUsers()
+    .then((data) => {
+      users.value = data.users
+    })
+    .finally(() => {
+      usersLoaded.value = true
+    })
 }
 
 const handleDeleteUserClick = async (id) => {
@@ -220,8 +226,9 @@ const confirmForceResetPassword = () => {
     <section class="ot-card users-card" aria-labelledby="h-users">
       <div class="users-head">
         <h2 class="ot-card-title" id="h-users">{{ $t('settings.title.users') }}</h2>
-        <span class="ot-pill">{{ $t('settings.users.count', { count: users.length }) }}</span>
+        <span class="ot-pill" v-if="usersLoaded">{{ $t('settings.users.count', { count: users.length }) }}</span>
       </div>
+      <OtSkeleton v-if="!usersLoaded" variant="rows" :count="4" />
       <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="user-list ot-list-host">
         <li v-for="(user, index) in users" :key="user.id" class="user-row" :style="{ '--ot-i': index }">
           <UserAvatar :seed="user.avatar_seed ?? ''" :name="user.name" :size="32" />

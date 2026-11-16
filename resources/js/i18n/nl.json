@@ -1172,5 +1172,8 @@
   "attempts": {
     "left": "{count, plural, one {Nog maar één poging.} other {Nog maar # pogingen.}}",
     "locked": "Te veel pogingen. Probeer het over {minutes, plural, one {# minuut} other {# minuten}} opnieuw."
+  },
+  "common": {
+    "loading": "Laden…"
   }
 }

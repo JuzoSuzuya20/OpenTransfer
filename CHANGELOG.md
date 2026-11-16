@@ -17,8 +17,21 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
   one at its next start; a logo an admin uploaded stays, held in the square without being stretched
 - The width of the logo is no longer set: the logo is square
 - The name of the default logo is no longer "erugo-logo.png"
+- What opens or closes on a page grows and shrinks instead of appearing at once: the options and
+  the name and message of a share in Send, the settings that depend on another one (link pattern,
+  self-registration, anti-robot check), the edition of an identity provider, the link of a file
+  request, the table of the statistics. Opening decelerates, closing goes sooner and accelerates;
+  with less motion asked for, it only fades
+- What loads shows its shape meanwhile (skeletons) instead of an empty page or a "Loading" line:
+  shares, file requests, users, identity providers, backups, statistics, email templates, the
+  profile, About, the settings of System and Appearance (their fields no longer change under the
+  eyes), and the page of a share
 
 ### Fixed
+
+- Refreshing the backups no longer makes its button flicker: it kept no icon, took a spinner and
+  the colour of a disabled button for an instant. Its icon now turns, one turn at least, and the
+  button keeps its size and colour
 
 - About showed as "largest upload" the limit PHP sets on a single request (4 GB), which uploads
   never meet since they go through tusd in pieces: it shows the largest share the instance accepts,

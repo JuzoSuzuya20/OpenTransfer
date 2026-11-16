@@ -337,3 +337,20 @@ a {
   z-index: 1000;
   pointer-events: none;
 }
+
+// An icon that turns while its button works (a refresh): whole turns that speed up and slow down,
+// at least one (lib/atLeast). The button keeps its size and colour. For less motion it only dims.
+.ot-turn.is-turning {
+  animation: ot-turn 700ms var(--ot-ease-loop) infinite;
+}
+@keyframes ot-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ot-turn.is-turning {
+    animation: none;
+    opacity: 0.55;
+  }
+}

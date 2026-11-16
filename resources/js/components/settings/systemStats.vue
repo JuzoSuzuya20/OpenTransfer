@@ -1,4 +1,5 @@
 <script setup>
+import OtSkeleton from '../layout/OtSkeleton.vue'
 // The instance at a glance, for an admin: four headline figures, then downloads over time beside
 // storage, file types, shares and users. Every figure comes from the server: nothing is estimated.
 import { ref, onMounted, computed, watch } from 'vue'
@@ -66,7 +67,11 @@ const diskTone = computed(() => {
 </script>
 
 <template>
-  <p class="stats-loading" v-if="loading && !stats">{{ $t('settings.stats.loading') }}</p>
+  <!-- The shape of the page while its figures load: the band of four, then the charts -->
+  <div class="stats" v-if="loading && !stats">
+    <OtSkeleton variant="cards" :count="4" />
+    <OtSkeleton variant="cards" :count="2" />
+  </div>
 
   <div class="stats" v-if="stats" :class="{ 'is-loading': loading }">
     <!-- The four headline figures in one band: aligned on top, no card left with a hole -->
@@ -143,7 +148,7 @@ const diskTone = computed(() => {
             </div>
           </div>
 
-          <details class="chart-table">
+          <details class="chart-table" v-expand-details>
             <summary>{{ $t('settings.stats.figures.table') }}</summary>
             <table>
               <thead>

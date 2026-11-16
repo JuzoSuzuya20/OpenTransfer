@@ -10,6 +10,7 @@ import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
 import DirectoryItem from './directory-item.vue'
 import UserAvatar from './layout/UserAvatar.vue'
+import OtSkeleton from './layout/OtSkeleton.vue'
 import { burst, centreOf } from '../lib/confetti'
 import { attemptsNotice, attemptsMessage } from '../lib/attempts'
 
@@ -276,6 +277,18 @@ const filesByDirectory = computed(() => {
       </section>
     </template>
 
+    <!-- While the share loads: the shape of its page (who sent it, its figures, its files) -->
+    <template v-else-if="!shareExpired && !downloadLimitReached && !shareNotFound">
+      <div class="download-head" aria-hidden="true">
+        <i class="ot-skeleton-bone download-skeleton-sender"></i>
+        <i class="ot-skeleton-bone download-skeleton-title"></i>
+      </div>
+      <OtSkeleton variant="cards" :count="3" />
+      <section class="ot-card download-card">
+        <OtSkeleton variant="rows" :count="2" />
+      </section>
+    </template>
+
     <section class="ot-card download-state" v-else>
       <template v-if="shareExpired">
         <HeartCrack aria-hidden="true" />
@@ -291,7 +304,6 @@ const filesByDirectory = computed(() => {
         <FileX aria-hidden="true" />
         <h1>{{ $t('share.not_found') }}</h1>
       </template>
-      <h1 v-else>{{ $t('share.data_loading') }}</h1>
     </section>
   </div>
 </template>

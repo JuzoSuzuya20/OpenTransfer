@@ -6,6 +6,7 @@ import { getSystemInfo } from '../../api'
 import { store } from '../../store'
 import { versionUrl, REPOSITORY } from '../../lib/version'
 import { niceFileSize } from '../../utils'
+import OtSkeleton from '../layout/OtSkeleton.vue'
 
 const version = ref('unknown')
 const systemInfo = ref(null)
@@ -123,7 +124,7 @@ const databaseDisplayName = computed(() => {
 
     <section class="ot-card about-card" v-if="store.isAdmin()" aria-labelledby="h-system-info">
       <h2 class="ot-card-title" id="h-system-info">{{ $t('settings.about.system_info') }}</h2>
-      <p class="about-loading" v-if="loading">{{ $t('settings.about.loading') }}</p>
+      <OtSkeleton v-if="loading" variant="lines" :count="5" />
       <template v-else-if="systemInfo">
         <dl class="month-figures">
           <div>
@@ -206,10 +207,6 @@ const databaseDisplayName = computed(() => {
 }
 .about-fork,
 .about-credit,
-.about-loading {
-  font-size: 0.8125rem;
-  color: var(--ot-muted);
-}
 .about-links {
   display: flex;
   flex-wrap: wrap;

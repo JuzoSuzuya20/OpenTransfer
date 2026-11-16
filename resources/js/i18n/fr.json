@@ -1172,5 +1172,8 @@
   "attempts": {
     "left": "{count, plural, one {Il ne reste plus qu'une tentative.} other {Il ne reste plus que # tentatives.}}",
     "locked": "Trop de tentatives. Réessayez dans {minutes, plural, one {# minute} other {# minutes}}."
+  },
+  "common": {
+    "loading": "Chargement…"
   }
 }

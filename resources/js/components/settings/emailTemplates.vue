@@ -10,6 +10,7 @@ import { mapSettings } from '../../utils'
 import { useTranslate } from '@tolgee/vue'
 import EmailTemplateEditor from '../emailTemplateEditor.vue'
 import OtSelect from '../layout/OtSelect.vue'
+import OtSkeleton from '../layout/OtSkeleton.vue'
 
 // The line the seeder installs, replaced by its translation in every e-mail
 const SHIPPED_FALLBACK = "If you're having trouble with the button above, copy and paste the URL below into your web browser."
@@ -42,7 +43,10 @@ const LANGUAGES = [
   { code: 'pt', name: 'Português' }
 ]
 
+// No template yet (the first load, or another language being read): their shape in the meantime
+const templatesLoading = ref(true)
 const loadTemplates = async () => {
+  templatesLoading.value = true
   try {
     const templates = await getEmailTemplates(locale.value)
     emailTemplates.value = []
@@ -62,6 +66,8 @@ const loadTemplates = async () => {
   } catch (error) {
     console.error(error)
     toast.error(t.value('settings.emailTemplates.error_loading_templates'))
+  } finally {
+    templatesLoading.value = false
   }
 }
 
@@ -292,7 +298,10 @@ defineExpose({
         </div>
       </section>
 
-      <section class="setting-group email-template" v-for="template in emailTemplates" :key="template.id" :id="template.id" :aria-labelledby="`h-${template.id}`">
+      <section class="setting-group email-template" v-if="templatesLoading">
+        <OtSkeleton variant="fields" :count="3" />
+      </section>
+      <section class="setting-group email-template" v-for="template in templatesLoading ? [] : emailTemplates" :key="template.id" :id="template.id" :aria-labelledby="`h-${template.id}`">
         <div class="setting-group-header email-template-head">
           <h3 :id="`h-${template.id}`">{{ $t(template.name) }}</h3>
           <span class="ot-pill" :class="{ 'is-warning': template.customised }">

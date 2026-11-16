@@ -235,3 +235,15 @@
     }
   }
 }
+
+// The head of a share while it loads: the line of its sender, then its name
+.download-skeleton-sender {
+  width: 190px;
+  height: 12px;
+}
+.download-skeleton-title {
+  width: min(360px, 70%);
+  height: 28px;
+  margin-top: 4px;
+  border-radius: 8px;
+}

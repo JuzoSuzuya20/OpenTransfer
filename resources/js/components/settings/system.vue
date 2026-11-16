@@ -18,7 +18,8 @@ import {
   ExternalLink,
   Database,
   Download,
-  Loader2
+  Loader2,
+  RefreshCw
 } from 'lucide-vue-next'
 import {
   getSettingsByGroup,
@@ -34,6 +35,9 @@ import HelpTip from '../helpTip.vue'
 import AppLink from '../layout/AppLink.vue'
 import OtSelect from '../layout/OtSelect.vue'
 import OtNumber from '../layout/OtNumber.vue'
+import Expand from '../layout/Expand.vue'
+import OtSkeleton from '../layout/OtSkeleton.vue'
+import { atLeast } from '../../lib/atLeast'
 import { SHIPPED_LOGIN_MESSAGE } from '../../lib/loginMessage'
 
 import { useToast } from 'vue-toastification'
@@ -328,16 +332,20 @@ const loadSettings = async () => {
 }
 
 // Backup methods
+const backupsLoaded = ref(false)
 const loadBackups = async () => {
+  if (backupsLoading.value) return
   backupsLoading.value = true
   try {
-    const data = await getBackups()
+    // One turn of the icon at least: a quick answer would stop it half a turn in
+    const data = await atLeast(700, getBackups())
     backups.value = data.backups || []
   } catch (error) {
     console.error('Failed to load backups:', error)
     toast.error(t.value('settings.system.backups.load_failed'))
   } finally {
     backupsLoading.value = false
+    backupsLoaded.value = true
   }
 }
 
@@ -450,7 +458,7 @@ defineExpose({
   <div class="system-settings">
     <!-- A long page: its sections, one link each -->
     <!-- One section at a time: the menu of the administration says which (prop part) -->
-    <div class="admin-sections">
+    <div class="admin-sections" v-if="settingsLoaded">
         <div class="setting-group" id="general" v-show="part === 'general'">
               <div class="setting-group-header">
                 <h3>
@@ -568,55 +576,61 @@ defineExpose({
                   <p class="help-text">{{ $t('settings.system.share_url_mode_description') }}</p>
                 </div>
 
-                <div v-if="settings.share_url_mode === 'pattern'" class="pattern-url-settings">
-                  <div class="setting-group-body-item">
-                    <label for="share_url_preset">{{ $t('settings.system.share_url_preset') }}</label>
-                    <OtSelect
-                      id="share_url_preset"
-                      v-model="selectedPreset"
-                      :options="patternPresets.map((preset) => ({ value: preset.id, label: preset.name }))"
-                      @change="handlePresetChange"
-                    />
-                  </div>
-                  <div class="setting-group-body-item">
-                    <label for="share_url_pattern">{{ $t('settings.system.share_url_pattern') }}</label>
-                    <input
-                      type="text"
-                      id="share_url_pattern"
-                      v-model="settings.share_url_pattern"
-                      :placeholder="$t('settings.system.share_url_pattern_placeholder')"
-                    />
-                    <p class="help-text">{{ $t('settings.system.share_url_pattern_description') }}</p>
-                    <p class="help-text pattern-strength" :class="{ 'is-weak': !patternStrength.strong }" aria-live="polite" v-if="settings.share_url_pattern">
-                      {{ patternStrength.strong
-                        ? $t('settings.system.share_url_pattern_strong', { bits: patternStrength.bits })
-                        : $t('settings.system.share_url_pattern_weak', { bits: patternStrength.bits, min: MIN_PATTERN_BITS }) }}
-                    </p>
-<div v-if="settings.share_url_mode === 'pattern'">
-                <div class="pattern-syntax-help">
-                  <h6>{{ $t('settings.system.share_url_pattern_syntax') }}</h6>
-                  <ul class="syntax-list">
-                    <li><code>#</code> {{ $t('settings.system.pattern_token_digit') }}</li>
-                    <li><code>A</code> {{ $t('settings.system.pattern_token_uppercase') }}</li>
-                    <li><code>a</code> {{ $t('settings.system.pattern_token_lowercase') }}</li>
-                    <li><code>*</code> {{ $t('settings.system.pattern_token_alphanumeric') }}</li>
-                    <li><code>X</code> {{ $t('settings.system.pattern_token_hex') }}</li>
-                    <li><code>[A-Z]</code> {{ $t('settings.system.pattern_token_range') }}</li>
-                    <li><code>\#</code> {{ $t('settings.system.pattern_token_escape') }}</li>
-                  </ul>
-                </div>
-              </div>
-</div>
-                  <div class="setting-group-body-item pattern-preview" v-if="settings.share_url_pattern">
-                    <label>{{ $t('settings.system.share_url_pattern_preview') }}</label>
-                    <div class="preview-box">
-                      <code>{{ patternPreview }}</code>
-                      <button type="button" class="refresh-preview" @click="generatePatternPreview">
-                        ↻
-                      </button>
+                <Expand :show="settings.share_url_mode === 'pattern'">
+                  <div class="pattern-url-settings">
+                    <div class="setting-group-body-item">
+                      <label for="share_url_preset">{{ $t('settings.system.share_url_preset') }}</label>
+                      <OtSelect
+                        id="share_url_preset"
+                        v-model="selectedPreset"
+                        :options="patternPresets.map((preset) => ({ value: preset.id, label: preset.name }))"
+                        @change="handlePresetChange"
+                      />
+                    </div>
+                    <div class="setting-group-body-item">
+                      <label for="share_url_pattern">{{ $t('settings.system.share_url_pattern') }}</label>
+                      <input
+                        type="text"
+                        id="share_url_pattern"
+                        v-model="settings.share_url_pattern"
+                        :placeholder="$t('settings.system.share_url_pattern_placeholder')"
+                      />
+                      <p class="help-text">{{ $t('settings.system.share_url_pattern_description') }}</p>
+                      <p class="help-text pattern-strength" :class="{ 'is-weak': !patternStrength.strong }" aria-live="polite" v-if="settings.share_url_pattern">
+                        {{ patternStrength.strong
+                          ? $t('settings.system.share_url_pattern_strong', { bits: patternStrength.bits })
+                          : $t('settings.system.share_url_pattern_weak', { bits: patternStrength.bits, min: MIN_PATTERN_BITS }) }}
+                      </p>
+  <Expand :show="settings.share_url_mode === 'pattern'">
+    <div>
+                    <div class="pattern-syntax-help">
+                      <h6>{{ $t('settings.system.share_url_pattern_syntax') }}</h6>
+                      <ul class="syntax-list">
+                        <li><code>#</code> {{ $t('settings.system.pattern_token_digit') }}</li>
+                        <li><code>A</code> {{ $t('settings.system.pattern_token_uppercase') }}</li>
+                        <li><code>a</code> {{ $t('settings.system.pattern_token_lowercase') }}</li>
+                        <li><code>*</code> {{ $t('settings.system.pattern_token_alphanumeric') }}</li>
+                        <li><code>X</code> {{ $t('settings.system.pattern_token_hex') }}</li>
+                        <li><code>[A-Z]</code> {{ $t('settings.system.pattern_token_range') }}</li>
+                        <li><code>\#</code> {{ $t('settings.system.pattern_token_escape') }}</li>
+                      </ul>
                     </div>
                   </div>
-                </div>
+  </Expand>
+  </div>
+                    <Expand :show="settings.share_url_pattern">
+                      <div class="setting-group-body-item pattern-preview">
+                        <label>{{ $t('settings.system.share_url_pattern_preview') }}</label>
+                        <div class="preview-box">
+                          <code>{{ patternPreview }}</code>
+                          <button type="button" class="refresh-preview" @click="generatePatternPreview">
+                            ↻
+                          </button>
+                        </div>
+                      </div>
+                    </Expand>
+                  </div>
+                </Expand>
 
               </div>
             </div>
@@ -788,34 +802,38 @@ defineExpose({
                   <p class="help-text">{{ $t('settings.system.self_registration_description') }}</p>
                 </div>
 
-                <div class="self-registration-options" v-if="settings.self_registration_enabled">
-                  <div class="setting-group-body-item">
-                    <div class="checkbox-container">
-                      <input
-                        type="checkbox"
-                        id="self_registration_allow_any_domain"
-                        v-model="settings.self_registration_allow_any_domain"
-                      />
-                      <label for="self_registration_allow_any_domain">
-                        {{ $t('settings.system.self_registration_allow_any_domain') }}
-                      </label>
+                <Expand :show="settings.self_registration_enabled">
+                  <div class="self-registration-options">
+                    <div class="setting-group-body-item">
+                      <div class="checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="self_registration_allow_any_domain"
+                          v-model="settings.self_registration_allow_any_domain"
+                        />
+                        <label for="self_registration_allow_any_domain">
+                          {{ $t('settings.system.self_registration_allow_any_domain') }}
+                        </label>
+                      </div>
                     </div>
+  
+                    <Expand :show="!settings.self_registration_allow_any_domain">
+                      <div class="setting-group-body-item">
+                        <label for="self_registration_allowed_domains">
+                          {{ $t('settings.system.self_registration_allowed_domains') }}
+                        </label>
+                        <input
+                          type="text"
+                          id="self_registration_allowed_domains"
+                          v-model="settings.self_registration_allowed_domains"
+                          :placeholder="$t('settings.system.self_registration_allowed_domains_placeholder')"
+                        />
+                        <p class="help-text">{{ $t('settings.system.self_registration_allowed_domains_help') }}</p>
+                        <p class="help-text">{{ $t('settings.system.self_registration_allowed_domains_description') }}</p>
+                      </div>
+                    </Expand>
                   </div>
-
-                  <div class="setting-group-body-item" v-if="!settings.self_registration_allow_any_domain">
-                    <label for="self_registration_allowed_domains">
-                      {{ $t('settings.system.self_registration_allowed_domains') }}
-                    </label>
-                    <input
-                      type="text"
-                      id="self_registration_allowed_domains"
-                      v-model="settings.self_registration_allowed_domains"
-                      :placeholder="$t('settings.system.self_registration_allowed_domains_placeholder')"
-                    />
-                    <p class="help-text">{{ $t('settings.system.self_registration_allowed_domains_help') }}</p>
-                    <p class="help-text">{{ $t('settings.system.self_registration_allowed_domains_description') }}</p>
-                  </div>
-                </div>
+                </Expand>
 
                 <p class="sso-moved">
                   {{ $t('sso.moved') }}
@@ -916,11 +934,13 @@ defineExpose({
                   <p class="help-text">{{ $t('settings.system.security.altcha_description') }}</p>
                 </div>
 
-                <div class="setting-group-body-item" v-if="settings.altcha_enabled">
-                  <label for="altcha_max_number">{{ $t('settings.system.security.altcha_difficulty') }}</label>
-                  <OtNumber id="altcha_max_number" :min="1000" :max="10000000" :increment="10000" v-model="settings.altcha_max_number" />
-                  <p class="help-text">{{ $t('settings.system.security.altcha_difficulty_help') }}</p>
-                </div>
+                <Expand :show="settings.altcha_enabled">
+                  <div class="setting-group-body-item">
+                    <label for="altcha_max_number">{{ $t('settings.system.security.altcha_difficulty') }}</label>
+                    <OtNumber id="altcha_max_number" :min="1000" :max="10000000" :increment="10000" v-model="settings.altcha_max_number" />
+                    <p class="help-text">{{ $t('settings.system.security.altcha_difficulty_help') }}</p>
+                  </div>
+                </Expand>
               </div>
             </div>
 
@@ -947,22 +967,21 @@ defineExpose({
                       <Plus v-else />
                       {{ $t('settings.system.backups.create_backup') }}
                     </button>
-                    <button 
-                      @click="loadBackups" 
-                      :disabled="backupsLoading"
+                    <!-- Same size and colour while it loads: only its icon turns -->
+                    <button
+                      type="button"
+                      @click="loadBackups"
+                      :aria-busy="backupsLoading"
                       class="refresh-backups-button ot-act"
                     >
-                      <Loader2 v-if="backupsLoading" class="spinner" />
+                      <RefreshCw class="ot-turn" :class="{ 'is-turning': backupsLoading }" aria-hidden="true" />
                       {{ $t('settings.system.backups.refresh') }}
                     </button>
                   </div>
                 </div>
 
                 <div class="setting-group-body-item">
-                  <div v-if="backupsLoading && backups.length === 0" class="backups-loading">
-                    <Loader2 class="spinner" />
-                    {{ $t('settings.system.backups.loading') }}
-                  </div>
+                  <OtSkeleton v-if="!backupsLoaded" variant="rows" :count="3" />
                   
                   <div v-else-if="backups.length === 0" class="no-backups">
                     <p>{{ $t('settings.system.backups.no_backups') }}</p>
@@ -1012,6 +1031,10 @@ defineExpose({
                 </div>
               </div>
             </div>
+    </div>
+    <!-- The settings on their way: the shape of a section -->
+    <div class="admin-sections" v-else>
+      <div class="setting-group"><OtSkeleton variant="fields" :count="4" /></div>
     </div>
   </div>
 </template>

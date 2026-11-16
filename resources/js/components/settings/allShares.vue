@@ -7,6 +7,7 @@ import { useLiveRefresh } from '../../composables/useLiveRefresh'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import ShareRow from '../layout/ShareRow.vue'
+import OtSkeleton from '../layout/OtSkeleton.vue'
 import { getAllShares } from '../../api'
 import { shareState, groupByWeek } from '../../lib/shares'
 
@@ -105,6 +106,7 @@ defineExpose({ setShowDeletedShares, loadShares, setUserFilter })
       </div>
     </TransitionGroup>
 
+    <OtSkeleton v-if="!loaded" variant="rows" :count="4" />
     <div class="ot-card share-empty" v-if="loaded && groups.length === 0">
       <p>{{ shares.length === 0 ? t('settings.allShares.noShares') : t('shares.empty_filter') }}</p>
     </div>

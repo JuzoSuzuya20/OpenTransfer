@@ -1172,5 +1172,8 @@
   "attempts": {
     "left": "{count, plural, one {Nur noch ein Versuch.} other {Nur noch # Versuche.}}",
     "locked": "Zu viele Versuche. Versuchen Sie es in {minutes, plural, one {# Minute} other {# Minuten}} erneut."
+  },
+  "common": {
+    "loading": "Wird geladen…"
   }
 }

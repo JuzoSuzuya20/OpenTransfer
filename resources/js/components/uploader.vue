@@ -10,6 +10,7 @@ import AppLink from './layout/AppLink.vue'
 import OtSelect from './layout/OtSelect.vue'
 import OtNumber from './layout/OtNumber.vue'
 import PageHead from './layout/PageHead.vue'
+import Expand from './layout/Expand.vue'
 import UserAvatar from './layout/UserAvatar.vue'
 import { handedOverFiles } from '../lib/quickSendHandoff'
 import { uploadController } from '../store'
@@ -1023,32 +1024,34 @@ const filesByDirectory = computed(() => {
             </div>
           </div>
 
-          <div class="send-files-foot" v-if="rows.length > 0 || currentlyUploading">
-            <span class="send-total">
-              {{ $t('send.total', { count: uploadBasket.length, size: niceFileSize(totalSize), max: niceFileSize(maxShareSize) }) }}
-            </span>
-            <template v-if="currentlyUploading">
-              <span class="send-progress-text" aria-live="polite">
-                <template v-if="uploadProgress < 100">
-                  <strong>{{ Math.round(uploadProgress) }}%</strong>
-                  · {{ niceFileSize(uploadSpeed) }}/s ·
-                  {{ Math.round(timeRemaining) }}{{ $t('uploader.time_remaining_suffix', 's') }}
-                  {{ t('uploader.time_remaining_text', 'remaining') }}
-                </template>
-                <template v-else>{{ $t('Processing uploaded files') }}</template>
+          <Expand :show="rows.length > 0 || currentlyUploading">
+            <div class="send-files-foot">
+              <span class="send-total">
+                {{ $t('send.total', { count: uploadBasket.length, size: niceFileSize(totalSize), max: niceFileSize(maxShareSize) }) }}
               </span>
-              <button
-                type="button"
-                class="ot-act icon-only"
-                @click="togglePause"
-                :aria-label="isPaused ? $t('send.resume') : $t('send.pause')"
-                :title="isPaused ? $t('send.resume') : $t('send.pause')"
-              >
-                <Play v-if="isPaused" aria-hidden="true" />
-                <Pause v-else aria-hidden="true" />
-              </button>
-            </template>
-          </div>
+              <template v-if="currentlyUploading">
+                <span class="send-progress-text" aria-live="polite">
+                  <template v-if="uploadProgress < 100">
+                    <strong>{{ Math.round(uploadProgress) }}%</strong>
+                    · {{ niceFileSize(uploadSpeed) }}/s ·
+                    {{ Math.round(timeRemaining) }}{{ $t('uploader.time_remaining_suffix', 's') }}
+                    {{ t('uploader.time_remaining_text', 'remaining') }}
+                  </template>
+                  <template v-else>{{ $t('Processing uploaded files') }}</template>
+                </span>
+                <button
+                  type="button"
+                  class="ot-act icon-only"
+                  @click="togglePause"
+                  :aria-label="isPaused ? $t('send.resume') : $t('send.pause')"
+                  :title="isPaused ? $t('send.resume') : $t('send.pause')"
+                >
+                  <Play v-if="isPaused" aria-hidden="true" />
+                  <Pause v-else aria-hidden="true" />
+                </button>
+              </template>
+            </div>
+          </Expand>
 
           <button
             v-if="isDrop"
@@ -1080,90 +1083,98 @@ const filesByDirectory = computed(() => {
             </button>
           </div>
 
-          <div class="send-option" id="send-opt-expiry" v-if="openOption === 'expiry'">
-            <div class="input-container">
-              <label for="share-expiry">{{ $t('send.expires_in') }}</label>
-              <div class="field-group">
-                <OtNumber
-                  v-model="expiryValue"
-                  id="share-expiry"
-                  :min="1"
-                  :max="maxExpiryTimeInSelectedUnit != null ? Math.max(1, Math.floor(maxExpiryTimeInSelectedUnit)) : undefined"
-                  :aria-describedby="maxExpiryTimeInSelectedUnit != null ? 'share-expiry-max' : undefined"
-                />
-                <OtSelect v-model="expiryUnit" :options="expiryUnitOptions" :aria-label="$t('send.expiry_unit')" />
+          <Expand :show="openOption === 'expiry'">
+            <div class="send-option" id="send-opt-expiry">
+              <div class="input-container">
+                <label for="share-expiry">{{ $t('send.expires_in') }}</label>
+                <div class="field-group">
+                  <OtNumber
+                    v-model="expiryValue"
+                    id="share-expiry"
+                    :min="1"
+                    :max="maxExpiryTimeInSelectedUnit != null ? Math.max(1, Math.floor(maxExpiryTimeInSelectedUnit)) : undefined"
+                    :aria-describedby="maxExpiryTimeInSelectedUnit != null ? 'share-expiry-max' : undefined"
+                  />
+                  <OtSelect v-model="expiryUnit" :options="expiryUnitOptions" :aria-label="$t('send.expiry_unit')" />
+                </div>
+                <p class="help-text" id="share-expiry-max" v-if="maxExpiryTimeInSelectedUnit != null">
+                  {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
+                </p>
               </div>
-              <p class="help-text" id="share-expiry-max" v-if="maxExpiryTimeInSelectedUnit != null">
-                {{ t('uploader.expiry_max_value', { value: RoundedMaxExpiryTimeInSelectedUnit }) }}
-              </p>
             </div>
-          </div>
-          <div class="send-option" id="send-opt-downloads" v-if="openOption === 'downloads'">
-            <div class="input-container">
-              <label for="share-limit">{{ $t('send.downloads') }}</label>
-              <OtSelect id="share-limit" v-model="downloadLimit" :options="downloadLimitSelectOptions" />
+          </Expand>
+          <Expand :show="openOption === 'downloads'">
+            <div class="send-option" id="send-opt-downloads">
+              <div class="input-container">
+                <label for="share-limit">{{ $t('send.downloads') }}</label>
+                <OtSelect id="share-limit" v-model="downloadLimit" :options="downloadLimitSelectOptions" />
+              </div>
             </div>
-          </div>
-          <div class="send-option" id="send-opt-password" v-if="openOption === 'password'">
-            <div class="input-container">
-              <label for="share-password">{{ $t('send.password') }}</label>
-            <div class="field-with-action">
-              <input
-                :type="showPassword ? 'text' : 'password'"
-                id="share-password"
-                v-model="sharePasswordInput"
-                autocomplete="new-password"
-                aria-describedby="share-password-help"
-              />
-              <button
-                type="button"
-                class="field-action"
-                @click="showPassword = !showPassword"
-                :aria-label="showPassword ? $t('send.hide_password') : $t('send.show_password')"
-                :aria-pressed="showPassword"
-              >
-                <EyeOff v-if="showPassword" class="ot-check-pop" aria-hidden="true" />
-                <Eye v-else class="ot-check-pop" aria-hidden="true" />
-              </button>
-            </div>
-            <p class="help-text" id="share-password-help">{{ $t('send.password_help') }}</p>
-          </div>
-
-          </div>
-          <div class="send-option" id="send-opt-recipients" v-if="openOption === 'recipients'">
-            <div class="input-container">
-              <label for="share-recipient">{{ $t('send.send_to') }}</label>
-            <div class="recipients-field" :class="{ error: recipientError }" @click="$refs.recipientField.focus()">
-              <span class="recipient-chip" v-for="recipient in recipients" :key="recipient.id">
-                {{ recipient.email }}
+          </Expand>
+          <Expand :show="openOption === 'password'">
+            <div class="send-option" id="send-opt-password">
+              <div class="input-container">
+                <label for="share-password">{{ $t('send.password') }}</label>
+              <div class="field-with-action">
+                <input
+                  :type="showPassword ? 'text' : 'password'"
+                  id="share-password"
+                  v-model="sharePasswordInput"
+                  autocomplete="new-password"
+                  aria-describedby="share-password-help"
+                />
                 <button
                   type="button"
-                  @click.stop="removeRecipient(recipient)"
-                  :aria-label="$t('send.remove_recipient', { address: recipient.email })"
+                  class="field-action"
+                  @click="showPassword = !showPassword"
+                  :aria-label="showPassword ? $t('send.hide_password') : $t('send.show_password')"
+                  :aria-pressed="showPassword"
                 >
-                  <X aria-hidden="true" />
+                  <EyeOff v-if="showPassword" class="ot-check-pop" aria-hidden="true" />
+                  <Eye v-else class="ot-check-pop" aria-hidden="true" />
                 </button>
-              </span>
-              <input
-                ref="recipientField"
-                type="email"
-                id="share-recipient"
-                v-model="recipientInput"
-                @keydown="onRecipientKeydown"
-                @blur="addRecipientFromInput"
-                autocomplete="email"
-                aria-describedby="share-recipient-help"
-              />
+              </div>
+              <p class="help-text" id="share-password-help">{{ $t('send.password_help') }}</p>
             </div>
-            <p class="help-text is-error" v-if="recipientError" role="alert">{{ recipientError }}</p>
-            <p class="help-text" id="share-recipient-help" v-else>
-              {{ recipients.length > 0 ? $t('send.send_to_help_some') : $t('send.send_to_help_none') }}
-            </p>
-          </div>
+  
+            </div>
+          </Expand>
+          <Expand :show="openOption === 'recipients'">
+            <div class="send-option" id="send-opt-recipients">
+              <div class="input-container">
+                <label for="share-recipient">{{ $t('send.send_to') }}</label>
+              <div class="recipients-field" :class="{ error: recipientError }" @click="$refs.recipientField.focus()">
+                <span class="recipient-chip" v-for="recipient in recipients" :key="recipient.id">
+                  {{ recipient.email }}
+                  <button
+                    type="button"
+                    @click.stop="removeRecipient(recipient)"
+                    :aria-label="$t('send.remove_recipient', { address: recipient.email })"
+                  >
+                    <X aria-hidden="true" />
+                  </button>
+                </span>
+                <input
+                  ref="recipientField"
+                  type="email"
+                  id="share-recipient"
+                  v-model="recipientInput"
+                  @keydown="onRecipientKeydown"
+                  @blur="addRecipientFromInput"
+                  autocomplete="email"
+                  aria-describedby="share-recipient-help"
+                />
+              </div>
+              <p class="help-text is-error" v-if="recipientError" role="alert">{{ recipientError }}</p>
+              <p class="help-text" id="share-recipient-help" v-else>
+                {{ recipients.length > 0 ? $t('send.send_to_help_some') : $t('send.send_to_help_none') }}
+              </p>
+            </div>
+  
+            </div>
+          </Expand>
 
-          </div>
-
-          <details class="send-more" v-if="!store.isGuest()">
+          <details class="send-more" v-if="!store.isGuest()" v-expand-details>
             <summary>
               {{ $t('send.name_and_message') }}
               <span class="send-more-name" v-if="shareName">· {{ shareName }}</span>

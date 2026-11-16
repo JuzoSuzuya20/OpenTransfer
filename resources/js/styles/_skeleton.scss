@@ -1,0 +1,105 @@
+// What is loading takes its shape at once (components/layout/OtSkeleton.vue): bones in the tone of
+// the fields, with a sheen that runs across them, speeding up and slowing down (never at a constant
+// speed), one bone after the other. Still for less motion.
+
+.ot-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &.is-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  &.is-fields {
+    gap: 16px;
+  }
+}
+
+.ot-skeleton-bone {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background-color: var(--ot-field);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in srgb, var(--ot-heading) 7%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  animation: ot-skeleton-sheen 1.6s var(--ot-ease-loop) infinite;
+  animation-delay: calc(var(--ot-i, 0) * 90ms);
+
+  &.is-line:nth-child(3n + 1) {
+    width: 92%;
+  }
+  &.is-line:nth-child(3n + 2) {
+    width: 78%;
+  }
+  &.is-line:nth-child(3n + 3) {
+    width: 60%;
+  }
+  &.is-card {
+    height: 78px;
+    border-radius: var(--ot-radius);
+  }
+  &.is-title {
+    width: 45%;
+    height: 13px;
+  }
+  &.is-meta {
+    width: 70%;
+    height: 10px;
+    opacity: 0.7;
+  }
+  &.is-label {
+    width: 28%;
+    height: 10px;
+  }
+  &.is-input {
+    height: var(--ot-field-height, 40px);
+    border-radius: var(--ot-radius);
+  }
+}
+
+// A row of a list: the size of the real one (name, then a line of details)
+.ot-skeleton-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-height: 58px;
+  padding: 12px 14px;
+  border-radius: var(--ot-radius);
+  background: color-mix(in srgb, var(--ot-field) 55%, transparent);
+
+  // On the tone of a row, the bones a step lighter
+  .ot-skeleton-bone {
+    background-color: var(--ot-line);
+  }
+}
+
+.ot-skeleton-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@keyframes ot-skeleton-sheen {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ot-skeleton-bone {
+    animation: none;
+    background-image: none;
+  }
+}

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { vExpandDetails } from './lib/expand'
 import { Tolgee, DevTools, VueTolgee } from '@tolgee/vue'
 import { FormatIcu } from '@tolgee/format-icu'
 
@@ -145,6 +146,8 @@ createApp(App)
     hideProgressBar: true,
   })
   .use(VueTolgee, { tolgee })
+  // <details> that open and close smoothly (lib/expand)
+  .directive('expand-details', vExpandDetails)
   .provide('showHelpTip', showHelpTip)
   .provide('hideHelpTip', hideHelpTip)
   .mount('#app')

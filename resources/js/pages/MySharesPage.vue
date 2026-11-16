@@ -5,6 +5,7 @@ import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { Trash2 } from 'lucide-vue-next'
 import ShareRow from '../components/layout/ShareRow.vue'
+import OtSkeleton from '../components/layout/OtSkeleton.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import { getMyShares, pruneExpiredShares } from '../api'
 import { useConfirmDialog } from '../composables/useConfirmDialog'
@@ -236,6 +237,7 @@ const deletingFraction = computed(() => (deleting.value ? Math.max(0.06, deletin
         </div>
       </TransitionGroup>
 
+      <OtSkeleton v-if="!loaded" variant="rows" :count="4" />
       <div class="ot-card share-empty" v-if="loaded && groups.length === 0">
         <p>{{ filter === 'all' ? t('shares.empty') : t('shares.empty_filter') }}</p>
         <AppLink to="/" class="button-link" v-if="filter === 'all'">{{ t('nav.new_share') }}</AppLink>

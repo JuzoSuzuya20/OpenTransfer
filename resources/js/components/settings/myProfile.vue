@@ -4,6 +4,7 @@ import OtPassword from '../layout/OtPassword.vue'
 import { getMyProfile, updateMyProfile, getAvailableAuthProviders, unlinkProvider } from '../../api'
 import { CircleX, UserRoundCheck, UserRoundPen, Fingerprint, Link, Unlink, Save } from 'lucide-vue-next'
 import UserAvatar from '../layout/UserAvatar.vue'
+import OtSkeleton from '../layout/OtSkeleton.vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../../store'
 import TwoFactorSettings from './TwoFactorSettings.vue'
@@ -179,7 +180,14 @@ const handleUnlinkProvider = async (provider) => {
 </script>
 
 <template>
-  <div class="profile-layout" v-if="profile">
+  <div class="profile-layout" v-if="!profile">
+    <div class="profile-column">
+      <section class="ot-card profile-card">
+        <OtSkeleton variant="fields" :count="3" />
+      </section>
+    </div>
+  </div>
+  <div class="profile-layout" v-else>
     <div class="profile-column">
       <section class="ot-card profile-card" id="my_account" aria-labelledby="h-my-account">
         <h2 class="ot-card-title" id="h-my-account">{{ $t('settings.title.myProfile') }}</h2>
