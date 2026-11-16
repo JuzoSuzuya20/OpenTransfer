@@ -123,6 +123,9 @@
   .header-search-label {
     flex: 1;
     min-width: 0;
+    // Cut short with an ellipsis: the hidden overflow also cuts what goes below the line, and the
+    // line of a button (line-height: 1) leaves no room for the descenders of g, p or ç
+    line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

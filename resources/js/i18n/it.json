@@ -110,7 +110,13 @@
     "forgot_password_question": "Password dimenticata?",
     "sso_required": "La tua organizzazione ti fa accedere con il suo account: usa il pulsante qui sopra.",
     "sso_domain_note": "Gli account @{domain} accedono con l'account dell'organizzazione, qui sopra. Solo gli amministratori usano questo modulo.",
-    "login_message_default": "Accedi per iniziare."
+    "login_message_default": "Accedi per iniziare.",
+    "altcha": {
+      "verifying": "Verifica anti-robot…",
+      "verified": "Verifica anti-robot riuscita",
+      "failed": "Non è stato possibile completare la verifica anti-robot.",
+      "retry": "Riprova"
+    }
   },
   "button": {
     "reverse_share_invite": "Creare una richiesta di condivisione inversa",

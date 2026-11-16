@@ -110,7 +110,13 @@
     "verification_failed": "A verificação falhou",
     "verify_email": "Verificar e-mail",
     "verifying": "A verificar...",
-    "login_message_default": "Inicie sessão para começar."
+    "login_message_default": "Inicie sessão para começar.",
+    "altcha": {
+      "verifying": "Verificação anti-robô…",
+      "verified": "Verificação anti-robô concluída",
+      "failed": "Não foi possível concluir a verificação anti-robô.",
+      "retry": "Tentar novamente"
+    }
   },
   "button": {
     "reverse_share_invite": "Enviar um pedido de partilha",

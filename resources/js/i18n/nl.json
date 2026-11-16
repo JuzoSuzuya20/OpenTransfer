@@ -110,7 +110,13 @@
     "forgot_password_question": "Wachtwoord vergeten?",
     "sso_required": "Je organisatie meldt je aan met haar account: gebruik de knop hierboven.",
     "sso_domain_note": "De accounts @{domain} melden zich aan met het account van de organisatie, hierboven. Alleen beheerders gebruiken dit formulier.",
-    "login_message_default": "Log in om te beginnen."
+    "login_message_default": "Log in om te beginnen.",
+    "altcha": {
+      "verifying": "Antirobotcontrole…",
+      "verified": "Antirobotcontrole geslaagd",
+      "failed": "De antirobotcontrole kon niet worden voltooid.",
+      "retry": "Opnieuw proberen"
+    }
   },
   "button": {
     "reverse_share_invite": "Een verzoek tot omgekeerd delen maken",

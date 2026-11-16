@@ -110,7 +110,13 @@
     "forgot_password_question": "Passwort vergessen?",
     "sso_required": "Ihre Organisation meldet Sie über ihr Konto an: Nutzen Sie die Schaltfläche oben.",
     "sso_domain_note": "Die Konten @{domain} melden sich mit dem Konto der Organisation oben an. Nur Administratoren nutzen dieses Formular.",
-    "login_message_default": "Melden Sie sich an, um zu beginnen."
+    "login_message_default": "Melden Sie sich an, um zu beginnen.",
+    "altcha": {
+      "verifying": "Anti-Roboter-Prüfung läuft…",
+      "verified": "Anti-Roboter-Prüfung bestanden",
+      "failed": "Die Anti-Roboter-Prüfung konnte nicht abgeschlossen werden.",
+      "retry": "Erneut versuchen"
+    }
   },
   "button": {
     "reverse_share_invite": "Erstellen Sie eine umgekehrte Freigabeanforderung",

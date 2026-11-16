@@ -110,7 +110,13 @@
     "forgot_password_question": "¿Ha olvidado su contraseña?",
     "sso_required": "Su organización le identifica con su propia cuenta: use el botón de arriba.",
     "sso_domain_note": "Las cuentas @{domain} inician sesión con la cuenta de la organización, arriba. Solo los administradores usan este formulario.",
-    "login_message_default": "Inicie sesión para empezar."
+    "login_message_default": "Inicie sesión para empezar.",
+    "altcha": {
+      "verifying": "Verificación antirrobot…",
+      "verified": "Verificación antirrobot superada",
+      "failed": "La verificación antirrobot no ha podido completarse.",
+      "retry": "Reintentar"
+    }
   },
   "button": {
     "reverse_share_invite": "Crear una solicitud de archivos",

@@ -231,7 +231,11 @@ const handleLogout = async () => {
   ) {
     return
   }
-  logout()
+  await logout()
+  // Signed out on purpose: back to the sign-in page itself, not the page that was open
+  // (/admin/system#shares would come back after the next sign-in). A session that simply ran
+  // out keeps its page: signing in again returns to it.
+  navigate('/', { replace: true })
 }
 
 // Former settings links (command palette, deep links of e-mails and bookmarks)
@@ -329,7 +333,7 @@ onBeforeUnmount(() => {
 
     <main class="main" :class="mainWidth" id="main" tabindex="-1">
       <!-- Mounted from the start: it restores a session before anything else shows -->
-      <Auth v-show="showAuth" />
+      <Auth v-show="showAuth" :shown="showAuth" />
 
       <Setup v-if="page === 'setup'" />
       <ThankGuestForUpload v-else-if="page === 'thanks'" />

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import OtPassword from './layout/OtPassword.vue'
+import AltchaCheck from './layout/AltchaCheck.vue'
 import { loginMessageFor } from '../lib/loginMessage'
 import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
@@ -35,6 +36,12 @@ import {
 import { useTranslate } from '@tolgee/vue'
 
 const { t } = useTranslate()
+
+// The anti-robot check an administrator turned on: shown on the forms open to anyone, and only
+// while the sign-in shows (the component stays mounted, hidden, behind every other page)
+const props = defineProps({ shown: { type: Boolean, default: true } })
+const altchaEnabled = domData().altcha_enabled === true
+const showAltcha = computed(() => altchaEnabled && props.shown)
 
 // Why the API refused a login, when it is not simply the wrong password
 const LOGIN_REFUSALS = {
@@ -596,6 +603,7 @@ const switchToLogin = () => {
               ref="passwordInput"
             />
           </div>
+          <AltchaCheck v-if="showAltcha" />
           <button type="submit" class="block cta">{{ $t('auth.login') }}</button>
           <button type="button" class="block secondary" v-if="passkeyLoginEnabled" :disabled="passkeyLoginBusy" @click="attemptPasskeyLogin">
             <Fingerprint aria-hidden="true" />
@@ -620,6 +628,7 @@ const switchToLogin = () => {
           <label for="forgot_email">{{ $t('auth.email') }}</label>
           <input id="forgot_email" type="email" autocomplete="email" v-model="email" @keyup.enter="attemptForgotPassword" />
         </div>
+        <AltchaCheck v-if="showAltcha" />
         <button class="block cta" @click="attemptForgotPassword">
           <KeyRound aria-hidden="true" />
           {{ $t('auth.request_reset') }}
@@ -659,6 +668,7 @@ const switchToLogin = () => {
             v-model="password_confirmation"
           />
         </div>
+        <AltchaCheck v-if="showAltcha" />
         <button type="submit" class="block cta" :disabled="isRegistering">
           <UserPlus aria-hidden="true" />
           {{ isRegistering ? $t('auth.registering') : $t('auth.register') }}

@@ -4,10 +4,11 @@ import { jwtDecode } from 'jwt-decode'
 import { useToast } from 'vue-toastification'
 import debounce from './debounce'
 import * as tus from 'tus-js-client'
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
 import { domData } from './domData'
 import { solveChallenge } from './proofOfWork'
 import { settingValueAsText } from './lib/settingValue'
+import { createAltchaToken } from './lib/altchaToken'
 
 // Bundling configuration for small files
 const BUNDLE_CONFIG = {
@@ -250,19 +251,27 @@ const addJsonHeader = () => ({
   Accept: 'application/json'
 })
 
-// The anti-robot check of the forms open to anyone, when an administrator turns it on
+// The anti-robot check of the forms open to anyone, when an administrator turns it on. The proof
+// is solved ahead, as the form shows (AltchaCheck shows where it stands), and spent by one sending.
+export const altchaState = ref('idle')
+export const altchaToken = createAltchaToken({
+  solve: async () => {
+    const response = await fetch(`${apiUrl}/api/auth/challenge`, { headers: { ...addJsonHeader() } })
+    const data = await response.json()
+    if (!response.ok) {
+      throw apiError(data)
+    }
+    return solveChallenge(data.data)
+  },
+  onState: (state) => (altchaState.value = state)
+})
+
 const withAltcha = async (body) => {
   if (domData().altcha_enabled !== true) {
     return body
   }
 
-  const response = await fetch(`${apiUrl}/api/auth/challenge`, { headers: { ...addJsonHeader() } })
-  const data = await response.json()
-  if (!response.ok) {
-    throw apiError(data)
-  }
-
-  return { ...body, altcha: await solveChallenge(data.data) }
+  return { ...body, altcha: await altchaToken.take() }
 }
 
 // An error carrying what the API said, for the screens that react to a specific refusal

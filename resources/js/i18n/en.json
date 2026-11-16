@@ -110,7 +110,13 @@
     "forgot_password_question": "Forgot your password?",
     "sso_required": "Your organisation signs you in through its account: use the button above.",
     "sso_domain_note": "The @{domain} accounts sign in with the account of the organisation, above. Only administrators use this form.",
-    "login_message_default": "Login to your account to get started."
+    "login_message_default": "Login to your account to get started.",
+    "altcha": {
+      "verifying": "Checking that you are not a robot…",
+      "verified": "Anti-robot check passed",
+      "failed": "The anti-robot check could not finish.",
+      "retry": "Try again"
+    }
   },
   "button": {
     "reverse_share_invite": "Create a reverse share request",
