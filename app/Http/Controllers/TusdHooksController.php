@@ -9,6 +9,7 @@ use App\Models\UploadSession;
 use App\Utils\FileHelper;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use App\Services\SettingsService;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 class TusdHooksController extends Controller
 {
@@ -21,24 +22,14 @@ class TusdHooksController extends Controller
      */
     public function handleHook(Request $request)
     {
-        // Security: Verify request is from internal network (tusd process)
-        $clientIp = $request->ip();
-        $allowedNetworks = [
-            '172.', // Docker bridge networks
-            '10.',  // Private network
-            '192.168.', // Private network
-            '127.0.0.1', // Localhost IPv4
-            '::1', // Localhost IPv6
-        ];
-        
-        $isAllowed = false;
-        foreach ($allowedNetworks as $network) {
-            if (str_starts_with($clientIp, $network)) {
-                $isAllowed = true;
-                break;
-            }
-        }
-        
+        // tusd runs in this container and calls its hooks over the loopback; nothing else may.
+        // Behind a reverse proxy every outside request comes from a private address, which the
+        // former allowlist (172., 10., 192.168.) let in, and "/api/tusd-hooks/" went past the
+        // block of Caddy. The address is the one of the connection (REMOTE_ADDR), never the
+        // X-Forwarded-For a client writes.
+        $clientIp = (string) $request->server('REMOTE_ADDR');
+        $isAllowed = IpUtils::checkIp($clientIp, ['127.0.0.0/8', '::1']);
+
         if (!$isAllowed) {
             Log::warning('tusd hook rejected: unauthorized source IP', [
                 'ip' => $clientIp
