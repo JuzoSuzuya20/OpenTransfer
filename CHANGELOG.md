@@ -5,6 +5,35 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.0] — 2026-11-16
+
+### Security
+
+- A new password ends the sessions opened before it: a session left on another computer, or a
+  cookie someone took, kept working until the end of its week, even after a reset by link. The
+  session that changes its password goes on
+- An upload left unfinished is offered again to the account that started it only, and sign-out
+  clears it: on a shared computer, the next account saw its file names and message
+- The routes of the themes are gone (the page no longer reads themes; one of them installed an
+  uploaded file), and the download of a share answers GET and POST only
+
+### Changed
+
+- The names of Erugo give way to OpenTransfer where they were only names: the user of the image
+  (`opentransfer`, uid 1000 as before, so existing volumes keep their owner), `OPENTRANSFER_PORT`
+  (`ERUGO_PORT` is still read), the log (`storage/logs/opentransfer-*.log`), the files of the image
+  and of the development setup. Erugo is still named where OpenTransfer says it is its fork, and
+  where an instance moved from Erugo needs it
+- The themes of Erugo are no longer seeded at each start: no page reads them, and their file only
+  worked on SQLite. Those an instance holds stay in its database
+
+### Removed
+
+- Files that did nothing in the repository: a copy of `artisan` named `erugo`, the donation button
+  and the screenshots of Erugo, an ignored `.dockerignore`, an unused help page, dead front-end
+  modules, debug traces, 171 unused translation keys; the files of local tools (assistants, design
+  tools) are ignored
+
 ## [1.4.0] — 2026-11-16
 
 ### Added
