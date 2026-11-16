@@ -2,13 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\SessionRevocation;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * An access token stays valid an hour after it was issued: disabling an account (someone who
- * left) must take effect at once. The refresh already refuses a disabled account.
+ * left), or changing its password, must take effect at once. The refresh refuses both too.
  */
 class RejectDisabledAccounts
 {
@@ -22,6 +23,11 @@ class RejectDisabledAccounts
                 'code' => 'account_disabled',
                 'message' => 'This account is disabled',
             ], 401);
+        }
+
+        // An access token issued before the password last changed (SessionRevocation)
+        if ($user && SessionRevocation::revoked($user, rescue(fn () => auth('api')->payload()->get('iat'), null, false))) {
+            return SessionRevocation::refusal();
         }
 
         return $next($request);

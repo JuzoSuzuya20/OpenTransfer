@@ -17,6 +17,7 @@ use App\Models\ReverseShareInvite;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Support\PasswordAttempts;
+use App\Support\SessionRevocation;
 use App\Services\SsoPolicy;
 use App\Services\SsoSessions;
 use App\Services\TwoFactor;
@@ -149,6 +150,13 @@ class AuthController extends Controller
 
         if (!$user->active) {
             return $this->inactiveAccountResponse($user);
+        }
+
+        // Opened before the password last changed: over (SessionRevocation). A session from before
+        // the sign-in date was kept is dated by its token.
+        $startedAt = rescue(fn () => Auth::getPayload()->get(SessionLifetime::CLAIM) ?? Auth::getPayload()->get('iat'), null, false);
+        if (SessionRevocation::revoked($user, $startedAt)) {
+            return SessionRevocation::refusal();
         }
 
         // Password sessions of users who must have a second factor but have none are
@@ -403,6 +411,8 @@ class AuthController extends Controller
                     'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
+                // Whoever held a session of this account loses it
+                SessionRevocation::end($user);
 
                 event(new PasswordReset($user));
             }

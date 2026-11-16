@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\RefreshCookie;
+use App\Support\SessionLifetime;
+use App\Support\SessionRevocation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -167,13 +170,25 @@ class UsersController extends Controller
         $user->save();
       }
 
-      return response()->json([
+      $response = response()->json([
         'status' => 'success',
         'message' => 'Profile updated successfully',
         'data' => [
           'user' => $user
         ]
       ]);
+
+      // A new password ends the other sessions (SessionRevocation); this one goes on with a
+      // session of its own, from now (the page renews its access token with it)
+      if ($request->filled('password')) {
+        SessionRevocation::end($user);
+        $signedInAt = now()->getTimestamp();
+        $minutes = SessionLifetime::minutesLeft($signedInAt);
+        $refreshToken = Auth::claims(['amr' => 'pwd', SessionLifetime::CLAIM => $signedInAt])->setTTL($minutes)->tokenById($user->id);
+        $response->withCookie(RefreshCookie::make($refreshToken, $minutes));
+      }
+
+      return $response;
     } catch (\Exception $e) {
       return response()->json(
         ['status' => 'error', 'message' => 'Failed to update profile'],
@@ -303,6 +318,10 @@ class UsersController extends Controller
     try {
       // Admin-only route: the validated keys include the admin and must_change_password flags
       $user->forceFill($validator->validated())->save();
+      // A password set by an admin ends the sessions of the account
+      if ($request->filled('password')) {
+        SessionRevocation::end($user);
+      }
 
       return response()->json([
         'status' => 'success',
@@ -425,6 +444,8 @@ class UsersController extends Controller
       // Set a random password to invalidate the current one
       $user->password = Hash::make(Str::random(64));
       $user->must_change_password = true;
+      // Forced to choose another password: whoever held a session of it loses it
+      $user->sessions_valid_from = now();
       $user->remember_token = null;
       $user->save();
 
