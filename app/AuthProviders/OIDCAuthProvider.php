@@ -50,7 +50,8 @@ class OIDCAuthProvider extends BaseAuthProvider
     ]);
   }
 
-  private function createClient()
+  // The client of one sign-in, set for this provider
+  public function client(): ErugoOpenIDConnectclient
   {
 
     //let's check we have all the required data
@@ -68,6 +69,10 @@ class OIDCAuthProvider extends BaseAuthProvider
     $route = route('social.provider.callback', ['provider' => $this->provider->uuid]);
     $client->setRedirectURL($route);
     $client->addScope(['openid', 'email', 'profile']);
+    // The code is bound to this browser (PKCE): caught on its way back, it cannot be exchanged by
+    // anyone else, and a Keycloak client that requires PKCE accepts the sign-in. A provider that
+    // does not support it ignores the challenge (RFC 7636).
+    $client->setCodeChallengeMethod('S256');
 
     return $client;
   }
@@ -84,7 +89,7 @@ class OIDCAuthProvider extends BaseAuthProvider
 
 
     // Create OIDC client
-    $oidc = $this->createClient();
+    $oidc = $this->client();
 
     // Begin authentication flow
     $oidc->authenticate();
@@ -105,7 +110,7 @@ class OIDCAuthProvider extends BaseAuthProvider
     }
 
     // Create OIDC client and complete authentication
-    $oidc = $this->createClient();
+    $oidc = $this->client();
     $oidc->authenticate();
 
     // Get user info
