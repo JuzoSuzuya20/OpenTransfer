@@ -19,6 +19,7 @@ import { useToast } from 'vue-toastification'
 import { store } from '../store'
 import { positiveNumber } from '../lib/positiveNumber'
 import { burst } from '../lib/confetti'
+import { UPLOAD_STATE_KEY, interruptedUploadFor } from '../lib/interruptedUpload'
 // compact: the quick "New share" window (the files, the default access, one button); the page
 // otherwise (piste A: one column, the access options as chips, one open at a time)
 const props = defineProps({
@@ -200,13 +201,14 @@ const removeRow = (row) => {
 }
 
 // Interrupted upload detection
-const UPLOAD_STATE_KEY = 'opentransfer_upload_in_progress'
 const showInterruptedUploadPanel = ref(false)
 const interruptedUploadInfo = ref(null)
 
 // Save upload state to localStorage when upload starts
 const saveUploadState = () => {
   const state = {
+    // Offered again to this account only (lib/interruptedUpload)
+    userId: store.userId,
     timestamp: Date.now(),
     fileCount: uploadBasket.value.length,
     totalSize: totalSize.value,
@@ -240,14 +242,12 @@ const checkForInterruptedUpload = () => {
   try {
     const savedState = localStorage.getItem(UPLOAD_STATE_KEY)
     if (savedState) {
-      const state = JSON.parse(savedState)
-      // Only show if the saved state is less than 7 days old
-      const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
-      if (Date.now() - state.timestamp < maxAge) {
+      // The account that started it, within the week: anyone else, or later, finds nothing
+      const state = interruptedUploadFor(JSON.parse(savedState), store.userId)
+      if (state) {
         interruptedUploadInfo.value = state
         showInterruptedUploadPanel.value = true
-      } else {
-        // Clear old state
+      } else if (store.userId != null) {
         clearUploadState()
       }
     }

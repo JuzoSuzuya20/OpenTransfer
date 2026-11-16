@@ -10,6 +10,7 @@ import { solveChallenge } from './proofOfWork'
 import { settingValueAsText } from './lib/settingValue'
 import { createAltchaToken } from './lib/altchaToken'
 import { isPasswordRefusal } from './lib/passwordRefusal'
+import { UPLOAD_STATE_KEY } from './lib/interruptedUpload'
 
 // Bundling configuration for small files
 const BUNDLE_CONFIG = {
@@ -641,6 +642,12 @@ export const refresh = async () => {
 }
 
 export const logout = async () => {
+  // An unfinished upload of this account stays with it, not with the browser (lib/interruptedUpload)
+  try {
+    localStorage.removeItem(UPLOAD_STATE_KEY)
+  } catch (error) {
+    // No storage: nothing kept
+  }
   // An SSO session can also be closed at the identity provider, which then sends the browser back here
   let logoutUrl = null
   try {
