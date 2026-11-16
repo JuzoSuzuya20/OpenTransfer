@@ -236,7 +236,7 @@ const handleResetLogo = async () => {
   resetLogo()
     .then((data) => {
       logoTimestamp.value = Date.now()
-      settings.value.logo = 'erugo-logo.png' // Show default logo filename in input
+      settings.value.logo = 'logo.png' // Show default logo filename in input
       toast.success(t.value('settings.branding.logo_reset_success'))
       // Update the logo in the browser by forcing a refresh
       updateBrowserLogo()

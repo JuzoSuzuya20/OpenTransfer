@@ -2,7 +2,7 @@
 
 namespace App\AuthProviders\overrides;
 
-class ErugoOpenIDConnectclient extends \Jumbojett\OpenIDConnectClient
+class OidcClient extends \Jumbojett\OpenIDConnectClient
 {
     
     //override the getStateValue method to return the state value

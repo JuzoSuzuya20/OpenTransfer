@@ -7,7 +7,7 @@ use Jumbojett\OpenIDConnectClient;
 use App\AuthProviders\AuthProviderUser;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\Validator;
-use App\AuthProviders\overrides\ErugoOpenIDConnectclient;
+use App\AuthProviders\overrides\OidcClient;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 
@@ -51,7 +51,7 @@ class OIDCAuthProvider extends BaseAuthProvider
   }
 
   // The client of one sign-in, set for this provider
-  public function client(): ErugoOpenIDConnectclient
+  public function client(): OidcClient
   {
 
     //let's check we have all the required data
@@ -59,7 +59,7 @@ class OIDCAuthProvider extends BaseAuthProvider
       $this->throwMissingDataException();
     }
 
-    $client =  new ErugoOpenIDConnectclient(
+    $client =  new OidcClient(
       $this->base_url,
       $this->client_id,
       $this->client_secret

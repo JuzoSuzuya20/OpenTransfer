@@ -47,7 +47,7 @@ class BundleUploadTest extends TestCase
             $zip->addFromString($path, $content);
             $manifest['files'][] = ['path' => $path, 'originalName' => basename($path), 'size' => strlen($content), 'type' => 'text/plain'];
         }
-        $zip->addFromString('__erugo_manifest__.json', json_encode($manifest));
+        $zip->addFromString('__opentransfer_manifest__.json', json_encode($manifest));
         $zip->close();
     }
 

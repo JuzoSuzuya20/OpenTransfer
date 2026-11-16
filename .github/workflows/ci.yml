@@ -160,14 +160,15 @@ jobs:
           check "hooks tusd acceptés depuis le conteneur (reçu $int)" test "$int" = 200
           # /up peut répondre alors que l'upload (tusd) ou les e-mails (worker) sont morts.
           sleep 10
-          check "storage inscriptible par l'utilisateur applicatif" docker exec -u erugo ot test -w /var/www/html/storage/logs
+          check "storage inscriptible par l'utilisateur applicatif" docker exec -u opentransfer ot test -w /var/www/html/storage/logs
           check "tusd en cours d'exécution" docker exec ot pgrep -f /usr/local/bin/tusd
           check "worker de file d'attente en cours d'exécution" docker exec ot pgrep -f 'artisan queue:work'
           check "aucun processus abandonné par supervisord" sh -c "! docker logs ot 2>&1 | grep -qE 'gave up|FATAL|exited: .*not expected'"
           # Root ne sert qu'au démarrage (propriété du volume) : plus aucun service ne doit tourner en root
-          rootprocs=$(docker exec ot ps -o user,comm | tail -n +2 | awk '$1 != "erugo" && $1 != "1000" && $2 != "ps"' | tr '\n' ' ')
+          # Par uid, lu dans /proc : ps coupe les noms à huit caractères (opentransfer -> opentran)
+          rootprocs=$(docker exec ot sh -c 'for s in /proc/[0-9]*/status; do awk "/^Name:/{n=\$2} /^Uid:/{print \$2, n}" "$s"; done' | awk '$1 != "1000" && $2 != "sh" && $2 != "awk"' | tr '\n' ' ')
           check "aucun service ne tourne en root (trouvé : ${rootprocs:-aucun})" test -z "$rootprocs"
-          check "le code est en lecture seule pour l'application" sh -c "! docker exec -u erugo ot sh -c 'touch /var/www/html/public/x' 2>/dev/null"
+          check "le code est en lecture seule pour l'application" sh -c "! docker exec -u opentransfer ot sh -c 'touch /var/www/html/public/x' 2>/dev/null"
 
           # Adresse du client : Caddy et Laravel doivent croire le même proxy, et lui seul.
           first_admin() {
@@ -223,7 +224,7 @@ jobs:
             -d '{"settings":[{"key":"storage_encryption_enabled","value":"true"}]}' http://localhost:8080/api/settings | jq -r .code)
           check "chiffrement : activation refusée sans clé (reçu : $refused)" test "$refused" = storage_key_missing
 
-          leftovers=$(docker exec ot find /var/www/html/storage ! -user erugo | wc -l)
+          leftovers=$(docker exec ot find /var/www/html/storage ! -user opentransfer | wc -l)
           check "ot-artisan ne laisse aucun fichier à root (trouvés : $leftovers)" test "$leftovers" = 0
 
           # Déploiement durci : sans root, sans capacités, système de fichiers en lecture seule
@@ -273,7 +274,7 @@ jobs:
         run: |
           {
             echo "== laravel.log (erreurs) =="
-            docker exec ot sh -c 'grep -E "\.(ERROR|CRITICAL|ALERT|EMERGENCY):" /var/www/html/storage/logs/laravel.log | tail -n 5' 2>&1 || true
+            docker exec ot sh -c 'grep -hE "\.(ERROR|CRITICAL|ALERT|EMERGENCY):" /var/www/html/storage/logs/opentransfer-*.log | tail -n 5' 2>&1 || true
             echo "== supervisord =="
             docker logs ot 2>&1 | grep -E 'WARN|ERROR|exited|gave up' | tail -n 15
             echo "== fin des journaux =="

@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\IpUtils;
 
 class TusdHooksController extends Controller
 {
+    // The list of the files of a folder sent as one zip, at its root
+    private const MANIFEST = '__opentransfer_manifest__.json';
+    private const MANIFEST_BEFORE = '__erugo_manifest__.json';
+
     /**
      * Handle incoming tusd hook requests
      * tusd sends different hook types: pre-create, post-create, post-receive, post-finish, post-terminate
@@ -387,8 +391,9 @@ class TusdHooksController extends Controller
                 return response()->json(['ok' => true]);
             }
 
-            // Read the manifest
-            $manifestContent = $zip->getFromName('__erugo_manifest__.json');
+            // Read the manifest (under the name Erugo gave it, from a page loaded before an update)
+            $manifestName = $zip->locateName(self::MANIFEST) !== false ? self::MANIFEST : self::MANIFEST_BEFORE;
+            $manifestContent = $zip->getFromName($manifestName);
             if (!$manifestContent) {
                 Log::error('tusd post-finish: Bundle manifest not found', [
                     'upload_id' => $uploadId
@@ -438,7 +443,7 @@ class TusdHooksController extends Controller
             $zip->close();
 
             // Delete the manifest file from extracted directory
-            $manifestPath = $extractDir . '/__erugo_manifest__.json';
+            $manifestPath = $extractDir . '/' . $manifestName;
             if (file_exists($manifestPath)) {
                 unlink($manifestPath);
             }

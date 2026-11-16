@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Erugo Development is starting..."
+echo "OpenTransfer (development) is starting..."
 echo "================================================"
 
 cat << 'EOF'
@@ -40,25 +40,25 @@ mkdir -p /var/www/html/storage/database
 
 # Set correct permissions on storage directory
 echo "Setting storage permissions..."
-chown -R erugo:erugo /var/www/html/storage
+chown -R opentransfer:opentransfer /var/www/html/storage
 
 # Make sure php-fpm run directory exists and has correct permissions
 mkdir -p /run/php
-chown -R erugo:erugo /run/php
+chown -R opentransfer:opentransfer /run/php
 
 # Make sure public directory has correct permissions
-chown -R erugo:erugo /var/www/html/public
+chown -R opentransfer:opentransfer /var/www/html/public
 
 # Fix ownership on named volumes (they start as root-owned)
 echo "Fixing volume permissions..."
-chown -R erugo:erugo /var/www/html/node_modules 2>/dev/null || true
-chown -R erugo:erugo /var/www/html/vendor 2>/dev/null || true
-chown -R erugo:erugo /var/www/html/storage/database 2>/dev/null || true
+chown -R opentransfer:opentransfer /var/www/html/node_modules 2>/dev/null || true
+chown -R opentransfer:opentransfer /var/www/html/vendor 2>/dev/null || true
+chown -R opentransfer:opentransfer /var/www/html/storage/database 2>/dev/null || true
 
 # Install composer dependencies if vendor directory is missing or empty
 if [ ! -d /var/www/html/vendor ] || [ ! -f /var/www/html/vendor/autoload.php ]; then
     echo "Installing composer dependencies..."
-    if ! su-exec erugo composer install --no-interaction; then
+    if ! su-exec opentransfer composer install --no-interaction; then
         echo "ERROR: Composer install failed!"
         exit 1
     fi
@@ -79,7 +79,7 @@ fi
 
 # if [ "$NEED_NPM_INSTALL" = true ]; then
     echo "Installing npm dependencies..."
-    if ! su-exec erugo npm install; then
+    if ! su-exec opentransfer npm install; then
         echo "ERROR: npm install failed!"
         exit 1
     fi
@@ -98,14 +98,14 @@ elif [ -f /var/www/html/.env ]; then
     else
         # Generate a new key
         echo "Generating app key..."
-        su-exec erugo php artisan key:generate --force --show >/var/www/html/storage/app.key
+        su-exec opentransfer php artisan key:generate --force --show >/var/www/html/storage/app.key
         echo "App key generated, loading..."
         export APP_KEY=$(cat /var/www/html/storage/app.key)
     fi
 else
     # Generate a new key
     echo "Generating app key..."
-    su-exec erugo php artisan key:generate --force --show >/var/www/html/storage/app.key
+    su-exec opentransfer php artisan key:generate --force --show >/var/www/html/storage/app.key
     echo "App key generated, loading..."
     export APP_KEY=$(cat /var/www/html/storage/app.key)
 fi
@@ -122,13 +122,13 @@ elif [ -f /var/www/html/.env ]; then
         export JWT_SECRET="$JWT_SECRET_FROM_ENV"
     else
         echo "Generating JWT secret..."
-        su-exec erugo php -r "echo base64_encode(random_bytes(32));" >/var/www/html/storage/jwt.secret
+        su-exec opentransfer php -r "echo base64_encode(random_bytes(32));" >/var/www/html/storage/jwt.secret
         echo "JWT secret generated, loading..."
         export JWT_SECRET=$(cat /var/www/html/storage/jwt.secret)
     fi
 else
     echo "Generating JWT secret..."
-    su-exec erugo php -r "echo base64_encode(random_bytes(32));" >/var/www/html/storage/jwt.secret
+    su-exec opentransfer php -r "echo base64_encode(random_bytes(32));" >/var/www/html/storage/jwt.secret
     echo "JWT secret generated, loading..."
     export JWT_SECRET=$(cat /var/www/html/storage/jwt.secret)
 fi
@@ -149,38 +149,38 @@ echo "Creating environment file for cron jobs..."
 env | grep -E "^(APP_|DB_|REDIS_|MAIL_|QUEUE_|JWT_|ASSET_)" > /var/www/html/.env.runtime
 
 # Create a temporary crontab file
-echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" > /tmp/erugo-crontab
+echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" > /tmp/opentransfer-crontab
 
 # Prevent crontab from complaining about the cache directory
 mkdir -p /root/.cache/crontab
 
-# Install the crontab for the erugo user
-crontab -u erugo /tmp/erugo-crontab
+# Install the crontab for the opentransfer user
+crontab -u opentransfer /tmp/opentransfer-crontab
 
 # Clean up
-rm /tmp/erugo-crontab
+rm /tmp/opentransfer-crontab
 
 # Always run migrations
 echo "Running migrations..."
-su-exec erugo php artisan migrate --force
+su-exec opentransfer php artisan migrate --force
 
 echo "Running seeds..."
-su-exec erugo php artisan db:seed --force
+su-exec opentransfer php artisan db:seed --force
 
 echo "Clearing settings cache..."
-su-exec erugo php artisan clear-settings-cache
+su-exec opentransfer php artisan clear-settings-cache
 
 echo "Clearing templates cache..."
-su-exec erugo php artisan view:clear
+su-exec opentransfer php artisan view:clear
 
 echo "Clearing config cache..."
-su-exec erugo php artisan config:clear
+su-exec opentransfer php artisan config:clear
 
 echo "Clearing route cache..."
-su-exec erugo php artisan route:clear
+su-exec opentransfer php artisan route:clear
 
 echo "Clearing compiled classes..."
-su-exec erugo php artisan clear-compiled
+su-exec opentransfer php artisan clear-compiled
 
 # Create symlinks for public assets (images, backgrounds) pointing to storage
 echo "Creating storage symlinks..."
@@ -197,8 +197,8 @@ ln -s ../storage/app/public/images images
 cd /var/www/html
 
 # Ensure correct ownership of symlinked directories
-chown -R erugo:erugo /var/www/html/storage/app/public
-chown -R erugo:erugo /var/www/html/storage/app/backgrounds
+chown -R opentransfer:opentransfer /var/www/html/storage/app/public
+chown -R opentransfer:opentransfer /var/www/html/storage/app/backgrounds
 
 echo "Starting services..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

@@ -479,7 +479,7 @@ class SettingsController extends Controller
             $logoSetting = Setting::where('key', 'logo')->where('group', 'ui.logo')->first();
             if ($logoSetting) {
                 $logoSetting->previous_value = $logoSetting->value;
-                $logoSetting->value = 'erugo-logo.png';
+                $logoSetting->value = 'logo.png';
                 $logoSetting->save();
                 
                 // Clear settings cache after modifying setting

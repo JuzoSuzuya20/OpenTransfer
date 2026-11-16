@@ -3,7 +3,7 @@
 namespace App\Services;
 
 /**
- * PatternGenerator - Generates random strings based on Erugo Pattern Syntax
+ * PatternGenerator - Generates random strings from the pattern syntax of share links
  * 
  * Special Random Tokens:
  *   # - Digit 0-9

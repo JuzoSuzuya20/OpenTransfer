@@ -3,12 +3,12 @@ services:
         build:
             context: './docker/dev'
             dockerfile: Dockerfile
-        image: 'erugo-dev/app'
+        image: 'opentransfer-dev/app'
         ports:
             - '${APP_PORT:-80}:80'
             - '${VITE_PORT:-5173}:5173'
         environment:
-            SUPERVISOR_PHP_USER: 'erugo'
+            SUPERVISOR_PHP_USER: 'opentransfer'
             VITE_DEV_HOST: '192.168.0.24'
         volumes:
             - '.:/var/www/html'
@@ -19,9 +19,9 @@ services:
             # SQLite database in named volume to support WAL mode properly
             - database:/var/www/html/storage/database
         networks:
-            - erugo
+            - opentransfer
 networks:
-    erugo:
+    opentransfer:
         driver: bridge
 volumes:
     node_modules:

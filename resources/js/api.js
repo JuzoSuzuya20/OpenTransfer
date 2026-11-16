@@ -77,7 +77,7 @@ const bundleFilesIntoZip = async (files, onProgress) => {
   }
 
   // Add manifest to the zip
-  zip.file('__erugo_manifest__.json', JSON.stringify(manifest, null, 2))
+  zip.file('__opentransfer_manifest__.json', JSON.stringify(manifest, null, 2))
 
 
   // Generate the zip blob
@@ -134,7 +134,7 @@ const uploadBundledFiles = async (
     })
 
     // Create a File object from the blob for tus upload
-    const bundleFile = new File([blob], '__erugo_bundle__.zip', {
+    const bundleFile = new File([blob], '__opentransfer_bundle__.zip', {
       type: 'application/zip'
     })
 

@@ -18,7 +18,7 @@ support (OpenID Connect, Microsoft Entra ID, Google, Authentik).
 - Production image on Alpine 3.24, without development dependencies or unused PHP extensions
 - Third-party binaries (tusd) verified against pinned checksums
 - Container health check on `/up`
-- No root at runtime: Caddy, PHP, tusd, the queue worker and the scheduler run as `erugo` (uid 1000)
+- No root at runtime: Caddy, PHP, tusd, the queue worker and the scheduler run as `opentransfer` (uid 1000)
 - No third-party requests (fonts and CSS are served by the app), Content-Security-Policy and strict security headers
 - Images published to `ghcr.io` for `amd64` and `arm64`, scanned with Trivy and signed with cosign
 - Optional allowlist of the networks members may sign in from, and `TRUSTED_PROXIES` for reverse proxies

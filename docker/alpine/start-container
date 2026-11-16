@@ -5,12 +5,16 @@ echo "================================================"
 
 STORAGE=/var/www/html/storage
 
+# The port Caddy listens on in the container, 80 by default. ERUGO_PORT, its name in Erugo, is
+# still read for an instance moved from it.
+export OPENTRANSFER_PORT="${OPENTRANSFER_PORT:-${ERUGO_PORT:-80}}"
+
 # Root is only used to fix the ownership of the storage volume, then dropped.
-# Started as erugo (user: "1000:1000"), root is never used at all.
+# Started as opentransfer (user: "1000:1000"), root is never used at all.
 if [ "$(id -u)" = "0" ]; then
-    as_erugo() { su-exec erugo "$@"; }
+    as_app() { su-exec opentransfer "$@"; }
 else
-    as_erugo() { "$@"; }
+    as_app() { "$@"; }
 fi
 
 # Without a mounted volume the image has no storage directory at all: the
@@ -20,18 +24,18 @@ mkdir -p "$STORAGE"
 if [ "$(id -u)" = "0" ]; then
     # Only what is not already ours: a full chown -R is slow on large volumes
     echo "Checking storage ownership..."
-    find "$STORAGE" \( ! -user erugo -o ! -group erugo \) -exec chown erugo:erugo {} +
+    find "$STORAGE" \( ! -user opentransfer -o ! -group opentransfer \) -exec chown opentransfer:opentransfer {} +
 fi
 
 # First time setup check
 if [ ! -f "$STORAGE/.setup-lock" ]; then
     echo "[First time setup] Copying storage skeleton contents..."
-    as_erugo sh -c "rm -rf '$STORAGE'/* && cp -r /var/www/html/storage_skell/* '$STORAGE'/ && touch '$STORAGE/.setup-lock'"
+    as_app sh -c "rm -rf '$STORAGE'/* && cp -r /var/www/html/storage_skell/* '$STORAGE'/ && touch '$STORAGE/.setup-lock'"
 else
     echo "Setup already completed, skipping..."
 
     # Ensure new directories and default images exist for upgrades from older versions
-    as_erugo sh -c "
+    as_app sh -c "
         mkdir -p '$STORAGE/app/backgrounds/cache/thumbs' '$STORAGE/app/public/images'
         for f in _default-logo.png logo.png _default-background.jpg default-background.jpg; do
             [ -f '$STORAGE/app/public/images/'\$f ] || cp /var/www/html/storage_skell/app/public/images/\$f '$STORAGE/app/public/images/'
@@ -42,18 +46,18 @@ fi
 # Generate the app key and JWT secret on first start
 if [ ! -f "$STORAGE/app.key" ]; then
     echo "Generating app key..."
-    as_erugo sh -c "php artisan key:generate --force --show > '$STORAGE/app.key'"
+    as_app sh -c "php artisan key:generate --force --show > '$STORAGE/app.key'"
 fi
 
 if [ ! -f "$STORAGE/jwt.secret" ]; then
     echo "Generating JWT secret..."
-    as_erugo sh -c "php -r 'echo base64_encode(random_bytes(32));' > '$STORAGE/jwt.secret'"
+    as_app sh -c "php -r 'echo base64_encode(random_bytes(32));' > '$STORAGE/jwt.secret'"
 fi
 
 # Keys, database and backups: read by the account the application runs as and nobody else
 # (a storage folder mounted from the host would otherwise show them to every user of the host).
 # Never in the way of a start: an unusual volume that refuses chmod keeps its permissions.
-as_erugo sh -c "
+as_app sh -c "
     chmod 600 '$STORAGE/app.key' '$STORAGE/jwt.secret'
     mkdir -p '$STORAGE/app/private' '$STORAGE/app/backups'
     chmod 700 '$STORAGE/app/private' '$STORAGE/app/backups'
@@ -73,24 +77,24 @@ esac
 export CADDY_TRUSTED_PROXIES
 
 echo "Running migrations..."
-as_erugo php artisan migrate --force
+as_app php artisan migrate --force
 
 echo "Running seeds..."
-as_erugo php artisan db:seed --force
+as_app php artisan db:seed --force
 
 echo "Clearing settings cache..."
-as_erugo php artisan clear-settings-cache
+as_app php artisan clear-settings-cache
 
 echo "Clearing templates cache..."
-as_erugo php artisan view:clear
+as_app php artisan view:clear
 
 echo "Updating legacy share paths..."
-as_erugo php artisan update-legacy-share-paths
+as_app php artisan update-legacy-share-paths
 
 # Migrate backgrounds from old storage location (storage/app/public/backgrounds) to new location (storage/app/backgrounds)
 if [ -d "$STORAGE/app/public/backgrounds" ] && [ "$(ls -A "$STORAGE/app/public/backgrounds" 2>/dev/null)" ]; then
     echo "Migrating backgrounds from old storage location..."
-    as_erugo sh -c "
+    as_app sh -c "
         mkdir -p '$STORAGE/app/backgrounds/cache/thumbs'
         cp -rn '$STORAGE/app/public/backgrounds/'* '$STORAGE/app/backgrounds/' 2>/dev/null || true
         rm -rf '$STORAGE/app/public/backgrounds'
@@ -99,15 +103,15 @@ if [ -d "$STORAGE/app/public/backgrounds" ] && [ "$(ls -A "$STORAGE/app/public/b
 fi
 
 # The public/ symlinks into storage are created at build time: the
-# application code is owned by root and read-only for erugo.
+# application code is owned by root and read-only for opentransfer.
 
 echo "Starting services..."
 if [ "$(id -u)" = "0" ]; then
     # supervisord reopens /dev/stdout and /dev/stderr to relay each service's
-    # logs: the container's stdio belongs to root, so hand it to erugo first
+    # logs: the container's stdio belongs to root, so hand it to opentransfer first
     # (started with --user, the runtime already does this itself).
     # (no 2>/dev/null here: it would make /proc/self/fd/2 point at /dev/null)
-    chown erugo:erugo /proc/self/fd/1 /proc/self/fd/2 || true
-    exec su-exec erugo /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    chown opentransfer:opentransfer /proc/self/fd/1 /proc/self/fd/2 || true
+    exec su-exec opentransfer /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

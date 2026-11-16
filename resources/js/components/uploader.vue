@@ -200,7 +200,7 @@ const removeRow = (row) => {
 }
 
 // Interrupted upload detection
-const UPLOAD_STATE_KEY = 'erugo_upload_in_progress'
+const UPLOAD_STATE_KEY = 'opentransfer_upload_in_progress'
 const showInterruptedUploadPanel = ref(false)
 const interruptedUploadInfo = ref(null)
 

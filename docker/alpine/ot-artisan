@@ -4,7 +4,7 @@
 #   docker exec <container> ot-artisan disable-ip-allowlist
 #
 # `docker exec` does not inherit what start-container prepares: plain artisan
-# would look for another database, and as root it could leave files erugo
+# would look for another database, and as root it could leave files opentransfer
 # cannot write.
 
 . /usr/local/lib/opentransfer-env
@@ -12,6 +12,6 @@
 cd /var/www/html || exit 1
 
 if [ "$(id -u)" = "0" ]; then
-    exec su-exec erugo php artisan "$@"
+    exec su-exec opentransfer php artisan "$@"
 fi
 exec php artisan "$@"

@@ -34,8 +34,8 @@ ENV APP_VERSION=${VERSION}
 WORKDIR /var/www/html
 
 ENV TZ=UTC
-# Port Caddy listens on inside the container (non-root: Docker allows binding 80)
-ENV ERUGO_PORT=80
+# The port Caddy listens on inside the container (non-root: Docker allows binding 80) is
+# OPENTRANSFER_PORT, 80 by default: start-container sets it
 # Caddy keeps its state in /tmp: nothing outside storage and /tmp is written at runtime
 ENV XDG_CONFIG_HOME=/tmp/caddy/config XDG_DATA_HOME=/tmp/caddy/data
 
@@ -94,24 +94,24 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then TUSD_SHA256="$TUSD_SHA256_AMD64"; \
 RUN mkdir -p /var/www/html/public /etc/php85/php-fpm.d /etc/caddy
 
 COPY ./docker/alpine/www.conf /etc/php85/php-fpm.d/www.conf
-COPY ./docker/alpine/php-fpm-erugo.conf /etc/php85/php-fpm-erugo.conf
+COPY ./docker/alpine/php-fpm-opentransfer.conf /etc/php85/php-fpm-opentransfer.conf
 COPY ./docker/alpine/Caddyfile /etc/caddy/Caddyfile
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Create erugo user and group (uid/gid 1000, as in Erugo: existing volumes keep their owner)
-RUN addgroup -g 1000 erugo && \
-    adduser -D -u 1000 -G erugo erugo
+# The application user and group, uid/gid 1000 as in Erugo: existing volumes keep their owner
+RUN addgroup -g 1000 opentransfer && \
+    adduser -D -u 1000 -G opentransfer opentransfer
 
 # Copy necessary files from build stages and local context.
-# The code stays owned by root: the erugo user can read it, not change it.
+# The code stays owned by root: the opentransfer user can read it, not change it.
 COPY . /var/www/html/
 COPY --from=composer /app/vendor /var/www/html/vendor
 COPY --from=node /app/public/build /var/www/html/public/build
 RUN rm -rf /var/www/html/.env /var/www/html/.git /var/www/html/node_modules /var/www/html/storage \
-    # Owned by erugo before VOLUME, so a new named volume starts writable for uid 1000
-    && mkdir -p /var/www/html/storage && chown erugo:erugo /var/www/html/storage \
+    # Owned by opentransfer before VOLUME, so a new named volume starts writable for uid 1000
+    && mkdir -p /var/www/html/storage && chown opentransfer:opentransfer /var/www/html/storage \
     # Public links into storage, made here because public/ is read-only at runtime
     && cd /var/www/html/public && rm -rf storage backgrounds images \
     && ln -s ../storage/app/public storage \
@@ -125,7 +125,7 @@ COPY ./docker/alpine/start-container /usr/local/bin/start-container
 COPY ./docker/alpine/ot-artisan /usr/local/bin/ot-artisan
 COPY ./docker/alpine/opentransfer-env /usr/local/lib/opentransfer-env
 COPY ./docker/alpine/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY ./docker/alpine/php.ini /etc/php85/conf.d/99-erugo.ini
+COPY ./docker/alpine/php.ini /etc/php85/conf.d/99-opentransfer.ini
 RUN chmod +x /usr/local/bin/start-container /usr/local/bin/ot-artisan
 
 # Shares, database, keys and logs live here: mount it to keep them across upgrades
@@ -134,6 +134,6 @@ VOLUME ["/var/www/html/storage"]
 EXPOSE 80/tcp
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -fsS "http://localhost:${ERUGO_PORT}/up" || exit 1
+    CMD curl -fsS "http://localhost:${OPENTRANSFER_PORT:-${ERUGO_PORT:-80}}/up" || exit 1
 
 ENTRYPOINT ["start-container"]

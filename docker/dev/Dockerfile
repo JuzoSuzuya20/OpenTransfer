@@ -11,7 +11,7 @@ WORKDIR /var/www/html
 ENV TZ=UTC
 ENV SUPERVISOR_PHP_FPM_COMMAND="/usr/sbin/php-fpm85 -F"
 ENV SUPERVISOR_CADDY_COMMAND="/usr/sbin/caddy run --config /etc/caddy/Caddyfile"
-ENV SUPERVISOR_PHP_USER="erugo"
+ENV SUPERVISOR_PHP_USER="opentransfer"
 
 
 # Install production requirements + development tools
@@ -84,24 +84,24 @@ COPY ./Caddyfile /etc/caddy/Caddyfile
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
-# Create erugo user and group
-RUN addgroup erugo && \
-    adduser -D -G erugo erugo
+# Create opentransfer user and group
+RUN addgroup opentransfer && \
+    adduser -D -G opentransfer opentransfer
 
 # Set permissions
-RUN chown -R erugo:erugo /run/php
+RUN chown -R opentransfer:opentransfer /run/php
 
 # Copy configuration files
 COPY ./start-container /usr/local/bin/start-container
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY ./php.ini /etc/php85/conf.d/99-erugo.ini
+COPY ./php.ini /etc/php85/conf.d/99-opentransfer.ini
 RUN chmod +x /usr/local/bin/start-container
 
 # Create supervisor log directory
 RUN mkdir -p /var/log/supervisor
 
 # Create npm cache directory with correct permissions
-RUN mkdir -p /.npm && chown -R erugo:erugo /.npm
+RUN mkdir -p /.npm && chown -R opentransfer:opentransfer /.npm
 
 EXPOSE 80/tcp
 EXPOSE 5173/tcp
