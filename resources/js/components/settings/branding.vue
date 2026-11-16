@@ -3,6 +3,7 @@ import { emitter } from '../../store'
 import { ref, onMounted, watch, defineExpose, onBeforeUnmount, computed } from 'vue'
 import { RotateCcw, Trash2 } from 'lucide-vue-next'
 import OtSkeleton from '../layout/OtSkeleton.vue'
+import { ACCENTS, DEFAULT_ACCENT, applyAccent } from '../../lib/accents'
 
 import {
   getSettingsByGroup,
@@ -150,6 +151,22 @@ const faviconPreview = computed(() => {
   }
 })
 
+// The main colour: tried at once on the page, kept once saved; leaving without saving brings the
+// saved one back (lib/accents)
+const accentChoices = Object.keys(ACCENTS)
+const savedAccent = ref(DEFAULT_ACCENT)
+const chosenAccent = computed(() => (ACCENTS[settings.value.accent_color] ? settings.value.accent_color : DEFAULT_ACCENT))
+const chooseAccent = (id) => {
+  settings.value.accent_color = id
+  applyAccent(id)
+}
+watch(
+  () => settingsLoaded.value,
+  (loaded) => {
+    if (loaded) savedAccent.value = chosenAccent.value
+  }
+)
+
 const saveSettings = async () => {
   saving.value = true
   try {
@@ -182,7 +199,8 @@ const saveSettings = async () => {
     }
 
     // Only the settings this page shows: the colours and backgrounds of the former themes are left as stored
-    await saveSettingsById({ show_powered_by: settings.value.show_powered_by })
+    await saveSettingsById({ show_powered_by: settings.value.show_powered_by, accent_color: chosenAccent.value })
+    savedAccent.value = chosenAccent.value
 
     saving.value = false
     toast.success(t.value('settings.branding.settings_saved'))
@@ -311,6 +329,8 @@ const updateBrowserFavicon = () => {
 }
 
 onBeforeUnmount(() => {
+  // A colour tried and not saved goes
+  if (chosenAccent.value !== savedAccent.value) applyAccent(savedAccent.value)
   // Clean up object URLs to prevent memory leaks
   if (logoObjectUrl.value) {
     URL.revokeObjectURL(logoObjectUrl.value)
@@ -376,6 +396,30 @@ defineExpose({
       </div>
     </section>
 
+    <section class="ot-card setting-group" id="accent-color" aria-labelledby="h-accent">
+      <h2 class="ot-card-title" id="h-accent">{{ $t('settings.branding.accent_title') }}</h2>
+      <div class="accent-swatches" role="radiogroup" aria-labelledby="h-accent">
+        <button
+          v-for="id in accentChoices"
+          :key="id"
+          type="button"
+          role="radio"
+          class="accent-swatch"
+          :aria-checked="chosenAccent === id"
+          @click="chooseAccent(id)"
+        >
+          <!-- Its two tones: the light theme, then the dark one -->
+          <span
+            class="accent-swatch-dot"
+            :style="{ background: `linear-gradient(135deg, ${ACCENTS[id].light.accent} 50%, ${ACCENTS[id].dark.accent} 50%)` }"
+            aria-hidden="true"
+          ></span>
+          {{ $t(`settings.branding.accent.${id}`) }}
+        </button>
+      </div>
+      <p class="help-text">{{ $t('settings.branding.accent_help') }}</p>
+    </section>
+
     <section class="ot-card setting-group" id="sign-in-screen" aria-labelledby="h-sign-in">
       <h2 class="ot-card-title" id="h-sign-in">{{ $t('settings.branding.sign_in_screen') }}</h2>
       <div class="branding-fields">
@@ -438,5 +482,50 @@ defineExpose({
   font-size: 0.8125rem;
   line-height: 1.5;
   color: var(--ot-muted);
+}
+
+// The main colours, as buttons that hold their two tones
+.accent-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.accent-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  margin: 0;
+  padding: 0 12px 0 8px;
+  border: 1px solid var(--ot-line-field);
+  border-radius: 999px;
+  background: var(--ot-field);
+  color: var(--ot-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition:
+    border-color var(--ot-dur-fast) var(--ot-ease-out),
+    background-color var(--ot-dur-fast) var(--ot-ease-out),
+    transform var(--ot-dur-slow) var(--ot-ease-spring);
+
+  &:hover {
+    border-color: var(--ot-line-strong);
+    color: var(--ot-heading);
+  }
+  &:active {
+    transform: scale(calc(1 - 0.04 * var(--ot-motion)));
+  }
+  &[aria-checked="true"] {
+    border-color: var(--ot-accent);
+    background: var(--ot-accent-soft);
+    color: var(--ot-heading);
+  }
+}
+.accent-swatch-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ot-heading) 15%, transparent);
+  flex-shrink: 0;
 }
 </style>

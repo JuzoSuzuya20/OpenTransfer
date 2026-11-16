@@ -5,9 +5,10 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 
 const css = fs.readFileSync(new URL('../../resources/js/style.scss', import.meta.url), 'utf8')
-const darkStart = css.indexOf('@media (prefers-color-scheme: dark)')
+// The dark tokens sit in a mixin, applied for a dark system and for a dark choice (lib/theme)
+const darkStart = css.indexOf('@mixin ot-dark-tokens')
 const light = css.slice(0, darkStart)
-const dark = css.slice(darkStart)
+const dark = css.slice(darkStart, css.indexOf('\n}\n', darkStart))
 
 const token = (block, name) => {
   const match = block.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})\\s*;`))

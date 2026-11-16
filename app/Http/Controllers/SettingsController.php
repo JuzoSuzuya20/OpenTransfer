@@ -35,7 +35,7 @@ class SettingsController extends Controller
         )]);
 
         // Before anything is saved: a refused request must not be half applied
-        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseForcedSso($request) ?? $this->refuseWeakSharePattern($request);
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseForcedSso($request) ?? $this->refuseAccent($request) ?? $this->refuseWeakSharePattern($request);
         if ($refusal) {
             return $refusal;
         }
@@ -146,6 +146,22 @@ class SettingsController extends Controller
             'code' => 'sso_domains_invalid',
             'message' => 'Not a domain name: ' . implode(', ', $invalid),
             'data' => ['invalid' => $invalid],
+        ], 422);
+    }
+
+    // The main colour is one of those offered (resources/js/lib/accents.json): its name goes into a
+    // style of the page
+    private function refuseAccent(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+        if (!$incoming->has(\App\Support\Accents::SETTING) || \App\Support\Accents::exists($incoming->get(\App\Support\Accents::SETTING))) {
+            return null;
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'code' => 'accent_invalid',
+            'message' => 'Not one of the colours offered',
         ], 422);
     }
 

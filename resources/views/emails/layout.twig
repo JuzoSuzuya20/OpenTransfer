@@ -7,7 +7,7 @@
 <meta name="supported-color-schemes" content="dark">
 <title>{% if block('subject') is defined %}{{ block('subject')|trim }}{% else %}{{ settings.application_name }}{% endif %}</title>
 {# The values of the application (resources/js/style.scss, dark scheme): page #161616, card #1e1e1e,
-   line #353535, text #cecece, muted #929292, accent #6a6af4 and its text #8585f6, Plus Jakarta Sans.
+   line #353535, text #cecece, muted #929292, accent (the main colour of the instance: brand.accent) and its text, Plus Jakarta Sans.
    The typeface comes from the instance itself; Gmail and Outlook on Windows ignore it and fall back. #}
 <style>
   @font-face {
@@ -28,7 +28,7 @@
   }
   :root { color-scheme: dark; supported-color-schemes: dark; }
   body { margin: 0; padding: 0; background: #161616; }
-  a { color: #8585f6; text-decoration: none; }
+  a { color: {{ brand.accent.text }}; text-decoration: none; }
   .ot-content h2 { margin: 0 0 12px; font-size: 26px; line-height: 1.2; font-weight: 800; color: #ffffff; }
   .ot-content p { margin: 0 0 10px; }
   @media (max-width: 620px) {
@@ -50,7 +50,7 @@
             <a href="{{ settings.application_url }}" style="display:inline-block;text-decoration:none;">
               <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
                 <tr>
-                  <td width="28" style="width:28px;"><img src="{{ settings.application_url }}{{ brand.custom_logo|default(false) ? '/images/logo.png' : '/build/email/brand-mark.png' }}" width="28" height="28" alt="" style="display:block;width:28px;height:28px;object-fit:contain;border:0;"></td>
+                  <td width="28" style="width:28px;"><img src="{{ settings.application_url }}{{ brand.custom_logo|default(false) ? '/images/logo.png' : '/build/email/' ~ brand.accent.mark_file }}" width="28" height="28" alt="" style="display:block;width:28px;height:28px;object-fit:contain;border:0;"></td>
                   <td style="padding-left:10px;font-size:19px;line-height:28px;font-weight:800;color:#ffffff;">{{ settings.application_name }}</td>
                 </tr>
               </table>
@@ -62,24 +62,24 @@
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#1e1e1e" style="background:#1e1e1e;border:1px solid #353535;border-radius:6px;border-collapse:separate;">
               <tr>
                 <td class="ot-card-body" style="padding:20px;">
-                  <p style="margin:0 0 16px;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#8585f6;">{{ block('header')|trim }}</p>
+                  <p style="margin:0 0 16px;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ brand.accent.text }};">{{ block('header')|trim }}</p>
                   <div class="ot-content" style="font-size:14px;line-height:1.5;color:#cecece;">{{ block('content') }}</div>
                   {% if block('action_url') is defined %}
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0;">
                     <tr>
-                      <td bgcolor="#6262ee" style="background:#6262ee;border-radius:4px;">
+                      <td bgcolor="{{ brand.accent.fill }}" style="background:{{ brand.accent.fill }};border-radius:4px;">
                         <a href="{{ block('action_url')|trim }}" style="display:inline-block;padding:14px 18px;color:#ffffff;text-decoration:none;font-size:13px;line-height:14px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;">{{ block('action_text')|trim }}</a>
                       </td>
                     </tr>
                   </table>
                   <p style="margin:16px 0 2px;font-size:12px;line-height:1.5;color:#929292;">{{ layout.fallback|default('') }}</p>
-                  <p style="margin:0;font-size:12px;line-height:1.5;word-break:break-all;"><a href="{{ block('action_url')|trim }}" style="color:#8585f6;text-decoration:none;">{{ block('action_url')|trim }}</a></p>
+                  <p style="margin:0;font-size:12px;line-height:1.5;word-break:break-all;"><a href="{{ block('action_url')|trim }}" style="color:{{ brand.accent.text }};text-decoration:none;">{{ block('action_url')|trim }}</a></p>
                   {% endif %}
                 </td>
               </tr>
               {# The signature of the identity: the 3 px accent line at the foot of every card #}
               <tr>
-                <td height="3" bgcolor="#6a6af4" style="height:3px;padding:0;font-size:0;line-height:3px;background:#6a6af4;border-radius:0 0 5px 5px;">&nbsp;</td>
+                <td height="3" bgcolor="{{ brand.accent.mark }}" style="height:3px;padding:0;font-size:0;line-height:3px;background:{{ brand.accent.mark }};border-radius:0 0 5px 5px;">&nbsp;</td>
               </tr>
             </table>
           </td>

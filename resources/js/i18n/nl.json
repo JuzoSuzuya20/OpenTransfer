@@ -155,8 +155,9 @@
       "no_limit": "Geen limiet",
       "storage_detail": "{shares} aan shares · de schijf bevat {used} van {total}",
       "legend_shares": "Shares",
-      "legend_others": "Rest van de schijf",
-      "legend_free": "Vrij: {free}"
+      "legend_others": "Gebruikt buiten de shares",
+      "legend_free": "Vrij: {free}",
+      "legend_others_hint": "Het systeem en andere software, plus de database, back-ups en logboeken van OpenTransfer"
     },
     "account": {
       "change_password": "Mijn wachtwoord wijzigen",
@@ -227,7 +228,18 @@
       "login_background_removed": "Achtergrondafbeelding verwijderd",
       "favicon_delete_failed": "Het favicon kon niet worden verwijderd",
       "favicon_deleted": "Favicon verwijderd: het OpenTransfer-pictogram is terug",
-      "reset_favicon_to_default": "Terug naar het OpenTransfer-favicon"
+      "reset_favicon_to_default": "Terug naar het OpenTransfer-favicon",
+      "accent_title": "Hoofdkleur",
+      "accent_help": "De kleur van de knoppen, links en het merkteken, in het lichte en het donkere thema. Elke kleur houdt de tekst leesbaar.",
+      "accent": {
+        "indigo": "Blauwviolet",
+        "blue": "Blauw",
+        "emerald": "Smaragd",
+        "orange": "Oranje",
+        "raspberry": "Framboos",
+        "violet": "Violet",
+        "slate": "Leisteen"
+      }
     },
     "button": {
       "branding": {
@@ -1175,5 +1187,11 @@
   },
   "common": {
     "loading": "Laden…"
+  },
+  "theme": {
+    "label": "Thema",
+    "system": "Systeem",
+    "light": "Licht",
+    "dark": "Donker"
   }
 }

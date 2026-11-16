@@ -171,7 +171,7 @@ const databaseDisplayName = computed(() => {
           </div>
           <ul class="about-meter-legend">
             <li><i class="is-shares" aria-hidden="true"></i>{{ $t('settings.about.legend_shares') }}</li>
-            <li><i class="is-others" aria-hidden="true"></i>{{ $t('settings.about.legend_others') }}</li>
+            <li :title="$t('settings.about.legend_others_hint')"><i class="is-others" aria-hidden="true"></i>{{ $t('settings.about.legend_others') }}</li>
             <li><i aria-hidden="true"></i>{{ $t('settings.about.legend_free', { free: niceFileSize(systemInfo.storage.disk_free_bytes) }) }}</li>
           </ul>
         </template>

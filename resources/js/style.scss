@@ -82,52 +82,61 @@
   --ot-shadow: 0 8px 24px rgb(22 22 22 / 0.12);
 }
 
+// The dark tokens: when the system is dark and nobody chose light, or when someone chose dark
+// (account menu, lib/theme; public/theme.js sets the choice before the page shows)
+@mixin ot-dark-tokens {
+  color-scheme: dark;
+
+  --ot-page: #161616;
+  --ot-card: #1e1e1e;
+  --ot-field: #242424;
+  --ot-raised: #2a2a2a;
+  --ot-active: #353535;
+
+  --ot-line: #353535;
+  --ot-line-soft: #2a2a2a;
+  --ot-line-field: #3a3a3a;
+  --ot-line-strong: #6a6a6a;
+  --ot-line-kbd: #3a3e5c;
+
+  --ot-text: #cecece;
+  --ot-heading: #ffffff;
+  --ot-muted: #929292;
+  --ot-faint: #6a6a6a;
+
+  --ot-accent: #6a6af4;
+  --ot-accent-hover: #7c7cf6;
+  --ot-accent-active: #5b5be6;
+  // #6a6af4 gives white only 4.2:1: a hair deeper for the surfaces that carry text
+  --ot-accent-fill: #6262ee;
+  --ot-accent-fill-hover: #5b5be6;
+  --ot-accent-fill-active: #5353d6;
+  --ot-accent-text: #8585f6;
+  --ot-accent-text-hover: #b1b1f9;
+  --ot-on-accent: #ffffff;
+  --ot-accent-soft: #23233f;
+
+  --ot-success: #27a658;
+  --ot-success-soft: #19271d;
+  --ot-success-line: #1f3a27;
+  --ot-warning: #fc5d00;
+  --ot-warning-soft: #361e19;
+  --ot-warning-line: #4a2a20;
+  --ot-danger: #ff5655;
+  --ot-danger-soft: #391c1c;
+  --ot-danger-line: #5a2a2a;
+  --ot-danger-text: #ff9c9c;
+
+  --ot-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-
-    --ot-page: #161616;
-    --ot-card: #1e1e1e;
-    --ot-field: #242424;
-    --ot-raised: #2a2a2a;
-    --ot-active: #353535;
-
-    --ot-line: #353535;
-    --ot-line-soft: #2a2a2a;
-    --ot-line-field: #3a3a3a;
-    --ot-line-strong: #6a6a6a;
-    --ot-line-kbd: #3a3e5c;
-
-    --ot-text: #cecece;
-    --ot-heading: #ffffff;
-    --ot-muted: #929292;
-    --ot-faint: #6a6a6a;
-
-    --ot-accent: #6a6af4;
-    --ot-accent-hover: #7c7cf6;
-    --ot-accent-active: #5b5be6;
-    // #6a6af4 gives white only 4.2:1: a hair deeper for the surfaces that carry text
-    --ot-accent-fill: #6262ee;
-    --ot-accent-fill-hover: #5b5be6;
-    --ot-accent-fill-active: #5353d6;
-    --ot-accent-text: #8585f6;
-    --ot-accent-text-hover: #b1b1f9;
-    --ot-on-accent: #ffffff;
-    --ot-accent-soft: #23233f;
-
-    --ot-success: #27a658;
-    --ot-success-soft: #19271d;
-    --ot-success-line: #1f3a27;
-    --ot-warning: #fc5d00;
-    --ot-warning-soft: #361e19;
-    --ot-warning-line: #4a2a20;
-    --ot-danger: #ff5655;
-    --ot-danger-soft: #391c1c;
-    --ot-danger-line: #5a2a2a;
-    --ot-danger-text: #ff9c9c;
-
-    --ot-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+  :root:not([data-theme="light"]) {
+    @include ot-dark-tokens;
   }
+}
+:root[data-theme="dark"] {
+  @include ot-dark-tokens;
 }
 
 :root {

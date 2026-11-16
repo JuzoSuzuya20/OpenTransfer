@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useTranslate } from '@tolgee/vue'
-import { ChevronDown, User, Info, LogOut } from 'lucide-vue-next'
+import { ChevronDown, User, Info, LogOut, Monitor, Sun, Moon } from 'lucide-vue-next'
 import AppLink from './AppLink.vue'
 import LanguageSelector from '../languageSelector.vue'
 import { shortName } from '../../lib/initials'
 import UserAvatar from './UserAvatar.vue'
+import { THEMES, storedTheme, applyTheme } from '../../lib/theme'
 
 defineProps({
   name: { type: String, default: '' },
@@ -13,6 +14,13 @@ defineProps({
 })
 const emit = defineEmits(['logout'])
 const { t } = useTranslate()
+
+// Light, dark, or the system (by default): kept by this browser (lib/theme)
+const theme = ref(storedTheme())
+const THEME_ICONS = { system: Monitor, light: Sun, dark: Moon }
+const chooseTheme = (choice) => {
+  theme.value = applyTheme(choice)
+}
 
 const open = ref(false)
 const root = ref(null)
@@ -86,6 +94,23 @@ onBeforeUnmount(() => {
       </AppLink>
       <div class="account-menu-language">
         <LanguageSelector />
+      </div>
+      <div class="account-menu-theme">
+        <span class="account-menu-theme-label" id="account-theme-label">{{ t('theme.label') }}</span>
+        <div class="ot-segmented" role="radiogroup" aria-labelledby="account-theme-label">
+          <button
+            v-for="choice in THEMES"
+            :key="choice"
+            type="button"
+            role="radio"
+            :aria-checked="theme === choice"
+            :aria-selected="theme === choice"
+            @click="chooseTheme(choice)"
+          >
+            <component :is="THEME_ICONS[choice]" aria-hidden="true" />
+            {{ t(`theme.${choice}`) }}
+          </button>
+        </div>
       </div>
       <button type="button" class="account-menu-item is-danger" @click="close(); emit('logout')">
         <LogOut aria-hidden="true" />

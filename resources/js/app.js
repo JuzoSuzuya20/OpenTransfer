@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { vExpandDetails } from './lib/expand'
+import { storedTheme, applyTheme } from './lib/theme'
 import { Tolgee, DevTools, VueTolgee } from '@tolgee/vue'
 import { FormatIcu } from '@tolgee/format-icu'
 
@@ -136,6 +137,9 @@ tolgee.on('language', ({ value }) => {
   document.documentElement.lang = value
 })
 
+
+// The light or dark choice of this browser, should public/theme.js not have run
+applyTheme(storedTheme())
 
 createApp(App)
   .use(Toast, {

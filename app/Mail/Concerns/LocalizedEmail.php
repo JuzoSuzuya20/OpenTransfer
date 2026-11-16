@@ -35,6 +35,8 @@ trait LocalizedEmail
         // The logo is square, with the name the admin chose next to it, as in the application
         $this->brand = [
             'custom_logo' => !usesDefaultLogo(),
+            // The main colour of the instance: its button, its label and its mark
+            'accent' => \App\Support\Accents::email(\App\Support\Accents::chosen()),
         ];
     }
 

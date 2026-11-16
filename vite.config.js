@@ -11,7 +11,13 @@ const EMAIL_ASSETS = {
   'plus-jakarta-sans-latin-wght-normal.woff2': 'node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2',
   'plus-jakarta-sans-latin-ext-wght-normal.woff2': 'node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-wght-normal.woff2',
   'OFL.txt': 'node_modules/@fontsource-variable/plus-jakarta-sans/LICENSE',
-  'brand-mark.png': 'resources/images/email/brand-mark.png'
+  'brand-mark.png': 'resources/images/email/brand-mark.png',
+  // The mark in each main colour (Appearance), the default one being brand-mark.png
+  ...Object.fromEntries(
+    Object.keys(JSON.parse(fs.readFileSync('resources/js/lib/accents.json', 'utf8')))
+      .filter((id) => id !== 'indigo')
+      .map((id) => [`brand-mark-${id}.png`, `resources/images/email/brand-mark-${id}.png`])
+  )
 }
 
 const emailAssets = () => ({

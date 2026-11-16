@@ -439,6 +439,15 @@ class SettingsSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                // The main colour of the instance, one of resources/js/lib/accents.json
+                'key' => 'accent_color',
+                'value' => 'indigo',
+                'previous_value' => null,
+                'group' => 'ui.css',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
                 // The provider the sign-in page leads straight to (an id), empty for the form
                 'key' => 'sso_forced_provider',
                 'value' => '',

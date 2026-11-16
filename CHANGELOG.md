@@ -7,6 +7,16 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 
 ## [1.5.1] — 2026-11-17
 
+### Added
+
+- The main colour of the instance is chosen in Appearance, among seven (the blue violet of
+  OpenTransfer by default, blue, emerald, orange, raspberry, violet, slate): buttons, links and the
+  mark take it, in the light theme as in the dark one, and so do the emails. Each colour keeps
+  coloured text and the white of buttons readable (4.5:1 at least); a colour tried and not saved
+  goes when leaving the page. The page arrives in the saved colour, without a flash of the default
+- Everyone chooses their theme in the account menu: the system's (by default), light or dark. The
+  choice is kept by the browser and set before the page shows
+
 ### Changed
 
 - The logo is a square, without text, and the name next to it is the one the admin chose (General >
@@ -37,7 +47,9 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
   never meet since they go through tusd in pieces: it shows the largest share the instance accepts,
   its setting
 - About wrote the size of the shares over a bar of the whole disk (the system and other data
-  included): the bar now tells the shares, the rest of the disk and what is free apart
+  included): the bar now tells the shares, what else the disk holds ("Used outside the shares": the
+  system and other software, and the database, backups and logs of OpenTransfer) and what is free
+  apart
 
 ## [1.5.0] — 2026-11-16
 

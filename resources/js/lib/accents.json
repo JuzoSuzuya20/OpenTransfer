@@ -1,0 +1,233 @@
+{
+  "indigo": {
+    "light": {
+      "accent": "#000091",
+      "accent-hover": "#1212ff",
+      "accent-active": "#2323ff",
+      "accent-fill": "#000091",
+      "accent-fill-hover": "#1212ff",
+      "accent-fill-active": "#2323ff",
+      "accent-text": "#000091",
+      "accent-text-hover": "#1212ff",
+      "on-accent": "#ffffff",
+      "accent-soft": "#ececfe",
+      "line-kbd": "#cacafb"
+    },
+    "dark": {
+      "accent": "#6a6af4",
+      "accent-hover": "#7c7cf6",
+      "accent-active": "#5b5be6",
+      "accent-fill": "#6262ee",
+      "accent-fill-hover": "#5b5be6",
+      "accent-fill-active": "#5353d6",
+      "accent-text": "#8585f6",
+      "accent-text-hover": "#b1b1f9",
+      "on-accent": "#ffffff",
+      "accent-soft": "#23233f",
+      "line-kbd": "#3a3e5c"
+    },
+    "email": {
+      "fill": "#6262ee",
+      "text": "#8585f6",
+      "mark": "#6a6af4"
+    }
+  },
+  "blue": {
+    "light": {
+      "accent": "#0a59da",
+      "accent-hover": "#1b6df5",
+      "accent-active": "#1b6df5",
+      "accent-fill": "#0a59da",
+      "accent-fill-hover": "#1b6df5",
+      "accent-fill-active": "#1b6df5",
+      "accent-text": "#0a59da",
+      "accent-text-hover": "#1b6df5",
+      "on-accent": "#ffffff",
+      "accent-soft": "#e9f1fe",
+      "line-kbd": "#bbd3fc"
+    },
+    "dark": {
+      "accent": "#3b82f6",
+      "accent-hover": "#5392f7",
+      "accent-active": "#2776f5",
+      "accent-fill": "#196cf4",
+      "accent-fill-hover": "#0b62f0",
+      "accent-fill-active": "#0a59da",
+      "accent-text": "#4a8bf7",
+      "accent-text-hover": "#8cb6fa",
+      "on-accent": "#ffffff",
+      "accent-soft": "#1f2c41",
+      "line-kbd": "#344560"
+    },
+    "email": {
+      "fill": "#196cf4",
+      "text": "#4a8bf7",
+      "mark": "#3b82f6"
+    }
+  },
+  "emerald": {
+    "light": {
+      "accent": "#0a704e",
+      "accent-hover": "#0c855d",
+      "accent-active": "#0c855d",
+      "accent-fill": "#0a704e",
+      "accent-fill-hover": "#0c855d",
+      "accent-fill-active": "#0c855d",
+      "accent-text": "#0a704e",
+      "accent-text-hover": "#0c855d",
+      "on-accent": "#ffffff",
+      "accent-soft": "#eafdf7",
+      "line-kbd": "#bdf9e5"
+    },
+    "dark": {
+      "accent": "#10b981",
+      "accent-hover": "#12d091",
+      "accent-active": "#0ea674",
+      "accent-fill": "#0c855d",
+      "accent-fill-hover": "#0b7c57",
+      "accent-fill-active": "#0a704e",
+      "accent-text": "#10b981",
+      "accent-text-hover": "#12ce90",
+      "on-accent": "#ffffff",
+      "accent-soft": "#1f4136",
+      "line-kbd": "#346051"
+    },
+    "email": {
+      "fill": "#0c855d",
+      "text": "#10b981",
+      "mark": "#10b981"
+    }
+  },
+  "orange": {
+    "light": {
+      "accent": "#a54604",
+      "accent-hover": "#c35305",
+      "accent-active": "#c35305",
+      "accent-fill": "#a54604",
+      "accent-fill-hover": "#c35305",
+      "accent-fill-active": "#c35305",
+      "accent-text": "#a54604",
+      "accent-text-hover": "#c35305",
+      "on-accent": "#ffffff",
+      "accent-soft": "#fef2e9",
+      "line-kbd": "#fdd5b9"
+    },
+    "dark": {
+      "accent": "#f97316",
+      "accent-hover": "#fa822f",
+      "accent-active": "#f46806",
+      "accent-fill": "#c35305",
+      "accent-fill-hover": "#b44d05",
+      "accent-fill-active": "#a54604",
+      "accent-text": "#f97316",
+      "accent-text-hover": "#fb9d5c",
+      "on-accent": "#ffffff",
+      "accent-soft": "#412d1f",
+      "line-kbd": "#604634"
+    },
+    "email": {
+      "fill": "#c35305",
+      "text": "#f97316",
+      "mark": "#f97316"
+    }
+  },
+  "raspberry": {
+    "light": {
+      "accent": "#be1957",
+      "accent-hover": "#e01d67",
+      "accent-active": "#e01d67",
+      "accent-fill": "#be1957",
+      "accent-fill-hover": "#e01d67",
+      "accent-fill-active": "#e01d67",
+      "accent-text": "#be1957",
+      "accent-text-hover": "#e01d67",
+      "on-accent": "#ffffff",
+      "accent-soft": "#fcebf1",
+      "line-kbd": "#f7c0d5"
+    },
+    "dark": {
+      "accent": "#e5397a",
+      "accent-hover": "#e85089",
+      "accent-active": "#e3276e",
+      "accent-fill": "#e01d67",
+      "accent-fill-hover": "#d01b60",
+      "accent-fill-active": "#be1957",
+      "accent-text": "#e95b91",
+      "accent-text-hover": "#f29abb",
+      "on-accent": "#ffffff",
+      "accent-soft": "#411f2c",
+      "line-kbd": "#603445"
+    },
+    "email": {
+      "fill": "#e01d67",
+      "text": "#e95b91",
+      "mark": "#e5397a"
+    }
+  },
+  "violet": {
+    "light": {
+      "accent": "#6f35f4",
+      "accent-hover": "#753ef4",
+      "accent-active": "#753ef4",
+      "accent-fill": "#6f35f4",
+      "accent-fill-hover": "#753ef4",
+      "accent-fill-active": "#753ef4",
+      "accent-text": "#6f35f4",
+      "accent-text-hover": "#753ef4",
+      "on-accent": "#ffffff",
+      "accent-soft": "#f0e9fe",
+      "line-kbd": "#cfbbfb"
+    },
+    "dark": {
+      "accent": "#8b5cf6",
+      "accent-hover": "#9c74f7",
+      "accent-active": "#7d49f5",
+      "accent-fill": "#8452f5",
+      "accent-fill-hover": "#7b45f5",
+      "accent-fill-active": "#6f35f4",
+      "accent-text": "#9e77f7",
+      "accent-text-hover": "#c0a7fa",
+      "on-accent": "#ffffff",
+      "accent-soft": "#2a1f41",
+      "line-kbd": "#413460"
+    },
+    "email": {
+      "fill": "#8452f5",
+      "text": "#9e77f7",
+      "mark": "#8b5cf6"
+    }
+  },
+  "slate": {
+    "light": {
+      "accent": "#566478",
+      "accent-hover": "#65758d",
+      "accent-active": "#65758d",
+      "accent-fill": "#566478",
+      "accent-fill-hover": "#65758d",
+      "accent-fill-active": "#65758d",
+      "accent-text": "#566478",
+      "accent-text-hover": "#65758d",
+      "on-accent": "#ffffff",
+      "accent-soft": "#f2f3f5",
+      "line-kbd": "#d5dae1"
+    },
+    "dark": {
+      "accent": "#64748b",
+      "accent-hover": "#708198",
+      "accent-active": "#5b6a7f",
+      "accent-fill": "#64748b",
+      "accent-fill-hover": "#5e6d82",
+      "accent-fill-active": "#566478",
+      "accent-text": "#7f8ea3",
+      "accent-text-hover": "#acb5c3",
+      "on-accent": "#ffffff",
+      "accent-soft": "#292f38",
+      "line-kbd": "#3e4856"
+    },
+    "email": {
+      "fill": "#64748b",
+      "text": "#7f8ea3",
+      "mark": "#64748b"
+    }
+  }
+}

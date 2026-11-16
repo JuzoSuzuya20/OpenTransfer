@@ -155,8 +155,9 @@
       "no_limit": "Keine Grenze",
       "storage_detail": "{shares} in Freigaben · die Festplatte enthält {used} von {total}",
       "legend_shares": "Freigaben",
-      "legend_others": "Rest der Festplatte",
-      "legend_free": "Frei: {free}"
+      "legend_others": "Außerhalb der Freigaben belegt",
+      "legend_free": "Frei: {free}",
+      "legend_others_hint": "Das System und andere Software sowie Datenbank, Sicherungen und Protokolle von OpenTransfer"
     },
     "account": {
       "change_password": "Mein Passwort ändern",
@@ -227,7 +228,18 @@
       "login_background_removed": "Hintergrundbild entfernt",
       "favicon_delete_failed": "Das Favicon konnte nicht entfernt werden",
       "favicon_deleted": "Favicon entfernt: Das OpenTransfer-Symbol ist zurück",
-      "reset_favicon_to_default": "Zurück zum OpenTransfer-Favicon"
+      "reset_favicon_to_default": "Zurück zum OpenTransfer-Favicon",
+      "accent_title": "Hauptfarbe",
+      "accent_help": "Die Farbe der Schaltflächen, Links und des Zeichens, im hellen wie im dunklen Design. Jede hält den Text lesbar.",
+      "accent": {
+        "indigo": "Blauviolett",
+        "blue": "Blau",
+        "emerald": "Smaragd",
+        "orange": "Orange",
+        "raspberry": "Himbeere",
+        "violet": "Violett",
+        "slate": "Schiefer"
+      }
     },
     "button": {
       "branding": {
@@ -1175,5 +1187,11 @@
   },
   "common": {
     "loading": "Wird geladen…"
+  },
+  "theme": {
+    "label": "Design",
+    "system": "System",
+    "light": "Hell",
+    "dark": "Dunkel"
   }
 }

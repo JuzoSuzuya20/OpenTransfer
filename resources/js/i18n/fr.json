@@ -155,8 +155,9 @@
       "no_limit": "Aucune limite",
       "storage_detail": "{shares} de partages · le disque contient {used} sur {total}",
       "legend_shares": "Partages",
-      "legend_others": "Reste du disque",
-      "legend_free": "Libre : {free}"
+      "legend_others": "Utilisé hors partages",
+      "legend_free": "Libre : {free}",
+      "legend_others_hint": "Le système et les autres logiciels, ainsi que la base, les sauvegardes et les journaux d'OpenTransfer"
     },
     "account": {
       "change_password": "Modifier mon mot de passe",
@@ -227,7 +228,18 @@
       "login_background_removed": "Image de fond retirée",
       "favicon_delete_failed": "Le favicon n'a pas pu être supprimé",
       "favicon_deleted": "Favicon supprimé : l'icône d'OpenTransfer revient",
-      "reset_favicon_to_default": "Revenir au favicon d'OpenTransfer"
+      "reset_favicon_to_default": "Revenir au favicon d'OpenTransfer",
+      "accent_title": "Couleur principale",
+      "accent_help": "Celle des boutons, des liens et de la marque, dans le thème clair comme dans le sombre. Chacune garde le texte lisible.",
+      "accent": {
+        "indigo": "Bleu violet",
+        "blue": "Bleu",
+        "emerald": "Émeraude",
+        "orange": "Orange",
+        "raspberry": "Framboise",
+        "violet": "Violet",
+        "slate": "Ardoise"
+      }
     },
     "button": {
       "branding": {
@@ -1175,5 +1187,11 @@
   },
   "common": {
     "loading": "Chargement…"
+  },
+  "theme": {
+    "label": "Thème",
+    "system": "Système",
+    "light": "Clair",
+    "dark": "Sombre"
   }
 }
