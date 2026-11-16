@@ -40,6 +40,7 @@ const ProfilePage = defineAsyncComponent(signedInPages.profile)
 const AboutPage = defineAsyncComponent(signedInPages.about)
 const Setup = defineAsyncComponent(() => import('./components/setup.vue'))
 const ThankGuestForUpload = defineAsyncComponent(() => import('./components/thankGuestForUpload.vue'))
+const RequestLock = defineAsyncComponent(() => import('./components/requestLock.vue'))
 
 const { t, isLoading: translationsLoading } = useTranslate()
 const toast = useToast()
@@ -132,6 +133,7 @@ const needsSignIn = computed(
     !store.isLoggedIn() &&
     !restoring.value &&
     !isDownload.value &&
+    !store.lockedRequest &&
     store.mode !== 'setup' &&
     store.mode !== 'thank_guest_for_upload'
 )
@@ -142,9 +144,11 @@ const page = computed(() => {
   if (store.mode === 'setup') return 'setup'
   if (store.mode === 'thank_guest_for_upload') return 'thanks'
   if (isDownload.value) return 'download'
+  // A guest only drops files for the request: a page like the one a recipient downloads from
+  if (store.lockedRequest && !store.isLoggedIn()) return 'request-lock'
   if (restoring.value) return 'restoring'
   if (showAuth.value) return 'auth'
-  if (store.isGuest()) return 'send'
+  if (store.isGuest()) return 'drop'
   const name = route.value.name
   if ((name === 'stats' || name === 'admin') && !store.isAdmin()) return 'not-found'
   if (name === 'requests' && !allowFileRequests) return 'not-found'
@@ -153,14 +157,13 @@ const page = computed(() => {
 
 const headerVariant = computed(() => {
   if (page.value === 'setup' || page.value === 'auth') return 'bare'
-  if (page.value === 'download' || page.value === 'thanks') return 'simple'
-  if (store.isGuest()) return 'guest'
+  if (['download', 'thanks', 'request-lock', 'drop'].includes(page.value)) return 'simple'
   return 'full'
 })
 
 const mainWidth = computed(() => {
   if (page.value === 'auth' || page.value === 'setup') return 'is-narrow'
-  if (page.value === 'download' || page.value === 'thanks') return 'is-medium'
+  if (['download', 'thanks', 'request-lock', 'drop'].includes(page.value)) return 'is-medium'
   return 'is-wide'
 })
 
@@ -173,6 +176,8 @@ const pageTitles = computed(() => ({
   profile: t.value('settings.title.myProfile'),
   about: t.value('settings.title.about'),
   download: t.value('downloader.files_title'),
+  drop: t.value('drop.title'),
+  'request-lock': t.value('drop.title'),
   auth: t.value('auth.login')
 }))
 
@@ -329,10 +334,11 @@ onBeforeUnmount(() => {
       <Setup v-if="page === 'setup'" />
       <ThankGuestForUpload v-else-if="page === 'thanks'" />
       <Downloader v-else-if="page === 'download'" :downloadShareCode="route.params.code" />
+      <RequestLock v-else-if="page === 'request-lock'" />
       <template v-else-if="page !== 'auth' && page !== 'restoring'">
         <!-- From one page to the next: the old one goes at once, the new one settles (styles/_motion.scss) -->
         <Transition name="ot-page" mode="out-in">
-          <Uploader v-if="page === 'send'" />
+          <Uploader v-if="page === 'send' || page === 'drop'" />
           <MySharesPage v-else-if="page === 'my-shares'" />
           <RequestsPage v-else-if="page === 'requests'" />
           <StatsPage v-else-if="page === 'stats'" />

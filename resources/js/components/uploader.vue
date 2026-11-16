@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { pinLeaving } from '../lib/motion'
 import { Upload, Copy, X, Loader, Check, Pause, Play, Eye, EyeOff, Link as LinkIcon, Clock, HardDriveDownload, Lock, Mail, ChevronDown, ArrowRight } from 'lucide-vue-next'
-import { niceFileSize, niceFileType, niceFileName, simpleUUID } from '../utils'
+import { niceFileSize, niceFileType, niceFileName, simpleUUID, timeUntilExpiration } from '../utils'
 import { getHealth, getMyProfile, uploadFilesInChunks, logout, getMyShares, setDownloadLimit } from '../api'
 import { basketRows } from '../lib/basket'
 import { sendSummary } from '../lib/shares'
@@ -10,6 +10,7 @@ import AppLink from './layout/AppLink.vue'
 import OtSelect from './layout/OtSelect.vue'
 import OtNumber from './layout/OtNumber.vue'
 import PageHead from './layout/PageHead.vue'
+import UserAvatar from './layout/UserAvatar.vue'
 import { handedOverFiles } from '../lib/quickSendHandoff'
 import { uploadController } from '../store'
 import { domData } from '../domData'
@@ -150,8 +151,10 @@ const onRecipientKeydown = (event) => {
   }
 }
 
-// A guest drops files for one request: who asks, what for, until when (sent by link, the
-// message reaches them only here)
+// A guest drops files for one request, and does nothing else: a page like the one a recipient
+// downloads from, with who asks, what for and the time left. The rules (how long the files stay,
+// a password) are the member's, set on the request.
+const isDrop = computed(() => store.isGuest() && !props.compact)
 const guestRequest = ref(null)
 const loadGuestRequest = async () => {
   if (!store.isGuest()) return
@@ -162,11 +165,14 @@ const loadGuestRequest = async () => {
   }
 }
 onMounted(loadGuestRequest)
-const requestDeadline = computed(() =>
-  guestRequest.value?.expires_at
-    ? new Intl.DateTimeFormat(document.documentElement.lang || 'en', { day: 'numeric', month: 'long' }).format(new Date(guestRequest.value.expires_at))
-    : ''
-)
+const requestTimeLeft = computed(() => {
+  if (!guestRequest.value?.expires_at) return ''
+  const { days, hours, minutes } = timeUntilExpiration(guestRequest.value.expires_at)
+  if (days > 0) return t.value('downloader.left_days', { count: days })
+  if (hours > 0) return t.value('downloader.left_hours', { count: hours })
+  return t.value('downloader.left_minutes', { count: Math.max(minutes, 1) })
+})
+const firstName = (name) => String(name ?? '').trim().split(/\s+/)[0] ?? ''
 
 // The figures above the form: what the person has online right now
 const myShares = ref([])
@@ -301,8 +307,8 @@ const quickDefaults = computed(() =>
 )
 const ctaLabel = computed(() => {
   if (currentlyUploading.value) return t.value('send.creating', { progress: Math.round(uploadProgress.value) })
-  if (uploadBasket.value.length === 0) return t.value('send.add_files_first')
-  return t.value('send.create_with', { count: uploadBasket.value.length, size: niceFileSize(totalSize.value) })
+  if (uploadBasket.value.length === 0) return t.value(isDrop.value ? 'drop.add_files_first' : 'send.add_files_first')
+  return t.value(isDrop.value ? 'drop.cta' : 'send.create_with', { count: uploadBasket.value.length, size: niceFileSize(totalSize.value) })
 })
 const startAnother = () => {
   sharePanelVisible.value = false
@@ -897,14 +903,38 @@ const filesByDirectory = computed(() => {
 <template>
   <!-- One root: the page can fade in and out as a whole -->
   <div class="send-page">
-    <div class="send" :class="{ 'is-compact': compact }">
-      <PageHead v-if="!compact" :title="$t('nav.send')" :description="$t('send.lead')" />
+    <div class="send" :class="{ 'is-compact': compact, 'is-drop': isDrop }">
+      <PageHead v-if="!compact && !isDrop" :title="$t('nav.send')" :description="$t('send.lead')" />
 
-      <section class="ot-card send-request" v-if="guestRequest && !compact" aria-labelledby="h-send-request">
-        <h2 class="ot-card-title" id="h-send-request">{{ $t('send.request_from', { name: guestRequest.from }) }}</h2>
-        <p class="send-request-message" v-if="guestRequest.message">{{ guestRequest.message }}</p>
-        <p class="send-request-until" v-if="requestDeadline">{{ $t('send.request_until', { date: requestDeadline }) }}</p>
-      </section>
+      <template v-if="isDrop">
+        <div class="download-head">
+          <div class="download-sender" v-if="guestRequest?.from">
+            <UserAvatar :seed="guestRequest.avatar_seed ?? ''" :name="guestRequest.from" :size="28" />
+            {{ $t('send.request_from', { name: guestRequest.from }) }}
+          </div>
+          <h1 class="share-name">{{ $t('drop.title') }}</h1>
+        </div>
+
+        <div class="download-stats">
+          <div class="ot-card ot-card--tight stat-card">
+            <h2 class="ot-card-title">{{ $t('drop.files') }}</h2>
+            <span class="ot-figure">{{ uploadBasket.length }}</span>
+          </div>
+          <div class="ot-card ot-card--tight stat-card">
+            <h2 class="ot-card-title">{{ $t('drop.max_size') }}</h2>
+            <span class="ot-figure is-accent">{{ niceFileSize(maxShareSize) }}</span>
+          </div>
+          <div class="ot-card ot-card--tight stat-card">
+            <h2 class="ot-card-title">{{ $t('drop.time_left') }}</h2>
+            <span class="ot-figure is-warning">{{ requestTimeLeft || '—' }}</span>
+          </div>
+        </div>
+
+        <section class="ot-card download-card share-message" v-if="guestRequest?.message" aria-labelledby="h-request-message">
+          <h2 class="ot-card-title" id="h-request-message">{{ $t('message.from', { name: firstName(guestRequest.from) }) }}</h2>
+          <div class="message">{{ guestRequest.message }}</div>
+        </section>
+      </template>
 
       <!-- The quick window, once the link exists -->
       <div class="send-done" v-if="compact && sharePanelVisible" role="status">
@@ -933,7 +963,7 @@ const filesByDirectory = computed(() => {
             <template v-if="rows.length > 0">
               {{ $t('send.total', { count: uploadBasket.length, size: niceFileSize(totalSize), max: niceFileSize(maxShareSize) }) }}
             </template>
-            <template v-else>{{ $t('uploader.files_title') }}</template>
+            <template v-else>{{ isDrop ? $t('drop.files_title') : $t('uploader.files_title') }}</template>
           </h2>
 
           <TransitionGroup name="ot-list" @before-leave="pinLeaving" tag="ul" class="basket ot-list-host" v-if="rows.length > 0" :aria-label="$t('uploader.files_title')">
@@ -1025,9 +1055,21 @@ const filesByDirectory = computed(() => {
               </button>
             </template>
           </div>
+
+          <button
+            v-if="isDrop"
+            type="button"
+            class="upload-button block cta"
+            :disabled="uploadBasket.length === 0 || currentlyUploading"
+            @click="uploadFiles"
+          >
+            <Loader class="spin" v-if="currentlyUploading" aria-hidden="true" />
+            <Upload v-else aria-hidden="true" />
+            {{ ctaLabel }}
+          </button>
         </section>
 
-        <section class="ot-card send-access" v-if="!compact" aria-labelledby="h-access">
+        <section class="ot-card send-access" v-if="!compact && !isDrop" aria-labelledby="h-access">
           <h2 class="ot-card-title" id="h-access">{{ $t('uploader.access_title') }}</h2>
           <div class="send-chips">
             <button type="button" class="send-chip" :class="{ 'is-open': openOption === 'expiry' }" :aria-expanded="openOption === 'expiry'" aria-controls="send-opt-expiry" @click="toggleOption('expiry')">
@@ -1148,6 +1190,7 @@ const filesByDirectory = computed(() => {
         <p class="send-defaults" v-if="compact && rows.length > 0">{{ quickDefaults }}</p>
 
         <button
+          v-if="!isDrop"
           type="button"
           class="upload-button block cta"
           :disabled="uploadBasket.length === 0 || currentlyUploading"

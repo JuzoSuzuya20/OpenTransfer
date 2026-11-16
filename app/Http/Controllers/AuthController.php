@@ -257,12 +257,51 @@ class AuthController extends Controller
             ], 404);
         }
 
+        // A password the member set: the link alone opens nothing, and a wrong guess does not
+        // use it up. Before it, the guest only learns who asks and until when.
+        if ($invite->isProtected()) {
+            $refusal = $this->refuseRequestPassword($invite, $request->input('password'));
+            if ($refusal) {
+                return $refusal;
+            }
+        }
+
         $invite->markAsUsed();
 
         //invalidate the token
         auth()->invalidate();
 
         return $this->respondWithToken($user);
+    }
+
+    private function refuseRequestPassword(ReverseShareInvite $invite, mixed $password): ?\Illuminate\Http\JsonResponse
+    {
+        $locked = fn (string $message, int $status) => response()->json([
+            'status' => 'error',
+            'message' => $message,
+            'data' => [
+                'request' => [
+                    'from' => $invite->user?->name,
+                    'avatar_seed' => $invite->user?->avatar_seed,
+                    'expires_at' => $invite->expires_at,
+                ],
+            ],
+        ], $status);
+
+        if (!is_string($password) || $password === '') {
+            return $locked('Password required', 401);
+        }
+
+        $key = 'request-password:' . $invite->id;
+        if (RateLimiter::tooManyAttempts($key, 10)) {
+            return $locked('Too many attempts', 429);
+        }
+        if (!Hash::check($password, $invite->password)) {
+            RateLimiter::hit($key, 300);
+            return $locked('Invalid password', 401);
+        }
+
+        return null;
     }
 
     public function forgotPassword(Request $request)

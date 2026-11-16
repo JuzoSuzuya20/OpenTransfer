@@ -21,6 +21,12 @@ class ReverseSharesController extends Controller
     // How long a request stays open, in days, as the page offers it
     private const VALIDITY_DAYS = [1, 3, 7, 14, 30];
 
+    // The longest a share may stay online (the administration's limit), null for none
+    private function longestShare(): ?int
+    {
+        return app(SettingsService::class)->positiveInt('max_expiry_time', null);
+    }
+
     // The requests the signed-in account sent (the latest 100), each with where it is: waiting,
     // received (the guest delivered) or expired. Nothing about the guest account behind it.
     public function listInvites()
@@ -36,6 +42,9 @@ class ReverseSharesController extends Controller
                 // Passed on by the member as a link: no address (see createInvite)
                 'delivery' => $invite->recipient_email === '' ? 'link' : 'email',
                 'message' => $invite->message,
+                // The rules, to ask once more the same way (the password itself stays hashed)
+                'password_protected' => $invite->isProtected(),
+                'keep_files_days' => $invite->keep_files_days,
                 'state' => $invite->isCompleted() ? 'received' : ($invite->isExpired() ? 'expired' : 'pending'),
                 'created_at' => $invite->created_at,
                 'expires_at' => $invite->expires_at,
@@ -72,6 +81,9 @@ class ReverseSharesController extends Controller
             'recipient_email' => $byLink ? ['nullable'] : ['required', 'email', 'max:255'],
             'message' => ['nullable', 'string', 'max:5000'],
             'expires_in_days' => ['nullable', 'integer', 'in:' . implode(',', self::VALIDITY_DAYS)],
+            // The rules of the request are the member's: the guest only drops files
+            'password' => ['nullable', 'string', 'max:255'],
+            'keep_files_days' => ['nullable', 'integer', 'min:1', 'max:' . ($this->longestShare() ?? 3650)],
         ]);
 
         if ($validator->fails()) {
@@ -133,7 +145,9 @@ class ReverseSharesController extends Controller
             'recipient_name' => $request->recipient_name,
             'recipient_email' => $byLink ? '' : $request->recipient_email,
             'message' => $request->message,
-            'expires_at' => now()->addDays($days)
+            'expires_at' => now()->addDays($days),
+            'password' => filled($request->input('password')) ? Hash::make($request->input('password')) : null,
+            'keep_files_days' => $request->input('keep_files_days') ?: null,
         ]);
 
         if (!$byLink) {

@@ -77,13 +77,20 @@ class UploadsController extends Controller
    */
   public function createShareFromUploads(Request $request)
   {
+    // A guest drops files for one request, under the rules the member set on it: how long the
+    // files stay online and no password of the guest's own (the files are the member's)
+    $guestRequest = Auth::user()?->is_guest ? Auth::user()->invite : null;
+    if (Auth::user()?->is_guest && !$guestRequest) {
+      return response()->json(['status' => 'error', 'message' => 'No file request'], 403);
+    }
+
     $validator = Validator::make($request->all(), [
       'upload_id' => ['required', 'string'],
       'name' => ['string', 'max:255'],
       'description' => ['max:500'],
       'uploadIds' => ['required', 'array'],
       'uploadIds.*' => ['required', 'string'],
-      'expiry_date' => ['required', 'date'],
+      'expiry_date' => $guestRequest ? ['nullable'] : ['required', 'date'],
       // Each recipient gets an e-mail from the organisation: real addresses, a bounded number
       'recipients' => ['sometimes', 'array', 'max:50'],
       'recipients.*.email' => ['required', 'email', 'max:255'],
@@ -102,9 +109,11 @@ class UploadsController extends Controller
 
     // Empty in the administration means no limit ("Empty: no limit")
     $maxExpiryTime = app(SettingsService::class)->positiveInt('max_expiry_time', null);
-    $expiryDate = Carbon::parse($request->expiry_date);
+    $expiryDate = $guestRequest
+      ? Carbon::now()->addDays($guestRequest->keepFilesDays())
+      : Carbon::parse($request->expiry_date);
 
-    if ($maxExpiryTime !== null) {
+    if ($maxExpiryTime !== null && !$guestRequest) {
       $now = Carbon::now();
 
       if ($now->diffInDays($expiryDate) > $maxExpiryTime) {
@@ -221,7 +230,7 @@ class UploadsController extends Controller
       $totalSize += $file->size;
     }
 
-    $password = $request->password;
+    $password = $guestRequest ? null : $request->password;
     $passwordConfirm = $request->password_confirm;
 
     if ($password) {

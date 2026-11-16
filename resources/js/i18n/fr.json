@@ -1096,8 +1096,7 @@
     "see_in_my_shares": "Voir dans Mes partages",
     "drop_more": "Glissez d'autres fichiers, ou",
     "recipients_max": "Un partage part à {max} destinataires au plus.",
-    "request_from": "{name} vous demande des fichiers",
-    "request_until": "À déposer d'ici le {date}"
+    "request_from": "{name} vous demande des fichiers"
   },
   "shares": {
     "this_month": "Ce mois-ci",
@@ -1182,7 +1181,10 @@
     "link_help": "Il ne s'ouvre qu'une fois et reste valable jusqu'au {date} : copiez-le maintenant, il ne sera plus affiché.",
     "link_created": "Lien créé",
     "new_link": "Nouveau lien",
-    "via_link": "par lien"
+    "via_link": "par lien",
+    "keep_files": "Fichiers reçus conservés",
+    "password_again": "Cette demande avait un mot de passe : saisissez-le à nouveau pour la refaire.",
+    "password_apart": "Transmettez le mot de passe à part, pas dans le même message que le lien."
   },
   "sso": {
     "title": "Connexion (SSO)",
@@ -1295,5 +1297,17 @@
     "user_not_found": "Compte introuvable.",
     "email_not_verified": "Votre fournisseur d'identité n'a pas vérifié votre adresse e-mail. Demandez à votre administrateur de la vérifier chez lui, ou liez ce compte depuis votre profil.",
     "account_linked": "Compte lié."
+  },
+  "drop": {
+    "title": "Déposer des fichiers",
+    "files_title": "Fichiers à déposer",
+    "files": "Fichiers",
+    "max_size": "Taille max.",
+    "time_left": "Temps restant",
+    "cta": "Déposer {count, plural, one {# fichier} other {# fichiers}}, {size}",
+    "add_files_first": "Ajoutez les fichiers à déposer",
+    "protected_title": "Cette demande est protégée",
+    "protected_text": "Saisissez le mot de passe transmis par la personne qui vous demande les fichiers.",
+    "open": "Ouvrir la demande"
   }
 }

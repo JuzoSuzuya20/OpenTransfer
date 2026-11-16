@@ -1096,8 +1096,7 @@
     "see_in_my_shares": "Ver em As minhas partilhas",
     "drop_more": "Deposite mais ficheiros, ou",
     "recipients_max": "Uma partilha vai para {max} destinatários no máximo.",
-    "request_from": "{name} pede-lhe ficheiros",
-    "request_until": "Para depositar até {date}"
+    "request_from": "{name} pede-lhe ficheiros"
   },
   "shares": {
     "this_month": "Este mês",
@@ -1182,7 +1181,10 @@
     "link_help": "Abre uma única vez e fica válida até {date}: copie-a agora, não voltará a ser mostrada.",
     "link_created": "Ligação criada",
     "new_link": "Nova ligação",
-    "via_link": "por ligação"
+    "via_link": "por ligação",
+    "keep_files": "Conservar os ficheiros recebidos",
+    "password_again": "Este pedido tinha uma palavra-passe: escreva-a de novo para o repetir.",
+    "password_apart": "Transmita a palavra-passe à parte, não na mesma mensagem que a ligação."
   },
   "sso": {
     "title": "Início de sessão (SSO)",
@@ -1295,5 +1297,17 @@
     "user_not_found": "Conta não encontrada.",
     "email_not_verified": "O seu fornecedor de identidade não verificou o seu endereço de e-mail. Peça ao seu administrador que o verifique lá, ou ligue esta conta a partir do seu perfil.",
     "account_linked": "Conta ligada."
+  },
+  "drop": {
+    "title": "Depositar ficheiros",
+    "files_title": "Ficheiros a depositar",
+    "files": "Ficheiros",
+    "max_size": "Tamanho máx.",
+    "time_left": "Tempo restante",
+    "cta": "Depositar {count, plural, one {# ficheiro} other {# ficheiros}}, {size}",
+    "add_files_first": "Adicione os ficheiros a depositar",
+    "protected_title": "Este pedido está protegido",
+    "protected_text": "Introduza a palavra-passe que lhe foi dada pela pessoa que lhe pede os ficheiros.",
+    "open": "Abrir o pedido"
   }
 }

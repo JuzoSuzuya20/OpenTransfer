@@ -29,6 +29,9 @@ const store = reactive({
   mode: 'upload',
   shareCode: null,
   mustChangePassword: false,
+  // The link of a request the member protected with a password: { token, from, avatar_seed,
+  // expires_at } until the guest gives the password (RequestLock)
+  lockedRequest: null,
 
   setUserId(userId) {
     this.userId = parseInt(userId)

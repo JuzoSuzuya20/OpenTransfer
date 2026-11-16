@@ -606,22 +606,12 @@ button.send-chip {
   font-weight: 700;
 }
 
-// What the guest of a file request was asked for, above the files
-.send-request {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+// The page of a guest who drops files for a request: the width and rhythm of the download page,
+// the drop button inside the files card like the download button
+.send.is-drop {
+  gap: 18px;
 
-  p {
+  .send-files .upload-button {
     margin: 0;
   }
-}
-.send-request-message {
-  color: var(--ot-heading);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.send-request-until {
-  font-size: 0.8125rem;
-  color: var(--ot-muted);
 }

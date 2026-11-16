@@ -1096,8 +1096,7 @@
     "see_in_my_shares": "See it in My shares",
     "drop_more": "Drop more files here, or",
     "recipients_max": "A share goes to {max} recipients at most.",
-    "request_from": "{name} asks you for files",
-    "request_until": "To drop by {date}"
+    "request_from": "{name} asks you for files"
   },
   "shares": {
     "this_month": "This month",
@@ -1182,7 +1181,10 @@
     "link_help": "It opens once and stays valid until {date}: copy it now, it will not be shown again.",
     "link_created": "Link created",
     "new_link": "New link",
-    "via_link": "by link"
+    "via_link": "by link",
+    "keep_files": "Keep received files",
+    "password_again": "This request had a password: type it again to ask once more.",
+    "password_apart": "Pass the password on separately, not in the same message as the link."
   },
   "sso": {
     "title": "Sign-in (SSO)",
@@ -1295,5 +1297,17 @@
     "user_not_found": "Account not found.",
     "email_not_verified": "Your identity provider has not verified your email address. Ask your administrator to verify it there, or link this account from your profile.",
     "account_linked": "Account linked."
+  },
+  "drop": {
+    "title": "Drop your files",
+    "files_title": "Files to drop",
+    "files": "Files",
+    "max_size": "Max size",
+    "time_left": "Time left",
+    "cta": "Drop {count, plural, one {# file} other {# files}}, {size}",
+    "add_files_first": "Add the files to drop",
+    "protected_title": "This request is protected",
+    "protected_text": "Enter the password the person asking for the files gave you.",
+    "open": "Open the request"
   }
 }

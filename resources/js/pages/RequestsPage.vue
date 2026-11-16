@@ -1,17 +1,20 @@
 <script setup>
 // File requests (piste B): ask in one line, then follow what is waiting and what came back.
 // Both lists stay current while the page is open.
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useTranslate, useTolgee } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { Send, SquareArrowOutUpRight, Link2, Copy, Check } from 'lucide-vue-next'
 import OtSelect from '../components/layout/OtSelect.vue'
+import OtPassword from '../components/layout/OtPassword.vue'
 import PageHead from '../components/layout/PageHead.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import { pinLeaving } from '../lib/motion'
 import { useLiveRefresh } from '../composables/useLiveRefresh'
 import { sendReverseShareInvite, getMyShares, getMyReverseShareInvites } from '../api'
 import { niceFileSize } from '../utils'
+import { domData } from '../domData'
+import { keepFilesChoices } from '../lib/keepFilesDays'
 
 const { t } = useTranslate()
 const tolgee = useTolgee(['language'])
@@ -20,7 +23,11 @@ const toast = useToast()
 // --- Asking: by e-mail, or a link the member passes on themselves
 const VALIDITY_DAYS = [1, 3, 7, 14, 30]
 const validityOptions = computed(() => VALIDITY_DAYS.map((days) => ({ value: days, label: t.value('requests.validity_days', { count: days }) })))
-const blankInvite = (delivery = 'email') => ({ delivery, email: '', name: '', message: '', days: 7 })
+// The rules are the member's: the guest only drops files. How long the files received stay
+// online (within the administration's limit) and a password the guest gives first.
+const keepChoices = keepFilesChoices({ max: domData().max_expiry_time, fallback: domData().default_expiry_time })
+const keepOptions = computed(() => keepChoices.days.map((days) => ({ value: days, label: t.value('requests.validity_days', { count: days }) })))
+const blankInvite = (delivery = 'email') => ({ delivery, email: '', name: '', message: '', days: 7, keep: keepChoices.chosen, password: '' })
 const invite = ref(blankInvite())
 const byLink = computed(() => invite.value.delivery === 'link')
 const canAsk = computed(() => Boolean(invite.value.name && (byLink.value || invite.value.email)))
@@ -28,19 +35,19 @@ const canAsk = computed(() => Boolean(invite.value.name && (byLink.value || invi
 // The link just made, shown once to be copied: it is not kept anywhere to show again
 const createdLink = ref(null)
 const copied = ref(false)
-const showLink = (response, name, days) => {
-  createdLink.value = { url: response.data.link, name, until: new Date(Date.now() + days * 24 * 3600 * 1000) }
+const showLink = (response, name, days, protectedByPassword = false) => {
+  createdLink.value = { url: response.data.link, name, until: new Date(Date.now() + days * 24 * 3600 * 1000), protectedByPassword }
   copied.value = false
 }
 
 const sending = ref(false)
 const sendInvite = async () => {
   sending.value = true
-  const { email, name, message, days, delivery } = invite.value
+  const { email, name, message, days, delivery, keep, password } = invite.value
   try {
-    const response = await sendReverseShareInvite(email, name, message, { delivery, days })
+    const response = await sendReverseShareInvite(email, name, message, { delivery, days, password, keepFilesDays: keep })
     if (delivery === 'link') {
-      showLink(response, name, days)
+      showLink(response, name, days, Boolean(password))
       toast.success(t.value('requests.link_created'))
     } else {
       toast.success(t.value('reverse_invite_send.success'))
@@ -65,15 +72,33 @@ const copyLink = async () => {
   }
 }
 
-// Waiting too long, or expired: the same request once more (a new link for a link)
+// Waiting too long, or expired: the same request once more (a new link for a link), with its rules.
+// Its password is kept hashed: a protected request comes back in the form, for the member to type
+// the password again, rather than once more without one.
+const passwordField = ref(null)
 const askAgain = async (request) => {
+  const keepFilesDays = request.keep_files_days ?? null
+  if (request.password_protected) {
+    invite.value = {
+      ...blankInvite(request.delivery),
+      email: request.recipient_email,
+      name: request.recipient_name,
+      message: request.message ?? '',
+      keep: keepFilesDays ?? keepChoices.chosen
+    }
+    createdLink.value = null
+    toast.info(t.value('requests.password_again'))
+    await nextTick()
+    passwordField.value?.focus()
+    return
+  }
   try {
     if (request.delivery === 'link') {
-      const response = await sendReverseShareInvite(null, request.recipient_name, request.message ?? '', { delivery: 'link' })
+      const response = await sendReverseShareInvite(null, request.recipient_name, request.message ?? '', { delivery: 'link', keepFilesDays })
       showLink(response, request.recipient_name, 7)
       toast.success(t.value('requests.link_created'))
     } else {
-      await sendReverseShareInvite(request.recipient_email, request.recipient_name, request.message ?? '')
+      await sendReverseShareInvite(request.recipient_email, request.recipient_name, request.message ?? '', { keepFilesDays })
       toast.success(t.value('requests.resent', { name: request.recipient_name }))
     }
     load()
@@ -153,9 +178,23 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
           </label>
           <input type="text" id="invite-message" v-model="invite.message" :placeholder="t('requests.message_placeholder')" />
         </div>
-        <div class="input-container requests-ask-validity">
+      </div>
+      <!-- The rules of the request: the guest only drops files -->
+      <div class="requests-ask-row is-rules">
+        <div class="input-container">
           <label for="invite-validity">{{ t('requests.validity') }}</label>
           <OtSelect id="invite-validity" v-model="invite.days" :options="validityOptions" />
+        </div>
+        <div class="input-container">
+          <label for="invite-keep">{{ t('requests.keep_files') }}</label>
+          <OtSelect id="invite-keep" v-model="invite.keep" :options="keepOptions" />
+        </div>
+        <div class="input-container requests-ask-password">
+          <label for="invite-password">
+            {{ t('send.password') }}
+            <small>({{ t('requests.optional') }})</small>
+          </label>
+          <OtPassword id="invite-password" ref="passwordField" v-model="invite.password" autocomplete="new-password" />
         </div>
         <button type="submit" :disabled="sending || !canAsk">
           <component :is="byLink ? Link2 : Send" aria-hidden="true" />
@@ -174,6 +213,7 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
             </button>
           </div>
           <p class="help-text">{{ t('requests.link_help', { date: day(createdLink.until) }) }}</p>
+          <p class="help-text" v-if="createdLink.protectedByPassword">{{ t('requests.password_apart') }}</p>
         </div>
       </Transition>
     </form>
@@ -246,16 +286,23 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
   justify-content: space-between;
   gap: 8px 16px;
 }
-// Asking fits on one line on a wide screen: address, name, message, validity, button
+// Asking fits on two lines on a wide screen: who and what (address, name, message), then the
+// rules (how long the link opens, how long the files stay, a password) and the button
 .requests-ask-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.6fr) 9rem auto;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.6fr);
   gap: 12px;
   align-items: end;
 
   // By link there is no address
   &.is-link {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr) 9rem auto;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr);
+  }
+  &.is-rules {
+    grid-template-columns: 9rem 11rem minmax(0, 1fr) auto;
+  }
+  .ot-password input {
+    margin-bottom: 0;
   }
   .ot-select {
     margin-bottom: 0;
@@ -275,11 +322,13 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
 
   @media (max-width: 900px) {
     &,
-    &.is-link {
+    &.is-link,
+    &.is-rules {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .requests-ask-message {
+    .requests-ask-message,
+    .requests-ask-password {
       grid-column: 1 / -1;
     }
     button {
@@ -288,7 +337,8 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
   }
   @media (max-width: 560px) {
     &,
-    &.is-link {
+    &.is-link,
+    &.is-rules {
       grid-template-columns: minmax(0, 1fr);
     }
   }

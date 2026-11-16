@@ -543,7 +543,9 @@ export const deletePasskey = (id, password) => twoFactorRequest(`users/me/passke
 export const resetUserTwoFactor = (userId) => twoFactorRequest(`users/${userId}/2fa`, 'DELETE')
 
 // By e-mail (the address gets the link) or by link (it comes back, data.link, to be passed on)
-export const sendReverseShareInvite = async (email, name, message, { delivery = 'email', days = 7 } = {}) => {
+// The rules are the member's: how long the request stays open, a password the guest gives before
+// dropping anything, and how long the files received stay online
+export const sendReverseShareInvite = async (email, name, message, { delivery = 'email', days = 7, password = '', keepFilesDays = null } = {}) => {
   const response = await fetchWithAuth(`${apiUrl}/api/reverse-shares/invite`, {
     method: 'POST',
     headers: {
@@ -554,7 +556,9 @@ export const sendReverseShareInvite = async (email, name, message, { delivery = 
       recipient_name: name,
       recipient_email: delivery === 'link' ? null : email,
       message: message,
-      expires_in_days: days
+      expires_in_days: days,
+      password: password || null,
+      keep_files_days: keepFilesDays
     })
   })
   const data = await response.json()
@@ -576,14 +580,21 @@ export const getMyReverseShareInvites = async () => {
   return data.data.invites
 }
 
-export const acceptReverseShareInvite = async (token) => {
-  const response = await fetch(`${apiUrl}/api/reverse-shares/accept?token=${token}`, {
-    method: 'GET',
-    credentials: 'include'
+// The link of a request opens a guest session. A request the member protected answers with who
+// asks and until when (error.request), and opens once its password comes along (in the body)
+export const acceptReverseShareInvite = async (token, password = null) => {
+  const response = await fetch(`${apiUrl}/api/reverse-shares/accept`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { ...addJsonHeader() },
+    body: JSON.stringify(password === null ? { token } : { token, password })
   })
   const data = await response.json()
   if (!response.ok) {
-    throw new Error(data.message)
+    const error = new Error(data.message)
+    error.status = response.status
+    error.request = data.data?.request ?? null
+    throw error
   }
   return buildAuthSuccessData(data)
 }

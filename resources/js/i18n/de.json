@@ -1096,8 +1096,7 @@
     "see_in_my_shares": "In Meine Freigaben ansehen",
     "drop_more": "Weitere Dateien hier ablegen, oder",
     "recipients_max": "Eine Freigabe geht an höchstens {max} Empfänger.",
-    "request_from": "{name} bittet Sie um Dateien",
-    "request_until": "Bitte bis zum {date} ablegen"
+    "request_from": "{name} bittet Sie um Dateien"
   },
   "shares": {
     "this_month": "Diesen Monat",
@@ -1182,7 +1181,10 @@
     "link_help": "Er öffnet sich einmal und bleibt bis {date} gültig: Kopieren Sie ihn jetzt, er wird nicht noch einmal angezeigt.",
     "link_created": "Link erstellt",
     "new_link": "Neuer Link",
-    "via_link": "per Link"
+    "via_link": "per Link",
+    "keep_files": "Empfangene Dateien aufbewahren",
+    "password_again": "Diese Anfrage hatte ein Passwort: Geben Sie es erneut ein, um sie noch einmal zu stellen.",
+    "password_apart": "Geben Sie das Passwort getrennt weiter, nicht in derselben Nachricht wie den Link."
   },
   "sso": {
     "title": "Anmeldung (SSO)",
@@ -1295,5 +1297,17 @@
     "user_not_found": "Konto nicht gefunden.",
     "email_not_verified": "Ihr Identitätsanbieter hat Ihre E-Mail-Adresse nicht bestätigt. Bitten Sie Ihren Administrator, sie dort zu bestätigen, oder verknüpfen Sie dieses Konto in Ihrem Profil.",
     "account_linked": "Konto verknüpft."
+  },
+  "drop": {
+    "title": "Dateien ablegen",
+    "files_title": "Abzulegende Dateien",
+    "files": "Dateien",
+    "max_size": "Max. Größe",
+    "time_left": "Verbleibende Zeit",
+    "cta": "{count, plural, one {# Datei} other {# Dateien}} ablegen, {size}",
+    "add_files_first": "Fügen Sie die abzulegenden Dateien hinzu",
+    "protected_title": "Diese Anfrage ist geschützt",
+    "protected_text": "Geben Sie das Passwort ein, das Ihnen die anfragende Person mitgeteilt hat.",
+    "open": "Anfrage öffnen"
   }
 }

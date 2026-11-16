@@ -1096,8 +1096,7 @@
     "see_in_my_shares": "Vedila in Le mie condivisioni",
     "drop_more": "Trascina altri file, oppure",
     "recipients_max": "Una condivisione va a {max} destinatari al massimo.",
-    "request_from": "{name} ti chiede dei file",
-    "request_until": "Da depositare entro il {date}"
+    "request_from": "{name} ti chiede dei file"
   },
   "shares": {
     "this_month": "Questo mese",
@@ -1182,7 +1181,10 @@
     "link_help": "Si apre una sola volta e resta valido fino al {date}: copialo ora, non verrà mostrato di nuovo.",
     "link_created": "Link creato",
     "new_link": "Nuovo link",
-    "via_link": "tramite link"
+    "via_link": "tramite link",
+    "keep_files": "Conserva i file ricevuti",
+    "password_again": "Questa richiesta aveva una password: digitala di nuovo per ripeterla.",
+    "password_apart": "Comunica la password a parte, non nello stesso messaggio del link."
   },
   "sso": {
     "title": "Accesso (SSO)",
@@ -1295,5 +1297,17 @@
     "user_not_found": "Account non trovato.",
     "email_not_verified": "Il tuo provider di identità non ha verificato il tuo indirizzo e-mail. Chiedi al tuo amministratore di verificarlo lì, oppure collega questo account dal tuo profilo.",
     "account_linked": "Account collegato."
+  },
+  "drop": {
+    "title": "Deposita i file",
+    "files_title": "File da depositare",
+    "files": "File",
+    "max_size": "Dimensione max.",
+    "time_left": "Tempo rimanente",
+    "cta": "Deposita {count, plural, one {# file} other {# file}}, {size}",
+    "add_files_first": "Aggiungi i file da depositare",
+    "protected_title": "Questa richiesta è protetta",
+    "protected_text": "Inserisci la password che ti ha dato la persona che ti chiede i file.",
+    "open": "Apri la richiesta"
   }
 }

@@ -241,7 +241,8 @@ Route::group([], function ($router) {
 
     //accept a reverse share invite [public] (for guests with token)
     Route::group(['prefix' => 'reverse-shares'], function ($router) {
-        Route::get('/accept', [ AuthController::class, 'acceptReverseShareInvite'])->name('reverse-shares.acceptInvite');
+        // POST carries the password of a protected request (never in an address)
+        Route::match(['get', 'post'], '/accept', [ AuthController::class, 'acceptReverseShareInvite'])->name('reverse-shares.acceptInvite');
     });
 
     //read auth providers [public]

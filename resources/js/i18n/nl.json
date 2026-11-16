@@ -1096,8 +1096,7 @@
     "see_in_my_shares": "Bekijken in Mijn shares",
     "drop_more": "Zet meer bestanden neer, of",
     "recipients_max": "Een share gaat naar hoogstens {max} ontvangers.",
-    "request_from": "{name} vraagt je om bestanden",
-    "request_until": "Te leveren vóór {date}"
+    "request_from": "{name} vraagt je om bestanden"
   },
   "shares": {
     "this_month": "Deze maand",
@@ -1182,7 +1181,10 @@
     "link_help": "Hij opent één keer en blijft geldig tot {date}: kopieer hem nu, hij wordt niet opnieuw getoond.",
     "link_created": "Link gemaakt",
     "new_link": "Nieuwe link",
-    "via_link": "via link"
+    "via_link": "via link",
+    "keep_files": "Ontvangen bestanden bewaren",
+    "password_again": "Dit verzoek had een wachtwoord: typ het opnieuw om het nog eens te vragen.",
+    "password_apart": "Geef het wachtwoord apart door, niet in hetzelfde bericht als de link."
   },
   "sso": {
     "title": "Aanmelden (SSO)",
@@ -1295,5 +1297,17 @@
     "user_not_found": "Account niet gevonden.",
     "email_not_verified": "Je identiteitsprovider heeft je e-mailadres niet bevestigd. Vraag je beheerder het daar te bevestigen, of koppel dit account via je profiel.",
     "account_linked": "Account gekoppeld."
+  },
+  "drop": {
+    "title": "Bestanden aanleveren",
+    "files_title": "Aan te leveren bestanden",
+    "files": "Bestanden",
+    "max_size": "Max. grootte",
+    "time_left": "Resterende tijd",
+    "cta": "{count, plural, one {# bestand} other {# bestanden}} aanleveren, {size}",
+    "add_files_first": "Voeg de aan te leveren bestanden toe",
+    "protected_title": "Dit verzoek is beveiligd",
+    "protected_text": "Voer het wachtwoord in dat je hebt gekregen van degene die om de bestanden vraagt.",
+    "open": "Verzoek openen"
   }
 }

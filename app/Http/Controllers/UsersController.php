@@ -45,6 +45,7 @@ class UsersController extends Controller
     if ($user->is_guest && $user->invite) {
       $user->request = [
         'from' => $user->invite->user?->name,
+        'avatar_seed' => $user->invite->user?->avatar_seed,
         'message' => $user->invite->message,
         'expires_at' => $user->invite->expires_at,
       ];

@@ -146,11 +146,16 @@ onMounted(async () => {
   if (reverseShareToken.value) {
     try {
       await acceptReverseShareInvite(reverseShareToken.value)
-      toast.success(t.value('auth.invite_accepted'))
       //remove the invite token from the url
       window.history.replaceState({}, document.title, window.location.pathname)
       attemptRefresh()
     } catch (error) {
+      // A request behind a password: its page asks for it, the link stays in the address so that
+      // a reload comes back to it
+      if (error.status === 401 && error.request) {
+        store.lockedRequest = { token: reverseShareToken.value, ...error.request }
+        return
+      }
       //remove the invite token from the url
       window.history.replaceState({}, document.title, window.location.pathname)
       toast.error(t.value('auth.failed_to_accept_invite'))
