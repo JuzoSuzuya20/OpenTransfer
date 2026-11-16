@@ -32,3 +32,13 @@ core
 core.[0-9]*
 docker-compose*.yml
 publish-docker-image.sh
+
+# Outils locaux : jamais dans l'image
+CLAUDE.md
+CLAUDE.local.md
+.claude
+AGENTS.md
+PRODUCT.md
+DESIGN.md
+.impeccable
+.cursor

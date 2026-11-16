@@ -9,7 +9,8 @@ services:
             - '${VITE_PORT:-5173}:5173'
         environment:
             SUPERVISOR_PHP_USER: 'opentransfer'
-            VITE_DEV_HOST: '192.168.0.24'
+            # The address the browser reaches the Vite server at (HMR): localhost unless set
+            VITE_DEV_HOST: '${VITE_DEV_HOST:-localhost}'
         volumes:
             - '.:/var/www/html'
             # Use named volumes for platform-specific dependencies

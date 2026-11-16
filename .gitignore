@@ -37,3 +37,14 @@ ISSUES_TODO.md
 # Fichiers de crash (core dumps)
 /core
 core.[0-9]*
+
+# Outils locaux (assistants de code, outils de design) : propres à chaque poste, pas au projet
+/CLAUDE.md
+/CLAUDE.local.md
+/.claude/
+/AGENTS.md
+/PRODUCT.md
+/DESIGN.md
+/.impeccable/
+/.cursor/
+/.aider*
