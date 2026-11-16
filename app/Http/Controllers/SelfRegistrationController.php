@@ -86,7 +86,8 @@ class SelfRegistrationController extends Controller
                 'admin' => false,
                 'active' => false, // Account is inactive until verified
                 'must_change_password' => false,
-                'email_verification_code' => $code,
+                // Hashed: the code is what activates the account
+                'email_verification_code' => Hash::make($code),
                 'email_verification_code_expires_at' => $expiresAt,
                 // The language of the screen they signed up on, for the emails they will receive
                 'language' => \App\Support\Locales::isSupported($request->input('language')) ? $request->input('language') : null,
@@ -178,7 +179,7 @@ class SelfRegistrationController extends Controller
         }
 
         // Check if code matches
-        if ($user->email_verification_code !== $request->code) {
+        if (!is_string($request->code) || !is_string($user->email_verification_code) || !Hash::check($request->code, $user->email_verification_code)) {
             RateLimiter::hit($throttleKey, 900);
             return response()->json([
                 'status' => 'error',
@@ -251,7 +252,7 @@ class SelfRegistrationController extends Controller
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $expiresAt = Carbon::now()->addMinutes(15);
 
-        $user->email_verification_code = $code;
+        $user->email_verification_code = Hash::make($code);
         $user->email_verification_code_expires_at = $expiresAt;
         $user->save();
 

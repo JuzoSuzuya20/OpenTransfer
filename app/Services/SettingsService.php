@@ -127,7 +127,8 @@ class SettingsService
       'host' => $settings['smtp_host'],
       'port' => $settings['smtp_port'],
       'username' => $settings['smtp_username'],
-      'password' => $settings['smtp_password'],
+      // Stored encrypted: in clear only to be sent to the mail server
+      'password' => \App\Support\Secrets::open($settings['smtp_password']),
       'encryption' => $settings['smtp_encryption'],
       'from_address' => $settings['smtp_sender_address'],
       'from_name' => $settings['smtp_sender_name'],

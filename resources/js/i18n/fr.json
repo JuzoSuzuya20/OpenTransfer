@@ -1186,7 +1186,8 @@
     "locked": "Trop de tentatives. Réessayez dans {minutes, plural, one {# minute} other {# minutes}}."
   },
   "common": {
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "secret_kept": "Enregistré — laissez vide pour le garder"
   },
   "theme": {
     "label": "Thème",

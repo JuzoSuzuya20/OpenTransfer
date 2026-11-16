@@ -1186,7 +1186,8 @@
     "locked": "Demasiados intentos. Vuelva a intentarlo dentro de {minutes, plural, one {# minuto} other {# minutos}}."
   },
   "common": {
-    "loading": "Cargando…"
+    "loading": "Cargando…",
+    "secret_kept": "Guardado: déjelo vacío para conservarlo"
   },
   "theme": {
     "label": "Tema",

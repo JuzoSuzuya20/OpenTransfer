@@ -72,11 +72,12 @@ class SettingsAccessTest extends TestCase
     {
         $admin = $this->user(['admin' => true]);
 
-        $this->actingAs($admin, 'api')->getJson('/api/settings/smtp_password')
+        $this->actingAs($admin, 'api')->getJson('/api/settings/smtp_username')
             ->assertOk()
-            ->assertJsonPath('data.setting.value', self::SMTP_PASSWORD);
-        $this->actingAs($admin, 'api')->getJson('/api/settings/group/system.*')
-            ->assertOk()
-            ->assertJsonFragment(['key' => 'smtp_password']);
+            ->assertJsonPath('data.setting.value', 'mailer@example.test');
+        // The password is listed, and said to be set, but never sent back (StoredSecretsTest)
+        $group = $this->actingAs($admin, 'api')->getJson('/api/settings/group/system.*')->assertOk();
+        $this->assertTrue(collect($group->json('data.settings'))->firstWhere('key', 'smtp_password')['is_set']);
+        $this->assertStringNotContainsString(self::SMTP_PASSWORD, $group->getContent());
     }
 }

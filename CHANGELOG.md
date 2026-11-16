@@ -7,6 +7,18 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 
 ## [1.5.1] — 2026-11-17
 
+### Security
+
+- The SMTP password and the client secrets of identity providers are stored encrypted with the key
+  of the instance, and never sent back to a browser, not even an admin's: the screen says one is
+  saved, and a field left empty keeps it. They were stored in clear and sent back to admins; saving
+  the SMTP settings returned the new password and the former one, which stayed in the database
+- The code a self-registered account confirms its address with is stored hashed, as the code of an
+  email change already was
+- An existing instance gets them encrypted and hashed at its next start (a code sent before keeps
+  working). They depend on the key of the instance (storage/app.key), as the 2FA secrets do: with
+  another key, enter them again
+
 ### Added
 
 - The main colour of the instance is chosen in Appearance, among seven (the blue violet of

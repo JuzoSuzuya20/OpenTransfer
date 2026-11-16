@@ -127,7 +127,7 @@ const removeProvider = async (provider) => {
 const runTest = async (provider) => {
   testing.value[provider.uuid] = true
   try {
-    results.value[provider.uuid] = await testAuthProvider(provider.class, provider.provider_config)
+    results.value[provider.uuid] = await testAuthProvider(provider.class, provider.provider_config, provider.id)
   } catch (error) {
     results.value[provider.uuid] = { discovery: 'invalid_config' }
   } finally {
@@ -267,6 +267,7 @@ defineExpose({ save })
                     :type="shown[`${provider.uuid}-${key}`] ? 'text' : 'password'"
                     :id="`${key}-${provider.uuid}`"
                     v-model="provider.provider_config[key]"
+                    :placeholder="provider.secrets_set?.[key] ? t('common.secret_kept') : ''"
                     autocomplete="off"
                   />
                   <button

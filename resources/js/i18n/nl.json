@@ -1186,7 +1186,8 @@
     "locked": "Te veel pogingen. Probeer het over {minutes, plural, one {# minuut} other {# minuten}} opnieuw."
   },
   "common": {
-    "loading": "Laden…"
+    "loading": "Laden…",
+    "secret_kept": "Opgeslagen — laat leeg om het te behouden"
   },
   "theme": {
     "label": "Thema",

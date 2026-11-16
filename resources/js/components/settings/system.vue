@@ -315,12 +315,16 @@ const saveFailureMessage = (error) => {
   return t.value('settings.failedToSaveSettings')
 }
 
+const smtpPasswordSet = ref(false)
 const loadSettings = async () => {
   try {
+    const system = await getSettingsByGroup('system.*')
     settings.value = {
-      ...mapSettings(await getSettingsByGroup('system.*')),
+      ...mapSettings(system),
       ...mapSettings(await getSettingsByGroup('ui.*'))
     }
+    // Never sent back: the field says whether one is saved, and left empty keeps it
+    smtpPasswordSet.value = Boolean(system.find((setting) => setting.key === 'smtp_password')?.is_set)
     // The message installed with the app shows as empty: the field's placeholder is its translation
     if (settings.value.login_message === SHIPPED_LOGIN_MESSAGE) settings.value.login_message = ''
 
@@ -761,7 +765,7 @@ defineExpose({
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_password">{{ $t('settings.system.smtp_password') }}</label>
-                  <OtPassword id="smtp_password" v-model="settings.smtp_password" autocomplete="new-password" />
+                  <OtPassword id="smtp_password" v-model="settings.smtp_password" autocomplete="new-password" :placeholder="smtpPasswordSet ? $t('common.secret_kept') : ''" />
                   <p class="help-text">{{ $t('settings.system.smtp_password_description') }}</p>
                 </div>
                 <div class="setting-group-body-item">

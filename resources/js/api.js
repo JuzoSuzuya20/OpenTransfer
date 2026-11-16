@@ -1261,14 +1261,15 @@ export const bulkUpdateAuthProviders = async (providers) => {
   return data.data
 }
 
-// Does the provider answer at this address, and does it recognise the client? Before saving.
-export const testAuthProvider = async (providerClass, providerConfig) => {
+// Does the provider answer at this address, and does it recognise the client? Before saving. A
+// provider already saved is tested with its secret, which the screen never has (its id)
+export const testAuthProvider = async (providerClass, providerConfig, id = null) => {
   const response = await fetchWithAuth(`${apiUrl}/api/auth-providers/test`, {
     method: 'POST',
     headers: {
       ...addJsonHeader()
     },
-    body: JSON.stringify({ class: providerClass, provider_config: providerConfig })
+    body: JSON.stringify({ class: providerClass, provider_config: providerConfig, ...(id ? { id } : {}) })
   })
   const data = await response.json()
   if (!response.ok) {

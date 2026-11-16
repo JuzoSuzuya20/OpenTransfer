@@ -66,7 +66,7 @@ class AuthProvidersController extends Controller
         'allow_registration' => (bool) $authProvider->allow_registration,
         'trust_email' => (bool) $authProvider->trust_email,
         'class' => $authProvider->provider_class,
-        'provider_config' => $authProvider->provider_config,
+        ...$this->withoutSecrets($authProvider->provider_config),
         'icon' => $class::getIcon(),
         'information_url' => $class::getInformationUrl(),
         'uuid' => $authProvider->uuid,
@@ -97,6 +97,43 @@ class AuthProvidersController extends Controller
         ]
       ]
     );
+  }
+
+  /**
+   * The configuration as the admin screen gets it: its secrets empty, and which of them are set.
+   * They are never sent back, not even to an admin (App\Casts\ProviderConfig).
+   */
+  private function withoutSecrets(?object $config): array
+  {
+    $config = $config ? clone $config : new \stdClass();
+    $set = [];
+    foreach (\App\Casts\ProviderConfig::SECRETS as $name) {
+      if (property_exists($config, $name)) {
+        $set[$name] = filled($config->$name);
+        $config->$name = '';
+      }
+    }
+
+    return ['provider_config' => $config, 'secrets_set' => (object) $set];
+  }
+
+  /**
+   * A secret left empty on the screen is the one already saved: the screen never had it
+   */
+  private function withStoredSecrets(array $provider): array
+  {
+    $stored = isset($provider['id']) ? AuthProvider::find($provider['id']) : null;
+    if (!$stored || !is_array($provider['provider_config'] ?? null)) {
+      return $provider;
+    }
+    foreach (\App\Casts\ProviderConfig::SECRETS as $name) {
+      $kept = $stored->provider_config->$name ?? null;
+      if (($provider['provider_config'][$name] ?? '') === '' && is_string($kept) && $kept !== '') {
+        $provider['provider_config'][$name] = $kept;
+      }
+    }
+
+    return $provider;
   }
 
   /**
@@ -149,6 +186,7 @@ class AuthProvidersController extends Controller
 
     // Validate each provider
     foreach ($providers as $provider) {
+      $provider = $this->withStoredSecrets($provider);
       if ($this->validateProvider($provider, $errorBag)) {
         $okToSave[] = $provider;
       }
@@ -333,6 +371,10 @@ class AuthProvidersController extends Controller
   {
     $class = $request->input('class');
     $config = (array) $request->input('provider_config', []);
+    // A provider already saved is tested with its secret, which the screen never has
+    if ($request->filled('id')) {
+      $config = $this->withStoredSecrets(['id' => $request->input('id'), 'provider_config' => $config])['provider_config'];
+    }
     if (!in_array($class, ['Keycloak', 'OIDC'], true)) {
       return response()->json(['status' => 'error', 'message' => 'This provider cannot be tested'], 422);
     }

@@ -1186,7 +1186,8 @@
     "locked": "Troppi tentativi. Riprova tra {minutes, plural, one {# minuto} other {# minuti}}."
   },
   "common": {
-    "loading": "Caricamento…"
+    "loading": "Caricamento…",
+    "secret_kept": "Salvato: lascia vuoto per mantenerlo"
   },
   "theme": {
     "label": "Tema",

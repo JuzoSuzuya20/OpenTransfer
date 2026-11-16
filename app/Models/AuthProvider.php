@@ -8,7 +8,8 @@ class AuthProvider extends Model
 {
     protected $fillable = ['name', 'provider_class', 'provider_config', 'enabled', 'uuid', 'allow_registration'];
     protected $casts = [
-        'provider_config' => 'object',
+        // An object whose client secret is stored encrypted
+        'provider_config' => \App\Casts\ProviderConfig::class,
         'enabled' => 'boolean',
         'provider_data' => 'array',
         'allow_registration' => 'boolean',

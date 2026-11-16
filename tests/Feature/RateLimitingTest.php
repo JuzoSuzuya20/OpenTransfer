@@ -76,7 +76,8 @@ class RateLimitingTest extends TestCase
     {
         $user = $this->user([
             'active' => false,
-            'email_verification_code' => '424242',
+            // Stored hashed, as the application keeps it
+            'email_verification_code' => Hash::make('424242'),
             'email_verification_code_expires_at' => now()->addMinutes(15),
         ]);
 

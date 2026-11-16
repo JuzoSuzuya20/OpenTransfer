@@ -1186,7 +1186,8 @@
     "locked": "Zu viele Versuche. Versuchen Sie es in {minutes, plural, one {# Minute} other {# Minuten}} erneut."
   },
   "common": {
-    "loading": "Wird geladen…"
+    "loading": "Wird geladen…",
+    "secret_kept": "Gespeichert – leer lassen, um es zu behalten"
   },
   "theme": {
     "label": "Design",

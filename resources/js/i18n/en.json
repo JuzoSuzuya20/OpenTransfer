@@ -1186,7 +1186,8 @@
     "locked": "Too many tries. Try again in {minutes, plural, one {# minute} other {# minutes}}."
   },
   "common": {
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "secret_kept": "Saved — leave empty to keep it"
   },
   "theme": {
     "label": "Theme",

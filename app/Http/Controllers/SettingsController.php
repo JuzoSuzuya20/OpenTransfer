@@ -52,8 +52,18 @@ class SettingsController extends Controller
                 }
 
                 $setting->key = $settingData['key'];
-                $setting->previous_value = $setting->value;
-                $setting->value = $settingData['value'];
+                if (in_array($setting->key, Setting::SECRETS, true)) {
+                    // Never sent back, so the screen sends it empty: an empty one keeps the saved one
+                    if ($settingData['value'] === '') {
+                        continue;
+                    }
+                    // Encrypted, and the former one is not kept
+                    $setting->previous_value = null;
+                    $setting->value = \App\Support\Secrets::seal($settingData['value']);
+                } else {
+                    $setting->previous_value = $setting->value;
+                    $setting->value = $settingData['value'];
+                }
                 $setting->save();
 
                 $savedSettings[] = $setting;
