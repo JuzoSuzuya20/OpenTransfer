@@ -39,7 +39,7 @@
     "forgot_password_create_password": "Criar palavra-passe",
     "forgot_password_create_password_description": "Introduza a sua nova palavra-passe. Tanto a palavra-passe como a confirmação da palavra-passe têm de corresponder.",
     "guest_warning": "Os ficheiros que carregar utilizando o formulário do lado esquerdo serão partilhados diretamente com a pessoa que enviou o convite.",
-    "invalid_email_or_password": "Falha na autenticação",
+    "invalid_email_or_password": "Email ou palavra-passe incorretos.",
     "invite_accepted": "Convite para partilha aceite. Já pode carregar ficheiros para partilhar.",
     "ip_not_allowed": "O início de sessão não é permitido a partir da sua rede.",
     "login": "Iniciar Sessão",
@@ -887,7 +887,7 @@
     "deleted": "Eliminado",
     "deletes": "Eliminação",
     "download": {
-      "invalid_password": "A palavra-passe de partilha é inválida",
+      "invalid_password": "Palavra-passe incorreta.",
       "too_many_attempts": "Demasiadas palavras-passe incorretas. Aguarde alguns minutos e tente novamente.",
       "password_required": "É necessário introduzir a palavra-passe para descarregar esta partilha.",
       "password_required_short": "Introduzir a palavra-passe"
@@ -1349,5 +1349,9 @@
     "expired_text_until": "Permitia depositar ficheiros até {date}. Peça uma nova ligação a {name}.",
     "unknown_title": "Esta ligação já não é válida",
     "unknown_text": "O pedido pode ter sido cancelado ou a ligação não foi copiada por inteiro. Peça uma nova ligação a {name}."
+  },
+  "attempts": {
+    "left": "{count, plural, one {Resta apenas uma tentativa.} other {Restam apenas # tentativas.}}",
+    "locked": "Demasiadas tentativas. Tente novamente dentro de {minutes, plural, one {# minuto} other {# minutos}}."
   }
 }

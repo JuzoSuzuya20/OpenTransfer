@@ -44,7 +44,7 @@
     "forgot_password_create_password": "Crea password",
     "forgot_password_create_password_description": "Inserisci la nuova password. La password e la conferma della password devono coincidere",
     "guest_warning": "I file caricati tramite il modulo a sinistra saranno condivisi direttamente con la persona che ti ha invitato.",
-    "invalid_email_or_password": "Accesso non riuscito",
+    "invalid_email_or_password": "Email o password non corretti.",
     "invite_accepted": "Invito alla condivisione inversa accettato. Ora puoi caricare i file.",
     "ip_not_allowed": "L'accesso non è consentito dalla tua rete.",
     "login": "Accedi",
@@ -887,7 +887,7 @@
     "deleted": "Soppresso",
     "deletes": "Cancella",
     "download": {
-      "invalid_password": "La password di condivisione non è valida",
+      "invalid_password": "Password errata.",
       "too_many_attempts": "Troppe password errate. Attendi qualche minuto e riprova.",
       "password_required": "Per scaricare questa condivisione è necessario inserire la password.",
       "password_required_short": "Inserire la password"
@@ -1349,5 +1349,9 @@
     "expired_text_until": "Permetteva di depositare file fino al {date}. Chiedi un nuovo link a {name}.",
     "unknown_title": "Questo link non è più valido",
     "unknown_text": "La richiesta potrebbe essere stata annullata, oppure il link non è stato copiato per intero. Chiedi un nuovo link a {name}."
+  },
+  "attempts": {
+    "left": "{count, plural, one {Resta un solo tentativo.} other {Restano solo # tentativi.}}",
+    "locked": "Troppi tentativi. Riprova tra {minutes, plural, one {# minuto} other {# minuti}}."
   }
 }

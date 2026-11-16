@@ -11,6 +11,7 @@ import { useTranslate } from '@tolgee/vue'
 import DirectoryItem from './directory-item.vue'
 import UserAvatar from './layout/UserAvatar.vue'
 import { burst, centreOf } from '../lib/confetti'
+import { attemptsNotice, attemptsMessage } from '../lib/attempts'
 
 // How long the share stays online, in its largest unit: 6 d, 4 h, 12 min
 const expiresInShort = computed(() => {
@@ -53,10 +54,14 @@ onMounted(() => {
     if (errorMessage) {
       if (errorMessage == 'password_required') {
         error.value = t.value('share.download.password_required')
-      } else if (errorMessage == 'invalid_password') {
-        error.value = t.value('share.download.invalid_password')
-      } else if (errorMessage == 'too_many_attempts') {
-        error.value = t.value('share.download.too_many_attempts')
+      } else if (errorMessage == 'invalid_password' || errorMessage == 'too_many_attempts') {
+        // Back from a download refused by the server: the tries left or the wait come along
+        const notice = attemptsNotice({
+          attemptsLeft: urlParams.get('attempts_left'),
+          retryAfter: urlParams.get('retry_after'),
+          locked: errorMessage == 'too_many_attempts'
+        })
+        error.value = attemptsMessage(t.value, 'share.download.invalid_password', notice)
       }
       history.replaceState(history.state, '', window.location.pathname)
     }
@@ -119,6 +124,12 @@ const unlock = async () => {
     share.value = await unlockShare(props.downloadShareCode, password.value)
     document.title = share.value.name
   } catch (failure) {
+    // A wrong password: the usual sentence, then the tries left, then the wait (four tries)
+    if (failure.code === 'invalid_password' || failure.code === 'too_many_attempts') {
+      const notice = attemptsNotice({ attemptsLeft: failure.data?.attempts_left, retryAfter: failure.data?.retry_after, locked: failure.code === 'too_many_attempts' })
+      error.value = attemptsMessage(t.value, 'share.download.invalid_password', notice)
+      return
+    }
     const key = UNLOCK_ERRORS[failure.message]
     if (key) {
       error.value = t.value(key)

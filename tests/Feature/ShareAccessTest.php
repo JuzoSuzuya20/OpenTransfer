@@ -115,7 +115,7 @@ class ShareAccessTest extends TestCase
         $this->get("/api/shares/{$share->long_id}/download")
             ->assertRedirect("/shares/{$share->long_id}?error=password_required");
         $this->post("/api/shares/{$share->long_id}/download", ['password' => 'wrong'])
-            ->assertRedirect("/shares/{$share->long_id}?error=invalid_password");
+            ->assertRedirect("/shares/{$share->long_id}?error=invalid_password&attempts_left=3");
         $this->assertSame(0, $share->fresh()->download_count);
 
         $this->post("/api/shares/{$share->long_id}/download", ['password' => 's3cret-pass'])

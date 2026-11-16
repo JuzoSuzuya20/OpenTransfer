@@ -44,7 +44,7 @@
     "forgot_password_create_password": "Wachtwoord aanmaken",
     "forgot_password_create_password_description": "Voer uw nieuw wachtwoord in. Beide wachtwoorden moeten overeenkomen",
     "guest_warning": "Bestanden die je uploadt via het formulier aan de linkerkant worden direct gedeeld met de persoon die je heeft uitgenodigd.",
-    "invalid_email_or_password": "Inloggen mislukt",
+    "invalid_email_or_password": "E-mailadres of wachtwoord onjuist.",
     "invite_accepted": "Uitnodiging voor omgekeerd delen geaccepteerd. Je kunt nu bestanden uploaden.",
     "ip_not_allowed": "Aanmelden is niet toegestaan vanaf je netwerk.",
     "login": "Inloggen",
@@ -887,7 +887,7 @@
     "deleted": "Verwijderd",
     "deletes": "Verwijderd",
     "download": {
-      "invalid_password": "Wachtwoord delen is ongeldig",
+      "invalid_password": "Onjuist wachtwoord.",
       "too_many_attempts": "Te veel onjuiste wachtwoorden. Wacht een paar minuten en probeer het opnieuw.",
       "password_required": "Je moet het wachtwoord invoeren om deze share te downloaden.",
       "password_required_short": "Wachtwoord invoeren"
@@ -1349,5 +1349,9 @@
     "expired_text_until": "Je kon er bestanden mee aanleveren tot {date}. Vraag {name} om een nieuwe link.",
     "unknown_title": "Deze link is niet meer geldig",
     "unknown_text": "Het verzoek is misschien geannuleerd, of de link is niet volledig gekopieerd. Vraag {name} om een nieuwe link."
+  },
+  "attempts": {
+    "left": "{count, plural, one {Nog maar één poging.} other {Nog maar # pogingen.}}",
+    "locked": "Te veel pogingen. Probeer het over {minutes, plural, one {# minuut} other {# minuten}} opnieuw."
   }
 }

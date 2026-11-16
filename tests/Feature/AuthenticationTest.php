@@ -49,7 +49,7 @@ class AuthenticationTest extends TestCase
             ->assertForbidden()
             ->assertJson(['code' => 'email_not_verified']);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $this->postJson('/api/auth/login', ['email' => $locked->email, 'password' => 'wrong'])->assertUnauthorized();
         }
         $this->postJson('/api/auth/login', ['email' => $locked->email, 'password' => 'wrong'])

@@ -32,11 +32,11 @@ class RateLimitingTest extends TestCase
         return User::factory()->create(array_merge(['admin' => false, 'active' => true, 'is_guest' => false], $attributes));
     }
 
-    public function test_login_is_locked_after_five_failed_attempts(): void
+    public function test_login_is_locked_after_four_failed_attempts(): void
     {
         $user = $this->user();
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $this->postJson('/api/auth/login', ['email' => $user->email, 'password' => 'wrong'])->assertUnauthorized();
         }
 
@@ -63,7 +63,8 @@ class RateLimitingTest extends TestCase
         $user = $this->user();
 
         for ($round = 0; $round < 2; $round++) {
-            for ($i = 0; $i < 4; $i++) {
+            // Three misses, one short of the lock: the right password then starts the count again
+            for ($i = 0; $i < 3; $i++) {
                 $this->postJson('/api/auth/login', ['email' => $user->email, 'password' => 'wrong']);
             }
             $this->postJson('/api/auth/login', ['email' => $user->email, 'password' => 'password'])->assertOk();
@@ -101,13 +102,15 @@ class RateLimitingTest extends TestCase
         file_put_contents(storage_path("app/shares/{$path}/contract.pdf"), 'pdf');
 
         try {
-            for ($i = 0; $i < 10; $i++) {
-                $this->post("/api/shares/{$share->long_id}/download", ['password' => "guess-{$i}"])
-                    ->assertRedirect("/shares/{$share->long_id}?error=invalid_password");
+            foreach ([3, 2, 1] as $left) {
+                $this->post("/api/shares/{$share->long_id}/download", ['password' => 'guess'])
+                    ->assertRedirect("/shares/{$share->long_id}?error=invalid_password&attempts_left={$left}");
             }
+            $last = $this->post("/api/shares/{$share->long_id}/download", ['password' => 'guess'])->headers->get('Location');
+            $this->assertMatchesRegularExpression('/\?error=invalid_password&attempts_left=0&retry_after=\d+$/', $last);
 
-            $this->post("/api/shares/{$share->long_id}/download", ['password' => 'right-password'])
-                ->assertRedirect("/shares/{$share->long_id}?error=too_many_attempts");
+            $wait = $this->post("/api/shares/{$share->long_id}/download", ['password' => 'right-password'])->headers->get('Location');
+            $this->assertMatchesRegularExpression('/\?error=too_many_attempts&retry_after=\d+$/', $wait);
             $this->getJson("/api/shares/{$share->long_id}/download/file/contract.pdf?password=right-password")
                 ->assertStatus(429);
             $this->assertSame(0, $share->fresh()->download_count);

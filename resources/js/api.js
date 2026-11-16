@@ -9,6 +9,7 @@ import { domData } from './domData'
 import { solveChallenge } from './proofOfWork'
 import { settingValueAsText } from './lib/settingValue'
 import { createAltchaToken } from './lib/altchaToken'
+import { isPasswordRefusal } from './lib/passwordRefusal'
 
 // Bundling configuration for small files
 const BUNDLE_CONFIG = {
@@ -300,6 +301,11 @@ const fetchWithAuth = async (url, options = {}) => {
       // Clone the response so we can read the body
       const clonedResponse = response.clone()
       const responseData = await clonedResponse.json()
+
+      // A wrong share password is an answer, not a session that ran out (lib/passwordRefusal)
+      if (isPasswordRefusal(responseData)) {
+        return response
+      }
 
       // Check for password change required in response body
       if (responseData?.message === 'Password change required') {
@@ -618,6 +624,7 @@ export const acceptReverseShareInvite = async (token, password = null) => {
     // Why it does not open: request_password_* (RequestLock), request_used, request_expired or
     // request_unknown (LinkError)
     error.code = data.code ?? null
+    error.data = data.data ?? null
     error.request = data.data?.request ?? null
     throw error
   }
@@ -1205,7 +1212,8 @@ export const unlockShare = async (id, password) => {
   })
   const data = await response.json()
   if (!response.ok) {
-    throw new Error(data.message)
+    // The code and, for a wrong password, the tries left or the wait (lib/attempts)
+    throw apiError(data)
   }
   return data.data.share
 }

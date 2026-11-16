@@ -23,8 +23,17 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 - The anti-robot check (ALTCHA) shows on the sign-in, forgotten password and sign-up forms when it
   is turned on: it was working, but nothing said so. The proof is solved as the form shows
 
+### Changed
+
+- A password is tried four times, then waits: the sign-in (one minute), the password of a share and
+  the password of a file request (five minutes). The first refusal says the usual sentence ("Wrong
+  email or password", "Wrong password"), the next ones how many tries remain, the last one how long
+  to wait
+
 ### Fixed
 
+- A wrong share password showed no message to a visitor (the page took it for a session that ran
+  out), and was sent, and counted, twice for a signed-in member
 - The daily maintenance failed every day once a file request had gone unanswered for a week: it
   deleted the guest account behind the link while the request still pointed at it (a foreign key),
   and stopped before clearing the expired cache entries. The request now lets go of its guest

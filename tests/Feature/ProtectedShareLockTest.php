@@ -115,14 +115,14 @@ class ProtectedShareLockTest extends TestCase
     {
         $share = $this->protectedShare();
 
-        for ($attempt = 0; $attempt < 10; $attempt++) {
+        for ($attempt = 0; $attempt < 4; $attempt++) {
             $this->postJson("/api/shares/{$share->long_id}/unlock", ['password' => "guess-{$attempt}"])->assertUnauthorized();
         }
 
         // Even the right password waits once the limit is reached
         $this->postJson("/api/shares/{$share->long_id}/unlock", ['password' => 's3cret-pass'])->assertStatus(429);
-        $this->post("/api/shares/{$share->long_id}/download", ['password' => 's3cret-pass'])
-            ->assertRedirect("/shares/{$share->long_id}?error=too_many_attempts");
+        $wait = $this->post("/api/shares/{$share->long_id}/download", ['password' => 's3cret-pass'])->headers->get('Location');
+        $this->assertMatchesRegularExpression("#/shares/{$share->long_id}\\?error=too_many_attempts&retry_after=\\d+$#", $wait);
     }
 
     public function test_an_expired_share_does_not_open(): void

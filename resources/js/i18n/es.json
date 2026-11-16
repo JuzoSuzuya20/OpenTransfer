@@ -44,7 +44,7 @@
     "forgot_password_create_password": "Crear la contraseña",
     "forgot_password_create_password_description": "Introduzca su nueva contraseña. La contraseña y su confirmación deben coincidir.",
     "guest_warning": "Los archivos que suba con el formulario de la izquierda se compartirán directamente con la persona que le invitó.",
-    "invalid_email_or_password": "No se pudo iniciar sesión",
+    "invalid_email_or_password": "Correo electrónico o contraseña incorrectos.",
     "invite_accepted": "Solicitud de archivos aceptada. Ya puede subir archivos.",
     "ip_not_allowed": "No se permite iniciar sesión desde su red.",
     "login": "Iniciar sesión",
@@ -887,7 +887,7 @@
     "deleted": "Eliminado",
     "deletes": "Se elimina",
     "download": {
-      "invalid_password": "La contraseña del envío no es válida",
+      "invalid_password": "Contraseña incorrecta.",
       "too_many_attempts": "Demasiadas contraseñas incorrectas. Espere unos minutos y vuelva a intentarlo.",
       "password_required": "Debe introducir la contraseña para descargar este envío.",
       "password_required_short": "Introduzca la contraseña"
@@ -1349,5 +1349,9 @@
     "expired_text_until": "Permitía depositar archivos hasta el {date}. Pida un nuevo enlace a {name}.",
     "unknown_title": "Este enlace ya no es válido",
     "unknown_text": "Puede que la solicitud se haya cancelado o que el enlace no se haya copiado entero. Pida un nuevo enlace a {name}."
+  },
+  "attempts": {
+    "left": "{count, plural, one {Solo queda un intento.} other {Solo quedan # intentos.}}",
+    "locked": "Demasiados intentos. Vuelva a intentarlo dentro de {minutes, plural, one {# minuto} other {# minutos}}."
   }
 }

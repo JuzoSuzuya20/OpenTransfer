@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\PasswordAttempts;
 use App\Support\Locales;
 
 use Illuminate\Http\Request;
@@ -73,18 +74,24 @@ class SharesController extends Controller
     return response()->json(['status' => 'error', 'message' => 'Too many attempts'], 429);
   }
 
+  // Four tries, then five minutes (PasswordAttempts)
   private function tooManyPasswordAttempts(Share $share): bool
   {
-    return RateLimiter::tooManyAttempts($this->sharePasswordThrottleKey($share), 10);
+    return PasswordAttempts::locked($this->sharePasswordThrottleKey($share));
   }
 
-  private function checkSharePassword(Share $share, string $password): bool
+  private function sharePasswordWait(Share $share): int
   {
-    if (!Hash::check($password, $share->password)) {
-      RateLimiter::hit($this->sharePasswordThrottleKey($share), 300);
-      return false;
+    return PasswordAttempts::wait($this->sharePasswordThrottleKey($share));
+  }
+
+  // Null for the right password, else what the page says of the refusal (tries left, the wait)
+  private function sharePasswordMiss(Share $share, string $password): ?array
+  {
+    if (Hash::check($password, $share->password)) {
+      return null;
     }
-    return true;
+    return PasswordAttempts::miss($this->sharePasswordThrottleKey($share), 300);
   }
 
   public function read($shareId)
@@ -162,13 +169,13 @@ class SharesController extends Controller
     if ($share->password) {
       $password = request()->input('password');
       if (!$password || !is_string($password)) {
-        return response()->json(['status' => 'error', 'message' => 'Password required'], 401);
+        return response()->json(['status' => 'error', 'code' => 'password_required', 'message' => 'Password required'], 401);
       }
       if ($this->tooManyPasswordAttempts($share)) {
-        return response()->json(['status' => 'error', 'message' => 'Too many attempts'], 429);
+        return response()->json(['status' => 'error', 'code' => 'too_many_attempts', 'message' => 'Too many attempts', 'data' => ['retry_after' => $this->sharePasswordWait($share)]], 429);
       }
-      if (!$this->checkSharePassword($share, $password)) {
-        return response()->json(['status' => 'error', 'message' => 'Invalid password'], 401);
+      if ($miss = $this->sharePasswordMiss($share, $password)) {
+        return response()->json(['status' => 'error', 'code' => 'invalid_password', 'message' => 'Invalid password', 'data' => $miss], 401);
       }
     }
 
@@ -301,10 +308,10 @@ class SharesController extends Controller
         return redirect()->to('/shares/' . $shareId . '?error=password_required');
       }
       if ($this->tooManyPasswordAttempts($share)) {
-        return redirect()->to('/shares/' . $shareId . '?error=too_many_attempts');
+        return redirect()->to('/shares/' . $shareId . '?error=too_many_attempts&retry_after=' . $this->sharePasswordWait($share));
       }
-      if (!$this->checkSharePassword($share, $password)) {
-        return redirect()->to('/shares/' . $shareId . '?error=invalid_password');
+      if ($miss = $this->sharePasswordMiss($share, $password)) {
+        return redirect()->to('/shares/' . $shareId . '?error=invalid_password&' . http_build_query($miss));
       }
     }
 
@@ -390,10 +397,10 @@ class SharesController extends Controller
         return response()->json(['error' => 'Password required'], 401);
       }
       if ($this->tooManyPasswordAttempts($share)) {
-        return response()->json(['error' => 'Too many attempts'], 429);
+        return response()->json(['error' => 'Too many attempts', 'code' => 'too_many_attempts', 'data' => ['retry_after' => $this->sharePasswordWait($share)]], 429);
       }
-      if (!$this->checkSharePassword($share, $password)) {
-        return response()->json(['error' => 'Invalid password'], 401);
+      if ($miss = $this->sharePasswordMiss($share, $password)) {
+        return response()->json(['error' => 'Invalid password', 'code' => 'invalid_password', 'data' => $miss], 401);
       }
     }
 

@@ -44,7 +44,7 @@
     "forgot_password_create_password": "Passwort erstellen",
     "forgot_password_create_password_description": "Bitte geben Sie Ihr neues Passwort ein. Passwort und Passwortbestätigung müssen übereinstimmen",
     "guest_warning": "Sie sind als Gast eingeloggt. Sie können hier Dateien hochladen, die an die Person weitergeleitet werden, die Ihnen diese Anfrage geschickt hat.",
-    "invalid_email_or_password": "Anmeldung fehlgeschlagen",
+    "invalid_email_or_password": "E-Mail-Adresse oder Passwort falsch.",
     "invite_accepted": "Freigabeeinladung akzeptiert. Sie können jetzt Dateien hochladen.",
     "ip_not_allowed": "Die Anmeldung ist aus Ihrem Netzwerk nicht erlaubt.",
     "login": "Anmeldung",
@@ -887,7 +887,7 @@
     "deleted": "Gelöscht",
     "deletes": "Löscht",
     "download": {
-      "invalid_password": "Freigabepasswort ist ungültig",
+      "invalid_password": "Falsches Passwort.",
       "too_many_attempts": "Zu viele falsche Passwörter. Bitte warten Sie einige Minuten und versuchen Sie es erneut.",
       "password_required": "Sie müssen das Passwort eingeben, um diese Freigabe herunterzuladen.",
       "password_required_short": "Passwort eingeben"
@@ -1349,5 +1349,9 @@
     "expired_text_until": "Er erlaubte das Ablegen von Dateien bis zum {date}. Bitten Sie {name} um einen neuen Link.",
     "unknown_title": "Dieser Link ist nicht mehr gültig",
     "unknown_text": "Die Anfrage wurde vielleicht abgebrochen, oder der Link wurde nicht vollständig kopiert. Bitten Sie {name} um einen neuen Link."
+  },
+  "attempts": {
+    "left": "{count, plural, one {Nur noch ein Versuch.} other {Nur noch # Versuche.}}",
+    "locked": "Zu viele Versuche. Versuchen Sie es in {minutes, plural, one {# Minute} other {# Minuten}} erneut."
   }
 }

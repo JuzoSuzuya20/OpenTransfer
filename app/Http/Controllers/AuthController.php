@@ -16,6 +16,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Models\ReverseShareInvite;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Support\PasswordAttempts;
 use App\Services\SsoPolicy;
 use App\Services\SsoSessions;
 use App\Services\TwoFactor;
@@ -48,24 +49,28 @@ class AuthController extends Controller
 
         // Behind a reverse proxy every client shares the proxy IP, so the email
         // is what really scopes the lock: an attacker can delay one account, not all.
+        // Four tries (PasswordAttempts), the same for an address that does not exist
         $throttleKey = 'login:' . Str::lower($request->input('email')) . '|' . $request->ip();
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+        if (PasswordAttempts::locked($throttleKey)) {
+            $wait = PasswordAttempts::wait($throttleKey);
             return response()->json([
                 'status' => 'error',
                 'code' => 'too_many_attempts',
-                'message' => 'Too many login attempts. Please try again in ' . RateLimiter::availableIn($throttleKey) . ' seconds.'
+                'message' => 'Too many login attempts. Please try again in ' . $wait . ' seconds.',
+                'data' => ['retry_after' => $wait],
             ], 429);
         }
 
         // Without opening a session: a second factor may be needed first
         if (!Auth::attempt($credentials, false)) {
-            RateLimiter::hit($throttleKey, 60);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid email or password'
+                'code' => 'invalid_credentials',
+                'message' => 'Invalid email or password',
+                'data' => PasswordAttempts::miss($throttleKey, 60),
             ], 401);
         }
-        RateLimiter::clear($throttleKey);
+        PasswordAttempts::clear($throttleKey);
         $user = Auth::getLastAttempted();
 
         if (!$user->active) {
@@ -294,11 +299,11 @@ class AuthController extends Controller
 
     private function refuseRequestPassword(ReverseShareInvite $invite, mixed $password): ?\Illuminate\Http\JsonResponse
     {
-        $locked = fn (string $message, int $status, string $code) => response()->json([
+        $locked = fn (string $message, int $status, string $code, array $attempts = []) => response()->json([
             'status' => 'error',
             'code' => $code,
             'message' => $message,
-            'data' => [
+            'data' => $attempts + [
                 'request' => [
                     'from' => $invite->user?->name,
                     'avatar_seed' => $invite->user?->avatar_seed,
@@ -312,12 +317,11 @@ class AuthController extends Controller
         }
 
         $key = 'request-password:' . $invite->id;
-        if (RateLimiter::tooManyAttempts($key, 10)) {
-            return $locked('Too many attempts', 429, 'request_password_attempts');
+        if (PasswordAttempts::locked($key)) {
+            return $locked('Too many attempts', 429, 'request_password_attempts', ['retry_after' => PasswordAttempts::wait($key)]);
         }
         if (!Hash::check($password, $invite->password)) {
-            RateLimiter::hit($key, 300);
-            return $locked('Invalid password', 401, 'request_password_invalid');
+            return $locked('Invalid password', 401, 'request_password_invalid', PasswordAttempts::miss($key, 300));
         }
 
         return null;

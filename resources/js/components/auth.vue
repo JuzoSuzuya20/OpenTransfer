@@ -7,6 +7,7 @@ import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
 import { domData, domError, domSuccess } from '../domData'
 import { forcedSsoTarget, SIGNED_OUT_KEY } from '../lib/forcedSso'
+import { attemptsNotice, attemptsMessage } from '../lib/attempts'
 import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck, ChevronRight } from 'lucide-vue-next'
 import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
 import BrandMark from './layout/BrandMark.vue'
@@ -203,6 +204,12 @@ const attemptLogin = async () => {
 
     await completeSignIn(data)
   } catch (error) {
+    // A wrong password: the usual sentence, then the tries left, then the wait (four tries)
+    if (error.code === 'invalid_credentials' || error.code === 'too_many_attempts') {
+      const notice = attemptsNotice({ attemptsLeft: error.data?.attempts_left, retryAfter: error.data?.retry_after, locked: error.code === 'too_many_attempts' })
+      toast.error(attemptsMessage(t.value, 'auth.invalid_email_or_password', notice))
+      return
+    }
     toast.error(t.value(LOGIN_REFUSALS[error.code] || 'auth.invalid_email_or_password'))
   }
 }

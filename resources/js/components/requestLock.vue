@@ -6,6 +6,7 @@ import UserAvatar from './layout/UserAvatar.vue'
 import { acceptReverseShareInvite } from '../api'
 import { timeUntilExpiration } from '../utils'
 import { store } from '../store'
+import { attemptsNotice, attemptsMessage } from '../lib/attempts'
 
 // A file request the member protected with a password: the guest sees who asks and until when,
 // and gives the password (passed on apart from the link) before the drop page opens
@@ -44,7 +45,15 @@ const open = async () => {
     store.lockedRequest = null
     store.authSuccess(session)
   } catch (refusal) {
-    if (REFUSALS[refusal.code]) {
+    if (refusal.code === 'request_password_invalid' || refusal.code === 'request_password_attempts') {
+      // The usual sentence, then the tries left, then the wait (four tries)
+      const notice = attemptsNotice({
+        attemptsLeft: refusal.data?.attempts_left,
+        retryAfter: refusal.data?.retry_after,
+        locked: refusal.code === 'request_password_attempts'
+      })
+      error.value = attemptsMessage(t.value, 'drop.invalid_password', notice)
+    } else if (REFUSALS[refusal.code]) {
       error.value = t.value(REFUSALS[refusal.code])
     } else {
       // Expired, used or cancelled in the meantime: nothing left to open, the page says why

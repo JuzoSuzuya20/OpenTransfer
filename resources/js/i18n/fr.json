@@ -44,7 +44,7 @@
     "forgot_password_create_password": "Créer un mot de passe",
     "forgot_password_create_password_description": "Veuillez saisir votre nouveau mot de passe. Le mot de passe et la confirmation du mot de passe doivent correspondre",
     "guest_warning": "Les fichiers que vous téléchargez à l'aide du formulaire de gauche seront partagés directement avec la personne qui vous a invité.",
-    "invalid_email_or_password": "Échec de la connexion",
+    "invalid_email_or_password": "Identifiant ou mot de passe incorrect.",
     "invite_accepted": "Invitation au partage inversé acceptée. Vous pouvez maintenant télécharger des fichiers.",
     "ip_not_allowed": "La connexion n'est pas autorisée depuis votre réseau.",
     "login": "Connexion",
@@ -887,7 +887,7 @@
     "deleted": "Supprimé",
     "deletes": "Suppression",
     "download": {
-      "invalid_password": "Le mot de passe du partage est invalide",
+      "invalid_password": "Mot de passe incorrect.",
       "too_many_attempts": "Trop de mots de passe incorrects. Patientez quelques minutes avant de réessayer.",
       "password_required": "Vous devez saisir le mot de passe pour télécharger ce partage.",
       "password_required_short": "Entrez le mot de passe"
@@ -1349,5 +1349,9 @@
     "expired_text_until": "Il permettait de déposer des fichiers jusqu'au {date}. Demandez un nouveau lien à {name}.",
     "unknown_title": "Ce lien n'est plus valable",
     "unknown_text": "La demande a peut-être été annulée, ou le lien n'a pas été copié en entier. Demandez un nouveau lien à {name}."
+  },
+  "attempts": {
+    "left": "{count, plural, one {Il ne reste plus qu'une tentative.} other {Il ne reste plus que # tentatives.}}",
+    "locked": "Trop de tentatives. Réessayez dans {minutes, plural, one {# minute} other {# minutes}}."
   }
 }

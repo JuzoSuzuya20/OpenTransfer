@@ -185,7 +185,7 @@ class FileRequestRulesTest extends TestCase
     {
         $token = $this->ask(['password' => 'lot-3-signé']);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $this->open($token, "guess-{$i}")->assertUnauthorized();
         }
 

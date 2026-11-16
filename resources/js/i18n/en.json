@@ -44,7 +44,7 @@
     "forgot_password_create_password": "Create password",
     "forgot_password_create_password_description": "Please enter your new password. Both password and password confirmation must match",
     "guest_warning": "Files you upload using the left-side form will be shared directly with the person who invited you.",
-    "invalid_email_or_password": "Login failed",
+    "invalid_email_or_password": "Wrong email or password.",
     "invite_accepted": "Reverse share invite accepted. You can now upload files.",
     "ip_not_allowed": "Sign-in is not allowed from your network.",
     "login": "Login",
@@ -887,7 +887,7 @@
     "deleted": "Deleted",
     "deletes": "Deletes",
     "download": {
-      "invalid_password": "Share password is invalid",
+      "invalid_password": "Wrong password.",
       "too_many_attempts": "Too many incorrect passwords. Please wait a few minutes and try again.",
       "password_required": "You must enter the password to download this share.",
       "password_required_short": "Enter password"
@@ -1349,5 +1349,9 @@
     "expired_text_until": "It let you drop files until {date}. Ask {name} for a new link.",
     "unknown_title": "This link is no longer valid",
     "unknown_text": "The request may have been cancelled, or the link was not copied in full. Ask {name} for a new link."
+  },
+  "attempts": {
+    "left": "{count, plural, one {Only one try left.} other {Only # tries left.}}",
+    "locked": "Too many tries. Try again in {minutes, plural, one {# minute} other {# minutes}}."
   }
 }
