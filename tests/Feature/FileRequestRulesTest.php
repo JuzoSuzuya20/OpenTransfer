@@ -62,6 +62,7 @@ class FileRequestRulesTest extends TestCase
             'expires_in_days' => 3,
         ], $rules), $this->bearer($this->member()))->assertOk()->json('data.link');
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
         parse_str((string) parse_url($link, PHP_URL_QUERY), $query);
 
         return $query['invite_token'];
@@ -70,6 +71,7 @@ class FileRequestRulesTest extends TestCase
     private function open(string $token, ?string $password = null)
     {
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
         $fields = ['token' => $token];
         if ($password !== null) {
             $fields['password'] = $password;
@@ -82,8 +84,10 @@ class FileRequestRulesTest extends TestCase
     private function drop(string $session)
     {
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
         $guest = auth('api')->setToken($session)->user();
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
         $this->guestFolders[] = $guest->id;
 
         $uploadId = 'rules-'.uniqid();
@@ -172,6 +176,7 @@ class FileRequestRulesTest extends TestCase
         $token = $this->ask(['password' => 'lot-3-signé']);
 
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
         $this->getJson('/api/reverse-shares/accept?token='.urlencode($token))->assertUnauthorized();
         $this->assertNull(ReverseShareInvite::sole()->used_at);
     }
@@ -193,6 +198,7 @@ class FileRequestRulesTest extends TestCase
         $token = $this->ask();
 
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
         $this->getJson('/api/reverse-shares/accept?token='.urlencode($token))->assertOk();
     }
 
@@ -200,6 +206,7 @@ class FileRequestRulesTest extends TestCase
     {
         $session = $this->open($this->ask(['keep_files_days' => 14]))->json('data.access_token');
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
 
         $request = $this->getJson('/api/users/me', ['Authorization' => "Bearer {$session}"])->assertOk()->json('data.user.request');
 

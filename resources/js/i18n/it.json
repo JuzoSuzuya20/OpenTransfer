@@ -1190,7 +1190,18 @@
     "via_link": "tramite link",
     "keep_files": "Conserva i file ricevuti",
     "password_again": "Questa richiesta aveva una password: digitala di nuovo per ripeterla.",
-    "password_apart": "Comunica la password a parte, non nello stesso messaggio del link."
+    "password_apart": "Comunica la password a parte, non nello stesso messaggio del link.",
+    "cancel": "Annulla",
+    "remove": "Rimuovi",
+    "keep": "Mantienila",
+    "cancel_title": "Annullare questa richiesta?",
+    "remove_title": "Rimuovere questa richiesta?",
+    "cancel_message": "Il link inviato per {name} smetterà subito di funzionare, anche per chi lo ha già aperto.",
+    "remove_message": "La richiesta scaduta per {name} lascerà l'elenco.",
+    "cancelled": "Richiesta per {name} annullata",
+    "removed": "Richiesta per {name} rimossa",
+    "cancel_received": "Questa richiesta è già tornata: i suoi file sono in Le mie condivisioni.",
+    "cancel_failed": "Non è stato possibile annullare la richiesta."
   },
   "sso": {
     "title": "Accesso (SSO)",

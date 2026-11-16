@@ -1190,7 +1190,18 @@
     "via_link": "by link",
     "keep_files": "Keep received files",
     "password_again": "This request had a password: type it again to ask once more.",
-    "password_apart": "Pass the password on separately, not in the same message as the link."
+    "password_apart": "Pass the password on separately, not in the same message as the link.",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "keep": "Keep it",
+    "cancel_title": "Cancel this request?",
+    "remove_title": "Remove this request?",
+    "cancel_message": "The link sent for {name} will stop working at once, even for someone who already opened it.",
+    "remove_message": "The expired request for {name} will leave the list.",
+    "cancelled": "Request for {name} cancelled",
+    "removed": "Request for {name} removed",
+    "cancel_received": "This request has already come back: its files are in My shares.",
+    "cancel_failed": "The request could not be cancelled."
   },
   "sso": {
     "title": "Sign-in (SSO)",

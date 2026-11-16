@@ -577,6 +577,19 @@ export const sendReverseShareInvite = async (email, name, message, { delivery = 
   return data
 }
 
+// Takes back a request this account sent: its link stops working (one that came back stays)
+export const cancelReverseShareInvite = async (id) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/reverse-shares/invites/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: { ...addJsonHeader() }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw apiError(data)
+  }
+  return data
+}
+
 // The requests this account sent, each with its state (pending, received, expired)
 export const getMyReverseShareInvites = async () => {
   const response = await fetchWithAuth(`${apiUrl}/api/reverse-shares/invites`, {

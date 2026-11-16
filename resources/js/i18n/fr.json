@@ -1190,7 +1190,18 @@
     "via_link": "par lien",
     "keep_files": "Fichiers reçus conservés",
     "password_again": "Cette demande avait un mot de passe : saisissez-le à nouveau pour la refaire.",
-    "password_apart": "Transmettez le mot de passe à part, pas dans le même message que le lien."
+    "password_apart": "Transmettez le mot de passe à part, pas dans le même message que le lien.",
+    "cancel": "Annuler",
+    "remove": "Retirer",
+    "keep": "La garder",
+    "cancel_title": "Annuler cette demande ?",
+    "remove_title": "Retirer cette demande ?",
+    "cancel_message": "Le lien envoyé pour {name} cessera de fonctionner aussitôt, même pour une personne qui l'a déjà ouvert.",
+    "remove_message": "La demande expirée pour {name} quittera la liste.",
+    "cancelled": "Demande pour {name} annulée",
+    "removed": "Demande pour {name} retirée",
+    "cancel_received": "Cette demande est déjà revenue : ses fichiers sont dans Mes partages.",
+    "cancel_failed": "La demande n'a pas pu être annulée."
   },
   "sso": {
     "title": "Connexion (SSO)",

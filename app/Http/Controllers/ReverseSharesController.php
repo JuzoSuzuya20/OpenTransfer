@@ -58,6 +58,29 @@ class ReverseSharesController extends Controller
         ]);
     }
 
+    // A member takes back a request they sent: waiting (its link stops working, a guest who
+    // opened it is let go) or expired (it leaves the list). One that came back stays: its files
+    // are a share of the member's, removed from there.
+    public function cancelInvite(int $invite)
+    {
+        $request = ReverseShareInvite::where('user_id', Auth::id())->find($invite);
+        if (!$request) {
+            return response()->json(['status' => 'error', 'message' => 'Request not found'], 404);
+        }
+
+        if ($request->isCompleted()) {
+            return response()->json(['status' => 'error', 'message' => 'Request already received', 'code' => 'request_received'], 409);
+        }
+
+        // The guest account behind the link (its upload sessions go with it), after the request
+        // that points at it
+        $guest = $request->guest_user_id ? User::where('id', $request->guest_user_id)->where('is_guest', true)->first() : null;
+        $request->delete();
+        $guest?->delete();
+
+        return response()->json(['status' => 'success', 'message' => 'Request cancelled']);
+    }
+
     public function createInvite(Request $request)
     {
 

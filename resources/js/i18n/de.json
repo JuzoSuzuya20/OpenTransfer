@@ -1190,7 +1190,18 @@
     "via_link": "per Link",
     "keep_files": "Empfangene Dateien aufbewahren",
     "password_again": "Diese Anfrage hatte ein Passwort: Geben Sie es erneut ein, um sie noch einmal zu stellen.",
-    "password_apart": "Geben Sie das Passwort getrennt weiter, nicht in derselben Nachricht wie den Link."
+    "password_apart": "Geben Sie das Passwort getrennt weiter, nicht in derselben Nachricht wie den Link.",
+    "cancel": "Abbrechen",
+    "remove": "Entfernen",
+    "keep": "Behalten",
+    "cancel_title": "Diese Anfrage abbrechen?",
+    "remove_title": "Diese Anfrage entfernen?",
+    "cancel_message": "Der für {name} gesendete Link funktioniert sofort nicht mehr, auch für jemanden, der ihn bereits geöffnet hat.",
+    "remove_message": "Die abgelaufene Anfrage für {name} wird aus der Liste entfernt.",
+    "cancelled": "Anfrage für {name} abgebrochen",
+    "removed": "Anfrage für {name} entfernt",
+    "cancel_received": "Diese Anfrage wurde bereits beantwortet: Die Dateien sind unter „Meine Freigaben“.",
+    "cancel_failed": "Die Anfrage konnte nicht abgebrochen werden."
   },
   "sso": {
     "title": "Anmeldung (SSO)",

@@ -181,6 +181,16 @@ a.ot-act {
     width: var(--ot-control-sm);
     padding: 0;
   }
+  // Takes something back (a request, an access): the danger colour, the same thin line
+  &.is-danger:not(:disabled) {
+    color: var(--ot-danger-text);
+    &:hover,
+    &:active {
+      background: var(--ot-danger-soft);
+      color: var(--ot-danger-text);
+      border-color: var(--ot-danger-line);
+    }
+  }
 }
 
 button.close-settings-button {

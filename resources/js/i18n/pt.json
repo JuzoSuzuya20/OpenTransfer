@@ -1190,7 +1190,18 @@
     "via_link": "por ligação",
     "keep_files": "Conservar os ficheiros recebidos",
     "password_again": "Este pedido tinha uma palavra-passe: escreva-a de novo para o repetir.",
-    "password_apart": "Transmita a palavra-passe à parte, não na mesma mensagem que a ligação."
+    "password_apart": "Transmita a palavra-passe à parte, não na mesma mensagem que a ligação.",
+    "cancel": "Cancelar",
+    "remove": "Retirar",
+    "keep": "Mantê-lo",
+    "cancel_title": "Cancelar este pedido?",
+    "remove_title": "Retirar este pedido?",
+    "cancel_message": "A ligação enviada para {name} deixará de funcionar de imediato, mesmo para quem já a abriu.",
+    "remove_message": "O pedido expirado para {name} sairá da lista.",
+    "cancelled": "Pedido para {name} cancelado",
+    "removed": "Pedido para {name} retirado",
+    "cancel_received": "Este pedido já voltou: os ficheiros estão em As minhas partilhas.",
+    "cancel_failed": "Não foi possível cancelar o pedido."
   },
   "sso": {
     "title": "Início de sessão (SSO)",

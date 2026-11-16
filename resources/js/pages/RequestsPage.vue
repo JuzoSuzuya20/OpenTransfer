@@ -11,7 +11,8 @@ import PageHead from '../components/layout/PageHead.vue'
 import AppLink from '../components/layout/AppLink.vue'
 import { pinLeaving } from '../lib/motion'
 import { useLiveRefresh } from '../composables/useLiveRefresh'
-import { sendReverseShareInvite, getMyShares, getMyReverseShareInvites } from '../api'
+import { sendReverseShareInvite, cancelReverseShareInvite, getMyShares, getMyReverseShareInvites } from '../api'
+import { useConfirmDialog } from '../composables/useConfirmDialog'
 import { niceFileSize } from '../utils'
 import { domData } from '../domData'
 import { keepFilesChoices } from '../lib/keepFilesDays'
@@ -104,6 +105,33 @@ const askAgain = async (request) => {
     load()
   } catch (error) {
     toast.error(t.value('reverse_invite_send.error'))
+  }
+}
+
+// Taken back: the link stops working at once (a guest who opened it can no longer drop), and an
+// expired one leaves the list
+const confirmDialog = useConfirmDialog()
+const cancelling = ref(null)
+const cancelRequest = async (request) => {
+  const expired = request.state === 'expired'
+  const sure = await confirmDialog.show({
+    title: t.value(expired ? 'requests.remove_title' : 'requests.cancel_title'),
+    message: t.value(expired ? 'requests.remove_message' : 'requests.cancel_message', { name: request.recipient_name }),
+    okText: t.value(expired ? 'requests.remove' : 'requests.cancel'),
+    cancelText: t.value('requests.keep'),
+    tone: 'danger'
+  })
+  if (!sure) return
+  cancelling.value = request.id
+  try {
+    await cancelReverseShareInvite(request.id)
+    invites.value = invites.value.filter((item) => item.id !== request.id)
+    toast.success(t.value(expired ? 'requests.removed' : 'requests.cancelled', { name: request.recipient_name }))
+  } catch (error) {
+    toast.error(t.value(error.code === 'request_received' ? 'requests.cancel_received' : 'requests.cancel_failed'))
+    load()
+  } finally {
+    cancelling.value = null
   }
 }
 
@@ -235,9 +263,14 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
                 <template v-else>{{ t('requests.valid_until', { date: day(request.expires_at) }) }}</template>
               </span>
             </div>
-            <button type="button" class="ot-act" @click="askAgain(request)">
-              {{ request.delivery === 'link' ? t('requests.new_link') : request.state === 'expired' ? t('requests.ask_again') : t('requests.resend') }}
-            </button>
+            <div class="requests-item-actions">
+              <button type="button" class="ot-act" @click="askAgain(request)">
+                {{ request.delivery === 'link' ? t('requests.new_link') : request.state === 'expired' ? t('requests.ask_again') : t('requests.resend') }}
+              </button>
+              <button type="button" class="ot-act is-danger" :disabled="cancelling === request.id" @click="cancelRequest(request)">
+                {{ request.state === 'expired' ? t('requests.remove') : t('requests.cancel') }}
+              </button>
+            </div>
           </li>
         </TransitionGroup>
         <p class="requests-empty" v-else-if="loaded">{{ t('requests.no_waiting') }}</p>
@@ -429,6 +462,12 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
     flex-shrink: 0;
     margin: 0;
   }
+}
+.requests-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
 }
 .requests-item-main {
   flex: 1;

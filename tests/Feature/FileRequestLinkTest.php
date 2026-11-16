@@ -46,6 +46,7 @@ class FileRequestLinkTest extends TestCase
     private function open(string $link)
     {
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
         parse_str((string) parse_url($link, PHP_URL_QUERY), $query);
 
         return $this->getJson('/api/reverse-shares/accept?token='.urlencode($query['invite_token']));
@@ -121,6 +122,7 @@ class FileRequestLinkTest extends TestCase
 
         $session = $this->open($link)->json('data.access_token');
         $this->app['auth']->forgetGuards();
+        $this->app->forgetInstance('tymon.jwt');
 
         $this->getJson('/api/users/me', ['Authorization' => "Bearer {$session}"])
             ->assertOk()

@@ -235,6 +235,8 @@ Route::group([], function ($router) {
         Route::post('/invite', [ReverseSharesController::class, 'createInvite'])->name('reverse-shares.createInvite')->middleware('throttle:20,1');
         //the requests this account sent, and where each one is
         Route::get('/invites', [ReverseSharesController::class, 'listInvites'])->name('reverse-shares.listInvites');
+        //take back a request: its link stops working (one that came back stays, its files are a share)
+        Route::delete('/invites/{invite}', [ReverseSharesController::class, 'cancelInvite'])->whereNumber('invite')->name('reverse-shares.cancelInvite');
         // Accept invite by ID (for existing users who must log in first)
         Route::post('/accept-by-id', [AuthController::class, 'acceptReverseShareInviteById'])->name('reverse-shares.acceptInviteById');
     });

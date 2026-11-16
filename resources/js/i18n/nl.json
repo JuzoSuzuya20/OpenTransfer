@@ -1190,7 +1190,18 @@
     "via_link": "via link",
     "keep_files": "Ontvangen bestanden bewaren",
     "password_again": "Dit verzoek had een wachtwoord: typ het opnieuw om het nog eens te vragen.",
-    "password_apart": "Geef het wachtwoord apart door, niet in hetzelfde bericht als de link."
+    "password_apart": "Geef het wachtwoord apart door, niet in hetzelfde bericht als de link.",
+    "cancel": "Annuleren",
+    "remove": "Verwijderen",
+    "keep": "Behouden",
+    "cancel_title": "Dit verzoek annuleren?",
+    "remove_title": "Dit verzoek verwijderen?",
+    "cancel_message": "De link die voor {name} is verstuurd werkt meteen niet meer, ook niet voor wie hem al heeft geopend.",
+    "remove_message": "Het verlopen verzoek voor {name} verdwijnt uit de lijst.",
+    "cancelled": "Verzoek voor {name} geannuleerd",
+    "removed": "Verzoek voor {name} verwijderd",
+    "cancel_received": "Dit verzoek is al terug: de bestanden staan in Mijn shares.",
+    "cancel_failed": "Het verzoek kon niet worden geannuleerd."
   },
   "sso": {
     "title": "Aanmelden (SSO)",

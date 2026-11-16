@@ -1190,7 +1190,18 @@
     "via_link": "por enlace",
     "keep_files": "Conservar los archivos recibidos",
     "password_again": "Esta solicitud tenía una contraseña: escríbala de nuevo para volver a pedirla.",
-    "password_apart": "Transmita la contraseña por separado, no en el mismo mensaje que el enlace."
+    "password_apart": "Transmita la contraseña por separado, no en el mismo mensaje que el enlace.",
+    "cancel": "Cancelar",
+    "remove": "Quitar",
+    "keep": "Conservarla",
+    "cancel_title": "¿Cancelar esta solicitud?",
+    "remove_title": "¿Quitar esta solicitud?",
+    "cancel_message": "El enlace enviado para {name} dejará de funcionar de inmediato, incluso para quien ya lo haya abierto.",
+    "remove_message": "La solicitud caducada para {name} saldrá de la lista.",
+    "cancelled": "Solicitud para {name} cancelada",
+    "removed": "Solicitud para {name} quitada",
+    "cancel_received": "Esta solicitud ya ha vuelto: sus archivos están en Mis envíos.",
+    "cancel_failed": "No se ha podido cancelar la solicitud."
   },
   "sso": {
     "title": "Inicio de sesión (SSO)",
