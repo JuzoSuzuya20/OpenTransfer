@@ -1338,5 +1338,16 @@
     "password_required": "Voer het wachtwoord van het verzoek in.",
     "invalid_password": "Onjuist wachtwoord.",
     "too_many_attempts": "Te veel pogingen. Probeer het over een paar minuten opnieuw."
+  },
+  "link_error": {
+    "page_title": "Link niet meer geldig",
+    "someone": "degene die hem naar je heeft gestuurd",
+    "used_title": "Deze link is al gebruikt",
+    "used_text": "Hij opent maar één keer en is al geopend. Heb je nog bestanden aan te leveren, vraag dan {name} om een nieuwe link.",
+    "expired_title": "Deze link is verlopen",
+    "expired_text": "De termijn om bestanden aan te leveren is voorbij. Vraag {name} om een nieuwe link.",
+    "expired_text_until": "Je kon er bestanden mee aanleveren tot {date}. Vraag {name} om een nieuwe link.",
+    "unknown_title": "Deze link is niet meer geldig",
+    "unknown_text": "Het verzoek is misschien geannuleerd, of de link is niet volledig gekopieerd. Vraag {name} om een nieuwe link."
   }
 }

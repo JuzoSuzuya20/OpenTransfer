@@ -615,6 +615,9 @@ export const acceptReverseShareInvite = async (token, password = null) => {
   if (!response.ok) {
     const error = new Error(data.message)
     error.status = response.status
+    // Why it does not open: request_password_* (RequestLock), request_used, request_expired or
+    // request_unknown (LinkError)
+    error.code = data.code ?? null
     error.request = data.data?.request ?? null
     throw error
   }

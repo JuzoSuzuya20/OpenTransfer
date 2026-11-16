@@ -1338,5 +1338,16 @@
     "password_required": "Introduzca la contraseña de la solicitud.",
     "invalid_password": "Contraseña incorrecta.",
     "too_many_attempts": "Demasiados intentos. Vuelva a intentarlo dentro de unos minutos."
+  },
+  "link_error": {
+    "page_title": "Enlace no válido",
+    "someone": "la persona que se lo envió",
+    "used_title": "Este enlace ya se ha utilizado",
+    "used_text": "Solo se abre una vez y ya se ha abierto. Si aún tiene archivos que depositar, pida un nuevo enlace a {name}.",
+    "expired_title": "Este enlace ha caducado",
+    "expired_text": "El plazo para depositar archivos ha terminado. Pida un nuevo enlace a {name}.",
+    "expired_text_until": "Permitía depositar archivos hasta el {date}. Pida un nuevo enlace a {name}.",
+    "unknown_title": "Este enlace ya no es válido",
+    "unknown_text": "Puede que la solicitud se haya cancelado o que el enlace no se haya copiado entero. Pida un nuevo enlace a {name}."
   }
 }

@@ -163,13 +163,13 @@ onMounted(async () => {
     } catch (error) {
       // A request behind a password: its page asks for it, the link stays in the address so that
       // a reload comes back to it
-      if (error.status === 401 && error.request) {
+      if (error.code === 'request_password_required') {
         store.lockedRequest = { token: reverseShareToken.value, ...error.request }
         return
       }
-      //remove the invite token from the url
+      // Used, expired or gone: a page says why and whom to ask, not a sign-in form
       window.history.replaceState({}, document.title, window.location.pathname)
-      toast.error(t.value('auth.failed_to_accept_invite'))
+      store.linkError = { reason: error.code ?? 'request_unknown', ...(error.request ?? {}) }
     }
   }
 })

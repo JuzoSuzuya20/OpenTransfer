@@ -25,9 +25,9 @@ const timeLeft = computed(() => {
 })
 
 const REFUSALS = {
-  'Invalid password': 'drop.invalid_password',
-  'Too many attempts': 'drop.too_many_attempts',
-  'Password required': 'drop.password_required'
+  request_password_invalid: 'drop.invalid_password',
+  request_password_attempts: 'drop.too_many_attempts',
+  request_password_required: 'drop.password_required'
 }
 
 const open = async () => {
@@ -44,10 +44,13 @@ const open = async () => {
     store.lockedRequest = null
     store.authSuccess(session)
   } catch (refusal) {
-    error.value = REFUSALS[refusal.message] ? t.value(REFUSALS[refusal.message]) : t.value('auth.failed_to_accept_invite')
-    if (!refusal.request) {
-      // Expired or used in the meantime: nothing left to open
+    if (REFUSALS[refusal.code]) {
+      error.value = t.value(REFUSALS[refusal.code])
+    } else {
+      // Expired, used or cancelled in the meantime: nothing left to open, the page says why
       window.history.replaceState({}, document.title, window.location.pathname)
+      store.lockedRequest = null
+      store.linkError = { reason: refusal.code ?? 'request_unknown', ...(refusal.request ?? {}) }
     }
   } finally {
     opening.value = false

@@ -12,6 +12,10 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 - A file request can be cancelled from the list of waiting requests ("Remove" for an expired one):
   its link stops working at once, even for a guest who already opened it. A request that came back
   stays, its files being a share
+- A link of a file request that no longer opens leads to a page of its own, laid out like the
+  download page, instead of a sign-in form and a short message: already used, expired (until when
+  it was valid) or no longer valid (cancelled, or not copied in full), each time with whom to ask
+  for a new link
 - Like the "force" option of ITSM-NG, the sign-in page can lead straight to one identity provider
   (Administration > SSO > Sign-in page). Local accounts (admins) keep the form at `/?noAUTO=1`; the
   form also shows once after signing out on purpose, with a message of the server, for a guest link

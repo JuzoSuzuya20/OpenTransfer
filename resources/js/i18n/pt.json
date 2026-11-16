@@ -1338,5 +1338,16 @@
     "password_required": "Introduza a palavra-passe do pedido.",
     "invalid_password": "Palavra-passe incorreta.",
     "too_many_attempts": "Demasiadas tentativas. Tente novamente dentro de alguns minutos."
+  },
+  "link_error": {
+    "page_title": "Ligação já não válida",
+    "someone": "quem lha enviou",
+    "used_title": "Esta ligação já foi utilizada",
+    "used_text": "Só abre uma vez e já foi aberta. Se ainda tiver ficheiros para depositar, peça uma nova ligação a {name}.",
+    "expired_title": "Esta ligação expirou",
+    "expired_text": "O prazo para depositar ficheiros terminou. Peça uma nova ligação a {name}.",
+    "expired_text_until": "Permitia depositar ficheiros até {date}. Peça uma nova ligação a {name}.",
+    "unknown_title": "Esta ligação já não é válida",
+    "unknown_text": "O pedido pode ter sido cancelado ou a ligação não foi copiada por inteiro. Peça uma nova ligação a {name}."
   }
 }

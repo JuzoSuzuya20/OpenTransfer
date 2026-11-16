@@ -1338,5 +1338,16 @@
     "password_required": "Enter the password of the request.",
     "invalid_password": "Wrong password.",
     "too_many_attempts": "Too many tries. Try again in a few minutes."
+  },
+  "link_error": {
+    "page_title": "Link no longer valid",
+    "someone": "the person who sent it to you",
+    "used_title": "This link has already been used",
+    "used_text": "It opens only once, and it has already been opened. If you still have files to drop, ask {name} for a new link.",
+    "expired_title": "This link has expired",
+    "expired_text": "The time to drop files is over. Ask {name} for a new link.",
+    "expired_text_until": "It let you drop files until {date}. Ask {name} for a new link.",
+    "unknown_title": "This link is no longer valid",
+    "unknown_text": "The request may have been cancelled, or the link was not copied in full. Ask {name} for a new link."
   }
 }

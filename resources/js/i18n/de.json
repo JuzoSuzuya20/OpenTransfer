@@ -1338,5 +1338,16 @@
     "password_required": "Geben Sie das Passwort der Anfrage ein.",
     "invalid_password": "Falsches Passwort.",
     "too_many_attempts": "Zu viele Versuche. Versuchen Sie es in ein paar Minuten erneut."
+  },
+  "link_error": {
+    "page_title": "Link nicht mehr gültig",
+    "someone": "die Person, die ihn Ihnen geschickt hat,",
+    "used_title": "Dieser Link wurde bereits verwendet",
+    "used_text": "Er lässt sich nur einmal öffnen und wurde bereits geöffnet. Wenn Sie noch Dateien ablegen müssen, bitten Sie {name} um einen neuen Link.",
+    "expired_title": "Dieser Link ist abgelaufen",
+    "expired_text": "Die Frist zum Ablegen von Dateien ist vorbei. Bitten Sie {name} um einen neuen Link.",
+    "expired_text_until": "Er erlaubte das Ablegen von Dateien bis zum {date}. Bitten Sie {name} um einen neuen Link.",
+    "unknown_title": "Dieser Link ist nicht mehr gültig",
+    "unknown_text": "Die Anfrage wurde vielleicht abgebrochen, oder der Link wurde nicht vollständig kopiert. Bitten Sie {name} um einen neuen Link."
   }
 }

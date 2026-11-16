@@ -32,6 +32,9 @@ const store = reactive({
   // The link of a request the member protected with a password: { token, from, avatar_seed,
   // expires_at } until the guest gives the password (RequestLock)
   lockedRequest: null,
+  // A link that no longer opens (a file request used, expired, cancelled): { reason, from,
+  // avatar_seed, expires_at }, for the page that says why (LinkError)
+  linkError: null,
 
   setUserId(userId) {
     this.userId = parseInt(userId)

@@ -219,42 +219,27 @@ class AuthController extends Controller
         try {
             $token = Crypt::decryptString($request->token);
         } catch (\Illuminate\Contracts\Encryption\DecryptException) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized'
-            ], 401);
+            return $this->deadRequestLink('request_unknown', 401);
         }
 
+        // The guest session the link holds. Once used, or past its time, it no longer opens: its
+        // claims still say which request it was (they came out of our own encryption, sealed with
+        // the key of the app), read only to tell why the link no longer works.
         $user = Auth::setToken($token)->user();
+        $guestId = $user?->id ?? ($this->claimsOf($token)['sub'] ?? null);
+        $invite = $guestId ? ReverseShareInvite::where('guest_user_id', $guestId)->first() : null;
 
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized'
-            ], 401);
-        }
-
-        $invite = ReverseShareInvite::where('guest_user_id', $user->id)->first();
-
+        // Cancelled by the member (the request and its guest account are gone), or never was
         if (!$invite) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invite not found'
-            ], 404);
-        }
-
-        if ($invite->isExpired()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invite expired'
-            ], 404);
+            return $this->deadRequestLink('request_unknown', 404);
         }
 
         if ($invite->isUsed()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invite already used'
-            ], 404);
+            return $this->deadRequestLink('request_used', 410, $invite);
+        }
+
+        if ($invite->isExpired() || !$user) {
+            return $this->deadRequestLink('request_expired', 410, $invite);
         }
 
         // A password the member set: the link alone opens nothing, and a wrong guess does not
@@ -274,10 +259,44 @@ class AuthController extends Controller
         return $this->respondWithToken($user);
     }
 
+    // Why a link of a file request no longer opens (the page the guest lands on says it), and
+    // whom to ask for another: the member, when the request is still known
+    private function deadRequestLink(string $code, int $status, ?ReverseShareInvite $invite = null): \Illuminate\Http\JsonResponse
+    {
+        $body = [
+            'status' => 'error',
+            'code' => $code,
+            'message' => 'This link no longer opens',
+        ];
+        if ($invite) {
+            $body['data'] = ['request' => [
+                'from' => $invite->user?->name,
+                'avatar_seed' => $invite->user?->avatar_seed,
+                'expires_at' => $invite->expires_at,
+            ]];
+        }
+
+        return response()->json($body, $status);
+    }
+
+    /** @return array<string, mixed> the claims of a JWT, unchecked (see acceptReverseShareInvite) */
+    private function claimsOf(string $jwt): array
+    {
+        $parts = explode('.', $jwt);
+        if (count($parts) !== 3) {
+            return [];
+        }
+        $json = base64_decode(strtr($parts[1], '-_', '+/'), true);
+        $claims = is_string($json) ? json_decode($json, true) : null;
+
+        return is_array($claims) ? $claims : [];
+    }
+
     private function refuseRequestPassword(ReverseShareInvite $invite, mixed $password): ?\Illuminate\Http\JsonResponse
     {
-        $locked = fn (string $message, int $status) => response()->json([
+        $locked = fn (string $message, int $status, string $code) => response()->json([
             'status' => 'error',
+            'code' => $code,
             'message' => $message,
             'data' => [
                 'request' => [
@@ -289,16 +308,16 @@ class AuthController extends Controller
         ], $status);
 
         if (!is_string($password) || $password === '') {
-            return $locked('Password required', 401);
+            return $locked('Password required', 401, 'request_password_required');
         }
 
         $key = 'request-password:' . $invite->id;
         if (RateLimiter::tooManyAttempts($key, 10)) {
-            return $locked('Too many attempts', 429);
+            return $locked('Too many attempts', 429, 'request_password_attempts');
         }
         if (!Hash::check($password, $invite->password)) {
             RateLimiter::hit($key, 300);
-            return $locked('Invalid password', 401);
+            return $locked('Invalid password', 401, 'request_password_invalid');
         }
 
         return null;

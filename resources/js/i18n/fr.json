@@ -1338,5 +1338,16 @@
     "password_required": "Saisissez le mot de passe de la demande.",
     "invalid_password": "Mot de passe incorrect.",
     "too_many_attempts": "Trop d'essais. Réessayez dans quelques minutes."
+  },
+  "link_error": {
+    "page_title": "Lien plus valable",
+    "someone": "la personne qui vous l'a envoyé",
+    "used_title": "Ce lien a déjà servi",
+    "used_text": "Il ne s'ouvre qu'une fois et il a déjà été ouvert. S'il vous reste des fichiers à déposer, demandez un nouveau lien à {name}.",
+    "expired_title": "Ce lien a expiré",
+    "expired_text": "Le délai pour déposer des fichiers est passé. Demandez un nouveau lien à {name}.",
+    "expired_text_until": "Il permettait de déposer des fichiers jusqu'au {date}. Demandez un nouveau lien à {name}.",
+    "unknown_title": "Ce lien n'est plus valable",
+    "unknown_text": "La demande a peut-être été annulée, ou le lien n'a pas été copié en entier. Demandez un nouveau lien à {name}."
   }
 }
