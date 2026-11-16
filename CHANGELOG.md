@@ -23,6 +23,11 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
   minutes). The password is kept hashed: asking once more for a protected request brings it back to
   the form, to type the password again
 
+### Security
+
+- Laravel 13.42.0: the output of Concurrency tasks could be forged (GHSA-63hm-g96r-2m2q, low;
+  OpenTransfer does not use Concurrency)
+
 ## [1.2.0] — 2026-11-13
 
 ### Added
