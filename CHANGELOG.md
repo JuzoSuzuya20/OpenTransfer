@@ -5,6 +5,24 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.3.0] — 2026-11-16
+
+### Changed
+
+- The guest of a file request gets a page like the download page: who asks, how many files, the
+  largest size, the time left, the message, then the drop zone. No menu and no access options: the
+  guest only drops files
+- The member who asks sets the rules: how long the files received stay online (within the
+  administration's limit; the default lifetime of a share otherwise), and an optional password.
+  A guest can no longer set a lifetime or a password on the files they drop
+
+### Added
+
+- A file request can be protected by a password, passed on apart from the link. The link alone no
+  longer opens it, a wrong password does not use it up, and guesses are slowed down (ten every five
+  minutes). The password is kept hashed: asking once more for a protected request brings it back to
+  the form, to type the password again
+
 ## [1.2.0] — 2026-11-13
 
 ### Added

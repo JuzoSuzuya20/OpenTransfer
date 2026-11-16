@@ -1172,7 +1172,7 @@
     "mode_label": "Wie anfragen",
     "for_whom": "Für wen",
     "for_whom_placeholder": "z. B. Akte Martin, Herr Durand",
-    "validity": "Gültig",
+    "validity": "Link gültig",
     "validity_days": "{count, plural, one {# Tag} other {# Tage}}",
     "create_link": "Link erstellen",
     "link_ready": "Link für {name}",
@@ -1308,6 +1308,9 @@
     "add_files_first": "Fügen Sie die abzulegenden Dateien hinzu",
     "protected_title": "Diese Anfrage ist geschützt",
     "protected_text": "Geben Sie das Passwort ein, das Ihnen die anfragende Person mitgeteilt hat.",
-    "open": "Anfrage öffnen"
+    "open": "Anfrage öffnen",
+    "password_required": "Geben Sie das Passwort der Anfrage ein.",
+    "invalid_password": "Falsches Passwort.",
+    "too_many_attempts": "Zu viele Versuche. Versuchen Sie es in ein paar Minuten erneut."
   }
 }

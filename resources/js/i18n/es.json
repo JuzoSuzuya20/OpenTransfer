@@ -1172,7 +1172,7 @@
     "mode_label": "Cómo pedir",
     "for_whom": "Para quién",
     "for_whom_placeholder": "Ej. Expediente Martin, Sr. Durand",
-    "validity": "Válido",
+    "validity": "Enlace válido",
     "validity_days": "{count, plural, one {# día} other {# días}}",
     "create_link": "Crear el enlace",
     "link_ready": "Enlace para {name}",
@@ -1308,6 +1308,9 @@
     "add_files_first": "Añada los archivos que desea depositar",
     "protected_title": "Esta solicitud está protegida",
     "protected_text": "Introduzca la contraseña que le ha facilitado la persona que le pide los archivos.",
-    "open": "Abrir la solicitud"
+    "open": "Abrir la solicitud",
+    "password_required": "Introduzca la contraseña de la solicitud.",
+    "invalid_password": "Contraseña incorrecta.",
+    "too_many_attempts": "Demasiados intentos. Vuelva a intentarlo dentro de unos minutos."
   }
 }

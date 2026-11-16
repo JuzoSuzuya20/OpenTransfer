@@ -25,15 +25,15 @@ const timeLeft = computed(() => {
 })
 
 const REFUSALS = {
-  'Invalid password': 'share.download.invalid_password',
-  'Too many attempts': 'share.download.too_many_attempts',
-  'Password required': 'share.download.password_required'
+  'Invalid password': 'drop.invalid_password',
+  'Too many attempts': 'drop.too_many_attempts',
+  'Password required': 'drop.password_required'
 }
 
 const open = async () => {
   if (opening.value) return
   if (password.value === '') {
-    error.value = t.value('share.download.password_required')
+    error.value = t.value('drop.password_required')
     return
   }
   opening.value = true

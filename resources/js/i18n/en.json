@@ -1172,7 +1172,7 @@
     "mode_label": "How to ask",
     "for_whom": "For whom",
     "for_whom_placeholder": "e.g. Martin file, Mr Durand",
-    "validity": "Valid for",
+    "validity": "Link valid for",
     "validity_days": "{count, plural, one {# day} other {# days}}",
     "create_link": "Create the link",
     "link_ready": "Link for {name}",
@@ -1308,6 +1308,9 @@
     "add_files_first": "Add the files to drop",
     "protected_title": "This request is protected",
     "protected_text": "Enter the password the person asking for the files gave you.",
-    "open": "Open the request"
+    "open": "Open the request",
+    "password_required": "Enter the password of the request.",
+    "invalid_password": "Wrong password.",
+    "too_many_attempts": "Too many tries. Try again in a few minutes."
   }
 }

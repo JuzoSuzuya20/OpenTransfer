@@ -1172,7 +1172,7 @@
     "mode_label": "Come chiedere",
     "for_whom": "Per chi",
     "for_whom_placeholder": "Es. Pratica Martin, Sig. Durand",
-    "validity": "Valido",
+    "validity": "Link valido",
     "validity_days": "{count, plural, one {# giorno} other {# giorni}}",
     "create_link": "Crea il link",
     "link_ready": "Link per {name}",
@@ -1308,6 +1308,9 @@
     "add_files_first": "Aggiungi i file da depositare",
     "protected_title": "Questa richiesta è protetta",
     "protected_text": "Inserisci la password che ti ha dato la persona che ti chiede i file.",
-    "open": "Apri la richiesta"
+    "open": "Apri la richiesta",
+    "password_required": "Inserisci la password della richiesta.",
+    "invalid_password": "Password errata.",
+    "too_many_attempts": "Troppi tentativi. Riprova tra qualche minuto."
   }
 }
