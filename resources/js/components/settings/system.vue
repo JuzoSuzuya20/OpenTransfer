@@ -403,7 +403,6 @@ const formatBackupDate = (dateString) => {
 }
 
 const saveSettings = async () => {
-  console.log('saving settings')
 
   if (!shareSettingsLookOk()) {
     return

@@ -222,20 +222,7 @@ watch(
   { immediate: true }
 )
 
-const confirmDialog = useConfirmDialog()
 const handleLogout = async () => {
-  if (
-    store.isGuest() &&
-    !(await confirmDialog.show({
-    title: t.value('dialog.title'),
-    message: t.value('auth.confirm_end_guest_session'),
-    okText: t.value('auth.end_guest_session'),
-    cancelText: t.value('dialog.cancel'),
-    tone: 'danger'
-  }))
-  ) {
-    return
-  }
   // Signed out on purpose: the next sign-in page shows the form once, even with a forced provider
   // (its session may still be open and would sign straight back in)
   try {

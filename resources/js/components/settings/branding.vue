@@ -152,7 +152,6 @@ const faviconPreview = computed(() => {
 })
 
 const saveSettings = async () => {
-  console.log('saving settings')
   saving.value = true
   try {
     // Upload logo if user selected a new file

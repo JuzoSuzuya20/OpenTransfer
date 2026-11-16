@@ -1,41 +1,18 @@
 {
-  "Account Created": "Account aangemaakt",
-  "Add Files": "Bestanden toevoegen",
-  "Add Folders": "Mappen toevoegen",
-  "Add Recipient": "Ontvanger Toevoegen",
-  "Email Verification": "E-mail verificatie",
-  "Message to share recipients (optional)": "Bericht om te delen naar ontvanger (OPTIONEEL)",
-  "No files added yet": "Nog geen bestanden toegevoegd",
-  "No recipients": "Geen ontvangers",
-  "Password Reset": "Wachtwoord opnieuw instellen",
   "Powered by": "Aangedreven door",
   "Processing uploaded files": "Verwerken van geüploade bestanden",
-  "Reverse Share": "Omgekeerd delen",
-  "Reverse Share Invite": "Bestandsverzoek",
-  "Share Created": "Share aangemaakt",
-  "Share Deleted Warning": "Share verwijderd",
-  "Share Deletion Warning": "Binnenkort verwijderd",
-  "Share Downloaded": "Share gedownload",
-  "Share Expired Warning": "Share verlopen",
-  "Share Expiry Warning": "Verloopt binnenkort",
   "Share Name": "Naam",
   "Share URL": "Gedeelde link",
-  "We'll provide you with a link instead": {
-    "": "Wij zullen jou een link sturen"
-  },
   "auth": {
     "account_disabled": "Dit account is uitgeschakeld.",
     "altcha_failed": "De robotcontrole is mislukt, probeer het opnieuw.",
     "back_to_login": "Terug naar aanmelden",
-    "confirm_end_guest_session": "Weet je zeker dat je deze sessie wilt beëindigen? Omdat je een gastgebruiker bent, kun je na het beëindigen van deze sessie geen extra bestanden meer uploaden.",
     "confirm_password": "Wachtwoord bevestigen",
     "create_account": "Account aanmaken",
     "create_account_description": "Vul je gegevens in om een account aan te maken. Je ontvangt een verificatiecode via e-mail.",
     "email": "E-mail",
     "email_not_verified": "Bevestig je e-mailadres voordat je je aanmeldt.",
     "email_verified_successfully": "E-mail geverifieerd! Je kunt nu inloggen.",
-    "end_guest_session": "Einde gastsessie",
-    "enter_6_digit_code": "6-cijferige code invoeren",
     "failed_to_accept_invite": "Deze uitnodigingscode is ongeldig. De code is mogelijk verlopen, al gebruikt of ingetrokken door de afzender.",
     "failed_to_resend_code": "Verificatiecode niet opnieuw verzonden",
     "failed_to_reset_password": "Wachtwoord niet opnieuw ingesteld",
@@ -43,14 +20,12 @@
     "forgot_password": "Wachtwoord vergeten",
     "forgot_password_create_password": "Wachtwoord aanmaken",
     "forgot_password_create_password_description": "Voer uw nieuw wachtwoord in. Beide wachtwoorden moeten overeenkomen",
-    "guest_warning": "Bestanden die je uploadt via het formulier aan de linkerkant worden direct gedeeld met de persoon die je heeft uitgenodigd.",
     "invalid_email_or_password": "E-mailadres of wachtwoord onjuist.",
     "invite_accepted": "Uitnodiging voor omgekeerd delen geaccepteerd. Je kunt nu bestanden uploaden.",
     "ip_not_allowed": "Aanmelden is niet toegestaan vanaf je netwerk.",
     "login": "Inloggen",
     "login_successful": "Succesvol ingelogd",
     "login_to_accept_invite": "Log in om deze uitnodiging voor omgekeerd delen te accepteren.",
-    "login_with": "Inloggen met",
     "logout": "Afmelden",
     "mfa": {
       "code": "Code",
@@ -104,7 +79,6 @@
     "verification_failed": "Verificatie mislukt",
     "verify_email": "E-mail controleren",
     "verifying": "Controleren...",
-    "welcome": "Welkom",
     "organisation_account": "Account van de organisatie",
     "local_account": "E-mail en wachtwoord",
     "forgot_password_question": "Wachtwoord vergeten?",
@@ -119,11 +93,7 @@
     }
   },
   "button": {
-    "reverse_share_invite": "Een verzoek tot omgekeerd delen maken",
-    "reverse_share_invite_send": "Aanvraag versturen",
-    "share": {
-      "password_protect": "Wachtwoordbeveiliging"
-    }
+    "reverse_share_invite_send": "Aanvraag versturen"
   },
   "commandPalette": {
     "category": {
@@ -140,7 +110,6 @@
     "files": "{value, plural, one {Dowload bestand} other {Download {value} bestanden}}"
   },
   "email": "E-mail",
-  "full_name": "Volledige naam",
   "guest": {
     "upload_success": "Uploaden gelukt!",
     "upload_success_message": "De persoon die deze bestanden heeft aangevraagd, ontvangt een e-mail met een downloadlink."
@@ -155,7 +124,6 @@
   "message": {
     "from": "Bericht van {name}"
   },
-  "processing_uploaded_files": "Verwerken van geüploade bestanden",
   "reverse_invite_send": {
     "error": "Kan uitnodiging voor omgekeerd delen niet verzenden",
     "success": "Uitnodiging voor omgekeerd delen verzonden!"
@@ -191,7 +159,6 @@
       "create_link": "Link",
       "email": "Mijn e-mailadres",
       "linked_accounts_description": "Koppel je account aan een externe provider om gemakkelijker in te loggen. Na de koppeling kun je direct inloggen door de knop van de provider te selecteren op het inlogscherm.",
-      "myProfile_description": "Werk je e-mailadres bij of verander je naam. Je kunt je wachtwoord wijzigen door op de knop \"Wijzig mijn wachtwoord\" te klikken en de aanwijzingen te volgen.",
       "name": "Mijn volledige naam",
       "unlink": "Ontkoppelen",
       "email_change": {
@@ -213,32 +180,15 @@
     },
     "allShares": {
       "allUsers": "Alle gebruikers",
-      "filterByUser": "Filter op gebruiker",
       "noShares": "Er zijn geen shares om te tonen",
       "owner": "Eigenaar"
     },
-    "authProvidersSavedSuccessfully": "Auth providers succesvol opgeslagen",
     "branding": {
-      "background_images": "Achtergrondafbeeldingen",
-      "background_images_description": "Upload aangepaste achtergrondafbeeldingen om de standaard Unsplash-afbeeldingen te vervangen. Afbeeldingen roteren willekeurig met het interval dat je instelt.",
-      "background_slideshow_speed": "Beeldwisselinterval",
-      "background_slideshow_speed_1_day": "Een dag",
-      "background_slideshow_speed_1_hour": "1 uur",
-      "background_slideshow_speed_2_hours": "2 Uur",
-      "background_slideshow_speed_3_minutes": "3 minuten",
-      "background_slideshow_speed_5_minutes": "5 minuten",
-      "background_slideshow_speed_description": "Wijzig hoe vaak de achtergrondafbeelding willekeurig verandert (dit heeft alleen effect als je meerdere achtergrondafbeeldingen hebt). Stel in op 0 om de diavoorstelling uit te schakelen en in plaats daarvan op elke nieuwe pagina een willekeurige afbeelding weer te geven.",
-      "background_slideshow_speed_off": "uitschakelen",
       "confirm": "Bevestigen a.u.b.",
-      "confirm_delete_theme": "Weet je zeker dat je het thema \"{name}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
       "confirm_reset_favicon": "Wil je echt de favicon resetten? Dit zal je favicon verwijderen en de standaard OpenTransfer favicon herstellen. Er is geen manier om je favicon te herstellen dus zorg ervoor dat je een back-up hebt voordat je verder gaat.",
       "confirm_reset_logo": "Wilt u echt het logo resetten? Dit zal je logo verwijderen en het standaard OpenTransfer-logo herstellen. Er is geen manier om je logo te herstellen, dus zorg ervoor dat je een back-up hebt voordat je verder gaat.",
       "delete": "Verwijder",
-      "delete_theme": "Thema verwijderen",
-      "delete_theme_description": "Verwijder het geselecteerde thema. Hierdoor wordt het verwijderd uit de lijst met thema's en kunt u het niet langer gebruiken. Het is niet mogelijk om het actieve thema of gebundelde thema's te verwijderen.",
       "download": "Downloaden",
-      "download_theme": "Thema downloaden",
-      "download_theme_description": "Download het geselecteerde thema als een JSON-bestand. Dit kan worden gebruikt om een nieuw thema te maken of een bestaand thema te wijzigen.",
       "errors": {
         "file_too_large": "favicon uploaden mislukt‍‍‍‍‍‍‍‍‍‍ - bestand moet 1MB of kleiner zijn."
       },
@@ -247,14 +197,7 @@
       "favicon_description": "Upload een aangepast favicon om het standaard OpenTransfer-pictogram in het browsertabblad te vervangen.",
       "favicon_reset_failed": "Gefaald om favicon opnieuw in te stellen",
       "favicon_reset_success": "Favicon met succes gereset",
-      "favicon_upload_failed": "favicon uploaden mislukt",
-      "favicon_uploaded": "Favicon geüpload",
       "in_pixels": "in pixels",
-      "in_seconds": "seconden",
-      "install_custom_theme": "Een aangepast thema installeren\n",
-      "install_custom_theme_description": "Installeer een aangepast thema vanuit een JSON-bestand.\n\nDit kan een thema zijn dat je zelf hebt aangepast of gemaakt, of een thema dat je hebt gedownload.",
-      "install_custom_theme_description_2": "Als u een thema downloadt van het web, zorg er dan voor dat u de bron vertrouwt en controleer het thema op kwaadaardige code voordat u het installeert.",
-      "install_theme": "Thema installeren",
       "logo": "Logo",
       "logo_and_favicon": "Logo & Favicon",
       "logo_description": "Geef je bedrijfslogo in PNG-formaat weer in de linkerbovenhoek. Stel de gewenste breedte in pixels in - de hoogte wordt automatisch aangepast om de beeldverhouding te behouden. Gebruik een bronafbeelding die minstens zo breed is als je schermbreedte om kwaliteit te garanderen.",
@@ -265,22 +208,12 @@
       "other_ui_settings": "Andere",
       "reset": "Reset",
       "reset_logo_to_default": "Zet logo terug naar standaard",
-      "select_theme": "Thema Selecteren",
-      "select_theme_description": "Kies uit een reeks kant-en-klare thema's of een thema dat je zelf hebt geïnstalleerd.",
       "settings_saved": "Branding instellingen succesvol opgeslagen",
       "show_powered_by": "Toon Aangedreven door OpenTransfer",
       "show_powered_by_description": "Toon of verberg de \"Aangedreven door OpenTransfer\" tekst onderaan de pagina. Deze tekst zorgt ervoor dat OpenTransfer ontdekt wordt door gebruikers en helpt ons te groeien, je kunt het echter verbergen als je dat wilt.\n",
       "theme": "Thema's",
-      "theme_delete_failed": "Thema niet verwijderd",
-      "theme_deleted_successfully": "Thema succesvol verwijderd",
-      "theme_description": "Kies uit een reeks kant-en-klare thema's of een thema dat je zelf hebt geïnstalleerd.",
-      "theme_file": "Themabestanden",
-      "theme_name": "Themanaam",
-      "upload_background": "Upload een achtergrondafbeelding of -video",
-      "upload_background_image": "Upload achtergrondafbeelding",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Mijn achtergronden gebruiken",
-      "use_my_backgrounds_description": "Gebruik de achtergronden die je hebt geüpload. Als dit vakje niet is aangevinkt, worden de achtergronden van Unsplash gebruikt.",
       "confirm_delete_favicon": "Het eigen favicon verwijderen? Het pictogram van OpenTransfer komt terug.",
       "sign_in_screen": "Inlogscherm",
       "login_background": "Achtergrondafbeelding",
@@ -323,7 +256,6 @@
       "about": "Informatie over uw OpenTransfer installatie",
       "allShares": "Shares van alle gebruikers bekijken en beheren",
       "branding": "Pas de UI van je OpenTransfer instantie aan en voeg je eigen branding toe.",
-      "cloudConnect": "Verbind je instantie met Erugo Cloud voor eenvoudige domeinroutering",
       "emailTemplates": "E-mailsjablonen beheren",
       "myProfile": "Beheer je profiel",
       "myShares": "Beheer je gedeelde links.",
@@ -332,8 +264,6 @@
       "users": "Beheer je gebruikers."
     },
     "emailTemplates": {
-      "accountCreated": "Account aangemaakt",
-      "accountCreatedDescription": "Wordt verstuurd naar nieuwe gebruikers wanneer een beheerder hun account aanmaakt. Bevat een link waarmee de gebruiker zijn wachtwoord kan instellen.",
       "baseTemplate": "Basis sjabloon",
       "baseTemplateDescription": "Bepaalt het basissjabloon waarvan alle andere sjablonen erven.",
       "error": "Kan geen e-mailsjablonen uploaden",
@@ -341,7 +271,6 @@
       "error_saving_fallback": "Fout bij het opslaan van fallbacktekst",
       "error_saving_templates": "Sjablonen kunnen niet worden opgeslagen",
       "no_changes": "Geen wijzigingen om op te slaan",
-      "passwordReset": "Wachtwoord opnieuw instellen",
       "requiredFields": "Verplichte velden",
       "sections": {
         "action_text": "Tekst actieknop",
@@ -367,7 +296,6 @@
       },
       "downloadLimit": {
         "description": "Je kunt de downloadlimiet voor elk aandeel instellen door op het getal aan de rechterkant te klikken en de nieuwe limiet in te voeren. Wis het vakje om de limiet te verwijderen.",
-        "description2": "Wijzigingen worden automatisch opgeslagen wanneer je buiten het vakje klikt.",
         "title": "Limiethulp downloaden"
       }
     },
@@ -386,17 +314,13 @@
     "settingsSavedSuccessfully": "Instellingen succesvol opgeslagen",
     "share": {
       "password": "Wachtwoord delen",
-      "password_confirm": "Wachtwoord gedeelde link bevestigen",
-      "password_protect_description": "Maak een wachtwoord aan voor je gedeelde link. Iedereen die dit bestand downloadt, heeft dit wachtwoord nodig om toegang te krijgen. Let op: Na het aanmaken wordt dit wachtwoord versleuteld en kunnen we het niet voor je achterhalen. Zorg ervoor dat je het op een veilige locatie opslaat.",
-      "remove_password": "Wachtwoord verwijderen"
+      "password_confirm": "Wachtwoord gedeelde link bevestigen"
     },
     "stats": {
       "downloads": {
         "all_time": "Downloads aller tijden",
-        "chart_title": "Downloads in de loop der tijd",
         "days_option": "{days} dagen",
         "downloads": "downloads",
-        "downloads_in_period": "Downloads ({days} dagen)",
         "time_period": "Periode:",
         "title": "Downloadactiviteit",
         "top_shares": "Meest gedownloade shares",
@@ -416,28 +340,6 @@
         "files": "bestanden",
         "title": "Verdeling per bestandstype"
       },
-      "help": {
-        "active_vs_expired_description": "Actieve shares zijn toegankelijk, terwijl verlopen shares in afwachting zijn van verwijdering op basis van je opruiminstellingen.",
-        "active_vs_expired_title": "Actief vs Verlopen",
-        "categories_description": "Bestanden zijn gegroepeerd op type: afbeeldingen, documenten, video's, audio, archieven, code en overige.",
-        "categories_title": "Categorieën",
-        "disk_usage_description": "Toont het totale gebruik van schijfruimte. Overweeg om oude shares op te ruimen als het gebruik hoog is.",
-        "disk_usage_title": "Schijfgebruik",
-        "downloads_description": "Volg de downloadactiviteit van alle shares over de gekozen periode.",
-        "downloads_title": "Activiteit downloaden",
-        "file_types_description": "Indeling van bestanden per categorie op alle shares.",
-        "file_types_title": "Bestandstype Distributie",
-        "guest_users_description": "Gebruikers die zijn aangemaakt via omgekeerde uitnodigingen voor delen.",
-        "guest_users_title": "Gastgebruikers",
-        "shares_description": "Overzicht van alle shares in het systeem, met hun huidige status.",
-        "shares_title": "Statistieken delen",
-        "storage_description": "Controleer het schijfgebruik van je server en de ruimte die shares innemen.",
-        "storage_title": "Overzicht opslag",
-        "unique_downloaders_description": "Aantal unieke IP-adressen die shares hebben gedownload.",
-        "unique_downloaders_title": "Unieke downloaders",
-        "users_description": "Overzicht van gebruikersaccounts en hun activiteitsniveaus.",
-        "users_title": "Gebruikersstatistieken"
-      },
       "loading": "Statistieken worden geladen...",
       "nav": {
         "downloads": "Downloads",
@@ -452,7 +354,6 @@
         "deleted": "Verwijderd",
         "expired": "Verlopen",
         "last_7_days": "Laatste 7 dagen",
-        "per_share": "per aandeel",
         "protected": "Beschermd",
         "title": "Statistieken delen",
         "total_files": "Bestanden in totaal",
@@ -463,7 +364,6 @@
         "disk_usage": "Schijfgebruik",
         "free": "gratis",
         "of": "van",
-        "of_disk": "van schijf",
         "share_storage": "Opslag delen",
         "title": "Overzicht opslag",
         "used": "tweedehands"
@@ -475,7 +375,6 @@
         "shares": "shares",
         "title": "Gebruikersstatistieken",
         "top_users": "Meest actieve gebruikers",
-        "total_users": "Totaal gebruikers",
         "with_shares": "Gebruikers met shares"
       },
       "figures": {
@@ -495,10 +394,6 @@
       "shareExtended": "Aandeel uitgebreid"
     },
     "system": {
-      "allow_chunked_uploads": "Opgedeelde bestands upload toestaan",
-      "allow_chunked_uploads_description": "De modus Chunked upload breekt bestanden op in kleinere segmenten die opeenvolgend worden overgedragen. Hoewel deze methode iets trager is dan directe upload voor kleinere bestanden, biedt ze meer stabiliteit en betrouwbaarheid bij de overdracht van grote bestanden. Chunked uploads ondersteunen het bijhouden van de voortgang en stellen gebruikers in staat om overdrachten handmatig te pauzeren en te hervatten, waardoor het ideaal is voor bestanden van meer dan 100MB of bij gebruik van onstabiele netwerkverbindingen.",
-      "allow_direct_uploads": "Directe uploadmodus toestaan",
-      "allow_direct_uploads_description": "De directe uploadmodus verzendt bestanden in één enkele, ononderbroken aanvraag. Hoewel deze methode de snelste overdrachtsnelheden biedt voor de meeste bestanden, kunnen extreem grote bestanden stabiliteitsproblemen of time-outs veroorzaken. Voor optimale prestaties met bestanden die groter zijn dan 100MB, kunnen chunked uploads een betere optie zijn.",
       "allow_reverse_shares": "Delen in omgekeerde richting toestaan",
       "allow_reverse_shares_description": "Een account kan iemand van buiten een link sturen om bestanden af te leveren.",
       "application_name": "Naam toepassing",
@@ -506,21 +401,13 @@
       "application_url": "URL toepassing",
       "application_url_description": "Het publieke adres van de instantie: de links in de e-mails beginnen ermee.",
       "auth": "Registratie",
-      "auth_provider_allow_registration": "Zelfregistratie toestaan",
-      "auth_provider_allow_registration_description": "Maakt automatisch lokale accounts aan voor gebruikers die zich aanmelden via deze provider. Alleen inschakelen voor providers die beperkt zijn tot je organisatie, niet voor openbare providers zoals onbeperkte Google of Microsoft.",
       "auth_provider_config_base_url": "Basis URL",
       "auth_provider_config_client_id": "Klant-ID",
       "auth_provider_config_client_secret": "Geheim van de klant",
       "auth_provider_config_tenant": "Huurder ID",
-      "auth_provider_enabled": "inschakelen",
-      "auth_provider_name": "Naam aanbieder",
-      "auth_provider_type": "Type aanbieder",
       "auth_providers": "Auth providers",
-      "auth_providers_description": "Configureer de auth providers waarmee je wilt dat je gebruikers zich kunnen authenticeren.",
-      "auth_providers_description_localhost": "Externe authenticatieconfiguratie is niet beschikbaar op localhost. OAuth providers hebben een volledig gekwalificeerde domeinnaam (FQDN) nodig om goed te functioneren. Ga naar OpenTransfer via een geregistreerd domein om deze instellingen te configureren.",
       "backups": {
         "actions": "Acties",
-        "auto_backup": "Automatische back-ups",
         "auto_backup_description": "Je kunt er ook zelf een maken of er een downloaden.",
         "create_backup": "Back-up maken",
         "create_failed": "Geen back-up gemaakt",
@@ -543,20 +430,13 @@
         "title": "Back-ups van databases"
       },
       "callback_url": "Callback URL",
-      "callback_url_description": "Gebruik de callback URL in de configuratie van je identity provider.",
-      "chunked": "Opgedeeld",
-      "chunked_uploads_disabled_but_default": "U hebt de standaard uploadmodus ingesteld op gebundeld, maar gebundelde uploads zijn uitgeschakeld!",
       "clean_files_after": "Bestanden opschonen na",
       "clean_files_after_description": "De bestanden van een verlopen share worden na deze termijn verwijderd.",
       "days": "Dagen",
       "default_expiry_time": "Standaard verlooptijd",
       "default_language": "Standaard Taal",
       "default_language_description": "De taal van de interface en de e-mails voor wie er geen gekozen heeft.",
-      "default_upload_mode": "Standaard uploadmodus",
-      "default_upload_mode_description": "Stel in welke modus standaard moet worden geselecteerd. Gebruikers kunnen dit wijzigen bij het aanmaken van een share als je meer dan één methode hebt ingeschakeld.",
       "delete_auth_provider": "Deze provider verwijderen",
-      "direct": "Direct",
-      "direct_uploads_disabled_but_default": "U hebt de standaard uploadmodus ingesteld op direct, maar direct uploaden is uitgeschakeld!",
       "disabled": "Uitgeschakeld",
       "emails": "Meldingen",
       "enable_share_deleted_emails": "Delen van verwijderde links e-mails inschakelen",
@@ -588,8 +468,6 @@
       "pattern_token_lowercase": "Kleine letter (a-z)",
       "pattern_token_range": "Karakterbereik/klasse",
       "pattern_token_uppercase": "Hoofdletter (A-Z)",
-      "provider_trust_warning": "Waarschuwing: Auth Provider Vertrouwen",
-      "provider_trust_warning_description": "Zorg ervoor dat je alleen auth providers configureert en inschakelt die je vertrouwt. Authenticatieproviders hebben verhoogde toegangsrechten tot je applicatie en gebruikersgegevens. Het toevoegen van niet-vertrouwde of gecompromitteerde providers kan leiden tot onbevoegde toegang, gegevenslekken of accountovername.",
       "reverse_shares": "Bestandsverzoeken",
       "security": {
         "add_your_ip": "Toevoegen aan de lijst",
@@ -604,13 +482,11 @@
         "encryption_key_absent": "Nog geen sleutel. Maak er een met: docker exec CONTAINERNAAM ot-artisan generate-storage-key, bewaar een kopie ver van deze server en stel hem in als STORAGE_ENCRYPTION_KEY.",
         "encryption_misconfigured": "De sleutel ontbreekt of is ongeldig: versleutelde bestanden kunnen niet worden gedownload en nieuwe shares worden onversleuteld opgeslagen. Stel STORAGE_ENCRYPTION_KEY opnieuw in.",
         "invalid_entries": "Ongeldige items in de lijst: {entries}",
-        "ip_allowlist": "Aanmelden per netwerk beperken",
         "ip_allowlist_description": "Inloggen en sessies alleen vanaf deze netwerken, SSO inbegrepen. Sharelinks en gasten van bestandsverzoeken blijven overal open.",
         "ip_allowlist_enabled": "Aanmelden alleen toestaan vanaf de onderstaande netwerken",
         "ip_allowlist_entries": "Toegestane adressen en bereiken",
         "ip_allowlist_entries_help": "Eén adres of bereik per regel, bijvoorbeeld 203.0.113.10 of 10.0.0.0/8. Na #: een opmerking.",
         "lockout_error": "Deze lijst zou je buitensluiten: je adres staat er niet in ({ip}).",
-        "mfa_policy": "Regel voor tweestapsverificatie",
         "mfa_policy_admins": "Beheerders",
         "mfa_policy_everyone": "Alle gebruikers",
         "mfa_policy_help": "Wie geen tweede factor heeft, stelt er een in bij de volgende login met wachtwoord; de huidige sessie loopt door. SSO-accounts hangen af van hun identiteitsprovider.",
@@ -634,40 +510,22 @@
       "self_registration_allowed_domains_placeholder": "voorbeeld.com, bedrijf.org",
       "self_registration_description": "Op het inlogscherm verschijnt een link ‘Account maken’; het adres wordt per e-mail gecontroleerd.",
       "self_registration_enabled": "Zelfregistratie inschakelen",
-      "share_deleted_emails": "\"E-mail\" Aandeel verwijderd",
       "share_deleted_emails_description": "Een bevestiging zodra de bestanden verwijderd zijn.",
-      "share_deletion_warning_emails": "\"Waarschuwingsmails \"Delen verwijderen",
       "share_deletion_warning_emails_description": "Een laatste waarschuwing voordat de bestanden worden verwijderd.",
-      "share_downloaded_emails": "\"E-mails \"Gedownload delen",
       "share_downloaded_emails_description": "De eigenaar krijgt een e-mail bij de eerste download.",
-      "share_expired_warning_emails": "\"Waarschuwingsmails \"Delen verlopen",
       "share_expired_warning_emails_description": "Een e-mail wanneer de share niet meer te openen is.",
-      "share_expiry_warning_emails": "Waarschuwingsmails “share verloopt”",
       "share_expiry_warning_emails_description": "Een herinnering voor de vervaldatum, om te verlengen als het moet.",
       "share_url_generation": "URL delen genereren",
       "share_url_mode": "Modus URL genereren",
       "share_url_mode_description": "Haiku: woorden die makkelijk voor te lezen zijn (herfst-bries-maan). Patroon: een eigen formaat.",
       "share_url_mode_haiku": "Klassieke haiku-stijl",
       "share_url_mode_pattern": "Patroon",
-      "share_url_mode_random": "Willekeurige snaar",
-      "share_url_mode_shortcode": "Verkorte code",
-      "share_url_mode_uuid": "UUID",
       "share_url_pattern": "Patroon",
       "share_url_pattern_description": "Definieer een patroon met behulp van de OpenTransfer Pattern Syntax. Gebruik speciale tokens voor willekeurige tekens of neem letterlijke tekens op voor voorvoegsels en scheidingstekens.",
       "share_url_pattern_placeholder": "bijv. ES-####-AAA of [A-Z][0-9]***",
       "share_url_pattern_preview": "Voorbeeld",
       "share_url_pattern_syntax": "Patroon Syntax",
-      "share_url_prefix": "URL voorvoegsel",
-      "share_url_prefix_description": "Optioneel voorvoegsel toegevoegd aan alle gedeelde URL's voor branding (bijv. 'acme' produceert 'acme-autumn-breeze'). Laat leeg voor geen voorvoegsel.",
-      "share_url_prefix_placeholder": "sh:",
       "share_url_preset": "Vooraf ingesteld",
-      "share_url_random_characters": "Toegestane tekens",
-      "share_url_random_length": "Willekeurige tekenreekslengte",
-      "share_url_random_lowercase": "Kleine letters a-z",
-      "share_url_random_numbers": "nummers 0-9",
-      "share_url_random_special": "Speciale tekens",
-      "share_url_random_uppercase": "Hoofdletters A-Z",
-      "share_url_shortcode_length": "Lengte korte code",
       "shares": "Gedeelde Bestanden",
       "show_deleted_shares": "Verwijderde shares tonen",
       "show_language_selector": "Taalkeuze tonen",
@@ -688,8 +546,6 @@
       "smtp_sender_name_description": "De naam van de afzender in de inbox.",
       "smtp_username": "SMTP Gebruikersnaam",
       "smtp_username_description": "Vaak het adres van het verzendaccount.",
-      "upload_modes": "Upload opties",
-      "your_auth_providers": "Uw autorisatoren",
       "delete_auth_provider_confirmation": "Deze identiteitsprovider verwijderen? De instellingen gaan verloren en niemand kan er nog mee inloggen.",
       "pattern_preset": {
         "short": "Kort (8 tekens)",
@@ -701,7 +557,6 @@
       "share_url_pattern_strong": "Ongeveer {bits} bits toeval: genoeg om niet geraden te worden.",
       "share_url_pattern_weak": "Ongeveer {bits} bits toeval: te kort, links zouden geraden kunnen worden. Er zijn er minstens {min} nodig (8 tekens *)."
     },
-    "system_auth_provider_info_link": "Over {name}",
     "table": {
       "actions": "Acties",
       "dates": "Datums",
@@ -718,10 +573,6 @@
       "manage": "Beheer",
       "myProfile": "Mijn profiel",
       "myShares": "Mijn Gedeelde Links",
-      "reverse_invite": "Aanvraag omgekeerd delen aanmaken",
-      "share": {
-        "password_protect": "Gedeelde link beveiligen met een wachtwoord"
-      },
       "stats": "Systeemgegevens",
       "system": "Systeem",
       "users": "Gebruikers",
@@ -767,8 +618,6 @@
       "scan_qr": "Scan deze QR-code met je authenticator-app.",
       "set_up_app": "Authenticator-app instellen",
       "setup_expired": "Deze instelling is verlopen, begin opnieuw.",
-      "status_off": "Tweestapsverificatie staat uit: aanmelden vraagt alleen je wachtwoord.",
-      "status_on": "Tweestapsverificatie staat aan voor je account.",
       "title": "Tweestapsverificatie",
       "too_many_attempts": "Te veel mislukte pogingen. Wacht 15 minuten en probeer het opnieuw.",
       "totp_active": "Aanmelden met je wachtwoord vraagt ook een code uit je app.",
@@ -787,9 +636,7 @@
       "add": "Toevoegen gebruiker",
       "add_user_description": "We sturen een e-mail naar de gebruiker met een link om het&nbsp;wachtwoord in te stellen.",
       "add_user_self_registration_tip_off": "Zelfregistratie is momenteel uitgeschakeld voor e-mailverificatie. Schakel dit in om gebruikers hun eigen accounts te laten maken in plaats van ze handmatig toe te voegen.",
-      "add_user_self_registration_tip_off_short": "Zelfregistratie is uitgeschakeld. Klik hier om te beheren.",
       "add_user_self_registration_tip_on": "Zelfregistratie is ingeschakeld. Gebruikers kunnen hun eigen accounts aanmaken.",
-      "add_user_self_registration_tip_on_short": "Zelfregistratie is ingeschakeld. Klik hier om te beheren.",
       "admin": "Admin",
       "admin_help_text": "Maak van de gebruiker een beheerder.",
       "admin_help_text_2": "De gebruiker heeft dezelfde rechten als jij.",
@@ -810,7 +657,6 @@
       "force_reset_password": "Wachtwoord opnieuw instellen",
       "force_reset_password_success": "Het wachtwoord van de gebruiker is opnieuw ingesteld!",
       "id": "ID",
-      "leave_blank_to_keep_same_password": "Laat leeg om hetzelfde wachtwoord te behouden.",
       "link_provider_confirm": "Ben je zeker voor je account te linken aan deze provider?",
       "linked": "Gekoppeld account",
       "must_change_password": "Gebruiker moet wachtwoord wijzigen",
@@ -832,9 +678,7 @@
       "reset_two_factor_failed": "De tweede factor kon niet worden verwijderd.",
       "reset_two_factor_success": "Tweede factor verwijderd.",
       "save_changes": "Wijzigingen opslaan",
-      "send_invite": "Aanvraag versturen",
       "unlink_provider_confirm": "Echt je account loskoppelen van deze provider?",
-      "update_password": "Wachtwoord bijwerken",
       "user": "Gebruiker",
       "user_created_successfully": "Gebruiker succesvol aangemaakt",
       "user_deleted_successfully": "Gebruiker is succesvol verwijderd",
@@ -876,7 +720,6 @@
   },
   "share": {
     "button": {
-      "expireNow": "Nu verlopen",
       "extend": "Verleng"
     },
     "contains": {
@@ -902,21 +745,13 @@
       "count": "{value, plural, one {# bestand} other {# bestanden}}",
       "including": "inclusief:"
     },
-    "not_found": "Het aandeel dat u zoekt is niet gevonden. Mogelijk moet u inloggen om het te zien.",
-    "passwordNotProtected": "Open",
-    "passwordProtected": "Wachtwoord beveiligd"
+    "not_found": "Het aandeel dat u zoekt is niet gevonden. Mogelijk moet u inloggen om het te zien."
   },
   "total_size": "Totale grootte",
   "upload": {
-    "files": "{value, plural, one {# bestand uploaden} other {# bestanden uploaden}}",
-    "upload_mode_not_supported": "Er is geen geldige uploadmodus geselecteerd! We weten niet zeker wat we moeten voorstellen omdat dit niet mogelijk zou moeten zijn."
+    "files": "{value, plural, one {# bestand uploaden} other {# bestanden uploaden}}"
   },
   "uploader": {
-    "current_mode": {
-      "chunked": "Modus voor gebundeld laden",
-      "direct": "Directe uploadmodus"
-    },
-    "expiry_label": "Aandeel vervalt in {value} {unit} (verandering)",
     "expiry_max_value": "Max: {value}",
     "expiry_too_long": "De vervaltijd die je hebt opgegeven overschrijdt de maximumlimiet. We hebben het automatisch aangepast naar de langst toegestane periode.",
     "expiry_unit": {
@@ -925,7 +760,6 @@
       "weeks": "Week(en)",
       "years": "Jaar/jaren"
     },
-    "guest_share_created": "Hartelijk dank! Je bestanden zijn succesvol verzonden. Over enkele ogenblikken wordt u uitgelogd.",
     "interrupted_upload": {
       "description": "Het lijkt erop dat je een upload aan de gang had die werd onderbroken.",
       "files": "Bestanden",
@@ -939,28 +773,17 @@
       "title": "Onderbroken upload gedetecteerd",
       "total_size": "Totale grootte"
     },
-    "password_confirmation_required": "Wachtwoordbevestiging vereist",
-    "password_mismatch": "Wachtwoorden komen niet overeen",
     "password_required": "Wachtwoord is nodig om delen te beveiligen",
     "time_remaining_suffix": "s",
     "time_remaining_text": "overgebleven",
-    "upload_mode_swapped": "Uploadmodus gewijzigd in {value}",
     "access_title": "Toegang",
-    "drop_hint": "Sleep je bestanden hierheen, of klik om ze te kiezen",
-    "expiry_title": "Verloopt na",
     "files_title": "Te verzenden bestanden",
     "password_set": "Beveiligd met een wachtwoord",
-    "recipients_title": "Ontvangers",
     "too_big": "Deze bestanden zijn {size}: een share mag hoogstens {max} bevatten.",
     "upload_failed": "Het uploaden is mislukt: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {# bestand uploaden} other {# bestanden uploaden}}"
-  },
-  "warnings": {
-    "how_to_fix": "Hoe repareren",
-    "tusd_help_title": "Uploaddienst niet beschikbaar",
-    "tusd_unavailable": "Uploaddienst niet beschikbaar. De tusd-service wordt niet uitgevoerd. Het uploaden van bestanden werkt niet totdat dit is opgelost."
   },
   "nav": {
     "administration": "Beheer",
@@ -1038,13 +861,8 @@
     "stats": {
       "active": "Actieve shares",
       "ending": "{count, plural, one {# verloopt binnen 24 u} other {# verlopen binnen 24 u}}",
-      "none_ending": "geen enkele verloopt binnen 24 u",
       "online": "Online volume",
-      "online_sub": "in je actieve shares",
-      "downloads": "Downloads",
-      "never_opened": "{count, plural, one {# share nooit geopend} other {# shares nooit geopend}}",
-      "all_opened": "alle zijn geopend",
-      "no_share": "geen share online"
+      "downloads": "Downloads"
     },
     "drop_title": "Sleep bestanden of een map hierheen",
     "drop_sub": "{size} max. per share · de mapstructuur blijft behouden",
@@ -1312,7 +1130,6 @@
     "decrease": "Verlagen",
     "increase": "Verhogen"
   },
-  "Email Change": "Adreswijziging",
   "flash": {
     "account_not_found": "Er is geen account aan deze identiteit gekoppeld. Koppel het via je profiel of vraag een beheerder.",
     "account_exists": "Een account gebruikt dit adres al. Meld je daar aan en koppel deze provider via je profiel.",

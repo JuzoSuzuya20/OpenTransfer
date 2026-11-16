@@ -1,51 +1,27 @@
 {
-  "Account Created": "Conta criada",
-  "Add Files": "Adicionar Ficheiros",
-  "Add Folders": "Adicionar Pastas",
-  "Add Recipient": "Adicionar Destinatário",
-  "Email Verification": "Verificação de correio eletrónico",
-  "Message to share recipients (optional)": "Mensagem para partilhar destinatários (opcional)",
-  "No files added yet": "Ainda não tem ficheiros adicionados",
-  "No recipients": "Sem destinatários",
-  "Password Reset": "Redefinição da palavra-passe",
   "Powered by": "Powered by",
   "Processing uploaded files": "Processando os ficheiros carregados",
-  "Reverse Share": "Pedir Transferência",
-  "Reverse Share Invite": "Pedido de ficheiros",
-  "Share Created": "Partilha criada",
-  "Share Deleted Warning": "Partilha eliminada",
-  "Share Deletion Warning": "Eliminação em breve",
-  "Share Downloaded": "Partilha transferida",
-  "Share Expired Warning": "Partilha expirada",
-  "Share Expiry Warning": "Expiração em breve",
   "Share Name": "Nome de partilha",
   "Share URL": "Endereço de partilha",
-  "We'll provide you with a link instead": {
-    "": "Se não tiver e-mail providenciaremos um endereço"
-  },
   "auth": {
     "account_disabled": "Esta conta está desativada.",
     "altcha_failed": "A verificação anti-robô falhou, tente novamente.",
     "back_to_login": "Voltar à autenticação",
-    "confirm_end_guest_session": "Tem a certeza de que pretende terminar esta sessão? Sendo um utilizador convidado, não poderá carregar ficheiros adicionais depois de terminar esta sessão.",
     "confirm_password": "Confirme a palavra-passe",
     "email": "E-mail",
     "email_not_verified": "Confirme o seu endereço de e-mail antes de iniciar sessão.",
-    "end_guest_session": "Terminar sessão de convidado",
     "failed_to_accept_invite": "Este código de convite não é válido. Pode ter expirado, já ter sido utilizado ou ter sido revogado pelo remetente.",
     "failed_to_reset_password": "Falha ao repor a palavra passe",
     "failed_to_send_password_reset_email": "Falha ao enviar o e-mail para repor a palavra passe",
     "forgot_password": "Esqueci-me da palavra passe",
     "forgot_password_create_password": "Criar palavra-passe",
     "forgot_password_create_password_description": "Introduza a sua nova palavra-passe. Tanto a palavra-passe como a confirmação da palavra-passe têm de corresponder.",
-    "guest_warning": "Os ficheiros que carregar utilizando o formulário do lado esquerdo serão partilhados diretamente com a pessoa que enviou o convite.",
     "invalid_email_or_password": "Email ou palavra-passe incorretos.",
     "invite_accepted": "Convite para partilha aceite. Já pode carregar ficheiros para partilhar.",
     "ip_not_allowed": "O início de sessão não é permitido a partir da sua rede.",
     "login": "Iniciar Sessão",
     "login_successful": "Autenticação bem sucedida",
     "login_to_accept_invite": "Inicie sessão para aceitar este convite de partilha inversa.",
-    "login_with": "Iniciar sessão com",
     "logout": "Terminar Sessão",
     "mfa": {
       "code": "Código",
@@ -83,7 +59,6 @@
     "save_new_password": "Guardar a nova palavra-passe",
     "sign_in_with_passkey": "Iniciar sessão com uma chave de acesso",
     "too_many_login_attempts": "Demasiadas tentativas falhadas. Aguarde alguns minutos e tente novamente.",
-    "welcome": "Bem-vindo",
     "organisation_account": "Conta da organização",
     "local_account": "E-mail e palavra-passe",
     "forgot_password_question": "Esqueceu-se da palavra-passe?",
@@ -92,7 +67,6 @@
     "create_account": "Criar conta",
     "create_account_description": "Preencha os seus dados para criar uma conta. Receberá um código de verificação por e-mail.",
     "email_verified_successfully": "E-mail verificado com sucesso! Já pode iniciar sessão.",
-    "enter_6_digit_code": "Introduza o código de 6 dígitos",
     "failed_to_resend_code": "Não foi possível reenviar o código de verificação",
     "name": "Nome completo",
     "no_account": "Não tem conta?",
@@ -119,11 +93,7 @@
     }
   },
   "button": {
-    "reverse_share_invite": "Enviar um pedido de partilha",
-    "reverse_share_invite_send": "Enviar pedido",
-    "share": {
-      "password_protect": "Proteger com palavra-passe"
-    }
+    "reverse_share_invite_send": "Enviar pedido"
   },
   "commandPalette": {
     "category": {
@@ -140,7 +110,6 @@
     "files": "{value, plural, one {Descarregar # ficheiro} other {Descarregar {value} ficheiros} }"
   },
   "email": "E-mail",
-  "full_name": "Nome Completo",
   "guest": {
     "upload_success": "Carregamento bem sucedido!",
     "upload_success_message": "A pessoa que solicitou estes ficheiros receberá um e-mail com uma ligação para descarregar os mesmos."
@@ -155,7 +124,6 @@
   "message": {
     "from": "Mensagem de {name}"
   },
-  "processing_uploaded_files": "Processando os ficheiros carregados",
   "reverse_invite_send": {
     "error": "Não é possível enviar convite para partilha inversa",
     "success": "Convite para partilha enviado!"
@@ -191,7 +159,6 @@
       "create_link": "Associar",
       "email": "O meu endereço de e-mail",
       "linked_accounts_description": "Associe a sua conta a um fornecedor externo para facilitar o início de sessão. Após a ligação, pode iniciar sessão diretamente selecionando o botão do fornecedor no ecrã de início de sessão.",
-      "myProfile_description": "Atualize o seu endereço de e-mail ou altere o seu nome. Pode alterar a sua palavra-passe clicando no botão \"Alterar a minha palavra-passe\" e seguindo as instruções.",
       "name": "O meu nome completo",
       "unlink": "Desassociar",
       "email_change": {
@@ -213,32 +180,15 @@
     },
     "allShares": {
       "allUsers": "Todos os utilizadores",
-      "filterByUser": "Filtrar por utilizador",
       "noShares": "Não há partilhas para mostrar",
       "owner": "Proprietário"
     },
-    "authProvidersSavedSuccessfully": "Fornecedores de autenticação alterados com sucesso",
     "branding": {
-      "background_images": "Imagens de Fundo",
-      "background_images_description": "Transferir imagens de fundo para personalizar e substituir as de Unplash. As imagens alternam aleatoriamente a cada 3 minutos para criar uma imagem de marca dinâmica.",
-      "background_slideshow_speed": "Intervalo de alternação de imagem",
-      "background_slideshow_speed_1_day": "Um dia",
-      "background_slideshow_speed_1_hour": "1 hora",
-      "background_slideshow_speed_2_hours": "2 horas",
-      "background_slideshow_speed_3_minutes": "3 Minutos",
-      "background_slideshow_speed_5_minutes": "5 minutos",
-      "background_slideshow_speed_description": "Altera a frequência com que a imagem de fundo se alterna aleatoriamente (isto só tem efeito se tiver várias imagens de fundo). Defina como 0 para desativar a alternação e apenas mostrar uma imagem nova após uma atualização de página.",
-      "background_slideshow_speed_off": "Desativar",
       "confirm": "Confirmar",
-      "confirm_delete_theme": "Tem a certeza de que pretende apagar o tema \"{name}\"? Isto não pode ser anulado.",
       "confirm_reset_favicon": "Deseja mesmo repor o favicon? Esta ação elimina o seu favicon e repõe o favicon predefinido do OpenTransfer. Não há forma de recuperar o seu favicon, por isso certifique-se de que tem uma cópia de segurança do mesmo antes de continuar.",
       "confirm_reset_logo": "Deseja mesmo repor o logótipo? Esta ação elimina o seu logótipo e repõe o logótipo OpenTransfer predefinido. Não há forma de recuperar o logótipo, por isso certifique-se de que tem uma cópia de segurança do mesmo antes de continuar.",
       "delete": "Apagar",
-      "delete_theme": "Apagar o Tema",
-      "delete_theme_description": "Apagar o tema selecionado. Isto vai removê-lo da lista de temas e não o poderá utilizar novamente. Não é possível apagar o tema atual ou grupos de temas.",
       "download": "Descarregar",
-      "download_theme": "Descarregar Tema",
-      "download_theme_description": "Descarregue o tema selecionado como ficheiro JSON. Este pode ser usado para criar um novo tema ou modificar o existente.",
       "errors": {
         "file_too_large": "Falha ao carregar o favicon‍‍‍‍‍‍‍‍‍‍‍‍ - o arquivo deve ter 1 MB ou menos."
       },
@@ -247,14 +197,7 @@
       "favicon_description": "Carregue um favicon personalizado para substituir o ícone OpenTransfer predefinido no separador do browser.",
       "favicon_reset_failed": "Falha ao repor o favicon",
       "favicon_reset_success": "Redefinição do favicon com êxito",
-      "favicon_upload_failed": "O carregamento do favicon falhou",
-      "favicon_uploaded": "Favicon carregado",
       "in_pixels": "em pixels",
-      "in_seconds": "segundos",
-      "install_custom_theme": "Instalar um Tema Personalizado",
-      "install_custom_theme_description": "Instalar um tema personalizado a partir de um ficheiro JSON.\n\nEste pode ser um tema que tenha você modificado, criado ou descarregado.",
-      "install_custom_theme_description_2": "Se descarregar um tema da internet, por favor certifique-se que confia na fonte e que verificou que não tem código malicioso no mesmo antes de o instalar.",
-      "install_theme": "Instalar Tema",
       "logo": "Logotipo",
       "logo_and_favicon": "Logotipo",
       "logo_description": "Apresente o seu logo de empresa em formato PNG no canto superior-esquerdo. Indique a largura em pixels - a altura ajustará automaticamente para manter o aspecto. Utilize uma imagem pelo menos tão larga quanto o seu monitor para garantir a qualidade.",
@@ -265,22 +208,12 @@
       "other_ui_settings": "Outras",
       "reset": "Reiniciar",
       "reset_logo_to_default": "Repor o logótipo para a predefinição",
-      "select_theme": "Escolha o Tema",
-      "select_theme_description": "Escolha entre uma variedade de temas existentes ou um que tenha instalado.",
       "settings_saved": "Definições de marca guardadas com sucesso",
       "show_powered_by": "Apresentar Powered by OpenTransfer",
       "show_powered_by_description": "Mostrar ou esconder a mensagem \"Powered by OpenTransfer\" ao fundo da página. Este texto permite que a OpenTransfer seja descoberta por outros utilizadores e ajudará-nos a crescer, no entanto  poderá esconder se assim desejar.",
       "theme": "Temas",
-      "theme_delete_failed": "Falha ao eliminar o tema",
-      "theme_deleted_successfully": "Tema eliminado com êxito",
-      "theme_description": "Escolha entre uma variedade de temas existentes ou um que tenha instalado.",
-      "theme_file": "Ficheiro de Tema",
-      "theme_name": "Nome de Tema",
-      "upload_background": "Carregar imagem ou vídeo de fundo",
-      "upload_background_image": "Transferir Imagem de Fundo",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Usar as Minhas Imagens de Fundo",
-      "use_my_backgrounds_description": "Usar as imagens de fundo que transferiu. Se não for selecionado, serão utilizadas as imagens de fundo de Unsplash.",
       "confirm_delete_favicon": "Eliminar o favicon personalizado? Volta o ícone do OpenTransfer.",
       "sign_in_screen": "Ecrã de início de sessão",
       "login_background": "Imagem de fundo",
@@ -323,7 +256,6 @@
       "about": "Informações sobre a sua instalação OpenTransfer",
       "allShares": "Ver e gerir as partilhas de todos os utilizadores",
       "branding": "Personalizar a interface de utilizador da OpenTransfer e adicionar a sua marca.",
-      "cloudConnect": "Ligue a sua instância ao Erugo Cloud para um fácil encaminhamento de domínios",
       "emailTemplates": "Gerir modelos de correio eletrónico",
       "myProfile": "Gerir o seu perfil.",
       "myShares": "Gerir as suas Partilhas",
@@ -332,8 +264,6 @@
       "users": "Gerir os seus utilizadores."
     },
     "emailTemplates": {
-      "accountCreated": "Conta criada",
-      "accountCreatedDescription": "Enviado aos novos utilizadores quando um administrador cria a sua conta. Contém uma ligação que permite ao utilizador definir a sua palavra-passe.",
       "baseTemplate": "Modelo de base",
       "baseTemplateDescription": "Controla o modelo de base a partir do qual todos os outros modelos são herdados.",
       "error": "Não é possível carregar modelos de correio eletrónico",
@@ -341,7 +271,6 @@
       "error_saving_fallback": "Falha ao guardar o texto de recurso",
       "error_saving_templates": "Não é possível guardar modelos",
       "no_changes": "Não há alterações a guardar",
-      "passwordReset": "Redefinição da palavra-passe",
       "requiredFields": "Campos obrigatórios",
       "sections": {
         "action_text": "Texto do botão de ação",
@@ -367,7 +296,6 @@
       },
       "downloadLimit": {
         "description": "Pode definir o limite de descarregamentos para qualquer partilha ao clicar no número do lado direito e inserindo o novo limite. Deixe a caixa vazia para remover o limite.",
-        "description2": "As alterações serão guardadas automaticamente quando clicar fora da caixa.",
         "title": "Ajuda sobre o limite de descarregamentos"
       }
     },
@@ -386,17 +314,13 @@
     "settingsSavedSuccessfully": "Definições guardadas com sucesso",
     "share": {
       "password": "Partilhar palavra-passe",
-      "password_confirm": "Confirmar a palavra-passe de partilha",
-      "password_protect_description": "Crie uma palavra-passe para a sua partilha. Qualquer pessoa que descarregue esta partilha necessitará desta palavra-passe para aceder à mesma. Nota: Após a criação, esta palavra-passe será encriptada e não será possível recuperá-la. Certifique-se de que a guarda num local seguro.",
-      "remove_password": "Remover a palavra-passe"
+      "password_confirm": "Confirmar a palavra-passe de partilha"
     },
     "stats": {
       "downloads": {
         "all_time": "Downloads de todos os tempos",
-        "chart_title": "Downloads ao longo do tempo",
         "days_option": "{days} dias",
         "downloads": "descarregamentos",
-        "downloads_in_period": "Descargas ({days} dias)",
         "time_period": "Período de tempo:",
         "title": "Atividade de transferências",
         "top_shares": "Partilhas mais transferidas",
@@ -416,28 +340,6 @@
         "files": "ficheiros",
         "title": "Distribuição por tipo de ficheiro"
       },
-      "help": {
-        "active_vs_expired_description": "As partilhas activas estão acessíveis, enquanto as expiradas estão pendentes de eliminação com base nas suas definições de limpeza.",
-        "active_vs_expired_title": "Ativo vs Expirado",
-        "categories_description": "Os ficheiros são agrupados por tipo: imagens, documentos, vídeos, áudio, arquivos, código e outros.",
-        "categories_title": "Categorias",
-        "disk_usage_description": "Mostra a utilização total do espaço em disco. Considere a limpeza de partilhas antigas se a utilização for elevada.",
-        "disk_usage_title": "Utilização do disco",
-        "downloads_description": "Acompanhe a atividade de transferência de todas as partilhas durante o período selecionado.",
-        "downloads_title": "Descarregar atividade",
-        "file_types_description": "Repartição dos ficheiros por categoria em todas as partilhas.",
-        "file_types_title": "Distribuição do tipo de ficheiro",
-        "guest_users_description": "Utilizadores criados através de convites de partilha inversa.",
-        "guest_users_title": "Utilizadores convidados",
-        "shares_description": "Visão geral de todas as partilhas do sistema, incluindo o seu estado atual.",
-        "shares_title": "Partilhar estatísticas",
-        "storage_description": "Monitorize a utilização do disco do seu servidor e o espaço consumido pelas partilhas.",
-        "storage_title": "Visão geral do armazenamento",
-        "unique_downloaders_description": "Contagem de endereços IP únicos que descarregaram partilhas.",
-        "unique_downloaders_title": "Descarregadores únicos",
-        "users_description": "Visão geral das contas de utilizador e dos seus níveis de atividade.",
-        "users_title": "Estatísticas dos utilizadores"
-      },
       "loading": "A carregar estatísticas...",
       "nav": {
         "downloads": "Descarregamentos",
@@ -452,7 +354,6 @@
         "deleted": "Eliminado",
         "expired": "Expirado",
         "last_7_days": "Últimos 7 dias",
-        "per_share": "por ação",
         "protected": "Protegido",
         "title": "Partilhar estatísticas",
         "total_files": "Total de ficheiros",
@@ -463,7 +364,6 @@
         "disk_usage": "Utilização do disco",
         "free": "livre",
         "of": "de",
-        "of_disk": "do disco",
         "share_storage": "Partilhar armazenamento",
         "title": "Visão geral do armazenamento",
         "used": "utilizado"
@@ -475,7 +375,6 @@
         "shares": "partilhas",
         "title": "Estatísticas dos utilizadores",
         "top_users": "Utilizadores mais activos",
-        "total_users": "Total de utilizadores",
         "with_shares": "Utilizadores com partilhas"
       },
       "figures": {
@@ -495,10 +394,6 @@
       "shareExtended": "Partilha extendida"
     },
     "system": {
-      "allow_chunked_uploads": "Permitir o modo de carregamento em pedaços",
-      "allow_chunked_uploads_description": "O modo de carregamento em blocos divide os ficheiros em segmentos mais pequenos que são transferidos sequencialmente. Embora ligeiramente mais lento do que o carregamento direto para ficheiros mais pequenos, este método proporciona maior estabilidade e fiabilidade na transferência de ficheiros grandes. Os carregamentos fragmentados suportam o acompanhamento do progresso e permitem aos utilizadores fazer uma pausa e retomar manualmente as transferências, o que o torna ideal para ficheiros com mais de 100 MB ou quando se utilizam ligações de rede instáveis.",
-      "allow_direct_uploads": "Permitir o modo de carregamento direto",
-      "allow_direct_uploads_description": "O modo de carregamento direto transmite ficheiros num pedido único e ininterrupto. Embora este método ofereça as velocidades de transferência mais rápidas para a maioria dos ficheiros, os ficheiros extremamente grandes podem causar problemas de estabilidade ou tempos limite. Para um desempenho ótimo com ficheiros com mais de 100 MB, os carregamentos divididos podem ser uma melhor opção.",
       "allow_reverse_shares": "Permitir a partilha inversa",
       "allow_reverse_shares_description": "Uma conta pode enviar a uma pessoa externa uma ligação para lhe depositar ficheiros.",
       "application_name": "Nome da Aplicação",
@@ -506,21 +401,13 @@
       "application_url": "Endereço da Aplicação",
       "application_url_description": "O endereço público da instância: as ligações dos e-mails começam por ele.",
       "auth": "Registo",
-      "auth_provider_allow_registration": "Permitir o auto-registo",
-      "auth_provider_allow_registration_description": "Cria automaticamente contas locais para os utilizadores que iniciam sessão através deste fornecedor. Active apenas para fornecedores restritos à sua organização, não para fornecedores públicos como o Google ou a Microsoft sem restrições.",
       "auth_provider_config_base_url": "Endereço de Base",
       "auth_provider_config_client_id": "Identificação do Cliente",
       "auth_provider_config_client_secret": "Segredo do Cliente",
       "auth_provider_config_tenant": "Identificação do inquilino",
-      "auth_provider_enabled": "Ativar",
-      "auth_provider_name": "Nome de Fornecedor",
-      "auth_provider_type": "Tipo de Fornecedor",
       "auth_providers": "Fornecedores de Autenticação",
-      "auth_providers_description": "Configure os fornecedores de autenticação através dos quais pretende que os utilizadores se possam autenticar.",
-      "auth_providers_description_localhost": "A configuração de autenticação externa não está disponível no \"localhost\". Os provedores OAuth exigem um nome de domínio devidamente qualificado (FQDN) para funcionar corretamente. Aceda a OpenTransfer através de um domínio registado para configurar estas definições.",
       "backups": {
         "actions": "Ações",
-        "auto_backup": "Cópias de segurança automáticas",
         "auto_backup_description": "Também pode criar uma manualmente ou transferir uma.",
         "create_backup": "Criar cópia de segurança",
         "create_failed": "Falha na criação da cópia de segurança",
@@ -543,20 +430,13 @@
         "title": "Cópias de segurança da base de dados"
       },
       "callback_url": "Endereço de retorno",
-      "callback_url_description": "Utilize o endereço de retorno fornecido na configuração do seu fornecedor de identidade.",
-      "chunked": "Em pedaços",
-      "chunked_uploads_disabled_but_default": "Definiu o modo de carregamento predefinido como em blocos, mas os carregamentos em blocos estão desactivados!",
       "clean_files_after": "Eliminar Ficheiros Após",
       "clean_files_after_description": "Os ficheiros de uma partilha expirada são eliminados após este prazo.",
       "days": "Dias",
       "default_expiry_time": "Prazo de validade por defeito",
       "default_language": "Lingua Predefinida",
       "default_language_description": "O idioma da interface e dos e-mails para quem não escolheu outro.",
-      "default_upload_mode": "Modo de carregamento predefinido",
-      "default_upload_mode_description": "Define o modo que deve ser selecionado por predefinição. Os utilizadores podem alterar isto quando criam uma partilha se tiver mais do que um método ativado.",
       "delete_auth_provider": "Apagar este fornecedor",
-      "direct": "Direto",
-      "direct_uploads_disabled_but_default": "Definiu o modo de carregamento predefinido como direto, mas os carregamentos diretos estão desactivados!",
       "disabled": "Desativado",
       "emails": "Notificações",
       "enable_share_deleted_emails": "Ativar E-mails de Partilhas Eliminadas",
@@ -588,8 +468,6 @@
       "pattern_token_lowercase": "Letra minúscula (a-z)",
       "pattern_token_range": "Gama/classe de caracteres",
       "pattern_token_uppercase": "Letra maiúscula (A-Z)",
-      "provider_trust_warning": "Aviso: Confiança no fornecedor de autenticação",
-      "provider_trust_warning_description": "Certifique-se de que configura e ativa apenas os fornecedores de autenticação em que confia. Os fornecedores de autenticação têm privilégios de acesso elevados à sua aplicação e aos dados do utilizador. A adição de fornecedores não confiáveis ou comprometidos pode levar a acessos não autorizados, fugas de informação ou aquisição de contas.",
       "reverse_shares": "Pedidos de ficheiros",
       "security": {
         "add_your_ip": "Adicionar à lista",
@@ -604,13 +482,11 @@
         "encryption_key_absent": "Ainda não há chave. Gere uma com: docker exec NOME_DO_CONTENTOR ot-artisan generate-storage-key, guarde uma cópia longe deste servidor e defina-a em STORAGE_ENCRYPTION_KEY.",
         "encryption_misconfigured": "A chave está em falta ou é inválida: os ficheiros encriptados não podem ser transferidos e as novas partilhas são armazenadas sem encriptação. Defina novamente STORAGE_ENCRYPTION_KEY.",
         "invalid_entries": "Entradas inválidas na lista: {entries}",
-        "ip_allowlist": "Restringir o início de sessão por rede",
         "ip_allowlist_description": "Início de sessão e sessões só a partir destas redes, SSO incluído. As ligações de partilha e os convidados dos pedidos de ficheiros continuam abertos em qualquer lugar.",
         "ip_allowlist_enabled": "Permitir o início de sessão apenas a partir das redes indicadas abaixo",
         "ip_allowlist_entries": "Endereços e intervalos permitidos",
         "ip_allowlist_entries_help": "Um endereço ou um intervalo por linha, por exemplo 203.0.113.10 ou 10.0.0.0/8. Depois de #: um comentário.",
         "lockout_error": "Esta lista iria bloqueá-lo: não contém o seu endereço ({ip}).",
-        "mfa_policy": "Regra da autenticação de dois fatores",
         "mfa_policy_admins": "Administradores",
         "mfa_policy_everyone": "Todos os utilizadores",
         "mfa_policy_help": "Quem não tem segundo fator configura um no próximo início de sessão com palavra-passe; a sessão em curso continua. As contas SSO dependem do seu fornecedor de identidade.",
@@ -626,40 +502,22 @@
         "your_ip": "O seu endereço visto pela aplicação: {ip}"
       },
       "select_auth_provider": "Selecionar um fornecedor de autenticação",
-      "share_deleted_emails": "E-mails de \"partilha eliminada\"",
       "share_deleted_emails_description": "Uma confirmação quando os ficheiros foram eliminados.",
-      "share_deletion_warning_emails": "E-mails de aviso de \"Partilha eliminada\"",
       "share_deletion_warning_emails_description": "Um último aviso antes de os ficheiros serem eliminados.",
-      "share_downloaded_emails": "E-mails de \"Partilha descarregada\"",
       "share_downloaded_emails_description": "O proprietário recebe um e-mail na primeira transferência.",
-      "share_expired_warning_emails": "E-mails de aviso de \"Partilha expirada\"",
       "share_expired_warning_emails_description": "Um e-mail quando a partilha deixa de estar acessível.",
-      "share_expiry_warning_emails": "E-mails de aviso de \"Partilha a expirar\"",
       "share_expiry_warning_emails_description": "Um lembrete antes de expirar, para prolongar se for preciso.",
       "share_url_generation": "Geração de URL de partilha",
       "share_url_mode": "Modo de geração de URL",
       "share_url_mode_description": "Haiku: palavras fáceis de ditar (outono-brisa-lua). Padrão: um formato próprio.",
       "share_url_mode_haiku": "Haiku clássico",
       "share_url_mode_pattern": "Padrão",
-      "share_url_mode_random": "Cadeia aleatória",
-      "share_url_mode_shortcode": "Código curto",
-      "share_url_mode_uuid": "UUID",
       "share_url_pattern": "Padrão",
       "share_url_pattern_description": "Defina um padrão utilizando a Sintaxe de Padrão OpenTransfer. Utilize tokens especiais para caracteres aleatórios ou inclua caracteres literais para prefixos e separadores.",
       "share_url_pattern_placeholder": "Por exemplo, ES-####-AAA ou [A-Z][0-9]***",
       "share_url_pattern_preview": "Pré-visualização",
       "share_url_pattern_syntax": "Sintaxe do padrão",
-      "share_url_prefix": "Prefixo URL",
-      "share_url_prefix_description": "Prefixo opcional adicionado a todos os URLs de partilha para efeitos de marca (por exemplo, \"acme\" produz \"acme-autumn-breeze\"). Deixar vazio para nenhum prefixo.",
-      "share_url_prefix_placeholder": "sh:",
       "share_url_preset": "Predefinição",
-      "share_url_random_characters": "Caracteres permitidos",
-      "share_url_random_length": "Comprimento da cadeia aleatória",
-      "share_url_random_lowercase": "Minúsculas a-z",
-      "share_url_random_numbers": "números 0-9",
-      "share_url_random_special": "Caracteres especiais",
-      "share_url_random_uppercase": "Maiúsculas A-Z",
-      "share_url_shortcode_length": "Comprimento do código curto",
       "shares": "Partilhas",
       "show_deleted_shares": "Mostrar as transferências eliminadas",
       "show_language_selector": "Apresentar Selecionador de Idioma",
@@ -680,8 +538,6 @@
       "smtp_sender_name_description": "O nome do remetente na caixa de entrada.",
       "smtp_username": "Nome de utilizadores de SMTP",
       "smtp_username_description": "Muitas vezes, o endereço da conta de envio.",
-      "upload_modes": "Modos de carregamento",
-      "your_auth_providers": "O seus Fornecedores de Autenticação",
       "self_registration": "Registo autónomo",
       "self_registration_allow_any_domain": "Permitir o registo a partir de qualquer domínio de e-mail",
       "self_registration_allowed_domains": "Domínios de e-mail permitidos",
@@ -701,7 +557,6 @@
       "share_url_pattern_strong": "Cerca de {bits} bits de acaso: o suficiente para não ser adivinhado.",
       "share_url_pattern_weak": "Cerca de {bits} bits de acaso: demasiado curto, as ligações poderiam ser adivinhadas. São precisos pelo menos {min} (8 caracteres *)."
     },
-    "system_auth_provider_info_link": "Sobre {name}",
     "table": {
       "actions": "Ações",
       "dates": "Datas",
@@ -718,10 +573,6 @@
       "manage": "Gerir",
       "myProfile": "A Minha Conta",
       "myShares": "As Minhas Partilhas",
-      "reverse_invite": "Criar pedido de partilha inversa",
-      "share": {
-        "password_protect": "Proteger a partilha com palavra-passe"
-      },
       "stats": "Estatísticas do sistema",
       "system": "Sistema",
       "users": "Utilizadores",
@@ -767,8 +618,6 @@
       "scan_qr": "Leia este código QR com a sua aplicação de autenticação.",
       "set_up_app": "Configurar uma aplicação de autenticação",
       "setup_expired": "Esta configuração expirou, recomece.",
-      "status_off": "A autenticação de dois fatores está desativada: o início de sessão só pede a sua palavra-passe.",
-      "status_on": "A autenticação de dois fatores está ativada para a sua conta.",
       "title": "Autenticação de dois fatores",
       "too_many_attempts": "Demasiadas tentativas falhadas. Aguarde 15 minutos e tente novamente.",
       "totp_active": "O início de sessão com palavra-passe também pede um código da sua aplicação.",
@@ -787,9 +636,7 @@
       "add": "Adicionar Utilizador",
       "add_user_description": "Enviaremos um e-mail ao utilizador com um link para definir a sua palavra&nbsp;passe.",
       "add_user_self_registration_tip_off": "O auto-registo está atualmente desativado para a autenticação de correio eletrónico. Active-o para permitir que os utilizadores criem as suas próprias contas em vez de as adicionarem manualmente.",
-      "add_user_self_registration_tip_off_short": "O auto-registo está desativado. Clique aqui para gerir.",
       "add_user_self_registration_tip_on": "O auto-registo está ativado. Os utilizadores podem criar as suas próprias contas.",
-      "add_user_self_registration_tip_on_short": "O auto-registo está ativado. Clique aqui para gerir.",
       "admin": "Administrador",
       "admin_help_text": "Transformar o utilizador em administrador.",
       "admin_help_text_2": "O utilizador terá os mesmos privilégios que você.",
@@ -810,7 +657,6 @@
       "force_reset_password": "Repor a palavra-passe",
       "force_reset_password_success": "A palavra-passe do utilizador foi reposta!",
       "id": "Identificação",
-      "leave_blank_to_keep_same_password": "Deixar vazio para manter a mesma palavra passe.",
       "link_provider_confirm": "Deseja realmente associar a sua conta a este fornecedor?",
       "linked": "Conta Ligada",
       "must_change_password": "O utilizador tem de alterar a palavra-passe",
@@ -832,9 +678,7 @@
       "reset_two_factor_failed": "Não foi possível remover o segundo fator.",
       "reset_two_factor_success": "Segundo fator removido.",
       "save_changes": "Guardar Alterações",
-      "send_invite": "Enviar pedido",
       "unlink_provider_confirm": "Deseja realmente desvincular a sua conta deste fornecedor?",
-      "update_password": "Atualizar a Palavra Passe",
       "user": "Utilizador",
       "user_created_successfully": "Utilizador criado com sucesso",
       "user_deleted_successfully": "Utilizador eliminado com sucesso",
@@ -876,7 +720,6 @@
   },
   "share": {
     "button": {
-      "expireNow": "Expirar Agora",
       "extend": "Extender"
     },
     "contains": {
@@ -902,21 +745,13 @@
       "count": "{value, plural, one {# ficheiro} many {# ficheiros} other {}}",
       "including": "incluíndo:"
     },
-    "not_found": "A partilha que procura não foi encontrada. Poderá ser necessário iniciar sessão para a ver.",
-    "passwordNotProtected": "Aberto",
-    "passwordProtected": "Protegido por palavra-passe"
+    "not_found": "A partilha que procura não foi encontrada. Poderá ser necessário iniciar sessão para a ver."
   },
   "total_size": "Tamanho Total",
   "upload": {
-    "files": "{value, plural, one {Transferir # ficheiro} other {Transferir # ficheiros} }",
-    "upload_mode_not_supported": "Não está selecionado nenhum modo de carregamento válido! Não temos a certeza do que sugerir porque isto não deveria ser possível."
+    "files": "{value, plural, one {Transferir # ficheiro} other {Transferir # ficheiros} }"
   },
   "uploader": {
-    "current_mode": {
-      "chunked": "Modo de carregamento por blocos",
-      "direct": "Modo de carregamento direto"
-    },
-    "expiry_label": "A ação expirará em {value} {unit} (alteração)",
     "expiry_max_value": "Máximo: {value}",
     "expiry_too_long": "O tempo de expiração que introduziu excede o limite máximo. Ajustámo-lo automaticamente para o período mais longo permitido.",
     "expiry_unit": {
@@ -925,7 +760,6 @@
       "weeks": "Semana(s)",
       "years": "Ano(s)"
     },
-    "guest_share_created": "Obrigado! Os seus ficheiros foram enviados com sucesso. Dentro de alguns instantes, a sessão será encerrada.",
     "interrupted_upload": {
       "description": "Parece que tinha um carregamento em curso que foi interrompido.",
       "files": "Ficheiros",
@@ -939,28 +773,17 @@
       "title": "Upload interrompido detectado",
       "total_size": "Tamanho Total"
     },
-    "password_confirmation_required": "Confirmação da palavra-passe necessária",
-    "password_mismatch": "As palavras-passe não coincidem",
     "password_required": "É necessária uma palavra-passe para proteger a partilha",
     "time_remaining_suffix": "s",
     "time_remaining_text": "restantes",
-    "upload_mode_swapped": "Modo de carregamento alterado para {value}",
     "access_title": "Acesso",
-    "drop_hint": "Largue os ficheiros aqui, ou clique para os escolher",
-    "expiry_title": "Expira após",
     "files_title": "Ficheiros a enviar",
     "password_set": "Protegido por palavra-passe",
-    "recipients_title": "Destinatários",
     "too_big": "Estes ficheiros têm {size}: uma partilha pode ter no máximo {max}.",
     "upload_failed": "O envio falhou: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Transferindo # ficheiro} other {Transferindo # ficheiros} }"
-  },
-  "warnings": {
-    "how_to_fix": "Como corrigir",
-    "tusd_help_title": "Serviço de carregamento indisponível",
-    "tusd_unavailable": "Serviço de carregamento indisponível. O serviço tusd não está a funcionar. Os carregamentos de ficheiros não funcionarão até que isto seja resolvido."
   },
   "nav": {
     "administration": "Administração",
@@ -1038,13 +861,8 @@
     "stats": {
       "active": "Partilhas ativas",
       "ending": "{count, plural, one {# expira em 24 h} other {# expiram em 24 h}}",
-      "none_ending": "nenhuma expira em 24 h",
       "online": "Volume online",
-      "online_sub": "nas suas partilhas ativas",
-      "downloads": "Transferências",
-      "never_opened": "{count, plural, one {# partilha nunca aberta} other {# partilhas nunca abertas}}",
-      "all_opened": "todas foram abertas",
-      "no_share": "nenhuma partilha online"
+      "downloads": "Transferências"
     },
     "drop_title": "Arraste ficheiros ou uma pasta",
     "drop_sub": "{size} máx. por partilha · a estrutura das pastas é mantida",
@@ -1312,7 +1130,6 @@
     "decrease": "Diminuir",
     "increase": "Aumentar"
   },
-  "Email Change": "Alteração de endereço",
   "flash": {
     "account_not_found": "Nenhuma conta está ligada a esta identidade. Ligue-a a partir do seu perfil ou peça a um administrador.",
     "account_exists": "Uma conta já usa este endereço. Inicie sessão nessa conta e ligue este fornecedor a partir do seu perfil.",

@@ -1,41 +1,18 @@
 {
-  "Account Created": "Cuenta creada",
-  "Add Files": "Añadir archivos",
-  "Add Folders": "Añadir carpetas",
-  "Add Recipient": "Añadir destinatario",
-  "Email Verification": "Verificación del correo",
-  "Message to share recipients (optional)": "Mensaje para los destinatarios (opcional)",
-  "No files added yet": "Aún no hay archivos",
-  "No recipients": "Sin destinatarios",
-  "Password Reset": "Restablecimiento de contraseña",
   "Powered by": "Funciona con",
   "Processing uploaded files": "Procesando los archivos subidos",
-  "Reverse Share": "Solicitud de archivos",
-  "Reverse Share Invite": "Solicitud de archivos",
-  "Share Created": "Envío creado",
-  "Share Deleted Warning": "Envío eliminado",
-  "Share Deletion Warning": "Eliminación próxima",
-  "Share Downloaded": "Envío descargado",
-  "Share Expired Warning": "Envío caducado",
-  "Share Expiry Warning": "Caducidad próxima",
   "Share Name": "Nombre del envío",
   "Share URL": "Enlace del envío",
-  "We'll provide you with a link instead": {
-    "": "En su lugar le daremos un enlace"
-  },
   "auth": {
     "account_disabled": "Esta cuenta está desactivada.",
     "altcha_failed": "La verificación antirrobots ha fallado. Inténtelo de nuevo.",
     "back_to_login": "Volver al inicio de sesión",
-    "confirm_end_guest_session": "¿Seguro que quiere terminar esta sesión? Como usuario invitado, no podrá subir más archivos después de terminarla.",
     "confirm_password": "Confirmar la contraseña",
     "create_account": "Crear una cuenta",
     "create_account_description": "Rellene sus datos para crear una cuenta. Recibirá un código de verificación por correo electrónico.",
     "email": "Correo electrónico",
     "email_not_verified": "Verifique su dirección de correo antes de iniciar sesión.",
     "email_verified_successfully": "¡Correo verificado! Ya puede iniciar sesión.",
-    "end_guest_session": "Terminar la sesión de invitado",
-    "enter_6_digit_code": "Introduzca el código de 6 cifras",
     "failed_to_accept_invite": "Este código de invitación no es válido. Puede haber caducado, haberse usado ya o haber sido revocado por quien lo envió.",
     "failed_to_resend_code": "No se pudo reenviar el código de verificación",
     "failed_to_reset_password": "No se pudo restablecer la contraseña",
@@ -43,14 +20,12 @@
     "forgot_password": "Contraseña olvidada",
     "forgot_password_create_password": "Crear la contraseña",
     "forgot_password_create_password_description": "Introduzca su nueva contraseña. La contraseña y su confirmación deben coincidir.",
-    "guest_warning": "Los archivos que suba con el formulario de la izquierda se compartirán directamente con la persona que le invitó.",
     "invalid_email_or_password": "Correo electrónico o contraseña incorrectos.",
     "invite_accepted": "Solicitud de archivos aceptada. Ya puede subir archivos.",
     "ip_not_allowed": "No se permite iniciar sesión desde su red.",
     "login": "Iniciar sesión",
     "login_successful": "Sesión iniciada",
     "login_to_accept_invite": "Inicie sesión para aceptar esta solicitud de archivos.",
-    "login_with": "Iniciar sesión con",
     "logout": "Cerrar sesión",
     "mfa": {
       "code": "Código",
@@ -104,7 +79,6 @@
     "verification_failed": "La verificación ha fallado",
     "verify_email": "Verificar el correo",
     "verifying": "Verificando...",
-    "welcome": "Le damos la bienvenida",
     "organisation_account": "Cuenta de la organización",
     "local_account": "Correo y contraseña",
     "forgot_password_question": "¿Ha olvidado su contraseña?",
@@ -119,11 +93,7 @@
     }
   },
   "button": {
-    "reverse_share_invite": "Crear una solicitud de archivos",
-    "reverse_share_invite_send": "Enviar la solicitud",
-    "share": {
-      "password_protect": "Proteger con contraseña"
-    }
+    "reverse_share_invite_send": "Enviar la solicitud"
   },
   "commandPalette": {
     "category": {
@@ -140,7 +110,6 @@
     "files": "{value, plural, one {Descargar # archivo} other {Descargar {value} archivos}}"
   },
   "email": "Correo electrónico",
-  "full_name": "Nombre completo",
   "guest": {
     "upload_success": "¡Archivos enviados!",
     "upload_success_message": "La persona que solicitó estos archivos recibirá un correo con un enlace de descarga."
@@ -155,7 +124,6 @@
   "message": {
     "from": "Mensaje de {name}"
   },
-  "processing_uploaded_files": "Procesando los archivos subidos",
   "reverse_invite_send": {
     "error": "No se pudo enviar la solicitud de archivos",
     "success": "¡Solicitud de archivos enviada!"
@@ -191,7 +159,6 @@
       "create_link": "Vincular",
       "email": "Mi dirección de correo",
       "linked_accounts_description": "Vincule su cuenta con un proveedor externo para iniciar sesión más fácilmente. Después podrá iniciar sesión directamente con el botón del proveedor en la pantalla de inicio de sesión.",
-      "myProfile_description": "Actualice su dirección de correo o cambie su nombre. Para cambiar su contraseña, haga clic en el botón «Cambiar mi contraseña» y siga los pasos.",
       "name": "Mi nombre completo",
       "unlink": "Desvincular",
       "email_change": {
@@ -213,32 +180,15 @@
     },
     "allShares": {
       "allUsers": "Todos los usuarios",
-      "filterByUser": "Filtrar por usuario",
       "noShares": "No hay envíos que mostrar",
       "owner": "Propietario"
     },
-    "authProvidersSavedSuccessfully": "Proveedores de autenticación guardados",
     "branding": {
-      "background_images": "Imágenes de fondo",
-      "background_images_description": "Suba sus propias imágenes de fondo para sustituir las de Unsplash. Las imágenes cambian al azar con el intervalo que defina.",
-      "background_slideshow_speed": "Intervalo de cambio de imagen",
-      "background_slideshow_speed_1_day": "Un día",
-      "background_slideshow_speed_1_hour": "1 hora",
-      "background_slideshow_speed_2_hours": "2 horas",
-      "background_slideshow_speed_3_minutes": "3 minutos",
-      "background_slideshow_speed_5_minutes": "5 minutos",
-      "background_slideshow_speed_description": "Cambie la frecuencia con la que la imagen de fondo cambia al azar (solo tiene efecto si tiene varias imágenes de fondo). Póngalo a 0 para desactivar la presentación y mostrar una imagen al azar en cada carga de página.",
-      "background_slideshow_speed_off": "Desactivar",
       "confirm": "Confirme, por favor",
-      "confirm_delete_theme": "¿Seguro que quiere eliminar el tema «{name}»? No se puede deshacer.",
       "confirm_reset_favicon": "¿Seguro que quiere restablecer el favicon? Se eliminará su favicon y se restaurará el de OpenTransfer. No hay forma de recuperarlo, así que asegúrese de tener una copia antes de continuar.",
       "confirm_reset_logo": "¿Seguro que quiere restablecer el logotipo? Se eliminará su logotipo y se restaurará el de OpenTransfer. No hay forma de recuperarlo, así que asegúrese de tener una copia antes de continuar.",
       "delete": "Eliminar",
-      "delete_theme": "Eliminar el tema",
-      "delete_theme_description": "Elimina el tema seleccionado de la lista de temas: ya no podrá usarlo. No se pueden eliminar el tema activo ni los temas incluidos.",
       "download": "Descargar",
-      "download_theme": "Descargar el tema",
-      "download_theme_description": "Descarga el tema seleccionado como archivo JSON. Sirve para crear un tema nuevo o modificar uno existente.",
       "errors": {
         "file_too_large": "No se pudo subir el favicon: el archivo debe pesar 1 MB o menos."
       },
@@ -247,14 +197,7 @@
       "favicon_description": "Suba un favicon propio para sustituir el icono de OpenTransfer en la pestaña del navegador.",
       "favicon_reset_failed": "No se pudo restablecer el favicon",
       "favicon_reset_success": "Favicon restablecido",
-      "favicon_upload_failed": "No se pudo subir el favicon",
-      "favicon_uploaded": "Favicon subido",
       "in_pixels": "en píxeles",
-      "in_seconds": "segundos",
-      "install_custom_theme": "Instalar un tema personalizado",
-      "install_custom_theme_description": "Instale un tema personalizado desde un archivo JSON.\n\nPuede ser un tema que haya modificado o creado usted mismo, o uno que haya descargado.",
-      "install_custom_theme_description_2": "Si descarga un tema de internet, asegúrese de que la fuente es de confianza y de haber revisado el tema en busca de código malicioso antes de instalarlo.",
-      "install_theme": "Instalar el tema",
       "logo": "Logotipo",
       "logo_and_favicon": "Logotipo y favicon",
       "logo_description": "Muestre el logotipo de su empresa en formato PNG en la esquina superior izquierda. Defina el ancho deseado en píxeles; la altura se ajusta sola para conservar las proporciones. Use una imagen de origen al menos tan ancha como el ancho mostrado para garantizar la calidad.",
@@ -265,22 +208,12 @@
       "other_ui_settings": "Otros",
       "reset": "Restablecer",
       "reset_logo_to_default": "Restablecer el logotipo original",
-      "select_theme": "Seleccionar un tema",
-      "select_theme_description": "Elija entre los temas predefinidos o uno que haya instalado.",
       "settings_saved": "Ajustes de marca guardados",
       "show_powered_by": "Mostrar «Funciona con OpenTransfer»",
       "show_powered_by_description": "Muestra u oculta el texto «Funciona con OpenTransfer» en la parte inferior de la página. Este texto permite que otros descubran OpenTransfer y nos ayuda a crecer, pero puede ocultarlo si lo desea.",
       "theme": "Temas",
-      "theme_delete_failed": "No se pudo eliminar el tema",
-      "theme_deleted_successfully": "Tema eliminado",
-      "theme_description": "Elija entre los temas predefinidos o uno que haya instalado.",
-      "theme_file": "Archivo del tema",
-      "theme_name": "Nombre del tema",
-      "upload_background": "Subir una imagen o un vídeo de fondo",
-      "upload_background_image": "Subir una imagen de fondo",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Usar mis fondos",
-      "use_my_backgrounds_description": "Usa los fondos que ha subido. Si no está marcado, se usan los fondos de Unsplash.",
       "confirm_delete_favicon": "¿Eliminar el favicon propio? Vuelve el icono de OpenTransfer.",
       "sign_in_screen": "Pantalla de inicio de sesión",
       "login_background": "Imagen de fondo",
@@ -323,7 +256,6 @@
       "about": "Información sobre su instalación de OpenTransfer",
       "allShares": "Ver y gestionar los envíos de todos los usuarios",
       "branding": "Personalice la interfaz de su instancia de OpenTransfer y añada su propia marca.",
-      "cloudConnect": "Conecte su instancia a Erugo Cloud para enrutar fácilmente su dominio",
       "emailTemplates": "Gestionar las plantillas de correo",
       "myProfile": "Gestione su cuenta.",
       "myShares": "Gestione sus envíos.",
@@ -332,8 +264,6 @@
       "users": "Gestione sus usuarios."
     },
     "emailTemplates": {
-      "accountCreated": "Cuenta creada",
-      "accountCreatedDescription": "Se envía a los nuevos usuarios cuando un administrador crea su cuenta. Contiene un enlace para que el usuario defina su contraseña.",
       "baseTemplate": "Plantilla base",
       "baseTemplateDescription": "Controla la plantilla base de la que heredan todas las demás.",
       "error": "No se pudieron cargar las plantillas de correo",
@@ -341,7 +271,6 @@
       "error_saving_fallback": "No se pudo guardar el texto alternativo",
       "error_saving_templates": "No se pudieron guardar las plantillas",
       "no_changes": "No hay cambios que guardar",
-      "passwordReset": "Restablecimiento de contraseña",
       "requiredFields": "Campos obligatorios",
       "sections": {
         "action_text": "Texto del botón de acción",
@@ -367,7 +296,6 @@
       },
       "downloadLimit": {
         "description": "Puede definir el límite de descargas de cualquier envío haciendo clic en el número de la derecha y escribiendo el nuevo límite. Vacíe la casilla para quitar el límite.",
-        "description2": "Los cambios se guardan automáticamente al hacer clic fuera de la casilla.",
         "title": "Ayuda sobre el límite de descargas"
       }
     },
@@ -386,17 +314,13 @@
     "settingsSavedSuccessfully": "Ajustes guardados",
     "share": {
       "password": "Contraseña del envío",
-      "password_confirm": "Confirmar la contraseña del envío",
-      "password_protect_description": "Cree una contraseña para su envío. Quien lo descargue necesitará esta contraseña. Atención: una vez creado el envío, la contraseña se cifra y no podremos recuperarla. Guárdela en un lugar seguro.",
-      "remove_password": "Quitar la contraseña"
+      "password_confirm": "Confirmar la contraseña del envío"
     },
     "stats": {
       "downloads": {
         "all_time": "Descargas desde el principio",
-        "chart_title": "Descargas a lo largo del tiempo",
         "days_option": "{days} días",
         "downloads": "descargas",
-        "downloads_in_period": "Descargas ({days} días)",
         "time_period": "Periodo:",
         "title": "Actividad de descargas",
         "top_shares": "Envíos más descargados",
@@ -416,28 +340,6 @@
         "files": "archivos",
         "title": "Distribución por tipo de archivo"
       },
-      "help": {
-        "active_vs_expired_description": "Los envíos activos son accesibles; los caducados esperan su eliminación según sus ajustes de limpieza.",
-        "active_vs_expired_title": "Activos y caducados",
-        "categories_description": "Los archivos se agrupan por tipo: imágenes, documentos, vídeos, audio, archivos comprimidos, código y otros.",
-        "categories_title": "Categorías",
-        "disk_usage_description": "Muestra el uso total del disco. Si es alto, considere eliminar envíos antiguos.",
-        "disk_usage_title": "Uso del disco",
-        "downloads_description": "Siga la actividad de descargas de todos los envíos durante el periodo elegido.",
-        "downloads_title": "Actividad de descargas",
-        "file_types_description": "Reparto de los archivos por categoría en todos los envíos.",
-        "file_types_title": "Distribución por tipo de archivo",
-        "guest_users_description": "Usuarios creados mediante solicitudes de archivos.",
-        "guest_users_title": "Usuarios invitados",
-        "shares_description": "Resumen de todos los envíos del sistema, con su estado actual.",
-        "shares_title": "Estadísticas de envíos",
-        "storage_description": "Vigile el uso del disco del servidor y el espacio que ocupan los envíos.",
-        "storage_title": "Resumen del almacenamiento",
-        "unique_downloaders_description": "Número de direcciones IP distintas que han descargado envíos.",
-        "unique_downloaders_title": "Descargadores únicos",
-        "users_description": "Resumen de las cuentas de usuario y de su actividad.",
-        "users_title": "Estadísticas de usuarios"
-      },
       "loading": "Cargando las estadísticas...",
       "nav": {
         "downloads": "Descargas",
@@ -452,7 +354,6 @@
         "deleted": "Eliminados",
         "expired": "Caducados",
         "last_7_days": "Últimos 7 días",
-        "per_share": "por envío",
         "protected": "Protegidos",
         "title": "Estadísticas de envíos",
         "total_files": "Archivos en total",
@@ -463,7 +364,6 @@
         "disk_usage": "Uso del disco",
         "free": "libre",
         "of": "de",
-        "of_disk": "del disco",
         "share_storage": "Almacenamiento de envíos",
         "title": "Resumen del almacenamiento",
         "used": "usado"
@@ -475,7 +375,6 @@
         "shares": "envíos",
         "title": "Estadísticas de usuarios",
         "top_users": "Usuarios más activos",
-        "total_users": "Usuarios en total",
         "with_shares": "Usuarios con envíos"
       },
       "figures": {
@@ -495,10 +394,6 @@
       "shareExtended": "Envío prolongado"
     },
     "system": {
-      "allow_chunked_uploads": "Permitir la subida por fragmentos",
-      "allow_chunked_uploads_description": "La subida por fragmentos divide los archivos en partes más pequeñas que se transfieren una tras otra. Aunque es algo más lenta que la subida directa para archivos pequeños, ofrece más estabilidad y fiabilidad con archivos grandes. Permite seguir el progreso y pausar y reanudar las transferencias, por lo que es ideal para archivos de más de 100 MB o con conexiones inestables.",
-      "allow_direct_uploads": "Permitir la subida directa",
-      "allow_direct_uploads_description": "La subida directa transmite los archivos en una sola petición, sin interrupciones. Ofrece la mayor velocidad para la mayoría de los archivos, pero los archivos muy grandes pueden causar problemas de estabilidad o tiempos de espera agotados. Para archivos de más de 100 MB, la subida por fragmentos puede ser mejor opción.",
       "allow_reverse_shares": "Permitir las solicitudes de archivos",
       "allow_reverse_shares_description": "Una cuenta puede enviar a una persona externa un enlace para que le deposite archivos.",
       "application_name": "Nombre de la aplicación",
@@ -506,21 +401,13 @@
       "application_url": "URL de la aplicación",
       "application_url_description": "La dirección pública de la instancia: los enlaces de los correos empiezan por ella.",
       "auth": "Registro",
-      "auth_provider_allow_registration": "Permitir el registro automático",
-      "auth_provider_allow_registration_description": "Crea automáticamente cuentas locales para los usuarios que inician sesión con este proveedor. Actívelo solo para proveedores restringidos a su organización, no para proveedores públicos como Google o Microsoft sin restricciones.",
       "auth_provider_config_base_url": "URL base",
       "auth_provider_config_client_id": "ID de cliente",
       "auth_provider_config_client_secret": "Secreto de cliente",
       "auth_provider_config_tenant": "ID de inquilino (tenant)",
-      "auth_provider_enabled": "Activar",
-      "auth_provider_name": "Nombre del proveedor",
-      "auth_provider_type": "Tipo de proveedor",
       "auth_providers": "Proveedores de autenticación",
-      "auth_providers_description": "Configure los proveedores de autenticación con los que sus usuarios podrán identificarse.",
-      "auth_providers_description_localhost": "La autenticación externa no se puede configurar en localhost. Los proveedores OAuth necesitan un nombre de dominio completo (FQDN) para funcionar. Acceda a OpenTransfer mediante un dominio registrado para configurar estos ajustes.",
       "backups": {
         "actions": "Acciones",
-        "auto_backup": "Copias de seguridad automáticas",
         "auto_backup_description": "También puede crear una a mano o descargar una.",
         "create_backup": "Crear una copia de seguridad",
         "create_failed": "No se pudo crear la copia de seguridad",
@@ -543,20 +430,13 @@
         "title": "Copias de seguridad de la base de datos"
       },
       "callback_url": "URL de retorno (callback)",
-      "callback_url_description": "Use la URL de retorno indicada en la configuración de su proveedor de identidad.",
-      "chunked": "Por fragmentos",
-      "chunked_uploads_disabled_but_default": "Ha elegido la subida por fragmentos como modo predeterminado, ¡pero está desactivada!",
       "clean_files_after": "Limpiar los archivos después de",
       "clean_files_after_description": "Los archivos de un envío caducado se eliminan tras este plazo.",
       "days": "Días",
       "default_expiry_time": "Caducidad predeterminada",
       "default_language": "Idioma predeterminado",
       "default_language_description": "El idioma de la interfaz y de los correos para quien no haya elegido otro.",
-      "default_upload_mode": "Modo de subida predeterminado",
-      "default_upload_mode_description": "Defina el modo seleccionado por defecto. Los usuarios pueden cambiarlo al crear un envío si hay más de un modo activado.",
       "delete_auth_provider": "Eliminar este proveedor",
-      "direct": "Directa",
-      "direct_uploads_disabled_but_default": "Ha elegido la subida directa como modo predeterminado, ¡pero está desactivada!",
       "disabled": "Desactivado",
       "emails": "Notificaciones",
       "enable_share_deleted_emails": "Activar los correos de envío eliminado",
@@ -588,8 +468,6 @@
       "pattern_token_lowercase": "Letra minúscula (a-z)",
       "pattern_token_range": "Rango o clase de caracteres",
       "pattern_token_uppercase": "Letra mayúscula (A-Z)",
-      "provider_trust_warning": "Atención: confianza en los proveedores de autenticación",
-      "provider_trust_warning_description": "Configure y active solo proveedores de autenticación de confianza. Tienen privilegios elevados sobre su aplicación y los datos de los usuarios. Añadir proveedores no fiables o comprometidos puede provocar accesos no autorizados, fugas de datos o robos de cuentas.",
       "reverse_shares": "Solicitudes de archivos",
       "security": {
         "add_your_ip": "Añadirla a la lista",
@@ -604,13 +482,11 @@
         "encryption_key_absent": "Aún no hay clave. Genere una con: docker exec CONTAINER_NAME ot-artisan generate-storage-key, guarde una copia lejos de este servidor y defínala como STORAGE_ENCRYPTION_KEY.",
         "encryption_misconfigured": "Falta la clave o no es válida: los archivos cifrados no se pueden descargar y los envíos nuevos se guardan sin cifrar. Vuelva a definir STORAGE_ENCRYPTION_KEY.",
         "invalid_entries": "Entradas no válidas en la lista: {entries}",
-        "ip_allowlist": "Restringir el inicio de sesión por red",
         "ip_allowlist_description": "Inicio de sesión y sesiones solo desde estas redes, SSO incluido. Los enlaces de envío y los invitados de las solicitudes de archivos siguen abiertos desde cualquier lugar.",
         "ip_allowlist_enabled": "Permitir el inicio de sesión solo desde las redes de abajo",
         "ip_allowlist_entries": "Direcciones y rangos permitidos",
         "ip_allowlist_entries_help": "Una dirección o un rango por línea, por ejemplo 203.0.113.10 o 10.0.0.0/8. Tras #: un comentario.",
         "lockout_error": "Esta lista le dejaría fuera: no incluye su dirección ({ip}).",
-        "mfa_policy": "Política de dos factores",
         "mfa_policy_admins": "Administradores",
         "mfa_policy_everyone": "Todos los usuarios",
         "mfa_policy_help": "Quien no tenga un segundo factor lo configura en su próximo inicio de sesión con contraseña; su sesión actual continúa. Las cuentas SSO dependen de su proveedor de identidad.",
@@ -634,40 +510,22 @@
       "self_registration_allowed_domains_placeholder": "example.com, company.org",
       "self_registration_description": "Aparece un enlace «Crear una cuenta» al iniciar sesión; la dirección se verifica por correo.",
       "self_registration_enabled": "Activar el autorregistro",
-      "share_deleted_emails": "Correos de «envío eliminado»",
       "share_deleted_emails_description": "Una confirmación cuando los archivos se han eliminado.",
-      "share_deletion_warning_emails": "Avisos de «eliminación de envío»",
       "share_deletion_warning_emails_description": "Un último aviso antes de eliminar los archivos.",
-      "share_downloaded_emails": "Correos de «envío descargado»",
       "share_downloaded_emails_description": "El propietario recibe un correo en la primera descarga.",
-      "share_expired_warning_emails": "Avisos de «envío caducado»",
       "share_expired_warning_emails_description": "Un correo cuando el envío deja de estar accesible.",
-      "share_expiry_warning_emails": "Avisos de «caducidad de envío»",
       "share_expiry_warning_emails_description": "Un recordatorio antes de que caduque, para prolongarlo si hace falta.",
       "share_url_generation": "Generación de los enlaces de envío",
       "share_url_mode": "Modo de generación",
       "share_url_mode_description": "Haiku: palabras fáciles de dictar (otoño-brisa-luna). Patrón: un formato propio.",
       "share_url_mode_haiku": "Estilo haiku clásico",
       "share_url_mode_pattern": "Patrón",
-      "share_url_mode_random": "Cadena aleatoria",
-      "share_url_mode_shortcode": "Código corto",
-      "share_url_mode_uuid": "UUID",
       "share_url_pattern": "Patrón",
       "share_url_pattern_description": "Defina un patrón con la sintaxis de patrones de OpenTransfer. Use los símbolos especiales para caracteres aleatorios, o incluya caracteres literales para prefijos y separadores.",
       "share_url_pattern_placeholder": "p. ej., ES-####-AAA o [A-Z][0-9]***",
       "share_url_pattern_preview": "Vista previa",
       "share_url_pattern_syntax": "Sintaxis de los patrones",
-      "share_url_prefix": "Prefijo del enlace",
-      "share_url_prefix_description": "Prefijo opcional añadido a todos los enlaces de envío por motivos de marca (por ejemplo, «acme» produce «acme-autumn-breeze»). Déjelo vacío para no usar prefijo.",
-      "share_url_prefix_placeholder": "sh:",
       "share_url_preset": "Preajuste",
-      "share_url_random_characters": "Caracteres permitidos",
-      "share_url_random_length": "Longitud de la cadena aleatoria",
-      "share_url_random_lowercase": "Minúsculas a-z",
-      "share_url_random_numbers": "cifras 0-9",
-      "share_url_random_special": "Caracteres especiales",
-      "share_url_random_uppercase": "Mayúsculas A-Z",
-      "share_url_shortcode_length": "Longitud del código corto",
       "shares": "Envíos",
       "show_deleted_shares": "Mostrar los envíos eliminados",
       "show_language_selector": "Mostrar el selector de idioma",
@@ -688,8 +546,6 @@
       "smtp_sender_name_description": "El nombre del remitente en la bandeja de entrada.",
       "smtp_username": "Usuario SMTP",
       "smtp_username_description": "A menudo, la dirección de la cuenta de envío.",
-      "upload_modes": "Modos de subida",
-      "your_auth_providers": "Sus proveedores de autenticación",
       "delete_auth_provider_confirmation": "¿Eliminar este proveedor de identidad? Se pierde su configuración y nadie podrá volver a iniciar sesión con él.",
       "pattern_preset": {
         "short": "Corto (8 caracteres)",
@@ -701,7 +557,6 @@
       "share_url_pattern_strong": "Unos {bits} bits de azar: suficiente para no ser adivinado.",
       "share_url_pattern_weak": "Unos {bits} bits de azar: demasiado corto, los enlaces podrían adivinarse. Se necesitan al menos {min} (8 caracteres *)."
     },
-    "system_auth_provider_info_link": "Acerca de {name}",
     "table": {
       "actions": "Acciones",
       "dates": "Fechas",
@@ -718,10 +573,6 @@
       "manage": "Gestionar",
       "myProfile": "Mi cuenta",
       "myShares": "Mis envíos",
-      "reverse_invite": "Crear una solicitud de archivos",
-      "share": {
-        "password_protect": "Proteger el envío con contraseña"
-      },
       "stats": "Estadísticas del sistema",
       "system": "Sistema",
       "users": "Usuarios",
@@ -767,8 +618,6 @@
       "scan_qr": "Escanee este código QR con su aplicación de autenticación.",
       "set_up_app": "Configurar una aplicación de autenticación",
       "setup_expired": "Esta configuración ha caducado. Vuelva a empezar.",
-      "status_off": "La autenticación de dos factores está desactivada: para iniciar sesión solo hace falta la contraseña.",
-      "status_on": "La autenticación de dos factores está activada para su cuenta.",
       "title": "Autenticación de dos factores",
       "too_many_attempts": "Demasiados intentos fallidos. Espere 15 minutos y vuelva a intentarlo.",
       "totp_active": "Al iniciar sesión con contraseña también se le pide un código de su aplicación.",
@@ -787,9 +636,7 @@
       "add": "Añadir un usuario",
       "add_user_description": "Enviaremos al usuario un correo con un enlace para definir su&nbsp;contraseña.",
       "add_user_self_registration_tip_off": "El autorregistro está desactivado para la autenticación por correo. Actívelo para que los usuarios creen su propia cuenta en lugar de añadirlos a mano.",
-      "add_user_self_registration_tip_off_short": "El autorregistro está desactivado. Haga clic aquí para gestionarlo.",
       "add_user_self_registration_tip_on": "El autorregistro está activado. Los usuarios pueden crear su propia cuenta.",
-      "add_user_self_registration_tip_on_short": "El autorregistro está activado. Haga clic aquí para gestionarlo.",
       "admin": "Administrador",
       "admin_help_text": "Convertir al usuario en administrador.",
       "admin_help_text_2": "Tendrá los mismos privilegios que usted.",
@@ -810,7 +657,6 @@
       "force_reset_password": "Restablecer la contraseña",
       "force_reset_password_success": "¡Contraseña del usuario restablecida!",
       "id": "ID",
-      "leave_blank_to_keep_same_password": "Déjelo vacío para conservar la contraseña.",
       "link_provider_confirm": "¿Vincular de verdad su cuenta a este proveedor?",
       "linked": "Cuenta vinculada",
       "must_change_password": "El usuario debe cambiar su contraseña",
@@ -832,9 +678,7 @@
       "reset_two_factor_failed": "No se pudo quitar el segundo factor.",
       "reset_two_factor_success": "Segundo factor quitado.",
       "save_changes": "Guardar los cambios",
-      "send_invite": "Enviar la solicitud",
       "unlink_provider_confirm": "¿Desvincular de verdad su cuenta de este proveedor?",
-      "update_password": "Actualizar la contraseña",
       "user": "Usuario",
       "user_created_successfully": "Usuario creado",
       "user_deleted_successfully": "Usuario eliminado",
@@ -876,7 +720,6 @@
   },
   "share": {
     "button": {
-      "expireNow": "Hacer caducar ahora",
       "extend": "Prolongar"
     },
     "contains": {
@@ -902,21 +745,13 @@
       "count": "{value, plural, one {# archivo} other {# archivos}}",
       "including": "entre ellos:"
     },
-    "not_found": "No se encontró el envío que busca. Puede que tenga que iniciar sesión para verlo.",
-    "passwordNotProtected": "Abierto",
-    "passwordProtected": "Protegido con contraseña"
+    "not_found": "No se encontró el envío que busca. Puede que tenga que iniciar sesión para verlo."
   },
   "total_size": "Tamaño total",
   "upload": {
-    "files": "{value, plural, one {Subir # archivo} other {Subir # archivos}}",
-    "upload_mode_not_supported": "¡No hay ningún modo de subida válido seleccionado! No sabemos qué sugerir, porque esto no debería ser posible."
+    "files": "{value, plural, one {Subir # archivo} other {Subir # archivos}}"
   },
   "uploader": {
-    "current_mode": {
-      "chunked": "Modo de subida por fragmentos",
-      "direct": "Modo de subida directa"
-    },
-    "expiry_label": "El envío caducará en {value} {unit} (cambiar)",
     "expiry_max_value": "Máx.: {value}",
     "expiry_too_long": "La caducidad indicada supera el máximo. La hemos ajustado al periodo más largo permitido.",
     "expiry_unit": {
@@ -925,7 +760,6 @@
       "weeks": "Semana(s)",
       "years": "Año(s)"
     },
-    "guest_share_created": "¡Gracias! Sus archivos se han enviado. En unos instantes se cerrará su sesión.",
     "interrupted_upload": {
       "description": "Parece que tenía una subida en curso que se interrumpió.",
       "files": "Archivos",
@@ -939,28 +773,17 @@
       "title": "Subida interrumpida detectada",
       "total_size": "Tamaño total"
     },
-    "password_confirmation_required": "Hay que confirmar la contraseña",
-    "password_mismatch": "Las contraseñas no coinciden",
     "password_required": "Hace falta una contraseña para proteger el envío",
     "time_remaining_suffix": "s",
     "time_remaining_text": "restantes",
-    "upload_mode_swapped": "Modo de subida cambiado a {value}",
     "access_title": "Acceso",
-    "drop_hint": "Suelte aquí sus archivos o haga clic para elegirlos",
-    "expiry_title": "Caduca después de",
     "files_title": "Archivos que enviar",
     "password_set": "Protegido con contraseña",
-    "recipients_title": "Destinatarios",
     "too_big": "Estos archivos ocupan {size}: un envío admite {max} como máximo.",
     "upload_failed": "La subida ha fallado: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Subiendo # archivo} other {Subiendo # archivos}}"
-  },
-  "warnings": {
-    "how_to_fix": "Cómo solucionarlo",
-    "tusd_help_title": "Servicio de subida no disponible",
-    "tusd_unavailable": "Servicio de subida no disponible. El servicio tusd no está en marcha. Las subidas de archivos no funcionarán hasta que se resuelva."
   },
   "nav": {
     "administration": "Administración",
@@ -1038,13 +861,8 @@
     "stats": {
       "active": "Envíos activos",
       "ending": "{count, plural, one {# termina en las próximas 24 h} other {# terminan en las próximas 24 h}}",
-      "none_ending": "ninguno termina en las próximas 24 h",
       "online": "Volumen en línea",
-      "online_sub": "en sus envíos activos",
-      "downloads": "Descargas",
-      "never_opened": "{count, plural, one {# envío nunca abierto} other {# envíos nunca abiertos}}",
-      "all_opened": "todos se han abierto",
-      "no_share": "ningún envío en línea"
+      "downloads": "Descargas"
     },
     "drop_title": "Suelte archivos o una carpeta",
     "drop_sub": "{size} como máximo por envío · las carpetas conservan su estructura",
@@ -1312,7 +1130,6 @@
     "decrease": "Disminuir",
     "increase": "Aumentar"
   },
-  "Email Change": "Cambio de dirección",
   "flash": {
     "account_not_found": "Ninguna cuenta está vinculada a esta identidad. Vincúlela desde su perfil o consulte a un administrador.",
     "account_exists": "Una cuenta ya usa esta dirección. Inicie sesión en ella y vincule este proveedor desde su perfil.",

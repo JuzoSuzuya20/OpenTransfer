@@ -1,41 +1,18 @@
 {
-  "Account Created": "Account Created",
-  "Add Files": "Add Files",
-  "Add Folders": "Add Folders",
-  "Add Recipient": "Add Recipient",
-  "Email Verification": "Email Verification",
-  "Message to share recipients (optional)": "Message to share recipients (optional)",
-  "No files added yet": "No files added yet",
-  "No recipients": "No recipients",
-  "Password Reset": "Password Reset",
   "Powered by": "Powered by",
   "Processing uploaded files": "Processing uploaded files",
-  "Reverse Share": "Reverse Share",
-  "Reverse Share Invite": "File request",
-  "Share Created": "Share Created",
-  "Share Deleted Warning": "Share deleted",
-  "Share Deletion Warning": "Deletion soon",
-  "Share Downloaded": "Share Downloaded",
-  "Share Expired Warning": "Share expired",
-  "Share Expiry Warning": "Expiry soon",
   "Share Name": "Share Name",
   "Share URL": "Share URL",
-  "We'll provide you with a link instead": {
-    "": "We'll provide you with a link instead"
-  },
   "auth": {
     "account_disabled": "This account is disabled.",
     "altcha_failed": "The anti-robot verification failed, please try again.",
     "back_to_login": "Back to login",
-    "confirm_end_guest_session": "Are you sure you want to end this session? Since you're a guest user, you won't be able to upload additional files after ending this session.",
     "confirm_password": "Confirm Password",
     "create_account": "Create Account",
     "create_account_description": "Fill in your details to create an account. You'll receive a verification code via email.",
     "email": "Email",
     "email_not_verified": "Please verify your email address before signing in.",
     "email_verified_successfully": "Email verified successfully! You can now log in.",
-    "end_guest_session": "End guest session",
-    "enter_6_digit_code": "Enter 6-digit code",
     "failed_to_accept_invite": "This invite code is not valid. It may have expired, been used already, or been revoked by the sender.",
     "failed_to_resend_code": "Failed to resend verification code",
     "failed_to_reset_password": "Failed to reset password",
@@ -43,14 +20,12 @@
     "forgot_password": "Forgot Password",
     "forgot_password_create_password": "Create password",
     "forgot_password_create_password_description": "Please enter your new password. Both password and password confirmation must match",
-    "guest_warning": "Files you upload using the left-side form will be shared directly with the person who invited you.",
     "invalid_email_or_password": "Wrong email or password.",
     "invite_accepted": "Reverse share invite accepted. You can now upload files.",
     "ip_not_allowed": "Sign-in is not allowed from your network.",
     "login": "Login",
     "login_successful": "Logged in successfully",
     "login_to_accept_invite": "Please log in to accept this reverse share invite.",
-    "login_with": "Login With",
     "logout": "Logout",
     "mfa": {
       "code": "Code",
@@ -104,7 +79,6 @@
     "verification_failed": "Verification failed",
     "verify_email": "Verify Email",
     "verifying": "Verifying...",
-    "welcome": "Welcome",
     "organisation_account": "Account of the organisation",
     "local_account": "Email and password",
     "forgot_password_question": "Forgot your password?",
@@ -119,11 +93,7 @@
     }
   },
   "button": {
-    "reverse_share_invite": "Create a reverse share request",
-    "reverse_share_invite_send": "Send Request",
-    "share": {
-      "password_protect": "Password protect"
-    }
+    "reverse_share_invite_send": "Send Request"
   },
   "commandPalette": {
     "category": {
@@ -140,7 +110,6 @@
     "files": "{value, plural, one {Download # file} other {Download {value} files}}"
   },
   "email": "Email",
-  "full_name": "Full Name",
   "guest": {
     "upload_success": "Upload Successful!",
     "upload_success_message": "The person who requested these files will receive an email with a download link."
@@ -155,7 +124,6 @@
   "message": {
     "from": "Message from {name}"
   },
-  "processing_uploaded_files": "Processing uploaded files",
   "reverse_invite_send": {
     "error": "Unable to send reverse share invite",
     "success": "Reverse share invite sent!"
@@ -191,7 +159,6 @@
       "create_link": "Link",
       "email": "My Email Address",
       "linked_accounts_description": "Link your account with an external provider for easier sign-in. After linking, you can log in directly by selecting the provider's button on the login screen.",
-      "myProfile_description": "Update your email address or change your name. You can change you password by clicking the \"Change my password\" button and following the prompts.",
       "name": "My Full Name",
       "unlink": "Unlink",
       "email_change": {
@@ -213,32 +180,15 @@
     },
     "allShares": {
       "allUsers": "All users",
-      "filterByUser": "Filter by user",
       "noShares": "There are no shares to show",
       "owner": "Owner"
     },
-    "authProvidersSavedSuccessfully": "Auth providers saved successfully",
     "branding": {
-      "background_images": "Background Images",
-      "background_images_description": "Upload custom background images to replace Unsplash defaults. Images rotate randomly at the interval you set.",
-      "background_slideshow_speed": "Image Change Interval",
-      "background_slideshow_speed_1_day": "One day",
-      "background_slideshow_speed_1_hour": "1 Hour",
-      "background_slideshow_speed_2_hours": "2 Hours",
-      "background_slideshow_speed_3_minutes": "3 Minutes",
-      "background_slideshow_speed_5_minutes": "5 Minutes",
-      "background_slideshow_speed_description": "Change how often the background image randomly changes (this only has an effect if you have multiple background images). Set to 0 to disable the slideshow and show a random image on each page fresh instead.",
-      "background_slideshow_speed_off": "Disable",
       "confirm": "Please confirm",
-      "confirm_delete_theme": "Are you sure you want to delete the theme \"{name}\"? This cannot be undone.",
       "confirm_reset_favicon": "Do you really want to reset the favicon? This will delete your favicon and restore the default OpenTransfer favicon. There is no way to recover your favicon so make sure you have it backed up before you continue.",
       "confirm_reset_logo": "Do you really want to reset the logo? This will delete your logo and restore the default OpenTransfer logo. There is no way to recover your logo so make sure you have it backed up before you continue.",
       "delete": "Delete",
-      "delete_theme": "Delete Theme",
-      "delete_theme_description": "Delete the selected theme. This will remove it from the list of themes and you will no longer be able to use it. It is not possible to delete the active theme or bundled themes.",
       "download": "Download",
-      "download_theme": "Download Theme",
-      "download_theme_description": "Download the selected theme as a JSON file. This can be used to create a new theme or modify an existing one.",
       "errors": {
         "file_too_large": "Uploading favicon failed‌‌‍‍‌‌‌‍‌‌‌‍‍‌‌‌‌‌‌‌‍‍‌‌‌‍‌‌‌‌‌‍‌‍‌‌ - file must be 1MB or below."
       },
@@ -247,14 +197,7 @@
       "favicon_description": "Upload a custom favicon to replace the default OpenTransfer icon in the browser tab.",
       "favicon_reset_failed": "Failed to reset favicon",
       "favicon_reset_success": "Favicon reset successfully",
-      "favicon_upload_failed": "Uploading favicon failed",
-      "favicon_uploaded": "Favicon uploaded",
       "in_pixels": "in pixels",
-      "in_seconds": "seconds",
-      "install_custom_theme": "Install a Custom Theme\n",
-      "install_custom_theme_description": "Install a custom theme from a JSON file.\n\nThis can be a theme you have modified or created yourself or one you have downloaded.",
-      "install_custom_theme_description_2": "If you download a theme from the web, please ensure you trust the source and have checked the theme for malicious code before installing.",
-      "install_theme": "Install Theme",
       "logo": "Logo",
       "logo_and_favicon": "Logo & Favicon",
       "logo_description": "Display your company logo in PNG format in the top left corner. Set your desired width in pixels - height will adjust automatically to maintain aspect ratio. Use a source image at least as wide as your display width to ensure quality.",
@@ -265,22 +208,12 @@
       "other_ui_settings": "Other",
       "reset": "Reset",
       "reset_logo_to_default": "Reset logo to default",
-      "select_theme": "Select Theme",
-      "select_theme_description": "Select from a range of pre-made themes or one one that you have installed.",
       "settings_saved": "Branding settings saved successfully",
       "show_powered_by": "Show Powered By OpenTransfer",
       "show_powered_by_description": "Show or hide the \"Powered by OpenTransfer\" text on the bottom of the page. This text allows OpenTransfer to be discovered by users and helps us to grow, however, you can hide it if you wish.\n",
       "theme": "Themes",
-      "theme_delete_failed": "Failed to delete theme",
-      "theme_deleted_successfully": "Theme deleted successfully",
-      "theme_description": "Select from a range of pre-made themes or one that you have installed.",
-      "theme_file": "Theme File",
-      "theme_name": "Theme Name",
-      "upload_background": "Upload background image or video",
-      "upload_background_image": "Upload Background Image",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Use My Backgrounds",
-      "use_my_backgrounds_description": "Use the backgrounds you have uploaded. If not checked, Unsplash backgrounds will be used.",
       "confirm_delete_favicon": "Delete the custom favicon? The default OpenTransfer icon comes back.",
       "sign_in_screen": "Sign-in screen",
       "login_background": "Background image",
@@ -323,7 +256,6 @@
       "about": "Information about your OpenTransfer installation",
       "allShares": "View and manage shares by all users",
       "branding": "Customise the UI of your OpenTransfer instance and add your own branding.",
-      "cloudConnect": "Connect your instance to Erugo Cloud for easy domain routing",
       "emailTemplates": "Manage email templates",
       "myProfile": "Manage your account.",
       "myShares": "Manage Your Shares.",
@@ -332,8 +264,6 @@
       "users": "Manage Your Users."
     },
     "emailTemplates": {
-      "accountCreated": "Account Created",
-      "accountCreatedDescription": "Sent to new users when a administrator creates their account. Contains a link that allows the user to set their password.",
       "baseTemplate": "Base Template",
       "baseTemplateDescription": "Controls the base template from which all other templates inherit.",
       "error": "Failed to load email templates",
@@ -341,7 +271,6 @@
       "error_saving_fallback": "Failed to save fallback text",
       "error_saving_templates": "Failed to save templates",
       "no_changes": "No changes to save",
-      "passwordReset": "Password Reset",
       "requiredFields": "Required Fields",
       "sections": {
         "action_text": "Action button text",
@@ -367,7 +296,6 @@
       },
       "downloadLimit": {
         "description": "You can set the download limit for any share by clicking the right-side number and typing in the new limit. Clear the box to remove the limit.",
-        "description2": "Changes will be saved automatically when you click outside the box.",
         "title": "Download Limit Help"
       }
     },
@@ -386,17 +314,13 @@
     "settingsSavedSuccessfully": "Settings saved successfully",
     "share": {
       "password": "Share password",
-      "password_confirm": "Confirm share password",
-      "password_protect_description": "Create a password for your share. Anyone downloading this share will need this password to access it. Please note: After creation, this password will be encrypted and we cannot retrieve it for you. Make sure to save it in a secure location.",
-      "remove_password": "Remove Password"
+      "password_confirm": "Confirm share password"
     },
     "stats": {
       "downloads": {
         "all_time": "All-Time Downloads",
-        "chart_title": "Downloads Over Time",
         "days_option": "{days} days",
         "downloads": "downloads",
-        "downloads_in_period": "Downloads ({days} days)",
         "time_period": "Time Period:",
         "title": "Download Activity",
         "top_shares": "Most Downloaded Shares",
@@ -416,28 +340,6 @@
         "files": "files",
         "title": "File Type Distribution"
       },
-      "help": {
-        "active_vs_expired_description": "Active shares are accessible, while expired ones are pending deletion based on your cleanup settings.",
-        "active_vs_expired_title": "Active vs Expired",
-        "categories_description": "Files are grouped by type: images, documents, videos, audio, archives, code, and other.",
-        "categories_title": "Categories",
-        "disk_usage_description": "Shows total disk space utilization. Consider cleaning up old shares if usage is high.",
-        "disk_usage_title": "Disk Usage",
-        "downloads_description": "Track download activity across all shares over your selected time period.",
-        "downloads_title": "Download Activity",
-        "file_types_description": "Breakdown of files by category across all shares.",
-        "file_types_title": "File Type Distribution",
-        "guest_users_description": "Users created via reverse share invitations.",
-        "guest_users_title": "Guest Users",
-        "shares_description": "Overview of all shares in the system, including their current status.",
-        "shares_title": "Share Statistics",
-        "storage_description": "Monitor your server's disk usage and the space consumed by shares.",
-        "storage_title": "Storage Overview",
-        "unique_downloaders_description": "Count of unique IP addresses that have downloaded shares.",
-        "unique_downloaders_title": "Unique Downloaders",
-        "users_description": "Overview of user accounts and their activity levels.",
-        "users_title": "User Statistics"
-      },
       "loading": "Loading statistics...",
       "nav": {
         "downloads": "Downloads",
@@ -452,7 +354,6 @@
         "deleted": "Deleted",
         "expired": "Expired",
         "last_7_days": "Last 7 Days",
-        "per_share": "per share",
         "protected": "Protected",
         "title": "Share Statistics",
         "total_files": "Total Files",
@@ -463,7 +364,6 @@
         "disk_usage": "Disk Usage",
         "free": "free",
         "of": "of",
-        "of_disk": "of disk",
         "share_storage": "Share Storage",
         "title": "Storage Overview",
         "used": "used"
@@ -475,7 +375,6 @@
         "shares": "shares",
         "title": "User Statistics",
         "top_users": "Most Active Users",
-        "total_users": "Total Users",
         "with_shares": "Users with Shares"
       },
       "figures": {
@@ -495,10 +394,6 @@
       "shareExtended": "Share extended"
     },
     "system": {
-      "allow_chunked_uploads": "Allow chunked upload mode",
-      "allow_chunked_uploads_description": "Chunked upload mode breaks files into smaller segments that are transferred sequentially. While slightly slower than direct upload for smaller files, this method provides greater stability and reliability when transferring large files. Chunked uploads support progress tracking and allow users to manually pause and resume transfers, making it ideal for files over 100MB or when using unstable network connections.",
-      "allow_direct_uploads": "Allow direct upload mode",
-      "allow_direct_uploads_description": "Direct upload mode transmits files in a single, uninterrupted request. While this method offers the fastest transfer speeds for most files, extremely large files may cause stability issues or timeouts. For optimal performance with files exceeding 100MB, chunked uploads may be a better option.",
       "allow_reverse_shares": "Allow reverse shares",
       "allow_reverse_shares_description": "An account can send someone outside a link to drop files for it.",
       "application_name": "Application Name",
@@ -506,21 +401,13 @@
       "application_url": "Application URL",
       "application_url_description": "The public address of the instance: the links of the e-mails start with it.",
       "auth": "Sign-up",
-      "auth_provider_allow_registration": "Allow self-registration",
-      "auth_provider_allow_registration_description": "Automatically creates local accounts for users who sign in through this provider. Only enable for providers restricted to your organisation, not for public providers like unrestricted Google or Microsoft.",
       "auth_provider_config_base_url": "Base URL",
       "auth_provider_config_client_id": "Client ID",
       "auth_provider_config_client_secret": "Client Secret",
       "auth_provider_config_tenant": "Tenant ID",
-      "auth_provider_enabled": "Enable",
-      "auth_provider_name": "Provider Name",
-      "auth_provider_type": "Provider type",
       "auth_providers": "Auth providers",
-      "auth_providers_description": "Configure auth providers via which you wish your users to be able to authenticate.",
-      "auth_providers_description_localhost": "External authentication configuration is unavailable on localhost. OAuth providers require a fully qualified domain name (FQDN) to properly function. Please access OpenTransfer through a registered domain to configure these settings.",
       "backups": {
         "actions": "Actions",
-        "auto_backup": "Automatic Backups",
         "auto_backup_description": "You can also create one by hand, or download one.",
         "create_backup": "Create Backup",
         "create_failed": "Failed to create backup",
@@ -543,20 +430,13 @@
         "title": "Database Backups"
       },
       "callback_url": "Callback URL",
-      "callback_url_description": "Use the callback URL provided in your identity provider configuration.",
-      "chunked": "Chunked",
-      "chunked_uploads_disabled_but_default": "You have set the default upload mode to chunked, but chunked uploads are disabled!",
       "clean_files_after": "Clean Files After",
       "clean_files_after_description": "The files of an expired share are deleted after this delay.",
       "days": "Days",
       "default_expiry_time": "Default Expiry Time",
       "default_language": "Default Language",
       "default_language_description": "The language of the interface and of the e-mails for whoever has not chosen one.",
-      "default_upload_mode": "Default upload mode",
-      "default_upload_mode_description": "Set which mode should be selected by default. Users can change this when creating a share if you have more than one method enabled.",
       "delete_auth_provider": "Delete this provider",
-      "direct": "Direct",
-      "direct_uploads_disabled_but_default": "You have set the default upload mode to direct, but direct uploads are disabled!",
       "disabled": "Disabled",
       "emails": "Notifications",
       "enable_share_deleted_emails": "Enable Share Deleted Emails",
@@ -588,8 +468,6 @@
       "pattern_token_lowercase": "Lowercase letter (a-z)",
       "pattern_token_range": "Character range/class",
       "pattern_token_uppercase": "Uppercase letter (A-Z)",
-      "provider_trust_warning": "Warning: Auth Provider Trust",
-      "provider_trust_warning_description": "Ensure you only configure and enable auth providers that you trust. Authentication providers have elevated access privileges to your application and user data. Adding untrusted or compromised providers could lead to unauthorised access, data breaches, or account takeovers.",
       "reverse_shares": "Reverse Shares",
       "security": {
         "add_your_ip": "Add it to the list",
@@ -604,13 +482,11 @@
         "encryption_key_absent": "No key yet. Generate one with: docker exec CONTAINER_NAME ot-artisan generate-storage-key, keep a copy away from this server, then set it as STORAGE_ENCRYPTION_KEY.",
         "encryption_misconfigured": "The key is missing or invalid: encrypted files cannot be downloaded and new shares are stored in plain text. Set STORAGE_ENCRYPTION_KEY again.",
         "invalid_entries": "Invalid entries in the list: {entries}",
-        "ip_allowlist": "Restrict sign-in by network",
         "ip_allowlist_description": "Sign-in and sessions only from these networks, SSO included. Share links and the guests of file requests stay open from anywhere.",
         "ip_allowlist_enabled": "Only allow sign-in from the networks listed below",
         "ip_allowlist_entries": "Allowed addresses and ranges",
         "ip_allowlist_entries_help": "One address or range per line, for example 203.0.113.10 or 10.0.0.0/8. After #: a comment.",
         "lockout_error": "This list would lock you out: it does not include your address ({ip}).",
-        "mfa_policy": "Two-factor policy",
         "mfa_policy_admins": "Administrators",
         "mfa_policy_everyone": "All users",
         "mfa_policy_help": "Those without a second factor set one up at their next password sign-in; their current session goes on. SSO accounts depend on their identity provider.",
@@ -634,40 +510,22 @@
       "self_registration_allowed_domains_placeholder": "example.com, company.org",
       "self_registration_description": "A “Create an account” link appears on the sign-in screen; the address is checked by e-mail.",
       "self_registration_enabled": "Enable self-registration",
-      "share_deleted_emails": "\"Share deleted\" emails",
       "share_deleted_emails_description": "A confirmation once the files are deleted.",
-      "share_deletion_warning_emails": "\"Share deletion\" warning emails",
       "share_deletion_warning_emails_description": "A last warning before the files are deleted.",
-      "share_downloaded_emails": "\"Share downloaded\" emails",
       "share_downloaded_emails_description": "The owner gets an e-mail at the first download.",
-      "share_expired_warning_emails": "\"Share expired\" warning emails",
       "share_expired_warning_emails_description": "An e-mail when the share can no longer be opened.",
-      "share_expiry_warning_emails": "\"Share expiry\" warning emails",
       "share_expiry_warning_emails_description": "A reminder before the share expires, to extend it if needed.",
       "share_url_generation": "Share URL Generation",
       "share_url_mode": "URL Generation Mode",
       "share_url_mode_description": "Haiku: words easy to read out (autumn-breeze-moon). Pattern: a format of your own.",
       "share_url_mode_haiku": "Classic Haiku-style",
       "share_url_mode_pattern": "Pattern",
-      "share_url_mode_random": "Random String",
-      "share_url_mode_shortcode": "Short Code",
-      "share_url_mode_uuid": "UUID",
       "share_url_pattern": "Pattern",
       "share_url_pattern_description": "Define a pattern using the OpenTransfer Pattern Syntax. Use special tokens for random characters, or include literal characters for prefixes and separators.",
       "share_url_pattern_placeholder": "e.g., ES-####-AAA or [A-Z][0-9]***",
       "share_url_pattern_preview": "Preview",
       "share_url_pattern_syntax": "Pattern Syntax",
-      "share_url_prefix": "URL Prefix",
-      "share_url_prefix_description": "Optional prefix added to all share URLs for branding (e.g., 'acme' produces 'acme-autumn-breeze'). Leave empty for no prefix.",
-      "share_url_prefix_placeholder": "sh:",
       "share_url_preset": "Preset",
-      "share_url_random_characters": "Allowed Characters",
-      "share_url_random_length": "Random String Length",
-      "share_url_random_lowercase": "Lowercase a-z",
-      "share_url_random_numbers": "numbers 0-9",
-      "share_url_random_special": "Special Characters",
-      "share_url_random_uppercase": "Uppercase A-Z",
-      "share_url_shortcode_length": "Short Code length",
       "shares": "Shares",
       "show_deleted_shares": "Show deleted shares",
       "show_language_selector": "Show Language Selector",
@@ -688,8 +546,6 @@
       "smtp_sender_name_description": "The sender's name in the inbox.",
       "smtp_username": "SMTP Username",
       "smtp_username_description": "Often the address of the sending account.",
-      "upload_modes": "Upload modes",
-      "your_auth_providers": "Your Auth Providers",
       "delete_auth_provider_confirmation": "Delete this identity provider? Its settings are lost and nobody can sign in with it any more.",
       "pattern_preset": {
         "short": "Short (8 characters)",
@@ -701,7 +557,6 @@
       "share_url_pattern_strong": "About {bits} bits of chance: enough not to be guessed.",
       "share_url_pattern_weak": "About {bits} bits of chance: too short, links could be guessed. At least {min} are needed (8 characters *)."
     },
-    "system_auth_provider_info_link": "About {name}",
     "table": {
       "actions": "Actions",
       "dates": "Dates",
@@ -718,10 +573,6 @@
       "manage": "Manage",
       "myProfile": "My Account",
       "myShares": "My Shares",
-      "reverse_invite": "Create reverse share request",
-      "share": {
-        "password_protect": "Password protect share"
-      },
       "stats": "System Stats",
       "system": "System",
       "users": "Users",
@@ -767,8 +618,6 @@
       "scan_qr": "Scan this QR code with your authenticator app.",
       "set_up_app": "Set up an authenticator app",
       "setup_expired": "This setup has expired, please start again.",
-      "status_off": "Two-factor authentication is off: signing in only needs your password.",
-      "status_on": "Two-factor authentication is on for your account.",
       "title": "Two-factor authentication",
       "too_many_attempts": "Too many failed attempts. Please wait 15 minutes and try again.",
       "totp_active": "Signing in with your password also asks for a code from your app.",
@@ -787,9 +636,7 @@
       "add": "Add User",
       "add_user_description": "We'll send an email to the user with a link to set their&nbsp;password.",
       "add_user_self_registration_tip_off": "Self-registration is currently turned off for email authentication. Enable it to let users create their own accounts instead of adding them manually.",
-      "add_user_self_registration_tip_off_short": "Self registration is disabled. Click here to manage.",
       "add_user_self_registration_tip_on": "Self-registration is enabled. Users can create their own accounts.",
-      "add_user_self_registration_tip_on_short": "Self-registration is enabled. Click here to manage.",
       "admin": "Admin",
       "admin_help_text": "Make the user an admin.",
       "admin_help_text_2": "User will have the same privileges as you.",
@@ -810,7 +657,6 @@
       "force_reset_password": "Reset password",
       "force_reset_password_success": "User's password was reset!",
       "id": "ID",
-      "leave_blank_to_keep_same_password": "Leave blank to keep same password.",
       "link_provider_confirm": "Really link your account to this provider?",
       "linked": "Account Linked",
       "must_change_password": "User must change password",
@@ -832,9 +678,7 @@
       "reset_two_factor_failed": "Could not remove the second factor.",
       "reset_two_factor_success": "Second factor removed.",
       "save_changes": "Save Changes",
-      "send_invite": "Send Request",
       "unlink_provider_confirm": "Really unlink your account from this provider?",
-      "update_password": "Update Password",
       "user": "User",
       "user_created_successfully": "User created successfully",
       "user_deleted_successfully": "User was deleted successfully",
@@ -876,7 +720,6 @@
   },
   "share": {
     "button": {
-      "expireNow": "Expire Now",
       "extend": "Extend"
     },
     "contains": {
@@ -902,21 +745,13 @@
       "count": "{value, plural, one {# file} other {# files}}",
       "including": "including:"
     },
-    "not_found": "The share you are looking for was not found. You may need to log in to see it.",
-    "passwordNotProtected": "Open",
-    "passwordProtected": "Password protected"
+    "not_found": "The share you are looking for was not found. You may need to log in to see it."
   },
   "total_size": "Total Size",
   "upload": {
-    "files": "{value, plural, one {Upload # file} other {Upload # files}}",
-    "upload_mode_not_supported": "No valid upload mode is selected! We're not sure what to suggest because this shouldn't be possible."
+    "files": "{value, plural, one {Upload # file} other {Upload # files}}"
   },
   "uploader": {
-    "current_mode": {
-      "chunked": "Chunked upload mode",
-      "direct": "Direct upload mode"
-    },
-    "expiry_label": "Share will expire in {value} {unit}  (change)",
     "expiry_max_value": "Max: {value}",
     "expiry_too_long": "The expiry time you entered exceeds the maximum limit. We've automatically adjusted it to the longest period allowed.",
     "expiry_unit": {
@@ -925,7 +760,6 @@
       "weeks": "Week(s)",
       "years": "Year(s)"
     },
-    "guest_share_created": "Thank you! Your files have been sent successfully. In a few moments you will be logged out.",
     "interrupted_upload": {
       "description": "It looks like you had an upload in progress that was interrupted.",
       "files": "Files",
@@ -939,28 +773,17 @@
       "title": "Interrupted Upload Detected",
       "total_size": "Total Size"
     },
-    "password_confirmation_required": "Password confirmation required",
-    "password_mismatch": "Passwords don't match",
     "password_required": "Password is required to protect share",
     "time_remaining_suffix": "s",
     "time_remaining_text": "remaining",
-    "upload_mode_swapped": "Upload mode changed to {value}",
     "access_title": "Access",
-    "drop_hint": "Drop your files here, or click to choose them",
-    "expiry_title": "Expires after",
     "files_title": "Files to send",
     "password_set": "Protected by a password",
-    "recipients_title": "Recipients",
     "too_big": "These files weigh {size}: a share may hold {max} at most.",
     "upload_failed": "The upload failed: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Uploading # file} other {Uploading # files}}"
-  },
-  "warnings": {
-    "how_to_fix": "How to fix",
-    "tusd_help_title": "Upload Service Unavailable",
-    "tusd_unavailable": "Upload service unavailable. The tusd service is not running. File uploads will not work until this is resolved."
   },
   "nav": {
     "administration": "Administration",
@@ -1038,13 +861,8 @@
     "stats": {
       "active": "Active shares",
       "ending": "{count, plural, one {# ends within 24 h} other {# end within 24 h}}",
-      "none_ending": "none ends within 24 h",
       "online": "Online volume",
-      "online_sub": "in your active shares",
-      "downloads": "Downloads",
-      "never_opened": "{count, plural, one {# share never opened} other {# shares never opened}}",
-      "all_opened": "all of them were opened",
-      "no_share": "no share online"
+      "downloads": "Downloads"
     },
     "drop_title": "Drop files or a folder",
     "drop_sub": "{size} max. per share · folders keep their structure",
@@ -1312,7 +1130,6 @@
     "decrease": "Decrease",
     "increase": "Increase"
   },
-  "Email Change": "Address Change",
   "flash": {
     "account_not_found": "No account is linked to this identity. Link it from your profile, or ask an administrator.",
     "account_exists": "An account already uses this address. Sign in to it, then link this provider from your profile.",

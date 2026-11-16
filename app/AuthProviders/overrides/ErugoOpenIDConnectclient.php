@@ -12,7 +12,6 @@ class ErugoOpenIDConnectclient extends \Jumbojett\OpenIDConnectClient
     
     public function getStateValue()
     {
-        \Log::info("Getting state value");
         return $this->getSessionKey('openid_connect_state');
     }
 

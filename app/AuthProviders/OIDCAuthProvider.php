@@ -102,8 +102,6 @@ class OIDCAuthProvider extends BaseAuthProvider
     session_start();
     $linkingData = $_SESSION['oidc_linking_data'];
 
-    \Log::info("Linking data: " . json_encode($linkingData));
-
     if (isset($linkingData['linkingAccount']) && isset($linkingData['linkingUserId'])) {
       session(['linkingAccount' => $linkingData['linkingAccount']]);
       session(['linkingUserId' => $linkingData['linkingUserId']]);

@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useTranslate } from '@tolgee/vue'
-import { Search, Plus, LogOut } from 'lucide-vue-next'
+import { Search, Plus } from 'lucide-vue-next'
 import AppLink from './AppLink.vue'
 import AccountMenu from './AccountMenu.vue'
 import LanguageSelector from '../languageSelector.vue'
@@ -58,10 +58,6 @@ const navItems = computed(() =>
 
       <div class="app-header-end" v-else>
         <LanguageSelector />
-        <button v-if="variant === 'guest'" type="button" class="secondary header-end-session" @click="emit('logout')">
-          <LogOut aria-hidden="true" />
-          {{ t('auth.end_guest_session') }}
-        </button>
       </div>
     </div>
 

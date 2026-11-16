@@ -15,7 +15,6 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SharesController;
 use App\Http\Controllers\BackgroundsController;
 use App\Services\SettingsService;
-use App\Http\Controllers\ThemesController;
 use App\Http\Controllers\AuthProvidersController;
 use App\Http\Controllers\UploadsController;
 use App\Http\Controllers\ReverseSharesController;
@@ -192,15 +191,6 @@ Route::group([], function ($router) {
         Route::get('/all', [SharesController::class, 'allShares'])->name('shares.allShares');
     });
 
-    //manage themes [auth, admin]
-    Route::group(['prefix' => 'themes', 'middleware' => ['auth', Admin::class]], function ($router) {
-        Route::post('/', [ThemesController::class, 'saveTheme'])->name('themes.save');
-        Route::get('/', [ThemesController::class, 'getThemes'])->name('themes.list');
-        Route::delete('/', [ThemesController::class, 'deleteTheme'])->name('themes.delete');
-        Route::post('/set-active', [ThemesController::class, 'setActiveTheme'])->name('themes.setActive');
-        Route::post('/install', [ThemesController::class, 'installCustomTheme'])->name('themes.install');
-    });
-
     //manage auth providers [auth, admin]
     Route::group(['prefix' => 'auth-providers', 'middleware' => ['auth', Admin::class]], function ($router) {
         Route::get('/', [AuthProvidersController::class, 'index'])->name('auth-providers.index');
@@ -251,7 +241,6 @@ Route::group([], function ($router) {
     Route::get('/available-auth-providers', [AuthProvidersController::class, 'list'])->name('auth-providers.list');
 
     //read active theme [public]
-    Route::get('/themes/active', [ThemesController::class, 'getActiveTheme'])->name('themes.getActive');
 
     //read shares [public]
     Route::get('/shares/{share}', [SharesController::class, 'read'])->name('shares.read');
@@ -260,7 +249,8 @@ Route::group([], function ($router) {
     Route::post('/shares/{share}/unlock', [SharesController::class, 'unlock'])->name('shares.unlock');
 
     //download shares [public]
-    Route::any('/shares/{share}/download', [SharesController::class, 'download'])->name('shares.download');
+    // GET for a link, POST for the password of a share (in the body, never in the address)
+    Route::match(['get', 'post'], '/shares/{share}/download', [SharesController::class, 'download'])->name('shares.download');
     
     //download specific file from share [public] - filepath can include nested directories; posted
     //by the browser when the share has a password, so that it never ends up in an address or a log

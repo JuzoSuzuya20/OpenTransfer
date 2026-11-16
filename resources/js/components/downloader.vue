@@ -76,7 +76,6 @@ const fetchShare = async () => {
     share.value = await getShare(props.downloadShareCode)
     document.title = locked.value ? t.value('downloader.protected_title') : share.value.name
   } catch (error) {
-    console.log('error', error)
     if (error.message == 'Download limit reached') {
       downloadLimitReached.value = true
     } else if (error.message == 'Share expired') {

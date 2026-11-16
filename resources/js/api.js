@@ -31,13 +31,6 @@ const shouldBundleFiles = (files) => {
 
   const shouldBundle = smallFileRatio >= BUNDLE_CONFIG.minSmallFileRatio
 
-  console.log('[shouldBundleFiles]', {
-    totalFiles: files.length,
-    smallFileCount,
-    smallFileRatio: (smallFileRatio * 100).toFixed(1) + '%',
-    threshold: BUNDLE_CONFIG.minSmallFileRatio * 100 + '%',
-    willBundle: shouldBundle
-  })
 
   return shouldBundle
 }
@@ -56,7 +49,6 @@ const bundleFilesIntoZip = async (files, onProgress) => {
     files: []
   }
 
-  console.log('[bundleFilesIntoZip] Starting to bundle', files.length, 'files')
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
@@ -87,7 +79,6 @@ const bundleFilesIntoZip = async (files, onProgress) => {
   // Add manifest to the zip
   zip.file('__erugo_manifest__.json', JSON.stringify(manifest, null, 2))
 
-  console.log('[bundleFilesIntoZip] Generating zip...')
 
   // Generate the zip blob
   const blob = await zip.generateAsync(
@@ -102,11 +93,6 @@ const bundleFilesIntoZip = async (files, onProgress) => {
     }
   )
 
-  console.log('[bundleFilesIntoZip] Bundle complete', {
-    originalFileCount: files.length,
-    bundleSize: blob.size,
-    originalTotalSize: files.reduce((sum, f) => sum + f.size, 0)
-  })
 
   return { blob, manifest }
 }
@@ -152,10 +138,6 @@ const uploadBundledFiles = async (
       type: 'application/zip'
     })
 
-    console.log('[uploadBundledFiles] Bundle created', {
-      originalFiles: files.length,
-      bundleSize: bundleFile.size
-    })
 
     // Phase 2: Upload the bundle
     onProgress({
@@ -196,7 +178,6 @@ const uploadBundledFiles = async (
       )
     })
 
-    console.log('[uploadBundledFiles] Bundle uploaded', uploadResult)
 
     // Phase 3: Create the share
     onProgress({
@@ -233,7 +214,6 @@ const uploadBundledFiles = async (
     }
 
     const data = await response.json()
-    console.log('[uploadBundledFiles] Share created successfully')
     onComplete(data)
   } catch (error) {
     console.error('[uploadBundledFiles] Error:', error)
@@ -1024,21 +1004,6 @@ export const getFaviconStatus = async () => {
   return data.data
 }
 
-export const installCustomTheme = async (name, file) => {
-  const formData = new FormData()
-  formData.append('name', name)
-  formData.append('file', file)
-
-  const response = await fetchWithAuth(`${apiUrl}/api/themes/install`, {
-    method: 'POST',
-    body: formData
-  })
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.message)
-  }
-  return data.data.theme
-}
 
 export const getBackgroundImages = async () => {
   const response = await fetch(`${apiUrl}/api/backgrounds`, {
@@ -1216,84 +1181,6 @@ export const unlockShare = async (id, password) => {
     throw apiError(data)
   }
   return data.data.share
-}
-
-// Theme Methods
-export const getThemes = async () => {
-  const response = await fetchWithAuth(`${apiUrl}/api/themes`, {
-    method: 'GET',
-    headers: {
-      ...addJsonHeader()
-    }
-  })
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.message)
-  }
-  return data.data.themes
-}
-
-export const saveTheme = async (theme) => {
-  const response = await fetchWithAuth(`${apiUrl}/api/themes`, {
-    method: 'POST',
-    headers: {
-      ...addJsonHeader()
-    },
-    body: JSON.stringify(theme)
-  })
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.message)
-  }
-  return data.data.theme
-}
-
-export const deleteTheme = async (name) => {
-  const response = await fetchWithAuth(`${apiUrl}/api/themes/`, {
-    method: 'DELETE',
-    body: JSON.stringify({
-      name
-    }),
-    headers: {
-      ...addJsonHeader()
-    }
-  })
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.message)
-  }
-  return data.data
-}
-
-export const setActiveTheme = async (name) => {
-  const response = await fetchWithAuth(`${apiUrl}/api/themes/set-active`, {
-    method: 'POST',
-    headers: {
-      ...addJsonHeader()
-    },
-    body: JSON.stringify({
-      name
-    })
-  })
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.message)
-  }
-  return true
-}
-
-export const getActiveTheme = async () => {
-  const response = await fetch(`${apiUrl}/api/themes/active`, {
-    method: 'GET',
-    headers: {
-      ...addJsonHeader()
-    }
-  })
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.message)
-  }
-  return data.data.theme
 }
 
 //public auth provider methods

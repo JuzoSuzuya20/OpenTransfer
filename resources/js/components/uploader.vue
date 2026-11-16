@@ -349,7 +349,6 @@ const handleDrop = (e) => {
       // For Chromium-based browsers
       const entry = item.webkitGetAsEntry?.()
       if (entry?.isDirectory) {
-        console.log(`Got directory: ${entry.name}`)
         recurseDirectory(entry, entry.name)
         continue
       }
@@ -400,7 +399,6 @@ const recurseDirectory = (entry, path) => {
     return
   }
 
-  console.log(`Recursing directory: ${path}`)
   const reader = entry.createReader()
 
   // Read entries in batches (the API might not return all entries at once)
@@ -693,13 +691,11 @@ const copyShareUrl = () => {
 }
 
 const removeRecipient = (recipient) => {
-  console.log('remove recipient', recipient)
   recipients.value = recipients.value.filter((item) => item.email !== recipient.email)
 }
 
 const togglePause = () => {
   isPaused.value = !isPaused.value
-  console.log(isPaused.value ? 'Upload paused' : 'Upload resumed')
   if (isPaused.value) {
     // Pausing: save current speed before stopping
     lastKnownSpeed.value = uploadSpeed.value
@@ -763,7 +759,6 @@ const checkExpiryValue = (showError = true) => {
     if (showError) {
       toast.error(t.value('uploader.expiry_too_long', { value: maxExpiryTimeInSelectedUnit.value }))
     }
-    console.log('max expiry time in selected unit', maxExpiryTimeInSelectedUnit.value)
     setNewExpiryValueWithoutLoop(maxExpiryTimeInSelectedUnit.value)
   }
 }
@@ -849,7 +844,6 @@ const dropBoxRemoveActiveClass = (e) => {
 }
 
 const handleDropzoneClick = (e) => {
-  console.log(e)
   if (e.target === dropzone.value) {
     showFilePicker()
   }

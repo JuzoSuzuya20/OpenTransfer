@@ -1,41 +1,18 @@
 {
-  "Account Created": "Konto erstellt",
-  "Add Files": "Dateien hinzufügen",
-  "Add Folders": "Ordner hinzufügen",
-  "Add Recipient": "Empfänger hinzufügen",
-  "Email Verification": "E-Mail-Überprüfung",
-  "Message to share recipients (optional)": "Nachricht an die gemeinsamen Empfänger (optional)",
-  "No files added yet": "Noch keine Dateien hinzugefügt",
-  "No recipients": "Keine Empfänger",
-  "Password Reset": "Passwort zurücksetzen",
   "Powered by": "Powered by",
   "Processing uploaded files": "Verarbeitung hochgeladener Dateien",
-  "Reverse Share": "Umgekehrte Aufteilung",
-  "Reverse Share Invite": "Dateianfrage",
-  "Share Created": "Freigabe erstellt",
-  "Share Deleted Warning": "Freigabe gelöscht",
-  "Share Deletion Warning": "Löschung bald",
-  "Share Downloaded": "Freigabe heruntergeladen",
-  "Share Expired Warning": "Freigabe abgelaufen",
-  "Share Expiry Warning": "Ablauf bald",
   "Share Name": "Name der Freigabe",
   "Share URL": "URL teilen",
-  "We'll provide you with a link instead": {
-    "": "Wir stellen Ihnen stattdessen einen Link zur Verfügung"
-  },
   "auth": {
     "account_disabled": "Dieses Konto ist deaktiviert.",
     "altcha_failed": "Die Roboter-Prüfung ist fehlgeschlagen, bitte versuchen Sie es erneut.",
     "back_to_login": "Zurück zur Anmeldung",
-    "confirm_end_guest_session": "Sind Sie sicher, dass Sie diese Sitzung beenden möchten? Da Sie ein Gastbenutzer sind, können Sie nach Beendigung dieser Sitzung keine weiteren Dateien hochladen.",
     "confirm_password": "Bestätigen Sie Ihr Passwort",
     "create_account": "Konto erstellen",
     "create_account_description": "Geben Sie Ihre Daten ein, um ein Konto zu erstellen. Sie erhalten einen Bestätigungscode per E-Mail.",
     "email": "E-Mail",
     "email_not_verified": "Bitte bestätigen Sie Ihre E-Mail-Adresse, bevor Sie sich anmelden.",
     "email_verified_successfully": "E-Mail erfolgreich verifiziert! Sie können sich jetzt anmelden.",
-    "end_guest_session": "Gastsitzung beenden",
-    "enter_6_digit_code": "6-stelligen Code eingeben",
     "failed_to_accept_invite": "Dieser Einladungscode ist ungültig. Er kann abgelaufen, bereits verwendet oder vom Absender widerrufen worden sein.",
     "failed_to_resend_code": "Überprüfungscode konnte nicht erneut gesendet werden",
     "failed_to_reset_password": "Passwort konnte nicht zurückgesetzt werden",
@@ -43,14 +20,12 @@
     "forgot_password": "Passwort vergessen",
     "forgot_password_create_password": "Passwort erstellen",
     "forgot_password_create_password_description": "Bitte geben Sie Ihr neues Passwort ein. Passwort und Passwortbestätigung müssen übereinstimmen",
-    "guest_warning": "Sie sind als Gast eingeloggt. Sie können hier Dateien hochladen, die an die Person weitergeleitet werden, die Ihnen diese Anfrage geschickt hat.",
     "invalid_email_or_password": "E-Mail-Adresse oder Passwort falsch.",
     "invite_accepted": "Freigabeeinladung akzeptiert. Sie können jetzt Dateien hochladen.",
     "ip_not_allowed": "Die Anmeldung ist aus Ihrem Netzwerk nicht erlaubt.",
     "login": "Anmeldung",
     "login_successful": "Erfolgreich eingeloggt",
     "login_to_accept_invite": "Bitte melden Sie sich an, um diese Einladung zur umgekehrten Freigabe anzunehmen.",
-    "login_with": "Anmeldung mit",
     "logout": "Abmeldung",
     "mfa": {
       "code": "Code",
@@ -104,7 +79,6 @@
     "verification_failed": "Verifizierung fehlgeschlagen",
     "verify_email": "E-Mail verifizieren",
     "verifying": "Überprüfen...",
-    "welcome": "Willkommen",
     "organisation_account": "Konto der Organisation",
     "local_account": "E-Mail und Passwort",
     "forgot_password_question": "Passwort vergessen?",
@@ -119,11 +93,7 @@
     }
   },
   "button": {
-    "reverse_share_invite": "Erstellen Sie eine umgekehrte Freigabeanforderung",
-    "reverse_share_invite_send": "Anfrage senden",
-    "share": {
-      "password_protect": "Passwortschutz"
-    }
+    "reverse_share_invite_send": "Anfrage senden"
   },
   "commandPalette": {
     "category": {
@@ -140,7 +110,6 @@
     "files": "{value, plural, one {# Datei herunterladen} other {{value} Dateien herunterladen}}"
   },
   "email": "E-Mail",
-  "full_name": "Vollständiger Name",
   "guest": {
     "upload_success": "Upload erfolgreich!",
     "upload_success_message": "Die Person, die diese Dateien angefordert hat, erhält eine E-Mail mit einem Download-Link."
@@ -155,7 +124,6 @@
   "message": {
     "from": "Nachricht von {name}"
   },
-  "processing_uploaded_files": "Verarbeitung hochgeladener Dateien",
   "reverse_invite_send": {
     "error": "Reverse Share-Einladung kann nicht gesendet werden",
     "success": "Einladung zur umgekehrten Freigabe gesendet!"
@@ -191,7 +159,6 @@
       "create_link": "Link",
       "email": "Meine E-Mail Adresse",
       "linked_accounts_description": "Verknüpfen Sie Ihr Konto mit einem externen Anbieter, um sich einfacher anzumelden. Nach der Verknüpfung können Sie sich direkt anmelden, indem Sie die Schaltfläche des Anbieters auf dem Anmeldebildschirm auswählen.",
-      "myProfile_description": "Aktualisieren Sie Ihre E-Mail Adresse oder ändern Sie Ihren Namen. Sie können Ihr Passwort ändern, indem Sie auf die Schaltfläche \"Mein Passwort ändern\" klicken und den Anweisungen folgen.",
       "name": "Mein vollständiger Name",
       "unlink": "Unlink",
       "email_change": {
@@ -213,32 +180,15 @@
     },
     "allShares": {
       "allUsers": "Alle Benutzer",
-      "filterByUser": "Filter nach Benutzer",
       "noShares": "Es gibt keine Freigaben anzuzeigen",
       "owner": "Eigentümer"
     },
-    "authProvidersSavedSuccessfully": "Auth-Provider erfolgreich gespeichert",
     "branding": {
-      "background_images": "Hintergrundbilder",
-      "background_images_description": "Laden Sie benutzerdefinierte Hintergrundbilder hoch, um die Unsplash Bilder zu ersetzen. Die Bilder wechseln zufällig in dem von Ihnen festgelegten Intervall.",
-      "background_slideshow_speed": "Bildwechselintervall",
-      "background_slideshow_speed_1_day": "Ein Tag",
-      "background_slideshow_speed_1_hour": "1 Stunde",
-      "background_slideshow_speed_2_hours": "2 Stunden",
-      "background_slideshow_speed_3_minutes": "3 Minuten",
-      "background_slideshow_speed_5_minutes": "5 Minuten",
-      "background_slideshow_speed_description": "Ändert, wie oft das Hintergrundbild zufällig wechselt (dies hat nur Auswirkungen, wenn Sie mehrere Hintergrundbilder haben). Setzen Sie den Wert 0, um die Diashow zu deaktivieren und stattdessen auf jeder neuen Seite ein zufälliges Bild anzuzeigen.",
-      "background_slideshow_speed_off": "Deaktivieren",
       "confirm": "Bitte bestätigen",
-      "confirm_delete_theme": "Sind Sie sicher, dass Sie das Thema \"{name}\" löschen möchten? Dies kann nicht rückgängig gemacht werden.",
       "confirm_reset_favicon": "Wollen Sie das Favicon wirklich zurücksetzen? Dadurch wird Ihr Favicon gelöscht und das Standard-Favicon von OpenTransfer wiederhergestellt. Es gibt keine Möglichkeit, Ihr Favicon wiederherzustellen, also stellen Sie sicher, dass Sie eine Sicherungskopie davon haben, bevor Sie fortfahren.",
       "confirm_reset_logo": "Möchten Sie das Logo wirklich zurücksetzen? Dadurch wird Ihr Logo gelöscht und das Standard-OpenTransfer-Logo wiederhergestellt. Es gibt keine Möglichkeit, Ihr Logo wiederherzustellen, also stellen Sie sicher, dass Sie eine Sicherungskopie davon haben, bevor Sie fortfahren.",
       "delete": "Löschen",
-      "delete_theme": "Theme löschen",
-      "delete_theme_description": "Löschen Sie das ausgewählte Theme. Dadurch wird es aus der Liste der Themes entfernt und Sie können es nicht mehr verwenden. Es ist nicht möglich, das aktive Theme oder gebündelte Themes zu löschen.",
       "download": "Herunterladen",
-      "download_theme": "Theme herunterladen",
-      "download_theme_description": "Laden Sie das ausgewählte Theme als JSON-Datei herunter. Damit können Sie ein neues Theme erstellen oder ein bestehendes Theme ändern.",
       "errors": {
         "file_too_large": "Hochladen des Favicons fehlgeschlagen‍‍‍‍‍‍‍‍‍ - Datei muss 1MB oder kleiner sein."
       },
@@ -247,14 +197,7 @@
       "favicon_description": "Laden Sie ein benutzerdefiniertes Favicon hoch, um das standardmäßige OpenTransfer-Symbol in der Browser-Registerkarte zu ersetzen.",
       "favicon_reset_failed": "Favicon kann nicht zurückgesetzt werden",
       "favicon_reset_success": "Favicon erfolgreich zurückgesetzt",
-      "favicon_upload_failed": "Hochladen des Favicons fehlgeschlagen",
-      "favicon_uploaded": "Favicon hochgeladen",
       "in_pixels": "in Pixel",
-      "in_seconds": "Sekunden",
-      "install_custom_theme": "Installieren Sie ein benutzerdefiniertes Theme\n",
-      "install_custom_theme_description": "Installieren Sie ein benutzerdefiniertes Themeaus einer JSON-Datei.\n\nDies kann ein Theme sein, das Sie selbst geändert oder erstellt haben, oder eines, das Sie heruntergeladen haben.",
-      "install_custom_theme_description_2": "Wenn Sie ein Theme aus dem Internet herunterladen, stellen Sie bitte sicher, dass Sie der Quelle vertrauen und das Theme vor der Installation auf bösartigen Code überprüft haben.",
-      "install_theme": "Theme installieren",
       "logo": "Logo",
       "logo_and_favicon": "Logo & Favicon",
       "logo_description": "Zeigen Sie Ihr Firmenlogo im PNG-Format in der oberen linken Ecke an. Legen Sie die gewünschte Breite in Pixeln fest - die Höhe wird automatisch angepasst, um das Seitenverhältnis beizubehalten. Verwenden Sie ein Quellbild, das mindestens so breit ist wie Ihre Anzeigebreite, um die Qualität zu gewährleisten.",
@@ -265,22 +208,12 @@
       "other_ui_settings": "Andere",
       "reset": "Zurücksetzen",
       "reset_logo_to_default": "Logo auf Standard zurücksetzen",
-      "select_theme": "Theme auswählen",
-      "select_theme_description": "Wählen Sie aus einer Reihe von vorgefertigten Themes oder einem von Ihnen installierten Theme.",
       "settings_saved": "Branding-Einstellungen erfolgreich gespeichert",
       "show_powered_by": "Powered by OpenTransfer anzeigen",
       "show_powered_by_description": "Zeigen oder verbergen Sie den Text \"Powered by OpenTransfer\" unten auf der Seite. Dieser Text ermöglicht es OpenTransfer, von den Nutzern entdeckt zu werden und hilft uns zu wachsen, Sie können ihn jedoch ausblenden, wenn Sie es wünschen.\n",
       "theme": "Themen",
-      "theme_delete_failed": "Thema kann nicht gelöscht werden",
-      "theme_deleted_successfully": "Theme erfolgreich gelöscht",
-      "theme_description": "Wählen Sie aus einer Reihe von vorgefertigten Themes oder einem von Ihnen installierten Theme.",
-      "theme_file": "Theme-Datei",
-      "theme_name": "Theme Name",
-      "upload_background": "Hintergrundbild oder Video hochladen",
-      "upload_background_image": "Hintergrundbild hochladen",
       "upload_favicon": "favicon.svg",
       "use_my_backgrounds": "Meine Hintergründe verwenden",
-      "use_my_backgrounds_description": "Verwenden Sie die Hintergründe, die Sie hochgeladen haben. Wenn nicht markiert, werden Unsplash-Hintergründe verwendet.",
       "confirm_delete_favicon": "Das eigene Favicon löschen? Das Standardsymbol von OpenTransfer kehrt zurück.",
       "sign_in_screen": "Anmeldebildschirm",
       "login_background": "Hintergrundbild",
@@ -323,7 +256,6 @@
       "about": "Informationen über Ihre OpenTransfer-Installation",
       "allShares": "Anzeigen und Verwalten von Freigaben durch alle Benutzer",
       "branding": "Passen Sie die Benutzeroberfläche Ihrer OpenTransfer-Instanz an und fügen Sie Ihre eigenen Branding-Anpassungen hinzu.",
-      "cloudConnect": "Verbinden Sie Ihre Instanz mit der Erugo Cloud für einfaches Domain-Routing",
       "emailTemplates": "Verwalten von E-Mail-Vorlagen",
       "myProfile": "Verwalten Sie Ihr Konto.",
       "myShares": "Verwalten Sie Ihre geteilten Dateien.",
@@ -332,8 +264,6 @@
       "users": "Verwalten Sie Ihre Benutzer."
     },
     "emailTemplates": {
-      "accountCreated": "Konto erstellt",
-      "accountCreatedDescription": "Wird an neue Benutzer gesendet, wenn ein Administrator ihr Konto erstellt. Enthält einen Link, über den der Benutzer sein Passwort festlegen kann.",
       "baseTemplate": "Basis-Vorlage",
       "baseTemplateDescription": "Steuert die Basisvorlage, von der alle anderen Vorlagen erben.",
       "error": "E-Mail-Vorlagen können nicht hochgeladen werden",
@@ -341,7 +271,6 @@
       "error_saving_fallback": "Fallback-Text konnte nicht gespeichert werden",
       "error_saving_templates": "Vorlagen können nicht gespeichert werden",
       "no_changes": "Keine Änderungen zu speichern",
-      "passwordReset": "Passwort zurücksetzen",
       "requiredFields": "Erforderliche Felder",
       "sections": {
         "action_text": "Text der Aktionsschaltfläche",
@@ -367,7 +296,6 @@
       },
       "downloadLimit": {
         "description": "Sie können das Download-Limit für jede Freigabe festlegen, indem Sie auf die Zahl auf der rechten Seite klicken und das neue Limit eintippen. Deaktivieren Sie das Feld, um das Limit zu entfernen.",
-        "description2": "Die Änderungen werden automatisch gespeichert, wenn Sie außerhalb des Feldes klicken.",
         "title": "Hilfe zu Download-Limits"
       }
     },
@@ -386,17 +314,13 @@
     "settingsSavedSuccessfully": "Einstellungen erfolgreich gespeichert",
     "share": {
       "password": "Passwort teilen",
-      "password_confirm": "Freigabepasswort bestätigen",
-      "password_protect_description": "Erstellen Sie ein Passwort für Ihre Freigabe. Jeder, der diese Freigabe herunterlädt, benötigt dieses Passwort, um darauf zuzugreifen. Bitte beachten Sie: Nach der Erstellung wird dieses Kennwort verschlüsselt und wir können es nicht für Sie abrufen. Speichern Sie es daher an einem sicheren Ort.",
-      "remove_password": "Passwort entfernen"
+      "password_confirm": "Freigabepasswort bestätigen"
     },
     "stats": {
       "downloads": {
         "all_time": "All-Time Downloads",
-        "chart_title": "Downloads im Laufe der Zeit",
         "days_option": "{days} Tage",
         "downloads": "Downloads",
-        "downloads_in_period": "Downloads ({days} Tage)",
         "time_period": "Zeitspanne:",
         "title": "Download-Aktivität",
         "top_shares": "Am häufigsten heruntergeladene Freigaben",
@@ -416,28 +340,6 @@
         "files": "Dateien",
         "title": "Verteilung nach Dateityp"
       },
-      "help": {
-        "active_vs_expired_description": "Aktive Freigaben sind zugänglich, während abgelaufene Freigaben gemäß Ihren Bereinigungseinstellungen zum Löschen anstehen.",
-        "active_vs_expired_title": "Aktiv vs. Abgelaufen",
-        "categories_description": "Die Dateien sind nach Typ gruppiert: Bilder, Dokumente, Videos, Audio, Archive, Code und andere.",
-        "categories_title": "Kategorien",
-        "disk_usage_description": "Zeigt die gesamte Speicherplatznutzung an. Erwägen Sie, alte Freigaben zu bereinigen, wenn die Nutzung hoch ist.",
-        "disk_usage_title": "Nutzung der Festplatte",
-        "downloads_description": "Verfolgen Sie die Download-Aktivität für alle Freigaben über den von Ihnen gewählten Zeitraum.",
-        "downloads_title": "Aktivität herunterladen",
-        "file_types_description": "Aufschlüsselung der Dateien nach Kategorie über alle Freigaben hinweg.",
-        "file_types_title": "Dateityp Verteilung",
-        "guest_users_description": "Benutzer, die über umgekehrte Einladungen zur gemeinsamen Nutzung erstellt wurden.",
-        "guest_users_title": "Gast-Benutzer",
-        "shares_description": "Übersicht über alle Freigaben im System, einschließlich ihres aktuellen Status.",
-        "shares_title": "Statistik teilen",
-        "storage_description": "Überwachen Sie die Festplattennutzung Ihres Servers und den von den Freigaben verbrauchten Speicherplatz.",
-        "storage_title": "Überblick über die Speicherung",
-        "unique_downloaders_description": "Anzahl der eindeutigen IP-Adressen, die Freigaben heruntergeladen haben.",
-        "unique_downloaders_title": "Einzigartige Downloader",
-        "users_description": "Überblick über die Benutzerkonten und deren Aktivitätsniveau.",
-        "users_title": "Benutzer-Statistik"
-      },
       "loading": "Laden der Statistiken...",
       "nav": {
         "downloads": "Herunterladen",
@@ -452,7 +354,6 @@
         "deleted": "Gelöscht",
         "expired": "Abgelaufen",
         "last_7_days": "Letzte 7 Tage",
-        "per_share": "pro Freigabe",
         "protected": "Geschützt",
         "title": "Statistik teilen",
         "total_files": "Dateien insgesamt",
@@ -463,7 +364,6 @@
         "disk_usage": "Nutzung der Festplatte",
         "free": "kostenlos",
         "of": "von",
-        "of_disk": "der Scheibe",
         "share_storage": "Speicher teilen",
         "title": "Überblick über die Speicherung",
         "used": "gebraucht"
@@ -475,7 +375,6 @@
         "shares": "Freigaben",
         "title": "Benutzer-Statistik",
         "top_users": "Aktivste Benutzer",
-        "total_users": "Benutzer insgesamt",
         "with_shares": "Benutzer mit Anteilen"
       },
       "figures": {
@@ -495,10 +394,6 @@
       "shareExtended": "Der Zeitraum zum Download der geteilten Dateien wurde verlängert"
     },
     "system": {
-      "allow_chunked_uploads": "Chunked-Upload-Modus zulassen",
-      "allow_chunked_uploads_description": "Der Chunked-Upload-Modus unterteilt Dateien in kleinere Segmente, die nacheinander übertragen werden. Diese Methode ist zwar bei kleineren Dateien etwas langsamer als der direkte Upload, bietet aber bei der Übertragung großer Dateien mehr Stabilität und Zuverlässigkeit. Chunked Uploads unterstützen die Verfolgung des Fortschritts und ermöglichen es dem Benutzer, die Übertragung manuell anzuhalten und fortzusetzen. Dies ist ideal für Dateien über 100 MB oder bei instabilen Netzwerkverbindungen.",
-      "allow_direct_uploads": "Direkten Upload-Modus zulassen",
-      "allow_direct_uploads_description": "Beim direkten Upload werden die Dateien in einer einzigen, ununterbrochenen Anfrage übertragen. Während diese Methode für die meisten Dateien die schnellsten Übertragungsgeschwindigkeiten bietet, kann es bei extrem großen Dateien zu Stabilitätsproblemen oder Timeouts kommen. Für eine optimale Leistung bei Dateien, die größer als 100 MB sind, ist der Upload in Teilen die bessere Option.",
       "allow_reverse_shares": "Umgekehrtes Teilen zulassen",
       "allow_reverse_shares_description": "Ein Konto kann einer externen Person einen Link senden, um ihm Dateien zu übermitteln.",
       "application_name": "Name der Anwendung",
@@ -506,21 +401,13 @@
       "application_url": "URL der Anwendung",
       "application_url_description": "Die öffentliche Adresse der Instanz: Die Links der E-Mails beginnen damit.",
       "auth": "Registrierung",
-      "auth_provider_allow_registration": "Selbstregistrierung zulassen",
-      "auth_provider_allow_registration_description": "Erstellt automatisch lokale Konten für Benutzer, die sich über diesen Anbieter anmelden. Aktivieren Sie diese Option nur für Anbieter, die auf Ihre Organisation beschränkt sind, nicht für öffentliche Anbieter wie Google oder Microsoft.",
       "auth_provider_config_base_url": "Basis-URL",
       "auth_provider_config_client_id": "Client ID",
       "auth_provider_config_client_secret": "Client Secret",
       "auth_provider_config_tenant": "Tenant ID",
-      "auth_provider_enabled": "Aktivieren",
-      "auth_provider_name": "Name des Anbieters",
-      "auth_provider_type": "Typ des Anbieters",
       "auth_providers": "Auth Provider",
-      "auth_providers_description": "Konfigurieren Sie die Authentifizierungsanbieter, über die sich Ihre Benutzer authentifizieren können sollen.",
-      "auth_providers_description_localhost": "Die externe Authentifizierungskonfiguration ist auf localhost nicht verfügbar. OAuth-Anbieter benötigen einen vollständig qualifizierten Domainnamen (FQDN), um ordnungsgemäß zu funktionieren. Bitte greifen Sie über eine registrierte Domain auf OpenTransfer zu, um diese Einstellungen zu konfigurieren.",
       "backups": {
         "actions": "Aktionen",
-        "auto_backup": "Automatische Backups",
         "auto_backup_description": "Sie können auch selbst eine erstellen oder eine herunterladen.",
         "create_backup": "Sicherung erstellen",
         "create_failed": "Sicherung konnte nicht erstellt werden",
@@ -543,20 +430,13 @@
         "title": "Datenbank-Backups"
       },
       "callback_url": "Rückruf-URL",
-      "callback_url_description": "Verwenden Sie die in der Konfiguration Ihres Identitätsanbieters angegebene Callback-URL.",
-      "chunked": "In Teilen",
-      "chunked_uploads_disabled_but_default": "Sie haben den Standard-Upload-Modus auf \"in Teilen\" eingestellt, aber Uploads \"in Teilen\" sind deaktiviert!",
       "clean_files_after": "Dateien bereinigen nach",
       "clean_files_after_description": "Die Dateien einer abgelaufenen Freigabe werden nach dieser Frist gelöscht.",
       "days": "Tage",
       "default_expiry_time": "Standard-Verfallszeit",
       "default_language": "Standardsprache",
       "default_language_description": "Die Sprache der Oberfläche und der E-Mails für alle, die keine gewählt haben.",
-      "default_upload_mode": "Standard-Upload-Modus",
-      "default_upload_mode_description": "Legen Sie fest, welcher Modus standardmäßig ausgewählt werden soll. Benutzer können dies beim Erstellen einer Freigabe ändern, wenn Sie mehr als eine Methode aktiviert haben.",
       "delete_auth_provider": "Diesen Anbieter löschen",
-      "direct": "Direkt",
-      "direct_uploads_disabled_but_default": "Sie haben den Standard-Upload-Modus auf direkt eingestellt, aber direkte Uploads sind deaktiviert!",
       "disabled": "Deaktiviert",
       "emails": "Benachrichtigungen",
       "enable_share_deleted_emails": "Aktiviere die E-Mail-Benachrichtigung, wenn geteilte Dateien gelöscht wurden",
@@ -588,8 +468,6 @@
       "pattern_token_lowercase": "Kleinbuchstaben (a-z)",
       "pattern_token_range": "Zeichenbereich/Klasse",
       "pattern_token_uppercase": "Großbuchstabe (A-Z)",
-      "provider_trust_warning": "Warnung: Vertrauen in Auth Provider ",
-      "provider_trust_warning_description": "Stellen Sie sicher, dass Sie nur Authentifizierungsanbieter konfigurieren und aktivieren, denen Sie vertrauen. Authentifizierungsanbieter verfügen über erweiterte Zugriffsrechte auf Ihre Anwendungs- und Benutzerdaten. Das Hinzufügen von nicht vertrauenswürdigen oder gefährdeten Anbietern kann zu unbefugtem Zugriff, Datenverletzungen oder Kontoübernahmen führen.",
       "reverse_shares": "Dateianfragen",
       "security": {
         "add_your_ip": "Zur Liste hinzufügen",
@@ -604,13 +482,11 @@
         "encryption_key_absent": "Noch kein Schlüssel. Erzeugen Sie einen mit: docker exec CONTAINER_NAME ot-artisan generate-storage-key, bewahren Sie eine Kopie getrennt von diesem Server auf und setzen Sie ihn als STORAGE_ENCRYPTION_KEY.",
         "encryption_misconfigured": "Der Schlüssel fehlt oder ist ungültig: Verschlüsselte Dateien können nicht heruntergeladen werden und neue Freigaben werden unverschlüsselt gespeichert. Setzen Sie STORAGE_ENCRYPTION_KEY erneut.",
         "invalid_entries": "Ungültige Einträge in der Liste: {entries}",
-        "ip_allowlist": "Anmeldung nach Netzwerk einschränken",
         "ip_allowlist_description": "Anmeldung und Sitzungen nur aus diesen Netzwerken, SSO eingeschlossen. Freigabelinks und Gäste von Dateianfragen bleiben überall offen.",
         "ip_allowlist_enabled": "Anmeldung nur aus den unten aufgeführten Netzwerken erlauben",
         "ip_allowlist_entries": "Erlaubte Adressen und Bereiche",
         "ip_allowlist_entries_help": "Eine Adresse oder ein Bereich pro Zeile, zum Beispiel 203.0.113.10 oder 10.0.0.0/8. Nach #: ein Kommentar.",
         "lockout_error": "Diese Liste würde Sie aussperren: Sie enthält Ihre Adresse nicht ({ip}).",
-        "mfa_policy": "Regel für die Zwei-Faktor-Authentifizierung",
         "mfa_policy_admins": "Administratoren",
         "mfa_policy_everyone": "Alle Benutzer",
         "mfa_policy_help": "Wer keinen zweiten Faktor hat, richtet ihn bei der nächsten Anmeldung mit Passwort ein; die laufende Sitzung bleibt bestehen. SSO-Konten hängen von ihrem Identitätsanbieter ab.",
@@ -634,40 +510,22 @@
       "self_registration_allowed_domains_placeholder": "beispiel.com, unternehmen.org",
       "self_registration_description": "Auf dem Anmeldebildschirm erscheint ein Link „Konto erstellen“; die Adresse wird per E-Mail geprüft.",
       "self_registration_enabled": "Aktivierung der Selbstregistrierung",
-      "share_deleted_emails": "E-Mails bei gelöschten Dateien",
       "share_deleted_emails_description": "Eine Bestätigung, sobald die Dateien gelöscht sind.",
-      "share_deletion_warning_emails": "Warn-E-Mails bei anstehenden Löschungen von Dateien",
       "share_deletion_warning_emails_description": "Eine letzte Warnung, bevor die Dateien gelöscht werden.",
-      "share_downloaded_emails": "E-Mails bei heruntergeladenen Dateien",
       "share_downloaded_emails_description": "Der Eigentümer erhält beim ersten Download eine E-Mail.",
-      "share_expired_warning_emails": "E-Mails bei abgelaufenen Freigaben",
       "share_expired_warning_emails_description": "Eine E-Mail, wenn die Freigabe nicht mehr abrufbar ist.",
-      "share_expiry_warning_emails": "Warn-E-Mails bei bald ablaufenden Freigaben",
       "share_expiry_warning_emails_description": "Eine Erinnerung vor dem Ablauf, um bei Bedarf zu verlängern.",
       "share_url_generation": "URL-Generierung freigeben",
       "share_url_mode": "URL-Erzeugungsmodus",
       "share_url_mode_description": "Haiku: Wörter, die sich leicht vorlesen lassen (herbst-brise-mond). Muster: ein eigenes Format.",
       "share_url_mode_haiku": "Klassischer Haiku-Stil",
       "share_url_mode_pattern": "Muster",
-      "share_url_mode_random": "Zufällige Zeichenfolge",
-      "share_url_mode_shortcode": "Kurzer Code",
-      "share_url_mode_uuid": "UUID",
       "share_url_pattern": "Muster",
       "share_url_pattern_description": "Definieren Sie ein Muster mit der OpenTransfer-Mustersyntax. Verwenden Sie spezielle Token für zufällige Zeichen, oder fügen Sie literale Zeichen für Präfixe und Trennzeichen ein.",
       "share_url_pattern_placeholder": "z. B. ES-####-AAA oder [A-Z][0-9]***",
       "share_url_pattern_preview": "Vorschau",
       "share_url_pattern_syntax": "Muster-Syntax",
-      "share_url_prefix": "URL-Präfix",
-      "share_url_prefix_description": "Optionales Präfix, das allen Freigabe-URLs zur Markenbildung hinzugefügt wird (z. B. \"acme\" ergibt \"acme-autumn-breeze\"). Leer lassen für kein Präfix.",
-      "share_url_prefix_placeholder": "sh:",
       "share_url_preset": "Voreinstellung",
-      "share_url_random_characters": "Erlaubte Zeichen",
-      "share_url_random_length": "Zufällige Stringlänge",
-      "share_url_random_lowercase": "Kleinbuchstaben a-z",
-      "share_url_random_numbers": "Zahlen 0-9",
-      "share_url_random_special": "Besondere Zeichen",
-      "share_url_random_uppercase": "Großbuchstaben A-Z",
-      "share_url_shortcode_length": "Länge des Kurzcodes",
       "shares": "Geteilte Dateien",
       "show_deleted_shares": "Zeige gelöschte Freigaben",
       "show_language_selector": "Sprachauswahl anzeigen",
@@ -688,8 +546,6 @@
       "smtp_sender_name_description": "Der Name des Absenders im Posteingang.",
       "smtp_username": "SMTP-Benutzername",
       "smtp_username_description": "Oft die Adresse des Absenderkontos.",
-      "upload_modes": "Upload-Modi",
-      "your_auth_providers": "Ihre Auth-Provider",
       "delete_auth_provider_confirmation": "Diesen Identitätsanbieter löschen? Seine Einstellungen gehen verloren, und niemand kann sich mehr darüber anmelden.",
       "pattern_preset": {
         "short": "Kurz (8 Zeichen)",
@@ -701,7 +557,6 @@
       "share_url_pattern_strong": "Etwa {bits} Bit Zufall: genug, um nicht erraten zu werden.",
       "share_url_pattern_weak": "Etwa {bits} Bit Zufall: zu kurz, Links könnten erraten werden. Mindestens {min} sind nötig (8 Zeichen *)."
     },
-    "system_auth_provider_info_link": "Über {name}",
     "table": {
       "actions": "Aktionen",
       "dates": "Daten",
@@ -718,10 +573,6 @@
       "manage": "Verwalten Sie",
       "myProfile": "Mein Konto",
       "myShares": "Meine Freigaben",
-      "reverse_invite": "Umgekehrte Freigabeanforderung erstellen",
-      "share": {
-        "password_protect": "Freigabe mit Passwort schützen"
-      },
       "stats": "System-Statistiken",
       "system": "System",
       "users": "Benutzer",
@@ -767,8 +618,6 @@
       "scan_qr": "Scannen Sie diesen QR-Code mit Ihrer Authenticator-App.",
       "set_up_app": "Authenticator-App einrichten",
       "setup_expired": "Diese Einrichtung ist abgelaufen, bitte beginnen Sie erneut.",
-      "status_off": "Die Zwei-Faktor-Authentifizierung ist deaktiviert: Die Anmeldung verlangt nur Ihr Passwort.",
-      "status_on": "Die Zwei-Faktor-Authentifizierung ist für Ihr Konto aktiviert.",
       "title": "Zwei-Faktor-Authentifizierung",
       "too_many_attempts": "Zu viele fehlgeschlagene Versuche. Bitte warten Sie 15 Minuten und versuchen Sie es erneut.",
       "totp_active": "Die Anmeldung mit Passwort verlangt zusätzlich einen Code aus Ihrer App.",
@@ -787,9 +636,7 @@
       "add": "Benutzer hinzufügen",
       "add_user_description": "Wir senden dem Benutzer eine E-Mail mit einem Link, über den er sein Passwort festlegen kann.",
       "add_user_self_registration_tip_off": "Die Selbstregistrierung ist derzeit für die E-Mail-Authentifizierung deaktiviert. Aktivieren Sie sie, damit Benutzer ihre eigenen Konten erstellen können, anstatt sie manuell hinzuzufügen.",
-      "add_user_self_registration_tip_off_short": "Die Selbstregistrierung ist deaktiviert. Klicken Sie hier, um zu verwalten.",
       "add_user_self_registration_tip_on": "Die Selbstregistrierung ist aktiviert. Benutzer können ihre eigenen Konten erstellen.",
-      "add_user_self_registration_tip_on_short": "Die Selbstregistrierung ist aktiviert. Klicken Sie hier, um zu verwalten.",
       "admin": "Verwaltung",
       "admin_help_text": "Machen Sie den Benutzer zu einem Administrator.",
       "admin_help_text_2": "Der Benutzer hat die gleichen Rechte wie Sie.",
@@ -810,7 +657,6 @@
       "force_reset_password": "Passwort zurücksetzen",
       "force_reset_password_success": "Das Passwort des Benutzers wurde zurückgesetzt!",
       "id": "ID",
-      "leave_blank_to_keep_same_password": "Leer lassen, um dasselbe Passwort beizubehalten.",
       "link_provider_confirm": "Möchten Sie Ihr Konto wirklich mit diesem Anbieter verknüpfen?",
       "linked": "Verbundenes Konto",
       "must_change_password": "Benutzer muss Passwort ändern",
@@ -832,9 +678,7 @@
       "reset_two_factor_failed": "Der zweite Faktor konnte nicht entfernt werden.",
       "reset_two_factor_success": "Zweiter Faktor entfernt.",
       "save_changes": "Änderungen speichern",
-      "send_invite": "Anfrage senden",
       "unlink_provider_confirm": "Ihr Konto wirklich von diesem Anbieter abkoppeln?",
-      "update_password": "Passwort aktualisieren",
       "user": "Benutzer",
       "user_created_successfully": "Benutzer erfolgreich angelegt",
       "user_deleted_successfully": "Benutzer wurde erfolgreich gelöscht",
@@ -876,7 +720,6 @@
   },
   "share": {
     "button": {
-      "expireNow": "Jetzt ablaufen lassen",
       "extend": "Verlängern"
     },
     "contains": {
@@ -902,21 +745,13 @@
       "count": "{value, plural, one {# Datei} other {# Dateien}}",
       "including": "einschließlich:"
     },
-    "not_found": "Die gesuchte Freigabe wurde nicht gefunden. Möglicherweise müssen Sie sich anmelden, um sie zu sehen.",
-    "passwordNotProtected": "Öffnen Sie",
-    "passwordProtected": "Passwort geschützt"
+    "not_found": "Die gesuchte Freigabe wurde nicht gefunden. Möglicherweise müssen Sie sich anmelden, um sie zu sehen."
   },
   "total_size": "Gesamtgröße",
   "upload": {
-    "files": "{value, plural, one {Hochladen der Datei #} other {Hochladen von # Dateien}}",
-    "upload_mode_not_supported": "Es ist kein gültiger Upload-Modus ausgewählt! Wir sind uns nicht sicher, was wir vorschlagen sollen, da dies nicht möglich sein sollte."
+    "files": "{value, plural, one {Hochladen der Datei #} other {Hochladen von # Dateien}}"
   },
   "uploader": {
-    "current_mode": {
-      "chunked": "Chunked-Loading-Modus",
-      "direct": "Direkter Upload-Modus"
-    },
-    "expiry_label": "Die Freigabe läuft in {value} {unit} ab (ändern)",
     "expiry_max_value": "Max: {value}",
     "expiry_too_long": "Die von Ihnen eingegebene Verfallszeit überschreitet die Höchstgrenze. Wir haben sie automatisch auf den längsten zulässigen Zeitraum angepasst.",
     "expiry_unit": {
@@ -925,7 +760,6 @@
       "weeks": "Woche(n)",
       "years": "Jahr(e)"
     },
-    "guest_share_created": "Dankeschön! Ihre Dateien wurden erfolgreich gesendet. In wenigen Augenblicken werden Sie abgemeldet.",
     "interrupted_upload": {
       "description": "Es sieht so aus, als hätten Sie einen Upload durchgeführt, der unterbrochen wurde.",
       "files": "Dateien",
@@ -939,28 +773,17 @@
       "title": "Unterbrochener Upload erkannt",
       "total_size": "Gesamtgröße"
     },
-    "password_confirmation_required": "Passwortbestätigung erforderlich",
-    "password_mismatch": "Passwörter stimmen nicht überein",
     "password_required": "Zum Schutz der Freigabe ist ein Passwort erforderlich",
     "time_remaining_suffix": "s",
     "time_remaining_text": "verbleibende",
-    "upload_mode_swapped": "Upload-Modus auf {value} geändert",
     "access_title": "Zugriff",
-    "drop_hint": "Dateien hier ablegen oder klicken, um sie auszuwählen",
-    "expiry_title": "Läuft ab nach",
     "files_title": "Zu sendende Dateien",
     "password_set": "Durch ein Passwort geschützt",
-    "recipients_title": "Empfänger",
     "too_big": "Diese Dateien sind {size} groß: Eine Freigabe darf höchstens {max} enthalten.",
     "upload_failed": "Das Hochladen ist fehlgeschlagen: {error}"
   },
   "uploading": {
     "files": "{value, plural, one {Hochladen der Datei #} other {Hochladen von # Dateien}}"
-  },
-  "warnings": {
-    "how_to_fix": "Wie beheben",
-    "tusd_help_title": "Upload-Dienst nicht verfügbar",
-    "tusd_unavailable": "Der Upload-Dienst ist nicht verfügbar. Der tusd-Dienst läuft nicht. Datei-Uploads funktionieren nicht, bis das Problem behoben ist."
   },
   "nav": {
     "administration": "Verwaltung",
@@ -1038,13 +861,8 @@
     "stats": {
       "active": "Aktive Freigaben",
       "ending": "{count, plural, one {# läuft in 24 h ab} other {# laufen in 24 h ab}}",
-      "none_ending": "keine läuft in 24 h ab",
       "online": "Online-Volumen",
-      "online_sub": "in Ihren aktiven Freigaben",
-      "downloads": "Downloads",
-      "never_opened": "{count, plural, one {# Freigabe nie geöffnet} other {# Freigaben nie geöffnet}}",
-      "all_opened": "alle wurden geöffnet",
-      "no_share": "keine Freigabe online"
+      "downloads": "Downloads"
     },
     "drop_title": "Dateien oder einen Ordner hierher ziehen",
     "drop_sub": "{size} max. pro Freigabe · die Ordnerstruktur bleibt erhalten",
@@ -1312,7 +1130,6 @@
     "decrease": "Verringern",
     "increase": "Erhöhen"
   },
-  "Email Change": "Adressänderung",
   "flash": {
     "account_not_found": "Mit dieser Identität ist kein Konto verknüpft. Verknüpfen Sie es in Ihrem Profil oder wenden Sie sich an einen Administrator.",
     "account_exists": "Diese Adresse gehört bereits zu einem Konto. Melden Sie sich dort an und verknüpfen Sie den Anbieter in Ihrem Profil.",
