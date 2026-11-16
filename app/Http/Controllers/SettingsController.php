@@ -35,7 +35,7 @@ class SettingsController extends Controller
         )]);
 
         // Before anything is saved: a refused request must not be half applied
-        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseWeakSharePattern($request);
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseForcedSso($request) ?? $this->refuseWeakSharePattern($request);
         if ($refusal) {
             return $refusal;
         }
@@ -146,6 +146,27 @@ class SettingsController extends Controller
             'code' => 'sso_domains_invalid',
             'message' => 'Not a domain name: ' . implode(', ', $invalid),
             'data' => ['invalid' => $invalid],
+        ], 422);
+    }
+
+    // The provider the sign-in page leads to must exist (one disabled forces nothing until it is
+    // enabled again, which the providers saved along with it may do)
+    private function refuseForcedSso(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+        if (!$incoming->has(\App\Services\SsoPolicy::SETTING_FORCED)) {
+            return null;
+        }
+
+        $value = (string) $incoming->get(\App\Services\SsoPolicy::SETTING_FORCED);
+        if ($value === '' || (ctype_digit($value) && \App\Models\AuthProvider::whereKey((int) $value)->exists())) {
+            return null;
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'code' => 'sso_forced_provider_invalid',
+            'message' => 'No such identity provider',
         ], 422);
     }
 

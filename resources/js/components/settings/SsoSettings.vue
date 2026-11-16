@@ -25,6 +25,11 @@ const toast = useToast()
 const requiredDomains = ref('')
 const domainList = computed(() => parseSsoDomains(requiredDomains.value))
 
+// --- The sign-in page: its form, or straight to one provider (the "forced" OpenID Connect of
+// ITSM-NG). Local accounts (admins) keep the form at /?noAUTO=1.
+const forcedProvider = ref('')
+const formAddress = `${window.location.origin}/?noAUTO=1`
+
 // --- Providers
 const providers = ref([])
 const types = ref([])
@@ -36,12 +41,21 @@ const testing = ref({})
 const copied = ref('')
 
 const enabledProviders = computed(() => providers.value.filter((provider) => provider.enabled))
+const forcedOptions = computed(() => [
+  { value: '', label: t.value('sso.forced_none') },
+  ...providers.value.filter((provider) => provider.id).map((provider) => ({ value: String(provider.id), label: t.value('sso.forced_to', { name: provider.name }) }))
+])
+const forcedIsDisabled = computed(() => {
+  const provider = providers.value.find((item) => String(item.id) === forcedProvider.value)
+  return Boolean(provider && !provider.enabled)
+})
 const lockoutRisk = computed(() => domainList.value.length > 0 && enabledProviders.value.length === 0)
 
 const load = async () => {
   try {
     const settings = mapSettings(await getSettingsByGroup('system.auth'))
     requiredDomains.value = settings.sso_required_domains ?? ''
+    forcedProvider.value = String(settings.sso_forced_provider ?? '')
     providers.value = (await getAuthProviders()).map((provider) => ({ ...provider, editing: false }))
     types.value = await getAvailableProviderTypes()
   } catch (error) {
@@ -141,9 +155,15 @@ const copy = async (text, key) => {
 
 const save = async () => {
   try {
-    await saveSettingsById({ sso_required_domains: domainList.value.join(', ') })
+    await saveSettingsById({ sso_required_domains: domainList.value.join(', '), sso_forced_provider: forcedProvider.value })
   } catch (error) {
-    toast.error(error.code === 'sso_domains_invalid' ? t.value('sso.domains_invalid', { domains: (error.data?.invalid ?? []).join(', ') }) : t.value('sso.save_failed'))
+    toast.error(
+      error.code === 'sso_domains_invalid'
+        ? t.value('sso.domains_invalid', { domains: (error.data?.invalid ?? []).join(', ') })
+        : error.code === 'sso_forced_provider_invalid'
+          ? t.value('sso.forced_invalid')
+          : t.value('sso.save_failed')
+    )
     return
   }
   try {
@@ -176,6 +196,33 @@ defineExpose({ save })
         <div class="section-help">
           <p>{{ t('sso.required_help') }}</p>
           <p>{{ t('sso.required_help_admins') }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ot-card setting-group" id="sso-forced" aria-labelledby="h-sso-forced">
+      <h2 class="ot-card-title" id="h-sso-forced">{{ t('sso.forced_title') }}</h2>
+      <div class="setting-row">
+        <div class="setting-fields">
+          <div class="input-container">
+            <label for="sso_forced_provider">{{ t('sso.forced_label') }}</label>
+            <OtSelect id="sso_forced_provider" v-model="forcedProvider" :options="forcedOptions" />
+          </div>
+          <p class="sso-warning" v-if="forcedIsDisabled" role="alert">{{ t('sso.forced_disabled') }}</p>
+          <div class="input-container" v-if="forcedProvider">
+            <label for="sso_form_address">{{ t('sso.forced_form_address') }}</label>
+            <div class="field-with-action">
+              <input id="sso_form_address" type="text" readonly :value="formAddress" @focus="$event.target.select()" />
+              <button type="button" class="field-action" :aria-label="t('sso.copy')" @click="copy(formAddress, 'form-address')">
+                <Check v-if="copied === 'form-address'" class="ot-check-pop" aria-hidden="true" />
+                <Copy v-else aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="section-help">
+          <p>{{ t('sso.forced_help') }}</p>
+          <p>{{ t('sso.forced_help_admins') }}</p>
         </div>
       </div>
     </section>

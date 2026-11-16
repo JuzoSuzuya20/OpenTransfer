@@ -1277,7 +1277,16 @@
       "redirect_uri": "Valid redirect URI:",
       "post_logout_uri": "Valid post logout redirect URI:",
       "keycloak_secret": "Kopieren Sie das Secret aus dem Reiter Credentials in das Feld gegenüber."
-    }
+    },
+    "forced_title": "Anmeldeseite",
+    "forced_label": "Bei der Anmeldung",
+    "forced_none": "Das Anmeldeformular von OpenTransfer anzeigen",
+    "forced_to": "Direkt zu {name}",
+    "forced_disabled": "Dieser Anbieter ist deaktiviert: Die Anmeldeseite behält ihr Formular, bis er wieder aktiviert ist.",
+    "forced_form_address": "Formular der lokalen Konten",
+    "forced_invalid": "Dieser Identitätsanbieter existiert nicht mehr.",
+    "forced_help": "Wie die Option „Erzwingen“ von ITSM-NG: Die Anmeldeseite führt direkt zur Seite des Identitätsanbieters, ohne das Formular von OpenTransfer. Nach einer gewollten Abmeldung erscheint das Formular einmal, damit niemand sofort wieder angemeldet wird.",
+    "forced_help_admins": "Lokale Konten (Administratoren) behalten das Formular unter der nebenstehenden Adresse: Bewahren Sie sie auf, sie ist der Notzugang, falls der Identitätsanbieter ausfällt."
   },
   "emails": {
     "admin": {

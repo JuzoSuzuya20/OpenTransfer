@@ -13,6 +13,9 @@ use App\Models\User;
 class SsoPolicy
 {
     public const SETTING_DOMAINS = 'sso_required_domains';
+    // Like the "forced" OpenID Connect of ITSM-NG: the sign-in page leads straight to this
+    // provider (its id), /?noAUTO=1 keeping the form of local accounts within reach
+    public const SETTING_FORCED = 'sso_forced_provider';
 
     // One domain name, its labels separated by dots: entreprise.fr, mairie-ville.fr
     private const DOMAIN = '/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/';
@@ -61,6 +64,19 @@ class SsoPolicy
     public function requiresSecondFactor(User $user): bool
     {
         return !$user->is_guest && (bool) $user->admin && $this->requiresSso($user->email);
+    }
+
+    // The address the sign-in page leads to, while the forced provider is enabled
+    public function forcedLoginUrl(): ?string
+    {
+        $id = $this->settings->get(self::SETTING_FORCED);
+        if (!is_numeric($id)) {
+            return null;
+        }
+
+        $provider = \App\Models\AuthProvider::where('id', (int) $id)->where('enabled', true)->first();
+
+        return $provider ? "/auth/provider/{$provider->id}/login" : null;
     }
 
     public static function refusal(int $status = 403)

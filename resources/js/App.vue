@@ -11,6 +11,7 @@ import Downloader from './components/downloader.vue'
 import Auth from './components/auth.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
 import { useConfirmDialog } from './composables/useConfirmDialog'
+import { SIGNED_OUT_KEY } from './lib/forcedSso'
 import CommandPalette from './components/CommandPalette.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
 
@@ -230,6 +231,13 @@ const handleLogout = async () => {
   }))
   ) {
     return
+  }
+  // Signed out on purpose: the next sign-in page shows the form once, even with a forced provider
+  // (its session may still be open and would sign straight back in)
+  try {
+    sessionStorage.setItem(SIGNED_OUT_KEY, '1')
+  } catch (error) {
+    // No storage: nothing to remember
   }
   await logout()
   // Signed out on purpose: back to the sign-in page itself, not the page that was open

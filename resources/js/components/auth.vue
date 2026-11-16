@@ -5,7 +5,8 @@ import AltchaCheck from './layout/AltchaCheck.vue'
 import { loginMessageFor } from '../lib/loginMessage'
 import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
-import { domData } from '../domData'
+import { domData, domError, domSuccess } from '../domData'
+import { forcedSsoTarget, SIGNED_OUT_KEY } from '../lib/forcedSso'
 import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck, ChevronRight } from 'lucide-vue-next'
 import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
 import BrandMark from './layout/BrandMark.vue'
@@ -133,7 +134,10 @@ onMounted(async () => {
 
   // Now try to refresh (if user is already logged in, this will accept the pending invite).
   // Its answer, or four seconds without one, ends the wait of the app (store.restoringSession)
-  settleWithin(attemptRefresh(), 4000, () => (store.restoringSession = false))
+  const restored = attemptRefresh()
+  settleWithin(restored, 4000, () => (store.restoringSession = false))
+  // Nobody signed in once the session had its chance: a forced identity provider takes over
+  restored.finally(leadToForcedSso)
 
   getAvailableAuthProviders().then((data) => {
     authProviders.value = data
@@ -328,6 +332,31 @@ const attemptRefresh = async () => {
     }
   } catch (error) {
     //noop
+  }
+}
+
+// The sign-in page leads straight to the provider an admin forced (lib/forcedSso: not after a
+// sign-out just made, with ?noAUTO, a message of the server, a guest link or a reset)
+const leadToForcedSso = () => {
+  if (store.isLoggedIn()) return
+  let signedOut = false
+  try {
+    signedOut = sessionStorage.getItem(SIGNED_OUT_KEY) === '1'
+    sessionStorage.removeItem(SIGNED_OUT_KEY)
+  } catch (error) {
+    // No storage (private mode, blocked): the provider decides alone
+  }
+  const target = forcedSsoTarget({
+    url: domData().sso_forced_login,
+    path: window.location.pathname,
+    search: window.location.search,
+    signedOut,
+    flash: domError().length > 0 || domSuccess().length > 0,
+    shown: props.shown
+  })
+  if (target) {
+    waitingForRedirect.value = true
+    window.location.assign(target)
   }
 }
 

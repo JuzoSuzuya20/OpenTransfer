@@ -1277,7 +1277,16 @@
       "redirect_uri": "Valid redirect URI:",
       "post_logout_uri": "Valid post logout redirect URI:",
       "keycloak_secret": "Copia il segreto della scheda Credentials nel campo a fianco."
-    }
+    },
+    "forced_title": "Pagina di accesso",
+    "forced_label": "Quando qualcuno accede",
+    "forced_none": "Mostra il modulo di accesso di OpenTransfer",
+    "forced_to": "Vai direttamente su {name}",
+    "forced_disabled": "Questo provider è disattivato: la pagina di accesso mantiene il suo modulo finché non viene riattivato.",
+    "forced_form_address": "Modulo degli account locali",
+    "forced_invalid": "Questo provider di identità non esiste più.",
+    "forced_help": "Come l'opzione «forza» di ITSM-NG: la pagina di accesso porta direttamente alla pagina del provider di identità, senza il modulo di OpenTransfer. Dopo una disconnessione voluta, il modulo compare una volta, perché nessuno venga riconnesso subito.",
+    "forced_help_admins": "Gli account locali (amministratori) mantengono il modulo all'indirizzo qui accanto: conservalo, è l'accesso di emergenza se il provider di identità non risponde."
   },
   "emails": {
     "admin": {

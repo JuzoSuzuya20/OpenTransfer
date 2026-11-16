@@ -1277,7 +1277,16 @@
       "redirect_uri": "Valid redirect URI:",
       "post_logout_uri": "Valid post logout redirect URI:",
       "keycloak_secret": "Copie el secreto de la pestaña Credentials en el campo de enfrente."
-    }
+    },
+    "forced_title": "Página de inicio de sesión",
+    "forced_label": "Al iniciar sesión",
+    "forced_none": "Mostrar el formulario de inicio de sesión de OpenTransfer",
+    "forced_to": "Ir directamente a {name}",
+    "forced_disabled": "Este proveedor está desactivado: la página de inicio de sesión conserva su formulario hasta que vuelva a activarse.",
+    "forced_form_address": "Formulario de las cuentas locales",
+    "forced_invalid": "Este proveedor de identidad ya no existe.",
+    "forced_help": "Como la opción «forzar» de ITSM-NG: la página de inicio de sesión lleva directamente a la página del proveedor de identidad, sin el formulario de OpenTransfer. Tras cerrar sesión a propósito, el formulario aparece una vez, para que nadie vuelva a entrar al instante.",
+    "forced_help_admins": "Las cuentas locales (administradores) conservan el formulario en la dirección de al lado: guárdela, es el acceso de emergencia si el proveedor de identidad falla."
   },
   "emails": {
     "admin": {

@@ -53,6 +53,9 @@ function getSettings()
     // Add app version
     $indexedSettings['version'] = config('app.version');
 
+    // The identity provider the sign-in page leads straight to, if an admin forced one
+    $indexedSettings['sso_forced_login'] = app(\App\Services\SsoPolicy::class)->forcedLoginUrl();
+
     return $indexedSettings;
 }
 }

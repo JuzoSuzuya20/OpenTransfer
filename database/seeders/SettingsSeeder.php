@@ -439,6 +439,15 @@ class SettingsSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                // The provider the sign-in page leads straight to (an id), empty for the form
+                'key' => 'sso_forced_provider',
+                'value' => '',
+                'previous_value' => null,
+                'group' => 'system.auth',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
                 'key' => 'self_registration_allow_any_domain',
                 'value' => 'true',
                 'previous_value' => null,
