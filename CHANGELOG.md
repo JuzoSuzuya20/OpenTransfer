@@ -5,6 +5,42 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.4.0] — 2026-11-16
+
+### Added
+
+- A file request can be cancelled from the list of waiting requests ("Remove" for an expired one):
+  its link stops working at once, even for a guest who already opened it. A request that came back
+  stays, its files being a share
+- Like the "force" option of ITSM-NG, the sign-in page can lead straight to one identity provider
+  (Administration > SSO > Sign-in page). Local accounts (admins) keep the form at `/?noAUTO=1`; the
+  form also shows once after signing out on purpose, with a message of the server, for a guest link
+  and for a password reset
+- The anti-robot check (ALTCHA) shows on the sign-in, forgotten password and sign-up forms when it
+  is turned on: it was working, but nothing said so. The proof is solved as the form shows
+
+### Fixed
+
+- The daily maintenance failed every day once a file request had gone unanswered for a week: it
+  deleted the guest account behind the link while the request still pointed at it (a foreign key),
+  and stopped before clearing the expired cache entries. The request now lets go of its guest
+  account first, and that account stays while the request is open: deleted after a week as before,
+  a request of 14 or 30 days would have stopped opening on its eighth day
+- Signing out leads to the sign-in page itself, not back to the page that was open
+- The text of the search field is no longer cut at the bottom
+
+### Security
+
+- The hooks tusd calls answered from any private address, and `/api/tusd-hooks/` (a trailing slash)
+  went past the block of Caddy: behind a reverse proxy, anyone could reach them. Only the loopback
+  of the container may now, whatever the spelling of the path
+- OpenID Connect and Keycloak sign-ins use PKCE (S256): a caught authorisation code cannot be
+  exchanged elsewhere, and a Keycloak client that requires PKCE accepts the sign-in
+- The files tusd kept for uploads nobody finished (never encrypted) are deleted after a week, like
+  their sessions
+- Minor updates of PHP and front-end dependencies (jwt-auth 2.10.0, Sanctum 4.4.0, Vue 3.5.45,
+  Vite 6.4.6…); no advisory was open
+
 ## [1.3.0] — 2026-11-16
 
 ### Changed
