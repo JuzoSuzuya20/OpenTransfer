@@ -20,6 +20,9 @@ storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
 database/*.sqlite*
+# The caches Laravel writes on a machine that ran the app: they may name the development tools,
+# which the image does not install (package:discover then fails); rebuilt in the image
+bootstrap/cache/*.php
 
 # Inutile en production
 tests
