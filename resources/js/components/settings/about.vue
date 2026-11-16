@@ -9,6 +9,17 @@ import { niceFileSize } from '../../utils'
 
 const version = ref('unknown')
 const systemInfo = ref(null)
+
+// The disk the shares live on: what the shares take, what the rest of the disk holds (the system,
+// other data), and what is free. The shares alone used to be written over a bar of the whole disk.
+const storageBar = computed(() => {
+  const storage = systemInfo.value?.storage
+  if (!storage?.disk_total_bytes) return null
+  const share = (bytes) => Math.max(0, Math.min(100, (bytes / storage.disk_total_bytes) * 100))
+  // A few megabytes on a large disk would not show: a sliver at least
+  const shares = storage.used_bytes > 0 ? Math.max(share(storage.used_bytes), 0.6) : 0
+  return { shares, others: Math.max(0, share(storage.disk_used_bytes) - share(storage.used_bytes)) }
+})
 const loading = ref(true)
 
 onMounted(async () => {
@@ -128,24 +139,41 @@ const databaseDisplayName = computed(() => {
             <dd>{{ databaseDisplayName }} {{ systemInfo.database_version }}</dd>
           </div>
           <div>
-            <dt>{{ $t('settings.about.max_upload') }}</dt>
-            <dd>{{ niceFileSize(systemInfo.max_upload_size.bytes) }}</dd>
+            <dt>{{ $t('settings.about.max_share') }}</dt>
+            <dd>{{ systemInfo.max_share_size?.bytes ? niceFileSize(systemInfo.max_share_size.bytes) : $t('settings.about.no_limit') }}</dd>
           </div>
           <div>
             <dt>{{ $t('settings.about.storage') }}</dt>
-            <dd>{{ niceFileSize(systemInfo.storage.used_bytes) }} {{ $t('settings.about.of') }} {{ niceFileSize(systemInfo.storage.disk_total_bytes) }}</dd>
+            <dd>
+              {{
+                $t('settings.about.storage_detail', {
+                  shares: niceFileSize(systemInfo.storage.used_bytes),
+                  used: niceFileSize(systemInfo.storage.disk_used_bytes),
+                  total: niceFileSize(systemInfo.storage.disk_total_bytes)
+                })
+              }}
+            </dd>
           </div>
         </dl>
-        <div
-          class="about-meter"
-          role="meter"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          :aria-valuenow="systemInfo.storage.disk_usage_percent"
-          :aria-label="$t('settings.about.storage')"
-        >
-          <span :style="{ width: `${Math.min(100, systemInfo.storage.disk_usage_percent)}%` }"></span>
-        </div>
+        <template v-if="storageBar">
+          <div
+            class="about-meter"
+            role="meter"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            :aria-valuenow="systemInfo.storage.disk_usage_percent"
+            :aria-valuetext="$t('settings.about.storage_detail', { shares: niceFileSize(systemInfo.storage.used_bytes), used: niceFileSize(systemInfo.storage.disk_used_bytes), total: niceFileSize(systemInfo.storage.disk_total_bytes) })"
+            :aria-label="$t('settings.about.storage')"
+          >
+            <span class="is-shares" :style="{ width: `${storageBar.shares}%` }"></span>
+            <span class="is-others" :style="{ width: `${storageBar.others}%` }"></span>
+          </div>
+          <ul class="about-meter-legend">
+            <li><i class="is-shares" aria-hidden="true"></i>{{ $t('settings.about.legend_shares') }}</li>
+            <li><i class="is-others" aria-hidden="true"></i>{{ $t('settings.about.legend_others') }}</li>
+            <li><i aria-hidden="true"></i>{{ $t('settings.about.legend_free', { free: niceFileSize(systemInfo.storage.disk_free_bytes) }) }}</li>
+          </ul>
+        </template>
       </template>
     </section>
   </div>
@@ -224,6 +252,7 @@ const databaseDisplayName = computed(() => {
   }
 }
 .about-meter {
+  display: flex;
   height: 8px;
   border-radius: 4px;
   background: var(--ot-field);
@@ -232,10 +261,46 @@ const databaseDisplayName = computed(() => {
   span {
     display: block;
     height: 100%;
-    border-radius: 4px;
-    background: var(--ot-accent);
     transform-origin: left;
     animation: ot-grow-x 700ms var(--ot-ease-out) both;
+  }
+}
+// The shares, then what the rest of the disk holds; what is left is free
+.is-shares {
+  background: var(--ot-accent);
+}
+.is-others {
+  background: var(--ot-line-strong);
+}
+.about-meter-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--ot-muted);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  i {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--ot-field);
+    box-shadow: inset 0 0 0 1px var(--ot-line);
+  }
+  i.is-shares {
+    background: var(--ot-accent);
+    box-shadow: none;
+  }
+  i.is-others {
+    background: var(--ot-line-strong);
+    box-shadow: none;
   }
 }
 </style>

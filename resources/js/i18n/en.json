@@ -143,8 +143,6 @@
       "intro": "OpenTransfer is a free, open-source, self-hosted file sharing platform. No tracking, no metrics — just simple, private file sharing that respects your data.",
       "license": "License",
       "loading": "Loading system info...",
-      "max_upload": "Max Upload",
-      "of": "of",
       "storage": "Storage",
       "system_info": "System Information",
       "title": "About OpenTransfer",
@@ -152,7 +150,13 @@
       "visit_github": "GitHub",
       "changelog": "What’s new",
       "report_issue": "Report a problem",
-      "fork": "A maintained fork of Erugo, whose development has stopped."
+      "fork": "A maintained fork of Erugo, whose development has stopped.",
+      "max_share": "Largest share",
+      "no_limit": "No limit",
+      "storage_detail": "{shares} in shares · the disk holds {used} of {total}",
+      "legend_shares": "Shares",
+      "legend_others": "Rest of the disk",
+      "legend_free": "Free: {free}"
     },
     "account": {
       "change_password": "Change my password",

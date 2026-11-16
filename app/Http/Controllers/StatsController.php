@@ -26,7 +26,9 @@ class StatsController extends Controller
                 'database_version' => $this->getDatabaseVersion(),
                 'server_os' => PHP_OS_FAMILY,
                 'timezone' => config('app.timezone'),
-                'max_upload_size' => $this->getMaxUploadSize(),
+                // The largest share the instance accepts (its setting; null: no limit). Not the limit
+                // PHP puts on a single request: uploads go through tusd in pieces and never meet it.
+                'max_share_size' => ['bytes' => app(\App\Services\SettingsService::class)->getMaxUploadSize()],
                 'storage' => $this->getStorageStats(),
             ]
         ]);
@@ -61,51 +63,6 @@ class StatsController extends Controller
     /**
      * Get the maximum upload size based on PHP settings
      */
-    private function getMaxUploadSize()
-    {
-        $uploadMax = $this->parseSize(ini_get('upload_max_filesize'));
-        $postMax = $this->parseSize(ini_get('post_max_size'));
-        $memoryLimit = $this->parseSize(ini_get('memory_limit'));
-        
-        // -1 means no limit
-        if ($memoryLimit == -1) {
-            $memoryLimit = PHP_INT_MAX;
-        }
-        
-        $maxBytes = min($uploadMax, $postMax, $memoryLimit);
-        
-        return [
-            'bytes' => $maxBytes,
-            'formatted' => $this->formatBytes($maxBytes),
-            'upload_max_filesize' => ini_get('upload_max_filesize'),
-            'post_max_size' => ini_get('post_max_size'),
-        ];
-    }
-
-    /**
-     * Parse PHP size string (e.g., "128M") to bytes
-     */
-    private function parseSize($size)
-    {
-        $size = trim($size);
-        $unit = strtolower(substr($size, -1));
-        $value = (int) $size;
-        
-        switch ($unit) {
-            case 'g':
-                $value *= 1024 * 1024 * 1024;
-                break;
-            case 'm':
-                $value *= 1024 * 1024;
-                break;
-            case 'k':
-                $value *= 1024;
-                break;
-        }
-        
-        return $value;
-    }
-
     public function getStats(Request $request)
     {
         // Bounded: the daily series below is built one day at a time
@@ -151,9 +108,9 @@ class StatsController extends Controller
             $storagePath = storage_path('app');
         }
         
-        // Get disk space info
-        $totalDiskSpace = disk_total_space($storagePath);
-        $freeDiskSpace = disk_free_space($storagePath);
+        // The disk the shares live on, all it holds included (the system, other data)
+        $totalDiskSpace = (int) disk_total_space($storagePath);
+        $freeDiskSpace = (int) disk_free_space($storagePath);
         
         return [
             'used_bytes' => (int) $usedBytes,
@@ -164,7 +121,7 @@ class StatsController extends Controller
             'disk_free_formatted' => $this->formatBytes($freeDiskSpace),
             'disk_used_bytes' => $totalDiskSpace - $freeDiskSpace,
             'disk_used_formatted' => $this->formatBytes($totalDiskSpace - $freeDiskSpace),
-            'disk_usage_percent' => round((($totalDiskSpace - $freeDiskSpace) / $totalDiskSpace) * 100, 1),
+            'disk_usage_percent' => $totalDiskSpace > 0 ? round((($totalDiskSpace - $freeDiskSpace) / $totalDiskSpace) * 100, 1) : 0,
             'shares_usage_percent' => $totalDiskSpace > 0 ? round(($usedBytes / $totalDiskSpace) * 100, 1) : 0,
         ];
     }

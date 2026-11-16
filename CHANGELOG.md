@@ -18,6 +18,14 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 - The width of the logo is no longer set: the logo is square
 - The name of the default logo is no longer "erugo-logo.png"
 
+### Fixed
+
+- About showed as "largest upload" the limit PHP sets on a single request (4 GB), which uploads
+  never meet since they go through tusd in pieces: it shows the largest share the instance accepts,
+  its setting
+- About wrote the size of the shares over a bar of the whole disk (the system and other data
+  included): the bar now tells the shares, the rest of the disk and what is free apart
+
 ## [1.5.0] — 2026-11-16
 
 ### Security

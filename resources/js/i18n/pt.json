@@ -145,14 +145,18 @@
       "intro": "O OpenTransfer é uma plataforma de partilha de ficheiros gratuita, de código aberto e auto-alojada. Sem rastreio, sem métricas: apenas uma partilha de ficheiros simples e privada, que respeita os seus dados.",
       "license": "Licença",
       "loading": "A carregar as informações do sistema…",
-      "max_upload": "Carregamento máximo",
-      "of": "de",
       "storage": "Armazenamento",
       "system_info": "Informações do sistema",
       "visit_github": "GitHub",
       "changelog": "Novidades",
       "report_issue": "Reportar um problema",
-      "fork": "Um fork mantido do Erugo, cujo desenvolvimento parou."
+      "fork": "Um fork mantido do Erugo, cujo desenvolvimento parou.",
+      "max_share": "Tamanho máximo de uma partilha",
+      "no_limit": "Sem limite",
+      "storage_detail": "{shares} em partilhas · o disco contém {used} de {total}",
+      "legend_shares": "Partilhas",
+      "legend_others": "Resto do disco",
+      "legend_free": "Livre: {free}"
     },
     "account": {
       "change_password": "Alterar a minha palavra-passe",

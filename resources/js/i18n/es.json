@@ -143,8 +143,6 @@
       "intro": "OpenTransfer es una plataforma de intercambio de archivos libre, de código abierto y autoalojada. Sin rastreo ni métricas: un intercambio de archivos sencillo y privado que respeta sus datos.",
       "license": "Licencia",
       "loading": "Cargando la información del sistema...",
-      "max_upload": "Subida máxima",
-      "of": "de",
       "storage": "Almacenamiento",
       "system_info": "Información del sistema",
       "title": "Acerca de OpenTransfer",
@@ -152,7 +150,13 @@
       "visit_github": "GitHub",
       "changelog": "Novedades",
       "report_issue": "Informar de un problema",
-      "fork": "Un fork mantenido de Erugo, cuyo desarrollo se ha detenido."
+      "fork": "Un fork mantenido de Erugo, cuyo desarrollo se ha detenido.",
+      "max_share": "Tamaño máximo de un envío",
+      "no_limit": "Sin límite",
+      "storage_detail": "{shares} en envíos · el disco contiene {used} de {total}",
+      "legend_shares": "Envíos",
+      "legend_others": "Resto del disco",
+      "legend_free": "Libre: {free}"
     },
     "account": {
       "change_password": "Cambiar mi contraseña",

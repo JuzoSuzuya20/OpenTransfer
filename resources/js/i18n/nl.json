@@ -145,14 +145,18 @@
       "intro": "OpenTransfer is een gratis, opensource en zelfgehost platform voor het delen van bestanden. Geen tracking, geen statistieken: gewoon eenvoudig en privé bestanden delen, met respect voor je gegevens.",
       "license": "Licentie",
       "loading": "Systeeminformatie laden…",
-      "max_upload": "Maximale upload",
-      "of": "van",
       "storage": "Opslag",
       "system_info": "Systeeminformatie",
       "visit_github": "GitHub",
       "changelog": "Wat is er nieuw",
       "report_issue": "Probleem melden",
-      "fork": "Een onderhouden fork van Erugo, waarvan de ontwikkeling is gestopt."
+      "fork": "Een onderhouden fork van Erugo, waarvan de ontwikkeling is gestopt.",
+      "max_share": "Grootste share",
+      "no_limit": "Geen limiet",
+      "storage_detail": "{shares} aan shares · de schijf bevat {used} van {total}",
+      "legend_shares": "Shares",
+      "legend_others": "Rest van de schijf",
+      "legend_free": "Vrij: {free}"
     },
     "account": {
       "change_password": "Mijn wachtwoord wijzigen",
