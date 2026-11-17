@@ -52,6 +52,39 @@ class AccentColorTest extends TestCase
         $this->assertStringContainsString('--ot-accent:'.$emerald['dark']['accent'].';', $html);
     }
 
+    public function test_the_page_arrives_with_the_logo_of_the_chosen_colour(): void
+    {
+        $this->choose('emerald');
+
+        $this->assertStringContainsString('--ot-logo:url(/build/brand/logo-emerald.png);', $this->get('/')->assertOk()->getContent());
+    }
+
+    private function favicon(): string
+    {
+        $response = $this->get('/api/favicon')->assertOk();
+        $response->assertHeader('Content-Type', 'image/png');
+
+        return $response->baseResponse->getFile()->getPathname();
+    }
+
+    public function test_the_default_favicon_is_the_logo_of_the_chosen_colour(): void
+    {
+        Storage::fake('public');
+        $this->assertSame(realpath(resource_path('images/brand/logo-indigo.png')), realpath($this->favicon()));
+
+        $this->choose('orange');
+        $this->assertSame(realpath(resource_path('images/brand/logo-orange.png')), realpath($this->favicon()));
+    }
+
+    public function test_a_favicon_an_admin_uploaded_stays(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('favicon.png', 'the favicon of the organisation');
+        $this->choose('orange');
+
+        $this->assertSame('the favicon of the organisation', file_get_contents($this->favicon()));
+    }
+
     public function test_an_admin_chooses_one_of_the_colours(): void
     {
         $this->actingAs($this->admin(), 'api')->putJson('/api/settings', ['settings' => [['key' => 'accent_color', 'value' => 'raspberry']]])->assertOk();

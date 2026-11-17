@@ -37,9 +37,15 @@ class SquareLogoTest extends TestCase
         }
     }
 
+    public function test_the_logo_shipped_is_the_one_of_opentransfer(): void
+    {
+        $this->assertSame(DefaultLogo::SHIPPED[0], hash('sha256', $this->shipped()));
+        $this->assertTrue(DefaultLogo::isShipped($this->shipped()));
+    }
+
     public function test_a_banner_shipped_before_gives_way_to_the_square_logo(): void
     {
-        foreach (['opentransfer-wide-logo.png', 'erugo-default-logo.png'] as $banner) {
+        foreach (['opentransfer-wide-logo.png', 'erugo-default-logo.png', 'opentransfer-square-logo.png'] as $banner) {
             Storage::disk('public')->put('images/logo.png', file_get_contents(base_path("tests/fixtures/{$banner}")));
             Storage::disk('public')->put('images/_default-logo.png', file_get_contents(base_path("tests/fixtures/{$banner}")));
 

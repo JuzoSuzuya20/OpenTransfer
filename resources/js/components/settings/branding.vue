@@ -94,6 +94,8 @@ const loadFaviconStatus = async () => {
 
 // Track object URLs for local file previews
 const logoObjectUrl = ref(null)
+// The logo shipped is still in place: it shows in the main colour
+const usesDefaultLogo = ref(domData().default_logo !== false)
 const faviconObjectUrl = ref(null)
 
 // Watch for logo file changes to create/revoke object URLs
@@ -130,9 +132,9 @@ const logoPreview = computed(() => {
       filename: settings.value.logo.name
     }
   }
-  // Otherwise show current server logo
+  // The shipped logo: the one of the colour chosen; otherwise the logo an admin uploaded
   return {
-    url: `/images/logo.png?t=${logoTimestamp.value}`
+    url: usesDefaultLogo.value ? `/build/brand/logo-${chosenAccent.value}.png` : `/images/logo.png?t=${logoTimestamp.value}`
   }
 })
 
@@ -147,7 +149,7 @@ const faviconPreview = computed(() => {
   // Otherwise show current server favicon
   return {
     url: `/api/favicon?t=${faviconTimestamp.value}`,
-    filename: faviconStatus.value.has_custom_favicon ? faviconStatus.value.filename : 'icon.svg'
+    filename: faviconStatus.value.has_custom_favicon ? faviconStatus.value.filename : `logo-${savedAccent.value}.png`
   }
 })
 
@@ -177,6 +179,7 @@ const saveSettings = async () => {
       // Update the logo in the browser by forcing a cache refresh
       updateBrowserLogo()
       emitter.emit('logoChanged', false)
+      usesDefaultLogo.value = false
       // Clear the File object after successful upload
       settings.value.logo = settings.value.logo.name
     }
@@ -200,6 +203,8 @@ const saveSettings = async () => {
 
     // Only the settings this page shows: the colours and backgrounds of the former themes are left as stored
     await saveSettingsById({ show_powered_by: settings.value.show_powered_by, accent_color: chosenAccent.value })
+    // The tab of the browser takes the logo of the new colour
+    if (chosenAccent.value !== savedAccent.value && !faviconStatus.value.has_custom_favicon) updateBrowserFavicon()
     savedAccent.value = chosenAccent.value
 
     saving.value = false
@@ -258,6 +263,7 @@ const handleResetLogo = async () => {
       // Update the logo in the browser by forcing a refresh
       updateBrowserLogo()
       emitter.emit('logoChanged', true)
+      usesDefaultLogo.value = true
     })
     .catch((error) => {
       toast.error(t.value('settings.branding.logo_reset_failed'))

@@ -41,9 +41,15 @@ final class Accents
         $accent = self::all()[$id];
         $dark = $block($accent['dark']);
 
-        return ':root{' . $block($accent['light']) . '}'
+        return ':root{' . $block($accent['light']) . "--ot-logo:url(/build/brand/logo-{$id}.png);}"
             . '@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){' . $dark . '}}'
             . ':root[data-theme="dark"]{' . $dark . '}';
+    }
+
+    // The logo in this colour, for the tab of the browser (resources/images/brand)
+    public static function logoPath(string $id): string
+    {
+        return resource_path('images/brand/logo-' . (self::exists($id) ? $id : self::DEFAULT) . '.png');
     }
 
     /** @return array{fill: string, text: string, mark: string} the tones of the dark emails, and their mark */

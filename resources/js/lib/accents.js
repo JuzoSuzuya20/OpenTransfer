@@ -14,7 +14,7 @@ export const accentCss = (id) => {
   const accent = id !== DEFAULT_ACCENT ? ACCENTS[id] : null
   if (!accent) return ''
   const dark = block(accent.dark)
-  return `:root{${block(accent.light)}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${dark}}}:root[data-theme="dark"]{${dark}}`
+  return `:root{${block(accent.light)}--ot-logo:url(/build/brand/logo-${id}.png);}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${dark}}}:root[data-theme="dark"]{${dark}}`
 }
 
 // Shown at once in the page (a choice being tried in Appearance)

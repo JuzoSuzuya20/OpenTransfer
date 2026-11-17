@@ -604,7 +604,7 @@ class SettingsController extends Controller
         // Check for custom favicon (PNG first, then SVG)
         if (Storage::disk('public')->exists('favicon.png')) {
             $path = Storage::disk('public')->path('favicon.png');
-            return response()->file($path, ['Content-Type' => 'image/png']);
+            return response()->file($path, self::IMAGE_HEADERS);
         }
         
         if (Storage::disk('public')->exists('favicon.svg')) {
@@ -612,7 +612,12 @@ class SettingsController extends Controller
             return response()->file($path, self::SVG_HEADERS);
         }
 
-        // Fall back to default icon.svg
+        // The logo of OpenTransfer in the main colour of the instance
+        $logo = \App\Support\Accents::logoPath(\App\Support\Accents::chosen());
+        if (file_exists($logo)) {
+            return response()->file($logo, self::IMAGE_HEADERS);
+        }
+
         $defaultPath = public_path('icon.svg');
         if (file_exists($defaultPath)) {
             return response()->file($defaultPath, self::SVG_HEADERS);
@@ -625,6 +630,12 @@ class SettingsController extends Controller
      * An uploaded SVG can embed scripts: opened directly from our origin it
      * would run as stored XSS. This CSP keeps it a pure image.
      */
+    private const IMAGE_HEADERS = [
+        'Content-Type' => 'image/png',
+        'Content-Security-Policy' => "default-src 'none'",
+        'X-Content-Type-Options' => 'nosniff',
+    ];
+
     private const SVG_HEADERS = [
         'Content-Type' => 'image/svg+xml',
         'Content-Security-Policy' => "default-src 'none'; style-src 'unsafe-inline'; img-src data:",

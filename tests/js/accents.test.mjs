@@ -61,3 +61,27 @@ test('the build publishes the mark of every colour for the emails', async () => 
     assert.ok(emitted.includes(`email/${name}`), `email/${name}`)
   }
 })
+
+test('another colour brings its logo too', () => {
+  assert.match(accentCss('emerald'), /^:root\{[^}]*--ot-logo:url\(\/build\/brand\/logo-emerald\.png\);/)
+})
+
+test('the logo of the styles is the one of the default colour, and every colour has its own', async () => {
+  const { readFileSync, existsSync } = await import('node:fs')
+  const css = readFileSync(new URL('../../resources/js/style.scss', import.meta.url), 'utf8')
+  assert.match(css, /--ot-logo:\s*url\(['"]?\.\.\/images\/brand\/logo-indigo\.png['"]?\)/)
+  for (const id of Object.keys(ACCENTS)) {
+    assert.ok(existsSync(new URL(`../../resources/images/brand/logo-${id}.png`, import.meta.url)), id)
+  }
+})
+
+test('the build publishes the logo of every colour', async () => {
+  const { default: config } = await import('../../vite.config.js')
+  const resolved = typeof config === 'function' ? await config({ command: 'build', mode: 'production' }) : config
+  const plugin = resolved.plugins.flat(Infinity).find((p) => p?.name === 'opentransfer-email-assets')
+  const emitted = []
+  plugin.generateBundle.call({ emitFile: (file) => emitted.push(file.fileName) })
+  for (const id of Object.keys(ACCENTS)) {
+    assert.ok(emitted.includes(`brand/logo-${id}.png`), `brand/logo-${id}.png`)
+  }
+})

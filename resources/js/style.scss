@@ -45,6 +45,9 @@
   --ot-muted: #666666;
   --ot-faint: #929292;
 
+  /* The logo, in the default colour: each main colour brings its own (lib/accents) */
+  --ot-logo: url('../images/brand/logo-indigo.png');
+
   /* Accent */
   --ot-accent: #000091;
   --ot-accent-hover: #1212ff;

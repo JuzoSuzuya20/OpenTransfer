@@ -5,7 +5,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="/api/favicon" type="image/svg+xml">
+  {{-- The logo in the main colour unless an admin uploaded one: a new address when the colour changes --}}
+  <link rel="icon" href="/api/favicon?c={{ \App\Support\Accents::chosen() }}">
   <title>{{ $settings['application_name'] }}</title>
   {{-- The light or dark choice of this browser, before anything shows (lib/theme) --}}
   <script src="/theme.js"></script>

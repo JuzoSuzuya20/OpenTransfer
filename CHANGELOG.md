@@ -36,9 +36,11 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 - The logo is a square, without text, and the name next to it is the one the admin chose (General >
   Application name), as typed: in the header, on the sign-in page and in the emails. "OpenTransfer"
   was written next to the mark whatever the name, and an uploaded logo showed without the name
-- The logo shipped is a square mark (512 × 512) instead of a banner with "OpenTransfer" written on
-  it. An instance that kept a shipped logo (the banner of OpenTransfer or of Erugo) gets the square
-  one at its next start; a logo an admin uploaded stays, held in the square without being stretched
+- The logo shipped is the new logo of OpenTransfer, square and without text (512 × 512), instead of
+  a banner with "OpenTransfer" written on it. While it is in place, it takes the main colour of the
+  instance: in the header, on the sign-in page, in the tab of the browser and in the emails. An
+  instance that kept a shipped logo (the banner of OpenTransfer or of Erugo) gets the new one at its
+  next start; a logo or a favicon an admin uploaded stays, held in the square without being stretched
 - The width of the logo is no longer set: the logo is square
 - The name of the default logo is no longer "erugo-logo.png"
 - What opens or closes on a page grows and shrinks instead of appearing at once: the options and

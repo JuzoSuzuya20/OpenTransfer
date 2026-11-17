@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * The logo is a square mark, without a word on it: the name next to it is the one the admin chose
- * (application_name). An instance that kept a logo it was shipped with gets the square one at its
+ * (application_name). While it is the one shipped, the page shows it in the main colour of the
+ * instance (resources/images/brand, --ot-logo); this file is the one of the default colour. An instance that kept a logo it was shipped with gets the square one at its
  * next start (refresh-default-logo, start-container); a logo an admin put in its place stays.
  */
 final class DefaultLogo
 {
     // SHA-256 of the logos shipped as images/logo.png
     public const SHIPPED = [
-        '7d0dde59dfa74e60aa990c36e616c2130ba612ef2e869863dde6b9719f19731c', // OpenTransfer, square (1.5.1)
+        'c2bf5cc6f233c0b049873c3ed1f5b81c6689d872165727a6e9e36a94695a4a84', // OpenTransfer (1.5.1)
+        '7d0dde59dfa74e60aa990c36e616c2130ba612ef2e869863dde6b9719f19731c', // OpenTransfer, square mark (tested before 1.5.1)
         'ab4413bc0a608b61bd164da038a0927c63c59882ab4b0ba9aa3aea1d20fb4093', // OpenTransfer, banner (up to 1.5.0)
         '768ff36a5c585ee6a643ccd039c82cb126ab040ed11207d2053b50b4f8bef3ee', // Erugo, for an instance moved from it
     ];
