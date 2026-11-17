@@ -16,10 +16,10 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
   of its own as it was, the name of the server in the test email white on light grey. The colours
   of the text belong to its blocks, and the code to type in the verification emails sits in a block
   of its own
-- BlueMind recolours the blocks of an email but left a piece of a sentence white, the name of the
-  server in the test email, whatever its tag (`strong` with a colour or without, `span`): the name
-  of the server sits in a box of its own, as the code of the verification emails, and the bold of
-  a template rewritten by an admin keeps the colour of the text around it
+- BlueMind dresses a name of domain it finds in the text its own way, white on its light grey: the
+  name of the server in the test email stayed so in `strong`, `span` or a cell, coloured or not. It
+  sits in a box of its own, as the code of the verification emails, cut after each dot by `<wbr>`,
+  invisible and left out of a copy, so that no name of domain is one piece of text
 
 ## [1.5.5] — 2026-11-17
 
