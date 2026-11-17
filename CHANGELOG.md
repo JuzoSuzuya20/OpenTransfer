@@ -9,24 +9,23 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 
 ### Changed
 
-- The emails are light, with a dark version the mail readers in a dark mode take
-  (`prefers-color-scheme`, which Thunderbird follows). BlueMind in its dark theme turns over the
-  lightness of every email: the dark ones read light there, a light one reads dark. A template an
-  admin rewrote for the dark design before keeps the dark layout, its texts being light grey
+- The emails stay dark, and say so: Thunderbird shows them as written, and forces its own colours
+  on an email that does not. They get a light version, for a web browser in a dark mode that is not
+  Firefox: BlueMind in its dark theme takes the dark version of an email, then turns over the
+  lightness of all of it, so the dark emails read light there; given the light version, in Edge or
+  Chrome, it shows them dark. Each fixed colour of an email belongs to a role named by a class,
+  which the light version recolours. A template an admin rewrote before goes without it
 
 ### Fixed
 
 - The logo at the head of every email travels with it, as an inline image, instead of a link to the
   instance: webmails that hold back remote images until the reader allows them (BlueMind) showed a
   broken image. A logo of an admin over 200 KB, or not a PNG, JPEG, GIF or WebP, stays a link
-- Webmails that recolour emails to fit their own theme (BlueMind) left a piece of text with a colour
-  of its own as it was, the name of the server in the test email white on light grey. The colours
-  of the text belong to its blocks, and the code to type in the verification emails sits in a block
-  of its own
-- BlueMind dresses a name of domain it finds in the text its own way, white on its light grey: the
-  name of the server in the test email stayed so in `strong`, `span` or a cell, coloured or not. It
-  sits in a box of its own, as the code of the verification emails, cut after each dot by `<wbr>`,
-  invisible and left out of a copy, so that no name of domain is one piece of text
+- The name of the mail server in the test email read white on light grey in BlueMind, which makes a
+  link of a name of domain in the text: it sits in a box of its own, as the code of the
+  verification emails, and the links in the text of an email take the accent. No colour is set on a
+  piece of a sentence any more, and the bold of a template rewritten by an admin keeps the colour of
+  the text around it
 
 ## [1.5.5] — 2026-11-17
 

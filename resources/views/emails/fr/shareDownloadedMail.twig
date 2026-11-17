@@ -5,9 +5,9 @@
 {% block header %}Partage téléchargé{% endblock %}
 
 {% block content %}
-<h2 class="ot-c-head" style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#161616;">Bonjour {{ share.user.first_name }},</h2>
+<h2 class="ot-c-head" style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Bonjour {{ share.user.first_name }},</h2>
 <p style="margin:0 0 10px;">Votre partage « {{ share.name }} » vient d’être téléchargé.</p>
-<p class="ot-c-muted" style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#666666;">Ce message n’est envoyé qu’au premier téléchargement.</p>
+<p class="ot-c-muted" style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#929292;">Ce message n’est envoyé qu’au premier téléchargement.</p>
 {% endblock %}
 
 {% block action_url %}{{ settings.application_url }}/shares/{{ share.long_id }}{% endblock %}

@@ -13,18 +13,8 @@ class smtpTestMail extends Mailable
 {
     use LocalizedEmail;
 
-    /**
-     * The name of the server cut at its dots: BlueMind dresses a name of domain found in the text
-     * its own way, white on the light grey of its theme, whatever the colour the email gives it.
-     * The template joins the parts with ".<wbr>", which no copy keeps; each part stays escaped.
-     *
-     * @var list<string>
-     */
-    public array $hostParts = [];
-
     public function __construct(public User $user, public string $host)
     {
-        $this->hostParts = explode('.', $host);
         $this->speak(Locales::forUser($user));
     }
 

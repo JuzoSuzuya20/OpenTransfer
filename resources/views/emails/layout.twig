@@ -3,22 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-{#- Light, with a dark version for the mail readers in a dark mode: BlueMind in its dark theme turns
-    over the lightness of every email, so a light one reads dark there, and Thunderbird takes the dark
-    version from prefers-color-scheme. A template an admin rewrote for the dark design, before, keeps
-    it (brand.scheme): its texts are light grey and would not read on white. -#}
-{% set dark = brand.scheme|default('light') == 'dark' %}
-{% set p = dark
-  ? {page: '#161616', card: '#1e1e1e', line: '#353535', text: '#cecece', head: '#ffffff', muted: '#929292',
-     fill: brand.accent.dark.fill|default(brand.accent.fill), accent: brand.accent.dark.text|default(brand.accent.text), mark: brand.accent.dark.mark|default(brand.accent.mark)}
-  : {page: '#f6f6f6', card: '#ffffff', line: '#dddddd', text: '#3a3a3a', head: '#161616', muted: '#666666',
+{#- Dark, and saying so: Thunderbird then shows it as written, and forces its own colours on an email
+    that does not (white text, blue links, light lines). BlueMind in its dark theme takes the dark
+    version of an email, then turns over the lightness of all of it: a dark email read light there.
+    So a light version, for a web browser in a dark mode that is not Firefox, the engine of
+    Thunderbird too: BlueMind in Edge or Chrome turns it dark. A template an admin rewrote for the
+    dark design, before, has no classes on its colours: it goes without the light version. -#}
+{% set dark_only = brand.scheme|default('') == 'dark' %}
+{% set p = {page: '#161616', card: '#1e1e1e', line: '#353535', text: '#cecece', head: '#ffffff', muted: '#929292',
      fill: brand.accent.fill, accent: brand.accent.text, mark: brand.accent.mark} %}
-<meta name="color-scheme" content="{{ dark ? 'dark' : 'light dark' }}">
-<meta name="supported-color-schemes" content="{{ dark ? 'dark' : 'light dark' }}">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
 <title>{% if block('subject') is defined %}{{ block('subject')|trim }}{% else %}{{ settings.application_name }}{% endif %}</title>
-{# The values of the application (resources/js/style.scss), light and dark: each fixed colour of an
+{# The values of the application (resources/js/style.scss), dark and light: each fixed colour of an
    email belongs to a role named by a class (ot-b-* a ground, ot-c-* a text, ot-l-* a line), which
-   the dark version gives its dark colour. The accent is the main colour of the instance (brand.accent).
+   the light version gives its light colour. The accent is the main colour of the instance (brand.accent).
    The typeface comes from the instance itself; Gmail and Outlook on Windows ignore it and fall back. #}
 <style>
   @font-face {
@@ -37,9 +36,11 @@
     src: url('{{ settings.application_url }}/build/email/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
-  :root { color-scheme: {{ dark ? 'dark' : 'light dark' }}; supported-color-schemes: {{ dark ? 'dark' : 'light dark' }}; }
+  :root { color-scheme: dark; supported-color-schemes: dark; }
   body { margin: 0; padding: 0; background: {{ p.page }}; }
   a { color: {{ p.accent }}; text-decoration: none; }
+  /* BlueMind makes a link of a name of domain in the text (the name of the mail server) */
+  .ot-content a { color: {{ p.accent }}; }
   .ot-content h2 { margin: 0 0 12px; font-size: 26px; line-height: 1.2; font-weight: 800; color: {{ p.head }}; }
   .ot-content p { margin: 0 0 10px; }
   /* BlueMind gives bold text the colour of its own theme: it keeps the colour of the text around it */
@@ -48,22 +49,24 @@
     .ot-card-body { padding: 18px 16px !important; }
     .ot-content h2 { font-size: 22px !important; }
   }
-{% if not dark %}
+{% if not dark_only %}
+  @supports not ((-moz-appearance: none) or (-moz-orient: inline)) {
   @media (prefers-color-scheme: dark) {
-    .ot-b-page { background-color: #161616 !important; }
-    .ot-b-card { background-color: #1e1e1e !important; }
-    .ot-b-field { background-color: #242424 !important; }
-    .ot-c-head { color: #ffffff !important; }
-    .ot-c-text { color: #cecece !important; }
-    .ot-c-muted { color: #929292 !important; }
-    .ot-l-line { border-color: #353535 !important; }
-    .ot-l-field { border-color: #3a3a3a !important; }
-    .ot-l-soft { border-color: #2a2a2a !important; }
-    .ot-b-fill { background-color: {{ brand.accent.dark.fill|default(brand.accent.fill) }} !important; }
-    .ot-b-mark { background-color: {{ brand.accent.dark.mark|default(brand.accent.mark) }} !important; }
-    .ot-c-accent { color: {{ brand.accent.dark.text|default(brand.accent.text) }} !important; }
-    .ot-content a { color: {{ brand.accent.dark.text|default(brand.accent.text) }} !important; }
-    .ot-content h2 { color: #ffffff !important; }
+    .ot-b-page { background-color: #f6f6f6 !important; }
+    .ot-b-card { background-color: #ffffff !important; }
+    .ot-b-field { background-color: #f6f6f6 !important; }
+    .ot-c-head { color: #161616 !important; }
+    .ot-c-text { color: #3a3a3a !important; }
+    .ot-c-muted { color: #666666 !important; }
+    .ot-l-line { border-color: #dddddd !important; }
+    .ot-l-field { border-color: #cecece !important; }
+    .ot-l-soft { border-color: #e5e5e5 !important; }
+    .ot-b-fill { background-color: {{ brand.accent.light.fill|default(brand.accent.fill) }} !important; }
+    .ot-b-mark { background-color: {{ brand.accent.light.mark|default(brand.accent.mark) }} !important; }
+    .ot-c-accent { color: {{ brand.accent.light.text|default(brand.accent.text) }} !important; }
+    .ot-content a { color: {{ brand.accent.light.text|default(brand.accent.text) }} !important; }
+    .ot-content h2 { color: #161616 !important; }
+  }
   }
 {% endif %}
 </style>

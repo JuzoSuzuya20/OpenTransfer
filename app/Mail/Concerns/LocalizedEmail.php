@@ -41,16 +41,17 @@ trait LocalizedEmail
             'custom_logo' => !usesDefaultLogo(),
             // The main colour of the instance: its button, its label and its mark
             'accent' => \App\Support\Accents::email(\App\Support\Accents::chosen()),
-            // Light, with a dark version; a template rewritten for the dark design keeps it
-            'scheme' => $this->writtenForTheDarkDesign() ? 'dark' : 'light',
+            // Dark, with a light version for BlueMind; a template rewritten before goes without it
+            'scheme' => $this->writtenBeforeTheLightVersion() ? 'dark' : 'dark-and-light',
         ];
     }
 
     /**
-     * Before, the emails were dark only, and an admin who rewrote one copied its colours: light grey
-     * or white text, which would not read on the light card. Such a template keeps the dark layout.
+     * Before, the emails were dark only, and an admin who rewrote one copied its colours without the
+     * classes of their roles: the light version would leave its light grey text on a white card.
+     * Such a template goes without the light version.
      */
-    private function writtenForTheDarkDesign(): bool
+    private function writtenBeforeTheLightVersion(): bool
     {
         $path = match (true) {
             file_exists($this->rewrittenPath()) => $this->rewrittenPath(),
@@ -62,8 +63,10 @@ trait LocalizedEmail
         }
         $source = (string) file_get_contents($path);
 
-        return preg_match('/(?<![-\w])color\s*:\s*#(?:ffffff|fff|cecece|929292)\b/i', $source) === 1
+        $colours = preg_match('/(?<![-\w])color\s*:\s*#(?:ffffff|fff|cecece|929292)\b/i', $source) === 1
             || preg_match('/#(?:1e1e1e|242424|2a2a2a|353535)\b/i', $source) === 1;
+
+        return $colours && preg_match('/class="[^"]*\bot-[bcl]-/', $source) !== 1;
     }
 
     /**

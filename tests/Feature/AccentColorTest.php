@@ -110,9 +110,9 @@ class AccentColorTest extends TestCase
         $html = (new passwordResetMail('token', User::factory()->create()))->render();
 
         $this->assertStringContainsString('src="https://files.example.test/build/email/brand-mark-orange.png"', $html);
-        // Light, with the dark tone in the dark version (tests/Feature/EmailSchemeTest.php)
-        $this->assertStringContainsString('background:'.$orange['light']['accent-fill'], $html);
-        $this->assertStringContainsString('.ot-b-fill { background-color: '.$orange['email']['fill'].' !important; }', $html);
+        // Dark, with the light tone in the light version (tests/Feature/EmailSchemeTest.php)
+        $this->assertStringContainsString('background:'.$orange['email']['fill'], $html);
+        $this->assertStringContainsString('.ot-b-fill { background-color: '.$orange['light']['accent-fill'].' !important; }', $html);
         $this->assertStringNotContainsString('#6262ee', $html);
     }
 }

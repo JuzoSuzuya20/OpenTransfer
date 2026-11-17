@@ -105,7 +105,7 @@ class SmtpTestTest extends TestCase
         $this->assertSame('camille@example.test', $email->getTo()[0]->getAddress());
         $this->assertSame('noreply@example.test', $email->getFrom()[0]->getAddress());
         $this->assertStringContainsString('Bonjour Camille,', $email->getHtmlBody());
-        $this->assertStringContainsString('smtp.<wbr>saved.<wbr>test', $email->getHtmlBody());
+        $this->assertStringContainsString('smtp.saved.test', $email->getHtmlBody());
     }
 
     public function test_the_values_of_the_form_are_tested_before_they_are_saved(): void
@@ -172,6 +172,6 @@ class SmtpTestTest extends TestCase
         $html = (new smtpTestMail($this->admin(), 'smtp.saved.test'))->render();
 
         $this->assertStringContainsString('Bonjour Camille,', $html);
-        $this->assertStringContainsString('smtp.<wbr>saved.<wbr>test', $html);
+        $this->assertStringContainsString('smtp.saved.test', $html);
     }
 }

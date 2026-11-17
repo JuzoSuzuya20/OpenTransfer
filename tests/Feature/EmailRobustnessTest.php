@@ -79,23 +79,18 @@ class EmailRobustnessTest extends TestCase
         $this->assertMatchesRegularExpression('/\.ot-content strong, \.ot-content b \{ color: inherit !important; \}/', $html);
     }
 
-    // BlueMind dresses a name of domain found in the text its own way, white on its light grey: it
-    // stayed so in strong, span or td, coloured or not. A <wbr> after each dot, invisible and kept
-    // out of a copy, leaves no name of domain in one piece of text
-    // (the CSS inliner, whose parser knows no <wbr>, closes them: browsers ignore a </wbr>)
-    public function test_the_name_of_the_server_sits_in_a_block_of_its_own_never_in_one_piece(): void
+    public function test_the_name_of_the_server_sits_in_a_block_of_its_own(): void
     {
         $html = $this->sent(new \App\Mail\smtpTestMail($this->user(), 'smtp.example.test'))->getHtmlBody();
 
-        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#f6f6f6"[^>]*color:#161616;[^>]*>\s*smtp\.<wbr>example\.<wbr>test(<\/wbr>)*\s*<\/td>/', $html);
-        $this->assertStringNotContainsString('smtp.example.test', $html);
+        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#242424"[^>]*color:#ffffff;[^>]*>\s*smtp\.example\.test\s*<\/td>/', $html);
     }
 
     public function test_the_name_of_the_server_stays_escaped(): void
     {
         $html = $this->sent(new \App\Mail\smtpTestMail($this->user(), 'relay<b>.example.test'))->getHtmlBody();
 
-        $this->assertStringContainsString('relay&lt;b&gt;.<wbr>example.<wbr>test', $html);
+        $this->assertStringContainsString('relay&lt;b&gt;.example.test', $html);
         $this->assertStringNotContainsString('relay<b>', $html);
     }
 
@@ -103,7 +98,7 @@ class EmailRobustnessTest extends TestCase
     {
         $html = $this->sent(new emailVerificationMail('482915', $this->user()))->getHtmlBody();
 
-        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#f6f6f6"[^>]*>\s*482915\s*<\/td>/', $html);
+        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#242424"[^>]*>\s*482915\s*<\/td>/', $html);
     }
 
     public function test_the_logo_travels_with_the_email(): void
