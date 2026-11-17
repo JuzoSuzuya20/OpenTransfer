@@ -338,7 +338,9 @@ const isNew = (share) => Date.now() - new Date(share.created_at).getTime() < 2 *
   &.is-rules {
     grid-template-columns: 9rem 11rem minmax(0, 1fr) auto;
   }
-  .ot-password input {
+  // The field of OtPassword is in that component: only :deep() reaches it from these scoped styles,
+  // else it keeps the 10px under every field and stands that much above its line
+  .ot-password :deep(input) {
     margin-bottom: 0;
   }
   .ot-select {

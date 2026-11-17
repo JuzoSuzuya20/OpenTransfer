@@ -5,6 +5,14 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.3] — 2026-11-17
+
+### Fixed
+
+- In a file request, the password field stood 10 pixels above the fields and the button of its
+  line; the field to name a passkey (profile) stood as much above its button. Every other screen
+  with fields side by side was checked: they line up
+
 ## [1.5.2] — 2026-11-17
 
 ### Added

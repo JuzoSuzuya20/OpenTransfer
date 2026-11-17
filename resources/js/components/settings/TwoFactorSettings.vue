@@ -420,6 +420,10 @@ const confirmSetup = async (code) => {
     flex: 1 1 200px;
     margin: 0;
   }
+  // Nor the 10px under every field: on the line of its button
+  input {
+    margin-bottom: 0;
+  }
   // As tall as the field beside it
   button {
     height: var(--ot-field-height);
