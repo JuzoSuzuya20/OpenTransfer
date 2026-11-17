@@ -2,7 +2,7 @@
 // Mandatory setup during sign-in (admin policy). The session is only opened
 // once a second factor works, and the recovery codes are shown before going on.
 import { ref, defineAsyncComponent } from 'vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../toasts'
 import { useTranslate } from '@tolgee/vue'
 import { Smartphone, Fingerprint, ShieldCheck, ArrowLeft } from 'lucide-vue-next'
 import { enrolStartTotp, enrolConfirmTotp, enrolPasskeyOptions, enrolPasskey } from '../api'

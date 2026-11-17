@@ -5,6 +5,28 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.4] — 2026-11-17
+
+### Changed
+
+- The notifications are the application's own, instead of a library held in check by overrides:
+  at the bottom right (the whole width on a phone), a card of the app with the icon and the line of
+  their state. An error stays longer than a confirmation (8 s against 4); the pointer or the focus
+  on them holds their countdown; the same message again counts on the one shown (×2) instead of
+  stacking; three at most, the oldest making room; the whole message, never cut; a button and
+  Escape close them. Coming and going, each opens or closes its own room, so the others slide
+  instead of jumping. Screen readers read each message, an error at once
+
+### Fixed
+
+- The warning before a share is deleted told the time since it expired ("in 3 weeks" for a deletion
+  in 7 days): it tells the time until it is deleted. It and the warning before expiry round to the
+  nearest day, as they leave once a day a few hours under the days they announce
+- The size of a share in an email reads in the language of its reader, as on the pages ("46,3 Mo",
+  no more "46.25 MB")
+- The emails about an account greeted by the whole name ("Hello Quentin BAUDRY") and those about
+  shares by the first name: every email greets by the first name
+
 ## [1.5.3] — 2026-11-17
 
 ### Fixed

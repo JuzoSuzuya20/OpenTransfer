@@ -6,7 +6,7 @@ import { UserPen, Trash, UserPlus, CircleX, UserRoundCheck, FolderOpen, KeyRound
 import RowMenu from '../layout/RowMenu.vue'
 import AppLink from '../layout/AppLink.vue'
 import { store } from '../../store'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { niceDate } from '../../utils'
 import UserAvatar from '../layout/UserAvatar.vue'
 import OtSkeleton from '../layout/OtSkeleton.vue'

@@ -140,37 +140,6 @@
   }
 }
 
-// Notifications come in from their edge and leave towards it
-.ot-toast-enter-active {
-  animation: ot-toast-in var(--ot-dur-slow) var(--ot-ease-out) both;
-}
-.ot-toast-leave-active {
-  animation: ot-toast-out var(--ot-dur-exit) var(--ot-ease-in) both;
-}
-.ot-toast-move {
-  transition: transform var(--ot-dur-slow) var(--ot-ease-spring);
-}
-@keyframes ot-toast-in {
-  from {
-    opacity: 0;
-    transform: translateX(calc(32px * var(--ot-motion))) scale(calc(1 - 0.04 * var(--ot-motion)));
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes ot-toast-out {
-  from {
-    opacity: 1;
-    transform: none;
-  }
-  to {
-    opacity: 0;
-    transform: translateX(calc(24px * var(--ot-motion)));
-  }
-}
-
 // A check mark that confirms something (copied, chosen) pops in on a spring
 .ot-check-pop {
   animation: ot-check-pop var(--ot-dur-slow) var(--ot-ease-spring) both;

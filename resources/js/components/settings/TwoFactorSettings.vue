@@ -3,7 +3,7 @@
 import { ref, computed, onMounted, nextTick, defineAsyncComponent } from 'vue'
 import OtPassword from '../layout/OtPassword.vue'
 import { pinLeaving } from '../../lib/motion'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { useTranslate } from '@tolgee/vue'
 import { ShieldCheck, Smartphone, Fingerprint, KeyRound, Trash, Plus, RefreshCw } from 'lucide-vue-next'
 import {

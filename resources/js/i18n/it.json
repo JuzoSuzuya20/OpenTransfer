@@ -1210,5 +1210,9 @@
     "system": "Sistema",
     "light": "Chiaro",
     "dark": "Scuro"
+  },
+  "toast": {
+    "region": "Notifiche",
+    "close": "Chiudi la notifica"
   }
 }

@@ -1,7 +1,7 @@
 import { getApiUrl, getTusdUrl } from './utils'
 import { store, uploadController } from './store'
 import { jwtDecode } from 'jwt-decode'
-import { useToast } from 'vue-toastification'
+import { useToast } from './toasts'
 import debounce from './debounce'
 import * as tus from 'tus-js-client'
 import { watch, ref } from 'vue'

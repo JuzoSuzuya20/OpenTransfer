@@ -40,7 +40,7 @@ import OtSkeleton from '../layout/OtSkeleton.vue'
 import { atLeast } from '../../lib/atLeast'
 import { SHIPPED_LOGIN_MESSAGE } from '../../lib/loginMessage'
 
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { mapSettings, niceFileSize } from '../../utils'
 import { patternBits, MIN_PATTERN_BITS } from '../../lib/patternBits'
 import { notifySettingsChanged } from '../../composables/useSetting'

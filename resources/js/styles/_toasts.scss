@@ -1,36 +1,68 @@
-// Notifications: a small card of the app at the bottom right, its state told by an icon on its
-// tint and the 3 px line at the foot of every card. The countdown bar is transparent
-// (hideProgressBar in app.js): it must keep running, its animationend closes the toast.
-// vue-toastification loads its stylesheet after this one, hence the !important.
+// Notifications (components/layout/ToastHost.vue): a card of the app at the bottom right, its state
+// told by an icon on its tint and the 3 px line at the foot of every card. They stack upwards, the
+// newest the lowest. A toast that comes or goes opens or closes its own room (its row grows from
+// nothing or shrinks to it): the others slide instead of jumping. Only the toasts take the pointer.
 
-.Vue-Toastification__container.bottom-right {
-  right: 16px !important;
-  bottom: 16px !important;
-  width: min(380px, calc(100vw - 32px)) !important;
-  min-height: 0 !important;
-  padding: 0 !important;
+.ot-toasts {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  z-index: 500;
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.ot-toasts-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.Vue-Toastification__toast {
+// The row of a toast: it holds the room the card takes, with the gap above it
+.ot-toast {
   --toast-accent: var(--ot-accent);
   --toast-tint: var(--ot-accent-soft);
   --toast-ink: var(--ot-accent-text);
 
-  align-items: flex-start !important;
-  gap: 12px;
-  width: 100%;
-  min-width: 0 !important;
-  max-width: none !important;
-  min-height: 0 !important;
-  margin: 0 0 10px !important;
-  padding: 12px 10px 15px 12px !important;
-  background: var(--ot-card) !important;
-  color: var(--ot-text) !important;
-  border: 1px solid var(--ot-line);
-  border-radius: var(--ot-radius) !important;
-  box-shadow: var(--ot-shadow) !important;
-  font-family: inherit !important;
+  display: grid;
+  grid-template-rows: 1fr;
+  padding-top: 10px;
+  pointer-events: auto;
 
+  &.is-success {
+    --toast-accent: var(--ot-success);
+    --toast-tint: var(--ot-success-soft);
+    --toast-ink: var(--ot-success);
+  }
+  &.is-error {
+    --toast-accent: var(--ot-danger);
+    --toast-tint: var(--ot-danger-soft);
+    --toast-ink: var(--ot-danger-text);
+  }
+  &.is-warning {
+    --toast-accent: var(--ot-warning);
+    --toast-tint: var(--ot-warning-soft);
+    --toast-ink: var(--ot-warning);
+  }
+}
+
+.ot-toast-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  min-height: 0;
+  overflow: hidden;
+  padding: 12px 10px 15px 12px;
+  border: 1px solid var(--ot-line);
+  border-radius: var(--ot-radius);
+  background: var(--ot-card);
+  box-shadow: var(--ot-shadow);
+  color: var(--ot-text);
+
+  // The line of its state, as at the foot of every card
   &::after {
     content: "";
     position: absolute;
@@ -42,79 +74,108 @@
   }
 }
 
-.Vue-Toastification__toast--success {
-  --toast-accent: var(--ot-success);
-  --toast-tint: var(--ot-success-soft);
-  --toast-ink: var(--ot-success);
-}
-.Vue-Toastification__toast--error {
-  --toast-accent: var(--ot-danger);
-  --toast-tint: var(--ot-danger-soft);
-  --toast-ink: var(--ot-danger-text);
-}
-.Vue-Toastification__toast--warning {
-  --toast-accent: var(--ot-warning);
-  --toast-tint: var(--ot-warning-soft);
-  --toast-ink: var(--ot-warning);
-}
-
-// The state, on its tint, popping in on a spring after the card has arrived
-.Vue-Toastification__icon {
-  flex-shrink: 0;
-  width: 28px !important;
-  height: 28px !important;
-  margin: 0 !important;
-  padding: 6px;
-  box-sizing: border-box;
-  border-radius: 50%;
-  background: var(--toast-tint);
-  color: var(--toast-ink) !important;
-  animation: ot-check-pop var(--ot-dur-slow) var(--ot-ease-spring) 80ms both;
-}
-
-.Vue-Toastification__toast-body {
-  align-self: center;
-  font-size: 0.875rem !important;
-  font-weight: 600;
-  line-height: 1.45 !important;
-  color: var(--ot-heading);
-}
-
-button.Vue-Toastification__close-button {
-  display: inline-flex !important;
+.ot-toast-icon {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  width: 28px !important;
-  height: 28px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0;
-  border-radius: var(--ot-btn-radius) !important;
-  background: none !important;
-  color: var(--ot-muted) !important;
-  opacity: 1 !important;
-  font-size: 1.125rem !important;
-  font-weight: 400 !important;
-  line-height: 1 !important;
-  transition:
-    background-color var(--ot-dur-fast) var(--ot-ease-out),
-    color var(--ot-dur-fast) var(--ot-ease-out),
-    transform var(--ot-dur) var(--ot-ease-spring) !important;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ot-radius-sm);
+  background: var(--toast-tint);
+  color: var(--toast-ink);
 
-  &:hover,
-  &:focus-visible {
-    background: var(--ot-raised) !important;
-    color: var(--ot-heading) !important;
+  svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
+// The whole message, however long: it wraps, never cut
+.ot-toast-text {
+  margin: 0;
+  padding-top: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ot-heading);
+  overflow-wrap: anywhere;
+}
+// The same message again: counted, with a small spring
+.ot-toast-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--toast-tint);
+  color: var(--toast-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.5;
+  animation: ot-toast-count var(--ot-dur-slow) var(--ot-ease-spring);
+}
+@keyframes ot-toast-count {
+  from {
+    transform: scale(calc(1 - 0.4 * var(--ot-motion)));
+  }
+}
 
-@media (max-width: 600px) {
-  .Vue-Toastification__container.bottom-right {
-    right: 8px !important;
-    bottom: 8px !important;
-    left: 8px !important;
-    width: auto !important;
+.ot-toast-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ot-radius-sm);
+  background: none;
+  color: var(--ot-muted);
+
+  &:hover {
+    background: var(--ot-raised);
+    color: var(--ot-heading);
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Coming: its room opens while it slides in from the edge, decelerating
+.ot-toast-enter-active {
+  transition:
+    grid-template-rows calc(var(--ot-dur-slow) * var(--ot-motion)) var(--ot-ease-out),
+    padding-top calc(var(--ot-dur-slow) * var(--ot-motion)) var(--ot-ease-out),
+    opacity var(--ot-dur) var(--ot-ease-out),
+    transform var(--ot-dur-slow) var(--ot-ease-out);
+}
+// Going: it fades towards the edge, accelerating, and its room closes after it
+.ot-toast-leave-active {
+  transition:
+    grid-template-rows calc(var(--ot-dur) * var(--ot-motion)) var(--ot-ease-in) calc(var(--ot-dur-exit) * var(--ot-motion) * 0.5),
+    padding-top calc(var(--ot-dur) * var(--ot-motion)) var(--ot-ease-in) calc(var(--ot-dur-exit) * var(--ot-motion) * 0.5),
+    opacity var(--ot-dur-exit) var(--ot-ease-in),
+    transform var(--ot-dur-exit) var(--ot-ease-in);
+}
+.ot-toast-enter-from,
+.ot-toast-leave-to {
+  grid-template-rows: 0fr;
+  padding-top: 0;
+  opacity: 0;
+}
+.ot-toast-enter-from {
+  transform: translateX(calc(24px * var(--ot-motion)));
+}
+.ot-toast-leave-to {
+  transform: translateX(calc(32px * var(--ot-motion)));
+}
+
+// On a phone: the whole width, above the bottom edge
+@media (max-width: 560px) {
+  .ot-toasts {
+    right: max(12px, env(safe-area-inset-right, 0px));
+    left: max(12px, env(safe-area-inset-left, 0px));
+    width: auto;
   }
 }

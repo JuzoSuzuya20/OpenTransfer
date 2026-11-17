@@ -3,7 +3,7 @@
 // Both lists stay current while the page is open.
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { useTranslate, useTolgee } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../toasts'
 import { Send, SquareArrowOutUpRight, Link2, Copy, Check } from 'lucide-vue-next'
 import OtSelect from '../components/layout/OtSelect.vue'
 import OtPassword from '../components/layout/OtPassword.vue'

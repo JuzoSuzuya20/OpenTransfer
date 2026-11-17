@@ -1,7 +1,8 @@
 <script setup>
+import ToastHost from './components/layout/ToastHost.vue'
 import { ref, onMounted, onBeforeUnmount, nextTick, watch, computed, provide, defineAsyncComponent } from 'vue'
 import { TolgeeProvider, useTranslate } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from './toasts'
 
 import AppHeader from './components/layout/AppHeader.vue'
 import Uploader from './components/uploader.vue'
@@ -375,5 +376,7 @@ onBeforeUnmount(() => {
     </Teleport>
 
     <CommandPalette ref="commandPalette" v-if="store.isLoggedIn() && !store.isGuest()" />
+    <!-- The notifications of the whole application, on every screen -->
+    <ToastHost />
   </TolgeeProvider>
 </template>

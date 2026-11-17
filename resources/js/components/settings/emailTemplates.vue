@@ -4,7 +4,7 @@ import { Check, X, RotateCcw } from 'lucide-vue-next'
 import { getEmailTemplates, updateEmailTemplates, resetEmailTemplate, getSettingById, saveSettingsById } from '../../api'
 import { domData } from '../../domData'
 
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { mapSettings } from '../../utils'
 
 import { useTranslate } from '@tolgee/vue'

@@ -5,7 +5,7 @@ import { getMyProfile, updateMyProfile, getAvailableAuthProviders, unlinkProvide
 import { CircleX, UserRoundCheck, UserRoundPen, Fingerprint, Link, Unlink, Save } from 'lucide-vue-next'
 import UserAvatar from '../layout/UserAvatar.vue'
 import OtSkeleton from '../layout/OtSkeleton.vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { store } from '../../store'
 import TwoFactorSettings from './TwoFactorSettings.vue'
 import EmailChange from './EmailChange.vue'

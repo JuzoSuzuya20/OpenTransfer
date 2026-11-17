@@ -5,7 +5,7 @@ import OtSkeleton from '../layout/OtSkeleton.vue'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 import { ref, computed, onMounted } from 'vue'
 import { useTranslate } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { Plus, Eye, EyeOff, Copy, Check, Trash2, PlugZap, ChevronDown } from 'lucide-vue-next'
 import {
   getSettingsByGroup,

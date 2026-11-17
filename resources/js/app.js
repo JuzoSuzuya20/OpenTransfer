@@ -10,8 +10,6 @@ import 'bootstrap/dist/css/bootstrap-reboot.min.css'
 import '@fontsource-variable/plus-jakarta-sans'
 import './style.scss'
 import App from './App.vue'
-import Toast, { POSITION } from 'vue-toastification'
-import 'vue-toastification/dist/index.css'
 import { domData } from './domData'
 
 // The languages, each in a file of its own fetched when it is needed: the reader's, and English
@@ -143,13 +141,6 @@ applyTheme(storedTheme())
 followSystemTheme()
 
 createApp(App)
-  .use(Toast, {
-    position: POSITION.BOTTOM_RIGHT,
-    // Come in from the edge decelerating, leave towards it accelerating (styles/_motion.scss)
-    transition: "ot-toast",
-    // The countdown bar stays (its animationend closes the toast) but transparent: no linear motion
-    hideProgressBar: true,
-  })
   .use(VueTolgee, { tolgee })
   // <details> that open and close smoothly (lib/expand)
   .directive('expand-details', vExpandDetails)

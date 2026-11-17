@@ -4,7 +4,7 @@ import OtSkeleton from '../layout/OtSkeleton.vue'
 // storage, file types, shares and users. Every figure comes from the server: nothing is estimated.
 import { ref, onMounted, computed, watch } from 'vue'
 import { useTranslate, useTolgee } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { getSystemStats } from '../../api'
 import UserAvatar from '../layout/UserAvatar.vue'
 // Sizes in the units of the screen's language (2,2 Go, 2.2 GB), like everywhere else

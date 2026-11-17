@@ -19,7 +19,7 @@ import {
 } from '../../api'
 import FileInput from '../fileInput.vue'
 import { domData } from '../../domData'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { niceFileName, mapSettings } from '../../utils'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 

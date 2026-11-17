@@ -1,6 +1,6 @@
 <script setup>
 // Recovery codes, shown once: only their hashes are stored.
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { useTranslate } from '@tolgee/vue'
 import { Copy, Download } from 'lucide-vue-next'
 

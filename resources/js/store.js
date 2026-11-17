@@ -1,5 +1,5 @@
 import { reactive, nextTick } from 'vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from './toasts'
 import mitt from 'mitt'
 import debounce from './debounce'
 const emitter = mitt()

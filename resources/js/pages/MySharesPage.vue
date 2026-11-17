@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { pinLeaving } from '../lib/motion'
 import { useTranslate, useTolgee } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../toasts'
 import { Trash2 } from 'lucide-vue-next'
 import ShareRow from '../components/layout/ShareRow.vue'
 import OtSkeleton from '../components/layout/OtSkeleton.vue'

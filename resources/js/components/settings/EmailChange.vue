@@ -3,7 +3,7 @@
 // back, the account keeps the address it has (see EmailChangeController)
 import { ref, nextTick } from 'vue'
 import { useTranslate } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { AtSign } from 'lucide-vue-next'
 import OtPassword from '../layout/OtPassword.vue'
 import { requestEmailChange, confirmEmailChange } from '../../api'

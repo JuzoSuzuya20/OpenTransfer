@@ -2,7 +2,7 @@
 // One share in a list (My shares, All shares): name, figures, state, downloads and its actions.
 import { ref, computed } from 'vue'
 import { useTranslate, useTolgee } from '@tolgee/vue'
-import { useToast } from 'vue-toastification'
+import { useToast } from '../../toasts'
 import { SquareArrowOutUpRight, HardDriveDownload, CalendarPlus, CalendarX2, Gauge, Copy, Check } from 'lucide-vue-next'
 import RowMenu from './RowMenu.vue'
 import UserAvatar from './UserAvatar.vue'
