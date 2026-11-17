@@ -106,7 +106,8 @@ class EmailDesignTest extends TestCase
         $this->assertMatchesRegularExpression('/<h2[^>]*>Dossier marché travaux<\/h2>/u', $html);
         $this->assertStringContainsString('Éléments', $html);
         $this->assertStringContainsString('Taille', $html);
-        $this->assertStringContainsString('612.00 MB', $html);
+        // As the download page writes it: units and comma of French
+        $this->assertStringContainsString("612\u{00A0}Mo", $html);
         $this->assertStringContainsString('23/11/2026', $html);
         $this->assertStringContainsString('Message de Camille', $html);
         $this->assertStringContainsString('voici les pièces.', $html);

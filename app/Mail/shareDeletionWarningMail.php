@@ -27,8 +27,9 @@ class shareDeletionWarningMail extends Mailable
     {
         $this->share = $share;
         $this->speak(Locales::forUser($share->user));
-        $this->deletion_date = $share->expires_at;
-        $this->deletes_in = $share->expires_at->copy()->locale($this->emailLocale)->diffForHumans(['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 1]);
+        // When it is deleted (its expiry and the days the files are kept), not when it expired
+        $this->deletion_date = $share->deletes_at;
+        $this->deletes_in = $share->deletes_at->copy()->locale($this->emailLocale)->diffForHumans(now(), ['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 1, 'options' => \Carbon\CarbonInterface::ROUND]);
     }
 
     protected function templateName(): string

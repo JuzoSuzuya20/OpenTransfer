@@ -26,7 +26,8 @@ class shareExpiryWarningMail extends Mailable
     {
         $this->share = $share;
         $this->speak(Locales::forUser($share->user));
-        $this->share_expires_in = $share->expires_at->copy()->locale($this->emailLocale)->diffForHumans(['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 1]);
+        // Rounded: the warning leaves once a day, a few hours under the days it announces
+        $this->share_expires_in = $share->expires_at->copy()->locale($this->emailLocale)->diffForHumans(['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 1, 'options' => \Carbon\CarbonInterface::ROUND]);
     }
 
     protected function templateName(): string

@@ -5,7 +5,7 @@
 {% block header %}Compte créé{% endblock %}
 
 {% block content %}
-<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Bonjour {{ user.name }},</h2>
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Bonjour {{ user.first_name }},</h2>
 <p style="margin:0 0 10px;">Un compte a été créé pour vous sur {{ settings.application_name }}.</p>
 <p style="margin:0 0 10px;">Choisissez votre mot de passe pour commencer.</p>
 {% endblock %}

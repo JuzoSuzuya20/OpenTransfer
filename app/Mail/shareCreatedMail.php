@@ -35,8 +35,9 @@ class shareCreatedMail extends Mailable
         $this->recipient = $recipient;
         $this->recipient_name = explode(' ', $recipient['name'])[0];
         $this->sender_name = explode(' ', $user->name)[0];
-        $this->share_size = FileSize::human($share->size);
         $this->speak(Locales::forEmail($recipient['email'] ?? null));
+        // In the language of the email, as the page of the share writes it
+        $this->share_size = FileSize::human($share->size, $this->emailLocale);
     }
 
     protected function templateName(): string

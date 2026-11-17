@@ -194,4 +194,50 @@ class EmailLocalizationTest extends TestCase
         $this->assertSame('Asunto propio', $mail->envelope()->subject);
         $this->assertStringContainsString('Texto propio', $mail->render());
     }
+
+    // ----- what the emails say -----------------------------------------------------------------
+
+    public function test_the_deletion_warning_tells_when_the_share_is_deleted(): void
+    {
+        // Deleted 30 days after it expired, warned 7 days before: expired 23 days ago, deleted in 7
+        Setting::where('key', 'clean_files_after_days')->update(['value' => '30']);
+        Setting::where('key', 'deletion_warning_days')->update(['value' => '7']);
+        $this->defaultLanguage('fr');
+        $share = $this->share($this->owner('fr'));
+        $share->forceFill(['expires_at' => now()->subDays(23)])->save();
+
+        $html = (new \App\Mail\shareDeletionWarningMail($share->fresh()))->render();
+
+        $this->assertStringContainsString('sera supprimé dans 1 semaine', $html);
+        $this->assertStringNotContainsString('3 semaines', $html);
+    }
+
+    public function test_the_size_of_a_share_reads_in_the_language_of_its_recipient(): void
+    {
+        $this->defaultLanguage('fr');
+        $share = $this->share($this->owner('fr'));
+        $share->forceFill(['size' => 48_500_000])->save();
+
+        $html = (new \App\Mail\shareCreatedMail($share->user, $share->fresh(), ['name' => 'Alex Durand', 'email' => 'alex@exemple.fr']))->render();
+
+        $this->assertStringContainsString("46,3\u{00A0}Mo", $html);
+        $this->assertStringNotContainsString('MB', $html);
+    }
+
+    public function test_every_email_greets_by_the_first_name(): void
+    {
+        $this->defaultLanguage('fr');
+        $user = $this->owner('fr');
+
+        foreach ([
+            new \App\Mail\passwordResetMail('token', $user),
+            new \App\Mail\emailChangeMail('123456', $user),
+            new \App\Mail\accountCreatedMail('token', $user),
+            new \App\Mail\emailVerificationMail('123456', $user),
+        ] as $mail) {
+            $html = $mail->render();
+            $this->assertStringContainsString('Bonjour Camille,', $html, class_basename($mail));
+            $this->assertStringNotContainsString('Camille Martin,', $html, class_basename($mail));
+        }
+    }
 }
