@@ -5,14 +5,14 @@
 {% block header %}Bestanden om te downloaden{% endblock %}
 
 {% block content %}
-<p style="margin:0 0 4px;color:#929292;">{{ sender_name }} heeft je gestuurd</p>
-<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">{{ share.name }}</h2>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-top:1px solid #2a2a2a;">
-  <tr><td style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#929292;">Items</td><td align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:#ffffff;">{{ share.file_count }}</td></tr>
-  <tr><td style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#929292;">Grootte</td><td align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:{{ brand.accent.text }};">{{ share_size }}</td></tr>
-  <tr><td style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#929292;">Beschikbaar tot</td><td align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:#ffffff;">{{ share.expires_at|date(layout.date_format) }}</td></tr>
+<p class="ot-c-muted" style="margin:0 0 4px;color:#666666;">{{ sender_name }} heeft je gestuurd</p>
+<h2 class="ot-c-head" style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#161616;">{{ share.name }}</h2>
+<table class="ot-l-soft" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-top:1px solid #e5e5e5;">
+  <tr><td class="ot-c-muted" style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#666666;">Items</td><td class="ot-c-head" align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:#161616;">{{ share.file_count }}</td></tr>
+  <tr><td class="ot-c-muted" style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#666666;">Grootte</td><td class="ot-c-accent" align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:{{ brand.accent.text }};">{{ share_size }}</td></tr>
+  <tr><td class="ot-c-muted" style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#666666;">Beschikbaar tot</td><td class="ot-c-head" align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:#161616;">{{ share.expires_at|date(layout.date_format) }}</td></tr>
 </table>
-{% if share.description %}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-top:1px solid #2a2a2a;"><tr><td style="padding:16px 0 0;"><p style="margin:0 0 8px;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ brand.accent.text }};">Bericht van {{ sender_name }}</p><p style="margin:0;color:#cecece;">{{ share.description|nl2br }}</p></td></tr></table>{% endif %}
+{% if share.description %}<table class="ot-l-soft" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-top:1px solid #e5e5e5;"><tr><td style="padding:16px 0 0;"><p class="ot-c-accent" style="margin:0 0 8px;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ brand.accent.text }};">Bericht van {{ sender_name }}</p><p class="ot-c-text" style="margin:0;color:#3a3a3a;">{{ share.description|nl2br }}</p></td></tr></table>{% endif %}
 {% endblock %}
 
 {% block action_url %}{{ settings.application_url }}/shares/{{ share.long_id }}{% endblock %}

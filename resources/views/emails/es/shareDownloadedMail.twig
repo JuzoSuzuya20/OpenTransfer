@@ -5,9 +5,9 @@
 {% block header %}Envío descargado{% endblock %}
 
 {% block content %}
-<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Hola, {{ share.user.first_name }}:</h2>
+<h2 class="ot-c-head" style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#161616;">Hola, {{ share.user.first_name }}:</h2>
 <p style="margin:0 0 10px;">Su envío «{{ share.name }}» se acaba de descargar.</p>
-<p style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#929292;">Este mensaje solo se envía en la primera descarga.</p>
+<p class="ot-c-muted" style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#666666;">Este mensaje solo se envía en la primera descarga.</p>
 {% endblock %}
 
 {% block action_url %}{{ settings.application_url }}/shares/{{ share.long_id }}{% endblock %}

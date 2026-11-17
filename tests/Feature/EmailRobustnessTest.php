@@ -87,7 +87,7 @@ class EmailRobustnessTest extends TestCase
     {
         $html = $this->sent(new \App\Mail\smtpTestMail($this->user(), 'smtp.example.test'))->getHtmlBody();
 
-        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#242424"[^>]*color:#ffffff;[^>]*>\s*smtp\.<wbr>example\.<wbr>test(<\/wbr>)*\s*<\/td>/', $html);
+        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#f6f6f6"[^>]*color:#161616;[^>]*>\s*smtp\.<wbr>example\.<wbr>test(<\/wbr>)*\s*<\/td>/', $html);
         $this->assertStringNotContainsString('smtp.example.test', $html);
     }
 
@@ -103,7 +103,7 @@ class EmailRobustnessTest extends TestCase
     {
         $html = $this->sent(new emailVerificationMail('482915', $this->user()))->getHtmlBody();
 
-        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#242424"[^>]*>\s*482915\s*<\/td>/', $html);
+        $this->assertMatchesRegularExpression('/<td[^>]*bgcolor="#f6f6f6"[^>]*>\s*482915\s*<\/td>/', $html);
     }
 
     public function test_the_logo_travels_with_the_email(): void

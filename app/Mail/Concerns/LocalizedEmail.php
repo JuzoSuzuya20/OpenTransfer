@@ -41,7 +41,29 @@ trait LocalizedEmail
             'custom_logo' => !usesDefaultLogo(),
             // The main colour of the instance: its button, its label and its mark
             'accent' => \App\Support\Accents::email(\App\Support\Accents::chosen()),
+            // Light, with a dark version; a template rewritten for the dark design keeps it
+            'scheme' => $this->writtenForTheDarkDesign() ? 'dark' : 'light',
         ];
+    }
+
+    /**
+     * Before, the emails were dark only, and an admin who rewrote one copied its colours: light grey
+     * or white text, which would not read on the light card. Such a template keeps the dark layout.
+     */
+    private function writtenForTheDarkDesign(): bool
+    {
+        $path = match (true) {
+            file_exists($this->rewrittenPath()) => $this->rewrittenPath(),
+            $this->usesLegacyTemplate() => $this->legacyPath(),
+            default => null,
+        };
+        if ($path === null) {
+            return false;
+        }
+        $source = (string) file_get_contents($path);
+
+        return preg_match('/(?<![-\w])color\s*:\s*#(?:ffffff|fff|cecece|929292)\b/i', $source) === 1
+            || preg_match('/#(?:1e1e1e|242424|2a2a2a|353535)\b/i', $source) === 1;
     }
 
     /**

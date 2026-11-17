@@ -3,11 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
-<meta name="supported-color-schemes" content="dark">
+{#- Light, with a dark version for the mail readers in a dark mode: BlueMind in its dark theme turns
+    over the lightness of every email, so a light one reads dark there, and Thunderbird takes the dark
+    version from prefers-color-scheme. A template an admin rewrote for the dark design, before, keeps
+    it (brand.scheme): its texts are light grey and would not read on white. -#}
+{% set dark = brand.scheme|default('light') == 'dark' %}
+{% set p = dark
+  ? {page: '#161616', card: '#1e1e1e', line: '#353535', text: '#cecece', head: '#ffffff', muted: '#929292',
+     fill: brand.accent.dark.fill|default(brand.accent.fill), accent: brand.accent.dark.text|default(brand.accent.text), mark: brand.accent.dark.mark|default(brand.accent.mark)}
+  : {page: '#f6f6f6', card: '#ffffff', line: '#dddddd', text: '#3a3a3a', head: '#161616', muted: '#666666',
+     fill: brand.accent.fill, accent: brand.accent.text, mark: brand.accent.mark} %}
+<meta name="color-scheme" content="{{ dark ? 'dark' : 'light dark' }}">
+<meta name="supported-color-schemes" content="{{ dark ? 'dark' : 'light dark' }}">
 <title>{% if block('subject') is defined %}{{ block('subject')|trim }}{% else %}{{ settings.application_name }}{% endif %}</title>
-{# The values of the application (resources/js/style.scss, dark scheme): page #161616, card #1e1e1e,
-   line #353535, text #cecece, muted #929292, accent (the main colour of the instance: brand.accent) and its text, Plus Jakarta Sans.
+{# The values of the application (resources/js/style.scss), light and dark: each fixed colour of an
+   email belongs to a role named by a class (ot-b-* a ground, ot-c-* a text, ot-l-* a line), which
+   the dark version gives its dark colour. The accent is the main colour of the instance (brand.accent).
    The typeface comes from the instance itself; Gmail and Outlook on Windows ignore it and fall back. #}
 <style>
   @font-face {
@@ -26,10 +37,10 @@
     src: url('{{ settings.application_url }}/build/email/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
-  :root { color-scheme: dark; supported-color-schemes: dark; }
-  body { margin: 0; padding: 0; background: #161616; }
-  a { color: {{ brand.accent.text }}; text-decoration: none; }
-  .ot-content h2 { margin: 0 0 12px; font-size: 26px; line-height: 1.2; font-weight: 800; color: #ffffff; }
+  :root { color-scheme: {{ dark ? 'dark' : 'light dark' }}; supported-color-schemes: {{ dark ? 'dark' : 'light dark' }}; }
+  body { margin: 0; padding: 0; background: {{ p.page }}; }
+  a { color: {{ p.accent }}; text-decoration: none; }
+  .ot-content h2 { margin: 0 0 12px; font-size: 26px; line-height: 1.2; font-weight: 800; color: {{ p.head }}; }
   .ot-content p { margin: 0 0 10px; }
   /* BlueMind gives bold text the colour of its own theme: it keeps the colour of the text around it */
   .ot-content strong, .ot-content b { color: inherit !important; }
@@ -37,13 +48,31 @@
     .ot-card-body { padding: 18px 16px !important; }
     .ot-content h2 { font-size: 22px !important; }
   }
+{% if not dark %}
+  @media (prefers-color-scheme: dark) {
+    .ot-b-page { background-color: #161616 !important; }
+    .ot-b-card { background-color: #1e1e1e !important; }
+    .ot-b-field { background-color: #242424 !important; }
+    .ot-c-head { color: #ffffff !important; }
+    .ot-c-text { color: #cecece !important; }
+    .ot-c-muted { color: #929292 !important; }
+    .ot-l-line { border-color: #353535 !important; }
+    .ot-l-field { border-color: #3a3a3a !important; }
+    .ot-l-soft { border-color: #2a2a2a !important; }
+    .ot-b-fill { background-color: {{ brand.accent.dark.fill|default(brand.accent.fill) }} !important; }
+    .ot-b-mark { background-color: {{ brand.accent.dark.mark|default(brand.accent.mark) }} !important; }
+    .ot-c-accent { color: {{ brand.accent.dark.text|default(brand.accent.text) }} !important; }
+    .ot-content a { color: {{ brand.accent.dark.text|default(brand.accent.text) }} !important; }
+    .ot-content h2 { color: #ffffff !important; }
+  }
+{% endif %}
 </style>
 <!--[if mso]>
 <style>body, table, td, p, a, span, h2 { font-family: 'Segoe UI', Arial, sans-serif !important; }</style>
 <![endif]-->
 </head>
-<body style="margin:0;padding:0;background:#161616;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#161616" style="background:#161616;">
+<body class="ot-b-page" style="margin:0;padding:0;background:{{ p.page }};">
+<table role="presentation" class="ot-b-page" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{{ p.page }}" style="background:{{ p.page }};">
   <tr>
     <td align="center" style="padding:28px 16px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
@@ -53,7 +82,7 @@
               <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
                 <tr>
                   <td width="28" style="width:28px;"><img src="{% if brand.logo_src|default(false) %}{{ brand.logo_src }}{% else %}{{ settings.application_url }}{{ brand.custom_logo|default(false) ? '/images/logo.png' : '/build/email/' ~ brand.accent.mark_file }}{% endif %}" width="28" height="28" alt="" style="display:block;width:28px;height:28px;object-fit:contain;border:0;"></td>
-                  <td style="padding-left:10px;font-size:19px;line-height:28px;font-weight:800;color:#ffffff;">{{ settings.application_name }}</td>
+                  <td class="ot-c-head" style="padding-left:10px;font-size:19px;line-height:28px;font-weight:800;color:{{ p.head }};">{{ settings.application_name }}</td>
                 </tr>
               </table>
             </a>
@@ -61,34 +90,34 @@
         </tr>
         <tr>
           <td>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#1e1e1e" style="background:#1e1e1e;border:1px solid #353535;border-radius:6px;border-collapse:separate;">
+            <table role="presentation" class="ot-b-card ot-l-line" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{{ p.card }}" style="background:{{ p.card }};border:1px solid {{ p.line }};border-radius:6px;border-collapse:separate;">
               <tr>
                 <td class="ot-card-body" style="padding:20px;">
-                  <p style="margin:0 0 16px;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ brand.accent.text }};">{{ block('header')|trim }}</p>
-                  <div class="ot-content" style="font-size:14px;line-height:1.5;color:#cecece;">{{ block('content') }}</div>
+                  <p class="ot-c-accent" style="margin:0 0 16px;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ p.accent }};">{{ block('header')|trim }}</p>
+                  <div class="ot-content ot-c-text" style="font-size:14px;line-height:1.5;color:{{ p.text }};">{{ block('content') }}</div>
                   {% if block('action_url') is defined %}
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0;">
                     <tr>
-                      <td bgcolor="{{ brand.accent.fill }}" style="background:{{ brand.accent.fill }};border-radius:4px;">
+                      <td class="ot-b-fill" bgcolor="{{ p.fill }}" style="background:{{ p.fill }};border-radius:4px;">
                         <a href="{{ block('action_url')|trim }}" style="display:inline-block;padding:14px 18px;color:#ffffff;text-decoration:none;font-size:13px;line-height:14px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;">{{ block('action_text')|trim }}</a>
                       </td>
                     </tr>
                   </table>
-                  <p style="margin:16px 0 2px;font-size:12px;line-height:1.5;color:#929292;">{{ layout.fallback|default('') }}</p>
-                  <p style="margin:0;font-size:12px;line-height:1.5;word-break:break-all;"><a href="{{ block('action_url')|trim }}" style="color:{{ brand.accent.text }};text-decoration:none;">{{ block('action_url')|trim }}</a></p>
+                  <p class="ot-c-muted" style="margin:16px 0 2px;font-size:12px;line-height:1.5;color:{{ p.muted }};">{{ layout.fallback|default('') }}</p>
+                  <p style="margin:0;font-size:12px;line-height:1.5;word-break:break-all;"><a href="{{ block('action_url')|trim }}" class="ot-c-accent" style="color:{{ p.accent }};text-decoration:none;">{{ block('action_url')|trim }}</a></p>
                   {% endif %}
                 </td>
               </tr>
               {# The signature of the identity: the 3 px accent line at the foot of every card #}
               <tr>
-                <td height="3" bgcolor="{{ brand.accent.mark }}" style="height:3px;padding:0;font-size:0;line-height:3px;background:{{ brand.accent.mark }};border-radius:0 0 5px 5px;">&nbsp;</td>
+                <td class="ot-b-mark" height="3" bgcolor="{{ p.mark }}" style="height:3px;padding:0;font-size:0;line-height:3px;background:{{ p.mark }};border-radius:0 0 5px 5px;">&nbsp;</td>
               </tr>
             </table>
           </td>
         </tr>
         <tr>
-          <td align="center" style="padding:20px 0 0;font-size:13px;line-height:1.5;color:#929292;">
-            {{ layout.footer|default('') }} <a href="{{ settings.application_url }}" style="color:#ffffff;text-decoration:none;font-weight:700;">{{ settings.application_name }}</a>
+          <td class="ot-c-muted" align="center" style="padding:20px 0 0;font-size:13px;line-height:1.5;color:{{ p.muted }};">
+            {{ layout.footer|default('') }} <a href="{{ settings.application_url }}" class="ot-c-head" style="color:{{ p.head }};text-decoration:none;font-weight:700;">{{ settings.application_name }}</a>
           </td>
         </tr>
       </table>

@@ -7,6 +7,13 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 
 ## [1.5.6] — 2026-11-17
 
+### Changed
+
+- The emails are light, with a dark version the mail readers in a dark mode take
+  (`prefers-color-scheme`, which Thunderbird follows). BlueMind in its dark theme turns over the
+  lightness of every email: the dark ones read light there, a light one reads dark. A template an
+  admin rewrote for the dark design before keeps the dark layout, its texts being light grey
+
 ### Fixed
 
 - The logo at the head of every email travels with it, as an inline image, instead of a link to the

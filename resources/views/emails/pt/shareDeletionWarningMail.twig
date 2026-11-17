@@ -5,10 +5,10 @@
 {% block header %}Eliminação em breve{% endblock %}
 
 {% block content %}
-<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Olá, {{ share.user.first_name }},</h2>
+<h2 class="ot-c-head" style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#161616;">Olá, {{ share.user.first_name }},</h2>
 <p style="margin:0 0 10px;">A sua partilha «{{ share.name }}» vai ser eliminada dentro de {{ deletes_in }}.</p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-top:1px solid #2a2a2a;">
-  <tr><td style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#929292;">Transferências</td><td align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:#ffffff;">{{ share.download_count }}</td></tr>
+<table class="ot-l-soft" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-top:1px solid #e5e5e5;">
+  <tr><td class="ot-c-muted" style="padding:12px 0 0;font-size:14px;line-height:1.5;color:#666666;">Transferências</td><td class="ot-c-head" align="right" style="padding:12px 0 0 12px;font-size:14px;line-height:1.5;font-weight:800;color:#161616;">{{ share.download_count }}</td></tr>
 </table>
 <p style="margin:0 0 10px;">Prolongue-a em As minhas partilhas para a manter.</p>
 {% endblock %}

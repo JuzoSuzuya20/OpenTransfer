@@ -5,9 +5,9 @@
 {% block header %}Condivisione scaricata{% endblock %}
 
 {% block content %}
-<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Ciao {{ share.user.first_name }},</h2>
+<h2 class="ot-c-head" style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#161616;">Ciao {{ share.user.first_name }},</h2>
 <p style="margin:0 0 10px;">La tua condivisione «{{ share.name }}» è appena stata scaricata.</p>
-<p style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#929292;">Questa e-mail viene inviata solo al primo download.</p>
+<p class="ot-c-muted" style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#666666;">Questa e-mail viene inviata solo al primo download.</p>
 {% endblock %}
 
 {% block action_url %}{{ settings.application_url }}/shares/{{ share.long_id }}{% endblock %}
