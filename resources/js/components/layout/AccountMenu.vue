@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useTranslate } from '@tolgee/vue'
-import { ChevronDown, User, Info, LogOut, Monitor, Sun, Moon } from 'lucide-vue-next'
+import { ChevronDown, User, Info, LogOut, Monitor, Sun, Moon, SunMoon } from 'lucide-vue-next'
 import AppLink from './AppLink.vue'
 import LanguageSelector from '../languageSelector.vue'
 import { shortName } from '../../lib/initials'
 import UserAvatar from './UserAvatar.vue'
-import { THEMES, storedTheme, applyTheme } from '../../lib/theme'
+import { THEMES, storedTheme, switchTheme } from '../../lib/theme'
 
 defineProps({
   name: { type: String, default: '' },
@@ -18,8 +18,18 @@ const { t } = useTranslate()
 // Light, dark, or the system (by default): kept by this browser (lib/theme)
 const theme = ref(storedTheme())
 const THEME_ICONS = { system: Monitor, light: Sun, dark: Moon }
+const themeButtons = ref([])
 const chooseTheme = (choice) => {
-  theme.value = applyTheme(choice)
+  if (choice !== theme.value) theme.value = switchTheme(choice)
+}
+// One stop in the tab order, the arrows go from one choice to the next (a radio group)
+const onThemeKey = (event, index) => {
+  const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key]
+  if (!step) return
+  event.preventDefault()
+  const next = (index + step + THEMES.length) % THEMES.length
+  chooseTheme(THEMES[next])
+  themeButtons.value[next]?.focus()
 }
 
 const open = ref(false)
@@ -92,24 +102,33 @@ onBeforeUnmount(() => {
         <Info aria-hidden="true" />
         {{ t('settings.title.about') }}
       </AppLink>
-      <div class="account-menu-language">
-        <LanguageSelector />
-      </div>
-      <div class="account-menu-theme">
-        <span class="account-menu-theme-label" id="account-theme-label">{{ t('theme.label') }}</span>
-        <div class="ot-segmented" role="radiogroup" aria-labelledby="account-theme-label">
-          <button
-            v-for="choice in THEMES"
-            :key="choice"
-            type="button"
-            role="radio"
-            :aria-checked="theme === choice"
-            :aria-selected="theme === choice"
-            @click="chooseTheme(choice)"
-          >
-            <component :is="THEME_ICONS[choice]" aria-hidden="true" />
-            {{ t(`theme.${choice}`) }}
-          </button>
+      <div class="account-menu-prefs">
+        <div class="account-menu-language">
+          <LanguageSelector />
+        </div>
+        <!-- A line like the others: its name, and the three choices as icons -->
+        <div class="account-menu-theme">
+          <span class="account-menu-theme-label" id="account-theme-label">
+            <SunMoon aria-hidden="true" />
+            {{ t('theme.label') }}
+          </span>
+          <div class="account-theme-switch" role="radiogroup" aria-labelledby="account-theme-label">
+            <button
+              v-for="(choice, index) in THEMES"
+              :key="choice"
+              :ref="(el) => (themeButtons[index] = el)"
+              type="button"
+              role="radio"
+              :aria-checked="theme === choice"
+              :aria-label="t(`theme.${choice}`)"
+              :title="t(`theme.${choice}`)"
+              :tabindex="theme === choice ? 0 : -1"
+              @click="chooseTheme(choice)"
+              @keydown="onThemeKey($event, index)"
+            >
+              <component :is="THEME_ICONS[choice]" aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
       <button type="button" class="account-menu-item is-danger" @click="close(); emit('logout')">

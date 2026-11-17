@@ -354,3 +354,17 @@ a {
     opacity: 0.55;
   }
 }
+
+// Changing theme (lib/theme): every colour at once, no element fading its own on the way…
+.ot-theme-switching,
+.ot-theme-switching *,
+.ot-theme-switching *::before,
+.ot-theme-switching *::after {
+  transition: none !important;
+}
+// …under one crossfade of the whole page, where the browser has it (none with less motion)
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--ot-dur-slow);
+  animation-timing-function: var(--ot-ease-out);
+}

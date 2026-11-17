@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { vExpandDetails } from './lib/expand'
-import { storedTheme, applyTheme } from './lib/theme'
+import { storedTheme, applyTheme, followSystemTheme } from './lib/theme'
 import { Tolgee, DevTools, VueTolgee } from '@tolgee/vue'
 import { FormatIcu } from '@tolgee/format-icu'
 
@@ -140,6 +140,7 @@ tolgee.on('language', ({ value }) => {
 
 // The light or dark choice of this browser, should public/theme.js not have run
 applyTheme(storedTheme())
+followSystemTheme()
 
 createApp(App)
   .use(Toast, {

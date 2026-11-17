@@ -300,52 +300,89 @@
     }
   }
 
-  // Light, dark or the system: three buttons side by side, the one chosen tinted
-  .account-menu-theme {
+  // The language and the theme, between the pages of the account and signing out
+  .account-menu-prefs {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 8px 4px 10px;
-    margin: 0 0 4px;
+    gap: 2px;
+    padding: 4px 0;
+    margin: 4px 0;
+    border-top: 1px solid var(--ot-line-soft);
     border-bottom: 1px solid var(--ot-line-soft);
+  }
 
-    .account-menu-theme-label {
-      padding: 0 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
+  // Light, dark or the system: a line like the menu items, the choices as three small icons
+  .account-menu-theme {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 4px 0 10px;
+    color: var(--ot-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .account-menu-theme-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
       color: var(--ot-muted);
     }
-    .ot-segmented {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    // The icon above its name: three choices fit the menu in every language
+  }
+  .account-theme-switch {
+    display: inline-flex;
+    gap: 2px;
+    margin-left: auto;
+    padding: 2px;
+    border: 1px solid var(--ot-line);
+    border-radius: var(--ot-radius);
+    background: var(--ot-field);
+
     button {
       display: inline-flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
-      height: auto;
-      min-height: 46px;
-      padding: 6px 4px;
-      font-size: 0.75rem;
-      line-height: 1.1;
-      min-width: 0;
-      overflow-wrap: anywhere;
+      width: 28px;
+      height: 26px;
+      margin: 0;
+      padding: 0;
+      border: 1px solid transparent;
+      border-radius: var(--ot-btn-radius);
+      background: none;
+      color: var(--ot-muted);
+      transition:
+        background-color var(--ot-dur-fast) var(--ot-ease-out),
+        border-color var(--ot-dur-fast) var(--ot-ease-out),
+        color var(--ot-dur-fast) var(--ot-ease-out),
+        transform var(--ot-dur-slow) var(--ot-ease-spring);
 
       svg {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
+        width: 15px;
+        height: 15px;
+      }
+      &:hover {
+        background: var(--ot-raised);
+        color: var(--ot-heading);
+      }
+      &:active {
+        transform: scale(calc(1 - 0.08 * var(--ot-motion)));
+      }
+      &[aria-checked="true"] {
+        background: var(--ot-accent-soft);
+        border-color: color-mix(in srgb, var(--ot-accent) 45%, transparent);
+        color: var(--ot-accent-text);
       }
     }
   }
 
   .account-menu-language {
-    padding: 6px 4px;
-    margin: 4px 0 0;
-    border-top: 1px solid var(--ot-line-soft);
+    padding: 2px 4px;
 
 
     .language-selector {

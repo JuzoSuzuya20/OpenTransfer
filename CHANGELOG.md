@@ -26,8 +26,10 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
   mark take it, in the light theme as in the dark one, and so do the emails. Each colour keeps
   coloured text and the white of buttons readable (4.5:1 at least); a colour tried and not saved
   goes when leaving the page. The page arrives in the saved colour, without a flash of the default
-- Everyone chooses their theme in the account menu: the system's (by default), light or dark. The
-  choice is kept by the browser and set before the page shows
+- Everyone chooses their theme in the account menu, on one line with three icons: the system's (by
+  default), light or dark. The choice is kept by the browser and set before the page shows; every
+  colour changes at once, in one crossfade of the page (at once without it when less motion is
+  asked for), and so when the system turns dark or light
 
 ### Changed
 

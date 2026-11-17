@@ -26,3 +26,57 @@ export const applyTheme = (theme, { root = globalThis.document?.documentElement,
   }
   return choice
 }
+
+// While the theme changes, no element fades its colour on its own (buttons and fields have their
+// transitions): every colour changes at once, under one crossfade of the whole page where the
+// browser can (style.scss, .ot-theme-switching and ::view-transition)
+const SWITCHING = 'ot-theme-switching'
+const lessMotion = () => Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
+const nextFrames = (frame, callback) => frame(() => frame(callback))
+// Only the latest switch ends it: a switch right after another one cancels the crossfade before
+let latestSwitch = 0
+
+export const switchTheme = (
+  theme,
+  {
+    doc = globalThis.document,
+    storage = globalThis.localStorage,
+    frame = globalThis.requestAnimationFrame?.bind(globalThis) ?? ((callback) => setTimeout(callback, 16)),
+    reducedMotion = lessMotion()
+  } = {}
+) => {
+  const choice = THEMES.includes(theme) ? theme : 'system'
+  const root = doc?.documentElement
+  const apply = () => applyTheme(choice, { root, storage })
+  if (!root) return apply()
+
+  root.classList.add(SWITCHING)
+  const id = ++latestSwitch
+  const settle = () => {
+    if (id === latestSwitch) root.classList.remove(SWITCHING)
+  }
+  if (typeof doc.startViewTransition === 'function' && !reducedMotion) {
+    const transition = doc.startViewTransition(apply)
+    // Skipped (page hidden, another switch right after): the theme applies all the same
+    transition.ready?.catch(() => {})
+    transition.finished.then(settle, settle)
+  } else {
+    apply()
+    nextFrames(frame, settle)
+  }
+  return choice
+}
+
+// The system turning dark or light while the theme follows it: every colour at once there too
+export const followSystemTheme = ({
+  doc = globalThis.document,
+  query = globalThis.matchMedia?.('(prefers-color-scheme: dark)'),
+  frame = globalThis.requestAnimationFrame?.bind(globalThis) ?? ((callback) => setTimeout(callback, 16))
+} = {}) => {
+  const root = doc?.documentElement
+  query?.addEventListener?.('change', () => {
+    if (!root || root.dataset.theme) return
+    root.classList.add(SWITCHING)
+    nextFrames(frame, () => root.classList.remove(SWITCHING))
+  })
+}
