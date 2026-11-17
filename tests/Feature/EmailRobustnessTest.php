@@ -57,6 +57,36 @@ class EmailRobustnessTest extends TestCase
         $this->assertSame([], $found, 'Colours belong to the blocks (td, p, h2), which webmails convert together');
     }
 
+    // BlueMind gives <strong> and <b> the text colour of its own dark theme, white on the light grey
+    // it turned the card into, even with no colour on them: the bold of a shipped template is a style
+    public function test_no_shipped_template_puts_text_in_strong_or_b(): void
+    {
+        $found = [];
+        foreach (glob(resource_path('views/emails/{,*/}*.twig'), GLOB_BRACE) as $template) {
+            if (preg_match('/<(strong|b)\b/i', file_get_contents($template))) {
+                $found[] = basename(dirname($template)) . '/' . basename($template);
+            }
+        }
+
+        $this->assertSame([], $found);
+    }
+
+    public function test_the_bold_of_a_rewritten_template_takes_the_colour_around_it(): void
+    {
+        $html = $this->sent(new passwordResetMail('token', $this->user()))->getHtmlBody();
+
+        $this->assertMatchesRegularExpression('/\.ot-content strong, \.ot-content b \{ color: inherit !important; \}/', $html);
+    }
+
+    public function test_the_name_of_the_server_still_reads_in_bold(): void
+    {
+        $admin = $this->user();
+
+        $html = $this->sent(new \App\Mail\smtpTestMail($admin, 'smtp.example.test'))->getHtmlBody();
+
+        $this->assertStringContainsString('<span style="font-weight:700;">smtp.example.test</span>', $html);
+    }
+
     public function test_the_code_to_type_sits_in_a_block_of_its_own(): void
     {
         $html = $this->sent(new emailVerificationMail('482915', $this->user()))->getHtmlBody();

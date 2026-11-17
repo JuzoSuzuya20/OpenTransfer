@@ -31,6 +31,8 @@
   a { color: {{ brand.accent.text }}; text-decoration: none; }
   .ot-content h2 { margin: 0 0 12px; font-size: 26px; line-height: 1.2; font-weight: 800; color: #ffffff; }
   .ot-content p { margin: 0 0 10px; }
+  /* BlueMind gives bold text the colour of its own theme: it keeps the colour of the text around it */
+  .ot-content strong, .ot-content b { color: inherit !important; }
   @media (max-width: 620px) {
     .ot-card-body { padding: 18px 16px !important; }
     .ot-content h2 { font-size: 22px !important; }
