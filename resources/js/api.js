@@ -1419,6 +1419,22 @@ export const updateEmailTemplates = async (templates) => {
   return data.data
 }
 
+// A test e-mail to the admin, with the values of the SMTP form (saved or not)
+export const testSmtpSettings = async (values) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/settings/smtp/test`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    },
+    body: JSON.stringify(values)
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw Object.assign(apiError(data), { status: response.status })
+  }
+  return data.data
+}
+
 // Database Backup Methods
 export const getBackups = async () => {
   const response = await fetchWithAuth(`${apiUrl}/api/backups`, {

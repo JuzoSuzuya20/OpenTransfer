@@ -19,6 +19,7 @@ import {
   Database,
   Download,
   Loader2,
+  MailCheck,
   RefreshCw
 } from 'lucide-vue-next'
 import {
@@ -29,7 +30,8 @@ import {
   downloadBackup,
   deleteBackup,
   getClientIp,
-  getStorageEncryptionStatus
+  getStorageEncryptionStatus,
+  testSmtpSettings
 } from '../../api'
 import HelpTip from '../helpTip.vue'
 import AppLink from '../layout/AppLink.vue'
@@ -323,6 +325,32 @@ const saveFailureMessage = (error) => {
 }
 
 const smtpPasswordSet = ref(false)
+// A test e-mail to the admin, with the values of the form, saved or not
+const smtpTesting = ref(false)
+const smtpTestResult = ref(null)
+const runSmtpTest = async () => {
+  smtpTesting.value = true
+  smtpTestResult.value = null
+  try {
+    const data = await testSmtpSettings({
+      smtp_host: settings.value.smtp_host,
+      smtp_port: settings.value.smtp_port,
+      smtp_username: settings.value.smtp_username,
+      smtp_password: settings.value.smtp_password,
+      smtp_encryption: settings.value.smtp_encryption,
+      smtp_sender_address: settings.value.smtp_sender_address,
+      smtp_sender_name: settings.value.smtp_sender_name
+    })
+    smtpTestResult.value = { ok: true, text: t.value('settings.system.smtp_test.sent', { email: data.sent_to }) }
+  } catch (error) {
+    let text = t.value('settings.system.smtp_test.failed', { reason: error.data?.reason || error.message })
+    if (error.code === 'smtp_not_configured') text = t.value('settings.system.smtp_test.not_configured')
+    if (error.status === 429) text = t.value('settings.system.smtp_test.too_many')
+    smtpTestResult.value = { ok: false, text }
+  } finally {
+    smtpTesting.value = false
+  }
+}
 const loadSettings = async () => {
   try {
     const system = await getSettingsByGroup('system.*')
@@ -794,8 +822,11 @@ defineExpose({
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_password">{{ $t('settings.system.smtp_password') }}</label>
-                  <OtPassword id="smtp_password" v-model="settings.smtp_password" autocomplete="new-password" :placeholder="smtpPasswordSet ? $t('common.secret_kept') : ''" />
-                  <p class="help-text">{{ $t('settings.system.smtp_password_description') }}</p>
+                  <OtPassword id="smtp_password" v-model="settings.smtp_password" autocomplete="new-password" :placeholder="smtpPasswordSet ? '••••••••••••' : ''" />
+                  <p class="help-text">
+                    {{ $t('settings.system.smtp_password_description') }}
+                    <template v-if="smtpPasswordSet">{{ $t('common.secret_kept') }}</template>
+                  </p>
                 </div>
                 <div class="setting-group-body-item">
                   <label for="smtp_sender_name">{{ $t('settings.system.smtp_sender_name') }}</label>
@@ -806,6 +837,18 @@ defineExpose({
                   <label for="smtp_sender_address">{{ $t('settings.system.smtp_sender_address') }}</label>
                   <input type="text" id="smtp_sender_address" v-model="settings.smtp_sender_address" />
                   <p class="help-text">{{ $t('settings.system.smtp_sender_address_description') }}</p>
+                </div>
+                <!-- A test e-mail to the admin, with the values above, saved or not -->
+                <div class="setting-group-body-item smtp-test">
+                  <button type="button" class="secondary" @click="runSmtpTest" :disabled="smtpTesting" :aria-busy="smtpTesting">
+                    <Loader2 v-if="smtpTesting" class="spinner" aria-hidden="true" />
+                    <MailCheck v-else aria-hidden="true" />
+                    {{ smtpTesting ? $t('settings.system.smtp_test.running') : $t('settings.system.smtp_test.button') }}
+                  </button>
+                  <p class="help-text">{{ $t('settings.system.smtp_test.help') }}</p>
+                  <p v-if="smtpTestResult" class="smtp-test-result" :class="smtpTestResult.ok ? 'is-ok' : 'is-error'" role="status">
+                    {{ smtpTestResult.text }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -1110,6 +1153,34 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
+// The SMTP test: its button, then what came of it
+.smtp-test {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+
+  .help-text {
+    margin: 0;
+  }
+}
+.smtp-test-result {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--ot-radius-sm);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+
+  &.is-ok {
+    background: var(--ot-success-soft);
+    color: var(--ot-success);
+  }
+  &.is-error {
+    background: var(--ot-danger-soft);
+    color: var(--ot-danger-text);
+  }
+}
+
 // The schedule of the automatic backups: its fields side by side while they fit
 .backup-schedule {
   display: grid;

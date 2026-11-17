@@ -585,7 +585,16 @@
         "custom": "Eigen"
       },
       "share_url_pattern_strong": "Ongeveer {bits} bits toeval: genoeg om niet geraden te worden.",
-      "share_url_pattern_weak": "Ongeveer {bits} bits toeval: te kort, links zouden geraden kunnen worden. Er zijn er minstens {min} nodig (8 tekens *)."
+      "share_url_pattern_weak": "Ongeveer {bits} bits toeval: te kort, links zouden geraden kunnen worden. Er zijn er minstens {min} nodig (8 tekens *).",
+      "smtp_test": {
+        "button": "Test-e-mail versturen",
+        "running": "Bezig met versturen…",
+        "help": "Stuurt een e-mail naar uw adres met de waarden hierboven, ook vóór het opslaan.",
+        "sent": "Test-e-mail verstuurd naar {email}. Controleer uw inbox.",
+        "failed": "Versturen mislukt. Antwoord van de server: {reason}",
+        "not_configured": "Vul minstens de SMTP-host en een geldig afzenderadres in.",
+        "too_many": "Te veel tests achter elkaar: probeer het over een minuut opnieuw."
+      }
     },
     "table": {
       "actions": "Acties",
@@ -1203,7 +1212,7 @@
   },
   "common": {
     "loading": "Laden…",
-    "secret_kept": "Opgeslagen — laat leeg om het te behouden"
+    "secret_kept": "Al opgeslagen: laat het veld leeg om het te behouden."
   },
   "theme": {
     "label": "Thema",

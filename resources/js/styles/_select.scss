@@ -49,6 +49,8 @@ button.ot-select-trigger {
 .ot-select-value {
   flex: 1;
   min-width: 0;
+  // Its own line height: buttons have 1, which cut the tails of g, j, p, q, y here ("English")
+  line-height: 1.35;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

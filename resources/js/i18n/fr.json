@@ -585,7 +585,16 @@
         "custom": "Personnalisé"
       },
       "share_url_pattern_strong": "Environ {bits} bits de hasard : assez pour ne pas être deviné.",
-      "share_url_pattern_weak": "Environ {bits} bits de hasard : trop court, les liens pourraient être devinés. Il en faut {min} au moins (8 caractères *)."
+      "share_url_pattern_weak": "Environ {bits} bits de hasard : trop court, les liens pourraient être devinés. Il en faut {min} au moins (8 caractères *).",
+      "smtp_test": {
+        "button": "Envoyer un e-mail de test",
+        "running": "Envoi en cours…",
+        "help": "Envoie un e-mail à votre adresse avec les valeurs ci-dessus, même avant de les enregistrer.",
+        "sent": "E-mail de test envoyé à {email}. Vérifiez votre boîte de réception.",
+        "failed": "L’envoi a échoué. Réponse du serveur : {reason}",
+        "not_configured": "Renseignez au moins l’hôte SMTP et une adresse d’expéditeur valide.",
+        "too_many": "Trop de tests à la suite : réessayez dans une minute."
+      }
     },
     "table": {
       "actions": "Actions",
@@ -1203,7 +1212,7 @@
   },
   "common": {
     "loading": "Chargement…",
-    "secret_kept": "Enregistré — laissez vide pour le garder"
+    "secret_kept": "Déjà enregistré : laissez le champ vide pour le garder."
   },
   "theme": {
     "label": "Thème",

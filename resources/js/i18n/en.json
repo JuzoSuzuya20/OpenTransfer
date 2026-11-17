@@ -585,7 +585,16 @@
         "custom": "Custom"
       },
       "share_url_pattern_strong": "About {bits} bits of chance: enough not to be guessed.",
-      "share_url_pattern_weak": "About {bits} bits of chance: too short, links could be guessed. At least {min} are needed (8 characters *)."
+      "share_url_pattern_weak": "About {bits} bits of chance: too short, links could be guessed. At least {min} are needed (8 characters *).",
+      "smtp_test": {
+        "button": "Send a test email",
+        "running": "Sending…",
+        "help": "Sends an email to your address with the values above, even before saving them.",
+        "sent": "Test email sent to {email}. Check your inbox.",
+        "failed": "Sending failed. The server answered: {reason}",
+        "not_configured": "Fill in at least the SMTP host and a valid sender address.",
+        "too_many": "Too many tests in a row: try again in a minute."
+      }
     },
     "table": {
       "actions": "Actions",
@@ -1203,7 +1212,7 @@
   },
   "common": {
     "loading": "Loading…",
-    "secret_kept": "Saved — leave empty to keep it"
+    "secret_kept": "Already saved: leave the field empty to keep it."
   },
   "theme": {
     "label": "Theme",

@@ -585,7 +585,16 @@
         "custom": "Eigenes"
       },
       "share_url_pattern_strong": "Etwa {bits} Bit Zufall: genug, um nicht erraten zu werden.",
-      "share_url_pattern_weak": "Etwa {bits} Bit Zufall: zu kurz, Links könnten erraten werden. Mindestens {min} sind nötig (8 Zeichen *)."
+      "share_url_pattern_weak": "Etwa {bits} Bit Zufall: zu kurz, Links könnten erraten werden. Mindestens {min} sind nötig (8 Zeichen *).",
+      "smtp_test": {
+        "button": "Test-E-Mail senden",
+        "running": "Wird gesendet…",
+        "help": "Sendet eine E-Mail an Ihre Adresse mit den obigen Werten, auch vor dem Speichern.",
+        "sent": "Test-E-Mail an {email} gesendet. Prüfen Sie Ihren Posteingang.",
+        "failed": "Senden fehlgeschlagen. Antwort des Servers: {reason}",
+        "not_configured": "Geben Sie mindestens den SMTP-Host und eine gültige Absenderadresse an.",
+        "too_many": "Zu viele Tests hintereinander: Versuchen Sie es in einer Minute erneut."
+      }
     },
     "table": {
       "actions": "Aktionen",
@@ -1203,7 +1212,7 @@
   },
   "common": {
     "loading": "Wird geladen…",
-    "secret_kept": "Gespeichert – leer lassen, um es zu behalten"
+    "secret_kept": "Bereits gespeichert: Feld leer lassen, um es zu behalten."
   },
   "theme": {
     "label": "Design",

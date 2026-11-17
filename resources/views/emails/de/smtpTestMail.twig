@@ -1,0 +1,12 @@
+{% extends 'emails/layout' %}
+
+{% block subject %}Test-E-Mail von {{ settings.application_name }}{% endblock %}
+
+{% block header %}E-Mail-Server{% endblock %}
+
+{% block content %}
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Hallo {{ user.first_name }},</h2>
+<p style="margin:0 0 10px;">Diese Nachricht wurde unter Administration > E-Mail-Server von {{ settings.application_name }} gesendet.</p>
+<p style="margin:0 0 10px;">Sie ist angekommen: Der Server <strong style="color:#ffffff;">{{ host }}</strong> kann die E-Mails der Anwendung versenden.</p>
+<p style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#929292;">Sie haben nichts getestet? Vielleicht hat es ein anderer Administrator für Sie getan. Sie können diese Nachricht ignorieren.</p>
+{% endblock %}

@@ -11,10 +11,16 @@ class EmailConfigService
   private $settingService;
   private $settings;
 
-  public function __construct()
+  // The saved settings, or others to try (the SMTP test of Administration, before saving)
+  public function __construct(?array $settings = null)
   {
     $this->settingService = new SettingsService();
-    $this->settings = $this->settingService->getMailSettings();
+    $this->settings = $settings ?? $this->settingService->getMailSettings();
+  }
+
+  public function settingsInUse(): array
+  {
+    return $this->settings;
   }
 
   /**
@@ -35,7 +41,8 @@ class EmailConfigService
     return null;
   }
 
-  public function configureMailer()
+  // A timeout for a test that must answer soon; none for the e-mails the queue sends
+  public function configureMailer(?int $timeout = null)
   {
     $settings = $this->settings;
 
@@ -50,7 +57,7 @@ class EmailConfigService
       'host' => $settings['host'],
       'port' => $settings['port'],
       'encryption' => $encryption,
-      'timeout' => null,
+      'timeout' => $timeout,
     ];
 
     // Only add authentication credentials if they are actually provided

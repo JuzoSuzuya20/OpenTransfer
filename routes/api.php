@@ -132,6 +132,8 @@ Route::group([], function ($router) {
     Route::group(['prefix' => 'settings', 'middleware' => ['auth', Admin::class]], function ($router) {
         //create or update a setting
         Route::put('/', [SettingsController::class, 'write'])->name('settings.write');
+        // A test e-mail to the admin, with the values of the form (at most 6 a minute)
+        Route::post('/smtp/test', [\App\Http\Controllers\SmtpTestController::class, 'send'])->middleware('throttle:6,1')->name('settings.smtpTest');
         //the address the application sees for the admin
         Route::get('/client-ip', [SettingsController::class, 'clientIp'])->name('settings.clientIp');
         //whether the key for encrypting stored files is there

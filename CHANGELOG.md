@@ -5,6 +5,24 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.5] — 2026-11-17
+
+### Added
+
+- Administration > Mail server has a button that sends a test email to the admin with the values of
+  the form, saved or not, at once, and shows what the server answered when it fails (the password
+  taken out). The password left empty is the one saved, as on save. Six tests a minute at most
+
+### Changed
+
+- A secret already saved (the SMTP password, the client secret of an identity provider) shows as
+  dots in its field, and the help under it says that, left empty, it is kept
+
+### Fixed
+
+- The value shown in every dropdown list (the language, the frequency of backups, the encryption of
+  the mail server…) had the tails of its letters cut: g, j, p, q, y ("English", "Chaque jour")
+
 ## [1.5.4] — 2026-11-17
 
 ### Changed

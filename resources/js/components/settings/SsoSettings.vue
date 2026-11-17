@@ -267,7 +267,7 @@ defineExpose({ save })
                     :type="shown[`${provider.uuid}-${key}`] ? 'text' : 'password'"
                     :id="`${key}-${provider.uuid}`"
                     v-model="provider.provider_config[key]"
-                    :placeholder="provider.secrets_set?.[key] ? t('common.secret_kept') : ''"
+                    :placeholder="provider.secrets_set?.[key] ? '••••••••••••' : ''"
                     autocomplete="off"
                   />
                   <button
@@ -289,6 +289,7 @@ defineExpose({ save })
                   autocomplete="off"
                 />
                 <p class="help-text" v-if="t(`sso.hint.${provider.class}.${key}`, '')">{{ t(`sso.hint.${provider.class}.${key}`, '') }}</p>
+                <p class="help-text" v-if="isSecret(key) && provider.secrets_set?.[key]">{{ t('common.secret_kept') }}</p>
               </div>
   
               <div class="sso-options">

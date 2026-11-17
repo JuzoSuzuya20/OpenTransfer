@@ -115,6 +115,8 @@ class EmailTemplatesController extends Controller
   private function names(): array
   {
     $names = array_map(fn ($path) => basename($path, '.twig'), glob(resource_path('views/emails/en/*.twig')));
+    // The test of the mail server is a check, not a message to word
+    $names = array_values(array_diff($names, ['smtpTestMail']));
     sort($names);
 
     return $names;

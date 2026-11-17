@@ -1,0 +1,12 @@
+{% extends 'emails/layout' %}
+
+{% block subject %}Correo de prueba de {{ settings.application_name }}{% endblock %}
+
+{% block header %}Servidor de correo{% endblock %}
+
+{% block content %}
+<h2 style="margin:0 0 12px;font-size:26px;line-height:1.2;font-weight:800;color:#ffffff;">Hola, {{ user.first_name }}:</h2>
+<p style="margin:0 0 10px;">Este mensaje se ha enviado desde Administración > Servidor de correo de {{ settings.application_name }}.</p>
+<p style="margin:0 0 10px;">Ha llegado: el servidor <strong style="color:#ffffff;">{{ host }}</strong> puede enviar los correos de la aplicación.</p>
+<p style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#929292;">¿No ha probado nada? Quizá otro administrador lo hizo por usted. Puede ignorar este mensaje.</p>
+{% endblock %}
