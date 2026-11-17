@@ -17,6 +17,33 @@ class BackupsController extends Controller
     }
 
     /**
+     * The file of a backup the list shows, whatever its name (an automatic one, one made by hand, one
+     * copied in by an admin): a .sqlite file of the backups folder itself, nothing through a path or
+     * a link going out of it.
+     *
+     * @return string|\Illuminate\Http\JsonResponse its path, or the refusal
+     */
+    private function backupFile(string $filename): string|\Illuminate\Http\JsonResponse
+    {
+        $folder = realpath($this->getBackupPath());
+        $invalid = response()->json(['status' => 'error', 'message' => 'Invalid backup filename'], 400);
+        if ($filename !== basename($filename) || !preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]*\.sqlite$/', $filename) || $folder === false) {
+            return $invalid;
+        }
+
+        $path = $folder . DIRECTORY_SEPARATOR . $filename;
+        if (!file_exists($path) && !is_link($path)) {
+            return response()->json(['status' => 'error', 'message' => 'Backup file not found'], 404);
+        }
+        $real = realpath($path);
+        if (is_link($path) || $real === false || dirname($real) !== $folder || !is_file($real)) {
+            return $invalid;
+        }
+
+        return $real;
+    }
+
+    /**
      * List all backup files with metadata
      */
     public function index()
@@ -35,6 +62,8 @@ class BackupsController extends Controller
             $filename = basename($file);
             $backups[] = [
                 'filename' => $filename,
+                // Automatic ones go after the days chosen; the others stay until someone deletes them
+                'kind' => str_starts_with($filename, 'database_backup_') ? 'automatic' : 'manual',
                 'size' => filesize($file),
                 'size_formatted' => $this->formatBytes(filesize($file)),
                 'created_at' => date('Y-m-d H:i:s', filemtime($file)),
@@ -52,6 +81,9 @@ class BackupsController extends Controller
             'data' => [
                 'backups' => $backups,
                 'backup_path' => $backupPath,
+                // When the next automatic one runs (none when they are off), in the zone of the instance
+                'next_backup_at' => \App\Support\BackupSchedule::fromSettings()->next(now())?->toIso8601String(),
+                'timezone' => config('app.timezone'),
             ]
         ]);
     }
@@ -76,7 +108,8 @@ class BackupsController extends Controller
             mkdir($backupPath, 0777, true);
         }
 
-        $backupName = 'database_backup_' . now()->format('Y-m-d_H-i-s') . '.sqlite';
+        // Made by hand: the automatic cleaning never takes it
+        $backupName = 'database_manual_' . now()->format('Y-m-d_H-i-s') . '.sqlite';
         $backupFile = $backupPath . $backupName;
 
         try {
@@ -110,25 +143,9 @@ class BackupsController extends Controller
      */
     public function download(string $filename)
     {
-        // Sanitize filename to prevent directory traversal
-        $filename = basename($filename);
-        
-        // Validate filename format
-        if (!preg_match('/^database_backup_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.sqlite$/', $filename)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid backup filename'
-            ], 400);
-        }
-        
-        $backupPath = $this->getBackupPath();
-        $filePath = $backupPath . $filename;
-        
-        if (!file_exists($filePath)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Backup file not found'
-            ], 404);
+        $filePath = $this->backupFile($filename);
+        if (!is_string($filePath)) {
+            return $filePath;
         }
         
         Log::info('Backup downloaded: ' . $filename);
@@ -143,25 +160,9 @@ class BackupsController extends Controller
      */
     public function delete(string $filename)
     {
-        // Sanitize filename to prevent directory traversal
-        $filename = basename($filename);
-        
-        // Validate filename format
-        if (!preg_match('/^database_backup_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.sqlite$/', $filename)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid backup filename'
-            ], 400);
-        }
-        
-        $backupPath = $this->getBackupPath();
-        $filePath = $backupPath . $filename;
-        
-        if (!file_exists($filePath)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Backup file not found'
-            ], 404);
+        $filePath = $this->backupFile($filename);
+        if (!is_string($filePath)) {
+            return $filePath;
         }
         
         try {

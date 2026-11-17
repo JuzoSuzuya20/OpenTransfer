@@ -22,7 +22,14 @@ Schedule::job(sendExpiryWarningEmails::class)->daily();
 Schedule::job(sendDeletionWarningEmails::class)->daily();
 Schedule::job(maintainDb::class)->daily();
 Schedule::job(pruneLogs::class)->daily();
-Schedule::job(backUpDatabase::class)->daily();
+// When the admin set it (Administration > Backups), or never: asked every minute, a change applies at once
+Schedule::job(backUpDatabase::class)->everyMinute()->when(function () {
+    try {
+        return \App\Support\BackupSchedule::fromSettings()->isDue(now());
+    } catch (\Throwable) {
+        return false;
+    }
+});
 //hourly jobs
 Schedule::job(sendExpiredWarningEmails::class)->hourly();
 //manually run jobs

@@ -35,7 +35,7 @@ class SettingsController extends Controller
         )]);
 
         // Before anything is saved: a refused request must not be half applied
-        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseForcedSso($request) ?? $this->refuseAccent($request) ?? $this->refuseWeakSharePattern($request);
+        $refusal = $this->refuseIpAllowlist($request) ?? $this->refuseMfaPolicy($request) ?? $this->refuseStorageEncryption($request) ?? $this->refuseAltchaDifficulty($request) ?? $this->refuseSsoDomains($request) ?? $this->refuseForcedSso($request) ?? $this->refuseAccent($request) ?? $this->refuseBackupSchedule($request) ?? $this->refuseWeakSharePattern($request);
         if ($refusal) {
             return $refusal;
         }
@@ -157,6 +157,31 @@ class SettingsController extends Controller
             'message' => 'Not a domain name: ' . implode(', ', $invalid),
             'data' => ['invalid' => $invalid],
         ], 422);
+    }
+
+    // The schedule of the automatic backups: only what the screen offers
+    private function refuseBackupSchedule(Request $request): ?JsonResponse
+    {
+        $incoming = collect($request->settings)->pluck('value', 'key');
+        $whole = fn ($value, int $min, int $max) => is_string($value) && ctype_digit($value) && (int) $value >= $min && (int) $value <= $max;
+        $checks = [
+            'backup_frequency' => fn ($v) => in_array($v, \App\Support\BackupSchedule::FREQUENCIES, true),
+            'backup_time' => fn ($v) => \App\Support\BackupSchedule::isTime($v),
+            'backup_weekday' => fn ($v) => $whole($v, 1, 7),
+            'backup_monthday' => fn ($v) => $whole($v, 1, 28),
+            'backup_keep_days' => fn ($v) => $whole($v, ...\App\Support\BackupSchedule::KEEP_DAYS),
+        ];
+        foreach ($checks as $key => $valid) {
+            if ($incoming->has($key) && !$valid($incoming->get($key))) {
+                return response()->json([
+                    'status' => 'error',
+                    'code' => 'backup_schedule_invalid',
+                    'message' => "Not a value offered for {$key}",
+                ], 422);
+            }
+        }
+
+        return null;
     }
 
     // The main colour is one of those offered (resources/js/lib/accents.json): its name goes into a
@@ -309,7 +334,7 @@ class SettingsController extends Controller
      * signed-in account, reverse-share guests included: the SMTP group holds
      * the mail server credentials, the security group the company's networks.
      */
-    private const ADMIN_ONLY_GROUPS = ['system.smtp', 'system.security'];
+    private const ADMIN_ONLY_GROUPS = ['system.smtp', 'system.security', 'system.backups'];
 
     private function withoutAdminOnlySettings($query, Request $request)
     {

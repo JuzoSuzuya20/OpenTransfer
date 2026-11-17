@@ -438,6 +438,47 @@ class SettingsSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            // The automatic backups (App\Support\BackupSchedule): every night at midnight, kept 7 days
+            [
+                'key' => 'backup_frequency',
+                'value' => 'daily',
+                'previous_value' => null,
+                'group' => 'system.backups',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'key' => 'backup_time',
+                'value' => '00:00',
+                'previous_value' => null,
+                'group' => 'system.backups',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'key' => 'backup_weekday',
+                'value' => '1',
+                'previous_value' => null,
+                'group' => 'system.backups',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'key' => 'backup_monthday',
+                'value' => '1',
+                'previous_value' => null,
+                'group' => 'system.backups',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'key' => 'backup_keep_days',
+                'value' => '7',
+                'previous_value' => null,
+                'group' => 'system.backups',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
             [
                 // The main colour of the instance, one of resources/js/lib/accents.json
                 'key' => 'accent_color',

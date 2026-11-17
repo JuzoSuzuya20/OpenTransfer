@@ -46,7 +46,7 @@ import { patternBits, MIN_PATTERN_BITS } from '../../lib/patternBits'
 import { notifySettingsChanged } from '../../composables/useSetting'
 import { useConfirmDialog } from '../../composables/useConfirmDialog'
 
-import { useTranslate } from '@tolgee/vue'
+import { useTranslate, useTolgee } from '@tolgee/vue'
 
 // The section the administration's menu opened
 defineProps({
@@ -54,6 +54,10 @@ defineProps({
 })
 
 const { t } = useTranslate()
+const useBackupLanguage = () => {
+  const tolgee = useTolgee(['language'])
+  return { language: computed(() => tolgee.value.getLanguage() || 'en') }
+}
 
 // Each language under its name in the admin's language, in the order of the other lists
 const defaultLanguageOptions = computed(() =>
@@ -297,6 +301,9 @@ const addClientIpToAllowlist = () => {
 }
 
 const saveFailureMessage = (error) => {
+  if (error.code === 'backup_schedule_invalid') {
+    return t.value('settings.system.backups.schedule_invalid')
+  }
   if (error.code === 'ip_allowlist_lockout') {
     return t.value('settings.system.security.lockout_error', { ip: error.data?.ip })
   }
@@ -337,6 +344,24 @@ const loadSettings = async () => {
 
 // Backup methods
 const backupsLoaded = ref(false)
+// The automatic backups: when the next one runs (from the settings saved), in the zone of the server
+const nextBackupAt = ref(null)
+const backupTimezone = ref('')
+const { language } = useBackupLanguage()
+const backupFrequencyOptions = computed(() =>
+  ['off', 'daily', 'weekly', 'monthly'].map((value) => ({ value, label: t.value(`settings.system.backups.frequency_${value}`) }))
+)
+// 1 Monday … 7 Sunday, named in the language of the screen (2024-01-01 was a Monday)
+const backupWeekdayOptions = computed(() => {
+  const name = new Intl.DateTimeFormat(language.value, { weekday: 'long', timeZone: 'UTC' })
+  return [1, 2, 3, 4, 5, 6, 7].map((day) => ({ value: day, label: name.format(new Date(Date.UTC(2024, 0, day))) }))
+})
+const backupMonthdayOptions = Array.from({ length: 28 }, (_, i) => ({ value: i + 1, label: String(i + 1) }))
+const nextBackupText = computed(() => {
+  if (!nextBackupAt.value) return ''
+  const date = new Intl.DateTimeFormat(language.value, { dateStyle: 'full', timeStyle: 'short', timeZone: backupTimezone.value || undefined })
+  return t.value('settings.system.backups.next', { date: date.format(new Date(nextBackupAt.value)), zone: backupTimezone.value })
+})
 const loadBackups = async () => {
   if (backupsLoading.value) return
   backupsLoading.value = true
@@ -344,6 +369,8 @@ const loadBackups = async () => {
     // One turn of the icon at least: a quick answer would stop it half a turn in
     const data = await atLeast(700, getBackups())
     backups.value = data.backups || []
+    nextBackupAt.value = data.next_backup_at || null
+    backupTimezone.value = data.timezone || ''
   } catch (error) {
     console.error('Failed to load backups:', error)
     toast.error(t.value('settings.system.backups.load_failed'))
@@ -434,6 +461,8 @@ const saveSettings = async () => {
     saving.value = false
     toast.success(t.value('settings.settingsSavedSuccessfully'))
     await loadSettings()
+    // The next automatic backup follows the schedule just saved
+    if (backupsLoaded.value) loadBackups()
     
     // Notify other components that settings have changed
     notifySettingsChanged()
@@ -959,6 +988,39 @@ defineExpose({
 
               <div class="setting-group-body">
                 <p class="card-description">{{ $t('settings.system.backups.description') }}</p>
+
+                <!-- The automatic backups: when, and for how long -->
+                <div class="setting-group-body-item">
+                  <label for="backup_frequency">{{ $t('settings.system.backups.frequency') }}</label>
+                  <OtSelect id="backup_frequency" v-model="settings.backup_frequency" :options="backupFrequencyOptions" />
+                  <p class="help-text" v-if="settings.backup_frequency === 'off'">{{ $t('settings.system.backups.off_help') }}</p>
+                </div>
+                <Expand :show="settings.backup_frequency !== 'off'">
+                  <div class="backup-schedule">
+                    <div class="setting-group-body-item" v-if="settings.backup_frequency === 'weekly'">
+                      <label for="backup_weekday">{{ $t('settings.system.backups.weekday') }}</label>
+                      <OtSelect id="backup_weekday" v-model="settings.backup_weekday" :options="backupWeekdayOptions" />
+                    </div>
+                    <div class="setting-group-body-item" v-if="settings.backup_frequency === 'monthly'">
+                      <label for="backup_monthday">{{ $t('settings.system.backups.monthday') }}</label>
+                      <OtSelect id="backup_monthday" v-model="settings.backup_monthday" :options="backupMonthdayOptions" />
+                    </div>
+                    <div class="setting-group-body-item">
+                      <label for="backup_time">{{ $t('settings.system.backups.time') }}</label>
+                      <input type="time" id="backup_time" v-model="settings.backup_time" step="60" required />
+                    </div>
+                    <div class="setting-group-body-item">
+                      <label for="backup_keep_days">
+                        {{ $t('settings.system.backups.keep_days') }}
+                        <small>({{ $t('settings.system.days') }})</small>
+                      </label>
+                      <OtNumber id="backup_keep_days" :min="1" :max="3650" v-model="settings.backup_keep_days" />
+                    </div>
+                  </div>
+                  <p class="help-text">{{ $t('settings.system.backups.keep_help') }}</p>
+                  <p class="help-text backup-next" v-if="nextBackupText">{{ nextBackupText }}</p>
+                </Expand>
+
                 <p class="card-description">{{ $t('settings.system.backups.auto_backup_description') }}</p>
                 <div class="setting-group-body-item">
                   <div class="backup-actions mb-3">
@@ -997,6 +1059,7 @@ defineExpose({
                         <tr>
                           <!-- <th>{{ $t('settings.system.backups.filename') }}</th> -->
                           <th>{{ $t('settings.system.backups.created_at') }}</th>
+                          <th>{{ $t('settings.system.backups.kind') }}</th>
                           <th>{{ $t('settings.system.backups.size') }}</th>
                           <th class="backup-actions-cell">{{ $t('settings.system.backups.actions') }}</th>
                         </tr>
@@ -1005,6 +1068,9 @@ defineExpose({
                         <tr v-for="backup in backups" :key="backup.filename">
                           <!-- <td class="backup-filename">{{ backup.filename }}</td> -->
                           <td>{{ formatBackupDate(backup.created_at) }}</td>
+                          <td>
+                            <span class="backup-kind" :class="`is-${backup.kind}`">{{ $t(`settings.system.backups.kind_${backup.kind}`) }}</span>
+                          </td>
                           <td>{{ niceFileSize(backup.size) }}</td>
                           <td class="backup-actions-cell">
                             <button 
@@ -1044,6 +1110,30 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
+// The schedule of the automatic backups: its fields side by side while they fit
+.backup-schedule {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0 16px;
+}
+.backup-next {
+  color: var(--ot-text);
+}
+// Automatic (cleaned after the days chosen) or made by hand (kept)
+.backup-kind {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ot-raised);
+  color: var(--ot-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  &.is-manual {
+    background: var(--ot-accent-soft);
+    color: var(--ot-accent-text);
+  }
+}
+
 // Under the minimum the line says so in the colour of an error, not only in words
 .pattern-strength.is-weak {
   color: var(--ot-danger-text);

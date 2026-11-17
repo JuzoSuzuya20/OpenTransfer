@@ -183,7 +183,7 @@ onMounted(() => {
     <div class="admin-main" ref="mainColumn">
     <PageHead :title="current.label" :description="current.description">
       <template #actions>
-        <button v-if="section === 'system' && systemPart !== 'backups'" @click="systemSettings?.saveSettings()">
+        <button v-if="section === 'system'" @click="systemSettings?.saveSettings()">
           <Save aria-hidden="true" />
           {{ t('admin.save') }}
         </button>

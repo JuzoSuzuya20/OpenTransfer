@@ -5,6 +5,24 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.2] — 2026-11-17
+
+### Added
+
+- The automatic backups follow the schedule an admin sets in Administration > Backups: off, every
+  day, one day of the week or of the month, at the time chosen (in the time zone of the instance,
+  UTC unless APP_TIMEZONE says otherwise), kept for the days chosen. The page tells when the next
+  one runs. Nothing changes until an admin sets it: every night at midnight, kept 7 days
+- The list tells an automatic backup from one made by hand. A backup made by hand is kept until
+  someone deletes it: only the automatic ones go after the days chosen. The ones made with the
+  button before this version carry the name of the automatic ones, and go with them
+
+### Fixed
+
+- A backup the list showed but not named as the automatic ones (a copy made by hand in the folder,
+  before an update for instance) could be neither downloaded nor deleted. Every backup the list
+  shows can be, and still nothing but a .sqlite file of the backups folder
+
 ## [1.5.1] — 2026-11-17
 
 ### Security

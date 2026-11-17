@@ -50,11 +50,14 @@ class backUpDatabase implements ShouldQueue
             return;
         }
 
-        // Delete any backups over 7 days old
-        $backups = glob($backupPath . '*.sqlite');
+        // The automatic backups older than the days chosen go; one made by hand stays until deleted
+        $keepDays = (int) app(\App\Services\SettingsService::class)->get('backup_keep_days');
+        [$min, $max] = \App\Support\BackupSchedule::KEEP_DAYS;
+        $keepDays = $keepDays >= $min && $keepDays <= $max ? $keepDays : 7;
+        $backups = glob($backupPath . 'database_backup_*.sqlite');
         $prunedBackups = 0;
         foreach ($backups as $backup) {
-            if (filemtime($backup) < now()->subDays(7)->timestamp) {
+            if (filemtime($backup) < now()->subDays($keepDays)->timestamp) {
                 unlink($backup);
                 $prunedBackups++;
             }
