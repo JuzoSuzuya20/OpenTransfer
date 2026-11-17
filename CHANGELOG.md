@@ -5,6 +5,18 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.6] — 2026-11-17
+
+### Fixed
+
+- The logo at the head of every email travels with it, as an inline image, instead of a link to the
+  instance: webmails that hold back remote images until the reader allows them (BlueMind) showed a
+  broken image. A logo of an admin over 200 KB, or not a PNG, JPEG, GIF or WebP, stays a link
+- Webmails that recolour emails to fit their own theme (BlueMind) left a piece of text with a colour
+  of its own as it was, the name of the server in the test email white on light grey. The colours
+  of the text belong to its blocks, and the code to type in the verification emails sits in a block
+  of its own
+
 ## [1.5.5] — 2026-11-17
 
 ### Added
