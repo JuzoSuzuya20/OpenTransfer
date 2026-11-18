@@ -5,7 +5,7 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
-## [1.5.6] — 2026-11-17
+## [1.5.6] — 2026-11-18
 
 ### Changed
 
