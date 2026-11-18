@@ -1,0 +1,8 @@
+[
+  {
+    "id": "GHSA-fc5q-39xc-vjpf",
+    "package": "picomatch",
+    "until": "2026-12-18",
+    "reason": "ReDoS through repeated extglobs, no version patched yet (<= 4.0.7). picomatch only runs at build time, inside Vite and its plugins, on the globs of the project, never on input from a user; the image ships the built assets alone (docker/alpine/Dockerfile removes node_modules). Accepted on 2026-11-18, to be looked at again by its date or as soon as a patched version is out."
+  }
+]

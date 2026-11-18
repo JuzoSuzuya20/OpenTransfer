@@ -31,6 +31,13 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
   piece of a sentence any more, and the bold of a template rewritten by an admin keeps the colour of
   the text around it
 
+### Security
+
+- The audit of the JS dependencies in the CI accepts GHSA-fc5q-39xc-vjpf (picomatch, ReDoS, no
+  version patched yet) until 2026-12-18: picomatch only runs at build time, on the globs of the
+  project, and the image does not hold it. Any other high or critical advisory still fails the CI,
+  and so does this one past its date (`.github/npm-audit-exceptions.json`)
+
 ## [1.5.5] — 2026-11-17
 
 ### Added

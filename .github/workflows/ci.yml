@@ -70,7 +70,9 @@ jobs:
           exit 100
 
       - name: Audit des dépendances JS
-        run: npm audit --audit-level=high
+        # As npm audit --audit-level=high, but for an advisory accepted for a while, with its reason,
+        # in .github/npm-audit-exceptions.json
+        run: node .github/npm-audit.mjs
 
   image:
     name: Image Docker
