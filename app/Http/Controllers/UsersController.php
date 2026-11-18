@@ -43,6 +43,9 @@ class UsersController extends Controller
 
     unset($user->authProviders);
 
+    // What the profile offers to change (App\Services\AccountPolicy)
+    $user->account = app(\App\Services\AccountPolicy::class)->forUser($user);
+
     // A guest drops files for one request: who asks, what for and until when. By link, this is
     // the only place the message of the member reaches them.
     if ($user->is_guest && $user->invite) {
@@ -85,6 +88,12 @@ class UsersController extends Controller
       ], 404);
     }
     
+    // The link is the way in of an account of the organisation, or an admin turned unlinking off
+    $policy = app(\App\Services\AccountPolicy::class);
+    if (!$policy->canUnlinkProviders($user)) {
+      return $policy->refusal($user);
+    }
+
     // Check if this is the only authentication method
     if ($user->authProviders()->count() <= 1 && !$user->password) {
       return response()->json([
@@ -118,6 +127,13 @@ class UsersController extends Controller
     if ($request->filled('email') && strcasecmp($request->input('email'), $user->email) !== 0
       && app(\App\Services\SsoPolicy::class)->forbidsPassword($user)) {
       return \App\Services\SsoPolicy::refusal();
+    }
+
+    // The password of an account of the organisation is its identity provider, or an admin turned
+    // the change off (App\Services\AccountPolicy)
+    $policy = app(\App\Services\AccountPolicy::class);
+    if ($request->has('password') && !$policy->canChangePassword($user)) {
+      return $policy->refusal($user);
     }
 
     // A new address is proved with a code sent to it (EmailChangeController), never set here

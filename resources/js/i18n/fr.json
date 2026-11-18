@@ -91,7 +91,8 @@
       "verified": "Vérification anti-robot réussie",
       "failed": "La vérification anti-robot n'a pas abouti.",
       "retry": "Réessayer"
-    }
+    },
+    "leaving_for": "Connexion avec {name}…"
   },
   "button": {
     "reverse_share_invite_send": "Envoyer une demande"
@@ -182,7 +183,9 @@
         "wrong_password": "Le mot de passe actuel est incorrect",
         "missing": "Saisissez la nouvelle adresse et votre mot de passe actuel",
         "failed": "La demande n’a pas abouti"
-      }
+      },
+      "managed_by_organisation": "Gérée par votre organisation.",
+      "password_managed_by_organisation": "Votre mot de passe est géré par votre organisation."
     },
     "allShares": {
       "allUsers": "Tous les utilisateurs",
@@ -1144,7 +1147,15 @@
     "forced_form_address": "Formulaire des comptes locaux",
     "forced_invalid": "Ce fournisseur d'identité n'existe plus.",
     "forced_help": "Comme l'option « forcer » d'ITSM-NG : la page de connexion mène directement à la page du fournisseur d'identité, sans le formulaire d'OpenTransfer. La page n'affiche que le bouton du fournisseur, sans le formulaire classique ; après une déconnexion volontaire, elle ne redirige pas, pour que personne ne soit reconnecté aussitôt.",
-    "forced_help_admins": "Seuls les administrateurs passent par le formulaire, à l'adresse ci-contre, avec une double authentification : les autres comptes ne se connectent plus que par ce fournisseur. Conservez cette adresse, c'est l'accès de secours si le fournisseur d'identité tombe."
+    "forced_help_admins": "Seuls les administrateurs passent par le formulaire, à l'adresse ci-contre, avec une double authentification : les autres comptes ne se connectent plus que par ce fournisseur. Conservez cette adresse, c'est l'accès de secours si le fournisseur d'identité tombe.",
+    "members": {
+      "title": "Comptes des utilisateurs",
+      "change_email": "Les utilisateurs peuvent changer leur adresse e-mail",
+      "change_password": "Les utilisateurs peuvent changer leur mot de passe",
+      "unlink_providers": "Les utilisateurs peuvent délier un fournisseur d’identité",
+      "help": "Ce que les comptes non administrateurs peuvent modifier dans Mon profil. Les administrateurs gardent tout, et un mot de passe qu’un administrateur demande de changer peut toujours l’être.",
+      "help_sso": "Un compte qui se connecte uniquement par le fournisseur d’identité (fournisseur forcé, ou domaine qui l’exige) ne change jamais son adresse, son mot de passe ni son lien : ce sont ceux du fournisseur."
+    }
   },
   "emails": {
     "admin": {

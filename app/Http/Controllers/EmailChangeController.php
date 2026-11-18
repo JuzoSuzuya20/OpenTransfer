@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Jobs\sendEmail;
 use App\Mail\emailChangeMail;
 use App\Models\User;
-use App\Services\SsoPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -28,9 +27,11 @@ class EmailChangeController extends Controller
     {
         $user = Auth::user();
 
-        // The address of an account of the organisation is the one of its identity provider
-        if (app(SsoPolicy::class)->forbidsPassword($user)) {
-            return SsoPolicy::refusal();
+        // The address of an account of the organisation is the one of its identity provider, or an
+        // admin turned the change off (App\Services\AccountPolicy)
+        $policy = app(\App\Services\AccountPolicy::class);
+        if (!$policy->canChangeEmail($user)) {
+            return $policy->refusal($user);
         }
 
         $validator = Validator::make($request->all(), [
@@ -77,6 +78,12 @@ class EmailChangeController extends Controller
     public function confirm(Request $request)
     {
         $user = Auth::user();
+
+        // Turned off between the request and its code: the code no longer changes anything
+        $policy = app(\App\Services\AccountPolicy::class);
+        if (!$policy->canChangeEmail($user)) {
+            return $policy->refusal($user);
+        }
         $key = $this->throttleKey($user);
 
         if (RateLimiter::tooManyAttempts($key, self::MAX_ATTEMPTS)) {

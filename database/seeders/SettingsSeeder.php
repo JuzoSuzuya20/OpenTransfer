@@ -489,6 +489,32 @@ class SettingsSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                // What a member changes on their account (App\Services\AccountPolicy): never on an
+                // account that signs in through the identity provider alone, always for an admin
+                'key' => 'members_change_email',
+                'value' => 'true',
+                'previous_value' => null,
+                'group' => 'system.auth',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'key' => 'members_change_password',
+                'value' => 'true',
+                'previous_value' => null,
+                'group' => 'system.auth',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'key' => 'members_unlink_providers',
+                'value' => 'true',
+                'previous_value' => null,
+                'group' => 'system.auth',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
                 // The provider the sign-in page leads straight to (an id), empty for the form
                 'key' => 'sso_forced_provider',
                 'value' => '',

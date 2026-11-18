@@ -91,7 +91,8 @@
       "verified": "Verifica anti-robot riuscita",
       "failed": "Non è stato possibile completare la verifica anti-robot.",
       "retry": "Riprova"
-    }
+    },
+    "leaving_for": "Accesso con {name}…"
   },
   "button": {
     "reverse_share_invite_send": "Invia richiesta"
@@ -182,7 +183,9 @@
         "wrong_password": "La password attuale non è corretta",
         "missing": "Inserisci il nuovo indirizzo e la tua password attuale",
         "failed": "La richiesta non è andata a buon fine"
-      }
+      },
+      "managed_by_organisation": "Gestito dalla sua organizzazione.",
+      "password_managed_by_organisation": "La sua password è gestita dalla sua organizzazione."
     },
     "allShares": {
       "allUsers": "Tutti gli utenti",
@@ -1144,7 +1147,15 @@
     "forced_form_address": "Modulo degli account locali",
     "forced_invalid": "Questo provider di identità non esiste più.",
     "forced_help": "Come l'opzione «forza» di ITSM-NG: la pagina di accesso porta direttamente alla pagina del provider di identità, senza il modulo di OpenTransfer. La pagina mostra solo il pulsante del provider, senza il modulo consueto; dopo una disconnessione voluta non reindirizza, perché nessuno venga riconnesso subito.",
-    "forced_help_admins": "Solo gli amministratori passano dal modulo, all'indirizzo qui accanto, con un secondo fattore: gli altri account accedono soltanto con questo provider. Conservi l'indirizzo, è l'accesso di emergenza se il provider di identità non risponde."
+    "forced_help_admins": "Solo gli amministratori passano dal modulo, all'indirizzo qui accanto, con un secondo fattore: gli altri account accedono soltanto con questo provider. Conservi l'indirizzo, è l'accesso di emergenza se il provider di identità non risponde.",
+    "members": {
+      "title": "Account degli utenti",
+      "change_email": "Gli utenti possono cambiare il loro indirizzo e-mail",
+      "change_password": "Gli utenti possono cambiare la loro password",
+      "unlink_providers": "Gli utenti possono scollegare un provider di identità",
+      "help": "Ciò che gli account non amministratori possono modificare in Il mio profilo. Gli amministratori conservano tutto, e una password che un amministratore chiede di cambiare si può sempre cambiare.",
+      "help_sso": "Un account che accede soltanto con il provider di identità (provider forzato, o dominio che lo richiede) non cambia mai indirizzo, password né collegamento: sono quelli del provider."
+    }
   },
   "emails": {
     "admin": {

@@ -198,7 +198,7 @@ const handleUnlinkProvider = async (provider) => {
             <div class="profile-email">{{ profile.email }}</div>
           </div>
         </div>
-        <EmailChange :email="profile.email" @changed="(user) => (profile.email = user.email)" />
+        <EmailChange :email="profile.email" :allowed="profile.account?.change_email !== false" @changed="(user) => (profile.email = user.email)" />
         <div class="input-container">
           <label for="name">{{ $t('settings.account.name') }}</label>
           <input type="text" id="name" autocomplete="name" v-model="profile.name" :class="{ error: errors.name }" />
@@ -209,11 +209,12 @@ const handleUnlinkProvider = async (provider) => {
             <Save aria-hidden="true" />
             {{ $t('admin.save') }}
           </button>
-          <button type="button" class="secondary" @click="editUserFormActive = true">
+          <button type="button" class="secondary" v-if="profile.account?.change_password !== false" @click="editUserFormActive = true">
             <UserRoundPen aria-hidden="true" />
             {{ $t('settings.account.change_password') }}
           </button>
         </div>
+        <p class="help-text" v-if="profile.account?.change_password === false">{{ $t('settings.account.password_managed_by_organisation') }}</p>
       </section>
 
       <section class="ot-card profile-card" id="linked_accounts" aria-labelledby="h-linked" v-if="availableAuthProviders.length > 0">
@@ -233,7 +234,7 @@ const handleUnlinkProvider = async (provider) => {
               <Link aria-hidden="true" />
               {{ $t('settings.account.create_link') }}
             </button>
-            <button type="button" class="ot-act" v-else @click="handleUnlinkProvider(provider)">
+            <button type="button" class="ot-act" v-else-if="profile.account?.unlink_providers !== false" @click="handleUnlinkProvider(provider)">
               <Unlink aria-hidden="true" />
               {{ $t('settings.account.unlink') }}
             </button>

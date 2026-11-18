@@ -91,7 +91,8 @@
       "verified": "Anti-robot check passed",
       "failed": "The anti-robot check could not finish.",
       "retry": "Try again"
-    }
+    },
+    "leaving_for": "Signing in with {name}…"
   },
   "button": {
     "reverse_share_invite_send": "Send Request"
@@ -182,7 +183,9 @@
         "wrong_password": "The current password is wrong",
         "missing": "Enter the new address and your current password",
         "failed": "The request did not go through"
-      }
+      },
+      "managed_by_organisation": "Managed by your organisation.",
+      "password_managed_by_organisation": "Your password is managed by your organisation."
     },
     "allShares": {
       "allUsers": "All users",
@@ -1144,7 +1147,15 @@
     "forced_form_address": "Form of local accounts",
     "forced_invalid": "This identity provider no longer exists.",
     "forced_help": "Like the “force” option of ITSM-NG: the sign-in page leads straight to the page of the identity provider, without the OpenTransfer form. The page shows the button of the provider alone, without the usual form; after signing out on purpose it does not lead on, so that nobody is signed straight back in.",
-    "forced_help_admins": "Only admins get through the form, at the address opposite, with a second factor: other accounts sign in through this provider alone. Keep the address, it is the way in if the identity provider fails."
+    "forced_help_admins": "Only admins get through the form, at the address opposite, with a second factor: other accounts sign in through this provider alone. Keep the address, it is the way in if the identity provider fails.",
+    "members": {
+      "title": "Accounts of the users",
+      "change_email": "Users can change their email address",
+      "change_password": "Users can change their password",
+      "unlink_providers": "Users can unlink an identity provider",
+      "help": "What accounts that are not admins can change in My profile. Admins keep all of it, and a password an admin asks to change can always be changed.",
+      "help_sso": "An account that signs in through the identity provider alone (a forced provider, or a domain that requires it) never changes its address, its password or its link: they are those of the provider."
+    }
   },
   "emails": {
     "admin": {

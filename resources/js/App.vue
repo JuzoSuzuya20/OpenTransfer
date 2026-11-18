@@ -150,7 +150,8 @@ const page = computed(() => {
   // A guest only drops files for the request: a page like the one a recipient downloads from
   if (store.lockedRequest && !store.isLoggedIn()) return 'request-lock'
   if (store.linkError && !store.isLoggedIn()) return 'link-error'
-  if (restoring.value) return 'restoring'
+  // Leaving for a forced identity provider: nothing of the sign-in page shows meanwhile
+  if (restoring.value || store.leavingForSso) return 'restoring'
   if (showAuth.value) return 'auth'
   if (store.isGuest()) return 'drop'
   const name = route.value.name
@@ -306,7 +307,7 @@ onBeforeUnmount(() => {
 
     <Transition name="ot-backdrop" appear>
       <div
-        v-if="loginBackground && showAuth"
+        v-if="loginBackground && showAuth && !store.leavingForSso"
         class="login-backdrop"
         :style="{ backgroundImage: `url('${loginBackground}')` }"
         aria-hidden="true"

@@ -30,6 +30,14 @@ const domainList = computed(() => parseSsoDomains(requiredDomains.value))
 // --- The sign-in page: its form, or straight to one provider (the "forced" OpenID Connect of
 // ITSM-NG). Local accounts (admins) keep the form at /?noAUTO=1.
 const forcedProvider = ref('')
+// What a member changes on their account (App\Services\AccountPolicy): never on an account that signs
+// in through the identity provider alone, always for an admin
+const memberChanges = ref({ members_change_email: true, members_change_password: true, members_unlink_providers: true })
+const MEMBER_CHANGES = [
+  { key: 'members_change_email', label: 'sso.members.change_email' },
+  { key: 'members_change_password', label: 'sso.members.change_password' },
+  { key: 'members_unlink_providers', label: 'sso.members.unlink_providers' }
+]
 const formAddress = `${window.location.origin}/?noAUTO=1`
 
 // --- Providers
@@ -58,6 +66,7 @@ const load = async () => {
     const settings = mapSettings(await getSettingsByGroup('system.auth'))
     requiredDomains.value = settings.sso_required_domains ?? ''
     forcedProvider.value = String(settings.sso_forced_provider ?? '')
+    for (const { key } of MEMBER_CHANGES) memberChanges.value[key] = settings[key] !== false && settings[key] !== 'false'
     providers.value = (await getAuthProviders()).map((provider) => ({ ...provider, editing: false }))
     types.value = await getAvailableProviderTypes()
   } catch (error) {
@@ -157,7 +166,11 @@ const copy = async (text, key) => {
 
 const save = async () => {
   try {
-    await saveSettingsById({ sso_required_domains: domainList.value.join(', '), sso_forced_provider: forcedProvider.value })
+    await saveSettingsById({
+      sso_required_domains: domainList.value.join(', '),
+      sso_forced_provider: forcedProvider.value,
+      ...Object.fromEntries(MEMBER_CHANGES.map(({ key }) => [key, memberChanges.value[key] ? 'true' : 'false']))
+    })
   } catch (error) {
     toast.error(
       error.code === 'sso_domains_invalid'
@@ -225,6 +238,22 @@ defineExpose({ save })
         <div class="section-help">
           <p>{{ t('sso.forced_help') }}</p>
           <p>{{ t('sso.forced_help_admins') }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ot-card setting-group" id="sso-members" aria-labelledby="h-sso-members">
+      <h2 class="ot-card-title" id="h-sso-members">{{ t('sso.members.title') }}</h2>
+      <div class="setting-row">
+        <div class="setting-fields sso-member-changes">
+          <div class="checkbox-container" v-for="change in MEMBER_CHANGES" :key="change.key">
+            <input type="checkbox" :id="change.key" v-model="memberChanges[change.key]" />
+            <label :for="change.key">{{ t(change.label) }}</label>
+          </div>
+        </div>
+        <div class="section-help">
+          <p>{{ t('sso.members.help') }}</p>
+          <p>{{ t('sso.members.help_sso') }}</p>
         </div>
       </div>
     </section>
@@ -381,6 +410,12 @@ defineExpose({ save })
 </template>
 
 <style scoped lang="scss">
+.sso-member-changes {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
 // The chevron of a provider turns over on a spring as its settings open
 .sso-chevron {
   transition: transform var(--ot-dur-slow) var(--ot-ease-spring);

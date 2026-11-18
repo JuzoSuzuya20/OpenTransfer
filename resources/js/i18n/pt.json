@@ -91,7 +91,8 @@
       "verified": "Verificação anti-robô concluída",
       "failed": "Não foi possível concluir a verificação anti-robô.",
       "retry": "Tentar novamente"
-    }
+    },
+    "leaving_for": "A iniciar sessão com {name}…"
   },
   "button": {
     "reverse_share_invite_send": "Enviar pedido"
@@ -182,7 +183,9 @@
         "wrong_password": "A palavra-passe atual está errada",
         "missing": "Introduza o novo endereço e a sua palavra-passe atual",
         "failed": "O pedido não foi concluído"
-      }
+      },
+      "managed_by_organisation": "Gerido pela sua organização.",
+      "password_managed_by_organisation": "A sua palavra-passe é gerida pela sua organização."
     },
     "allShares": {
       "allUsers": "Todos os utilizadores",
@@ -1144,7 +1147,15 @@
     "forced_form_address": "Formulário das contas locais",
     "forced_invalid": "Este fornecedor de identidade já não existe.",
     "forced_help": "Como a opção «forçar» do ITSM-NG: a página de início de sessão leva diretamente à página do fornecedor de identidade, sem o formulário do OpenTransfer. A página mostra apenas o botão do fornecedor, sem o formulário habitual; depois de terminar sessão de propósito não redireciona, para que ninguém volte a entrar de imediato.",
-    "forced_help_admins": "Só os administradores passam pelo formulário, no endereço ao lado, com um segundo fator: as outras contas só iniciam sessão por este fornecedor. Guarde o endereço, é o acesso de emergência se o fornecedor de identidade falhar."
+    "forced_help_admins": "Só os administradores passam pelo formulário, no endereço ao lado, com um segundo fator: as outras contas só iniciam sessão por este fornecedor. Guarde o endereço, é o acesso de emergência se o fornecedor de identidade falhar.",
+    "members": {
+      "title": "Contas dos utilizadores",
+      "change_email": "Os utilizadores podem mudar o seu endereço de e-mail",
+      "change_password": "Os utilizadores podem mudar a sua palavra-passe",
+      "unlink_providers": "Os utilizadores podem desligar um fornecedor de identidade",
+      "help": "O que as contas que não são de administrador podem alterar em O meu perfil. Os administradores mantêm tudo, e uma palavra-passe que um administrador pede para mudar pode sempre ser mudada.",
+      "help_sso": "Uma conta que só inicia sessão pelo fornecedor de identidade (fornecedor forçado, ou domínio que o exige) nunca muda o endereço, a palavra-passe nem a ligação: são os do fornecedor."
+    }
   },
   "emails": {
     "admin": {

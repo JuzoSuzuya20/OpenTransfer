@@ -5,6 +5,26 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.8] — 2026-11-18
+
+### Added
+
+- Administration > SSO > Accounts of the users: whether members change their email address, their
+  password, and unlink an identity provider in My profile. On by default; admins keep all three,
+  and a password an admin asks to change can always be changed
+
+### Changed
+
+- An account that signs in through the identity provider alone (a forced provider, a domain that
+  requires it) changes neither its address, nor its password, nor its link, whatever those settings:
+  they are those of the provider. Its password and its link could still be changed or undone before.
+  My profile shows them as managed by the organisation
+
+### Fixed
+
+- With a forced provider, the sign-in page showed for an instant before leading to it: nothing shows
+  meanwhile, and a word comes only if the provider is slow to answer
+
 ## [1.5.7] — 2026-11-18
 
 ### Changed

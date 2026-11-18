@@ -8,7 +8,8 @@ import { AtSign } from 'lucide-vue-next'
 import OtPassword from '../layout/OtPassword.vue'
 import { requestEmailChange, confirmEmailChange } from '../../api'
 
-defineProps({ email: { type: String, required: true } })
+// allowed: false when the identity provider holds the address, or an admin turned the change off
+defineProps({ email: { type: String, required: true }, allowed: { type: Boolean, default: true } })
 const emit = defineEmits(['changed'])
 
 const { t } = useTranslate()
@@ -93,11 +94,12 @@ const confirm = async () => {
       <label for="email">{{ $t('settings.account.email') }}</label>
       <div class="email-change-current">
         <input type="email" id="email" :value="email" readonly />
-        <button type="button" class="secondary" v-if="step === 'idle'" @click="open">
+        <button type="button" class="secondary" v-if="allowed && step === 'idle'" @click="open">
           <AtSign aria-hidden="true" />
           {{ $t('settings.account.email_change.change') }}
         </button>
       </div>
+      <p class="help-text" v-if="!allowed">{{ $t('settings.account.managed_by_organisation') }}</p>
     </div>
 
     <form class="email-change-step" v-if="step === 'ask'" @submit.prevent="send">

@@ -25,6 +25,8 @@ const store = reactive({
   // On a reload the access token (kept in memory) is gone: until the first renewal answers,
   // nobody knows whether someone is signed in, and the app shows neither sign-in nor a page
   restoringSession: true,
+  // Leaving for a forced identity provider (components/auth.vue): the app shows nothing meanwhile
+  leavingForSso: false,
   settingsOpen: false,
   mode: 'upload',
   shareCode: null,

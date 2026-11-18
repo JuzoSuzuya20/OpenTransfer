@@ -91,7 +91,8 @@
       "verified": "Verificación antirrobot superada",
       "failed": "La verificación antirrobot no ha podido completarse.",
       "retry": "Reintentar"
-    }
+    },
+    "leaving_for": "Iniciando sesión con {name}…"
   },
   "button": {
     "reverse_share_invite_send": "Enviar la solicitud"
@@ -182,7 +183,9 @@
         "wrong_password": "La contraseña actual no es correcta",
         "missing": "Introduzca la nueva dirección y su contraseña actual",
         "failed": "La solicitud no se ha completado"
-      }
+      },
+      "managed_by_organisation": "Gestionada por su organización.",
+      "password_managed_by_organisation": "Su contraseña la gestiona su organización."
     },
     "allShares": {
       "allUsers": "Todos los usuarios",
@@ -1144,7 +1147,15 @@
     "forced_form_address": "Formulario de las cuentas locales",
     "forced_invalid": "Este proveedor de identidad ya no existe.",
     "forced_help": "Como la opción «forzar» de ITSM-NG: la página de inicio de sesión lleva directamente a la página del proveedor de identidad, sin el formulario de OpenTransfer. La página solo muestra el botón del proveedor, sin el formulario habitual; tras cerrar sesión a propósito no redirige, para que nadie vuelva a entrar al instante.",
-    "forced_help_admins": "Solo los administradores pasan por el formulario, en la dirección de al lado, con un segundo factor: las demás cuentas solo inician sesión con este proveedor. Guarde la dirección, es el acceso de emergencia si el proveedor de identidad falla."
+    "forced_help_admins": "Solo los administradores pasan por el formulario, en la dirección de al lado, con un segundo factor: las demás cuentas solo inician sesión con este proveedor. Guarde la dirección, es el acceso de emergencia si el proveedor de identidad falla.",
+    "members": {
+      "title": "Cuentas de los usuarios",
+      "change_email": "Los usuarios pueden cambiar su dirección de correo",
+      "change_password": "Los usuarios pueden cambiar su contraseña",
+      "unlink_providers": "Los usuarios pueden desvincular un proveedor de identidad",
+      "help": "Lo que las cuentas que no son de administrador pueden modificar en Mi perfil. Los administradores lo conservan todo, y una contraseña que un administrador pide cambiar siempre puede cambiarse.",
+      "help_sso": "Una cuenta que solo inicia sesión con el proveedor de identidad (proveedor forzado, o dominio que lo exige) nunca cambia su dirección, su contraseña ni su vínculo: son los del proveedor."
+    }
   },
   "emails": {
     "admin": {

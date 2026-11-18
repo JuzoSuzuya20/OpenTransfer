@@ -91,7 +91,8 @@
       "verified": "Anti-Roboter-Prüfung bestanden",
       "failed": "Die Anti-Roboter-Prüfung konnte nicht abgeschlossen werden.",
       "retry": "Erneut versuchen"
-    }
+    },
+    "leaving_for": "Anmeldung mit {name}…"
   },
   "button": {
     "reverse_share_invite_send": "Anfrage senden"
@@ -182,7 +183,9 @@
         "wrong_password": "Das aktuelle Passwort ist falsch",
         "missing": "Geben Sie die neue Adresse und Ihr aktuelles Passwort ein",
         "failed": "Die Anfrage ist fehlgeschlagen"
-      }
+      },
+      "managed_by_organisation": "Von Ihrer Organisation verwaltet.",
+      "password_managed_by_organisation": "Ihr Passwort wird von Ihrer Organisation verwaltet."
     },
     "allShares": {
       "allUsers": "Alle Benutzer",
@@ -1144,7 +1147,15 @@
     "forced_form_address": "Formular der lokalen Konten",
     "forced_invalid": "Dieser Identitätsanbieter existiert nicht mehr.",
     "forced_help": "Wie die Option „Erzwingen“ von ITSM-NG: Die Anmeldeseite führt direkt zur Seite des Identitätsanbieters, ohne das Formular von OpenTransfer. Die Seite zeigt nur die Schaltfläche des Anbieters, ohne das übliche Formular; nach einer gewollten Abmeldung leitet sie nicht weiter, damit niemand sofort wieder angemeldet wird.",
-    "forced_help_admins": "Nur Administratoren gelangen über das Formular unter der nebenstehenden Adresse hinein, mit einem zweiten Faktor: Alle anderen Konten melden sich nur noch über diesen Anbieter an. Bewahren Sie die Adresse auf, sie ist der Notzugang, falls der Identitätsanbieter ausfällt."
+    "forced_help_admins": "Nur Administratoren gelangen über das Formular unter der nebenstehenden Adresse hinein, mit einem zweiten Faktor: Alle anderen Konten melden sich nur noch über diesen Anbieter an. Bewahren Sie die Adresse auf, sie ist der Notzugang, falls der Identitätsanbieter ausfällt.",
+    "members": {
+      "title": "Konten der Benutzer",
+      "change_email": "Benutzer können ihre E-Mail-Adresse ändern",
+      "change_password": "Benutzer können ihr Passwort ändern",
+      "unlink_providers": "Benutzer können die Verknüpfung mit einem Identitätsanbieter lösen",
+      "help": "Was Konten ohne Administratorrechte unter Mein Profil ändern können. Administratoren behalten alles, und ein Passwort, dessen Änderung ein Administrator verlangt, lässt sich immer ändern.",
+      "help_sso": "Ein Konto, das sich nur über den Identitätsanbieter anmeldet (erzwungener Anbieter oder Domain, die es verlangt), ändert nie seine Adresse, sein Passwort oder seine Verknüpfung: Es sind die des Anbieters."
+    }
   },
   "emails": {
     "admin": {

@@ -75,6 +75,33 @@ const haveResetToken = ref(false)
 const resetToken = ref('')
 const waitingForRedirect = ref(false)
 const authProviders = ref([])
+// Where the page stands with a forced provider, read once as it opens: a sign-out just made (set by
+// it, cleared here), a message of the server, the address (lib/forcedSso)
+const forcedStart = (() => {
+  let signedOut = false
+  try {
+    signedOut = sessionStorage.getItem(SIGNED_OUT_KEY) === '1'
+    sessionStorage.removeItem(SIGNED_OUT_KEY)
+  } catch (error) {
+    // No storage (private mode, blocked): the provider decides alone
+  }
+  return {
+    url: domData().sso_forced_login,
+    path: window.location.pathname,
+    search: window.location.search,
+    signedOut,
+    flash: domError().length > 0 || domSuccess().length > 0
+  }
+})()
+// Bound for the forced provider: nothing of the sign-in page shows meanwhile, not even for an
+// instant once the session had its chance; a word only if the provider is slow to answer
+const leavingForSso = ref(Boolean(forcedSsoTarget(forcedStart)))
+const leavingSlowly = ref(false)
+store.leavingForSso = leavingForSso.value
+const stopLeaving = () => {
+  leavingForSso.value = false
+  store.leavingForSso = false
+}
 // With a forced provider, its button alone: the form of local accounts at ?noAUTO (lib/forcedSso)
 const forcedOnly = forcedSsoOnly({ url: domData().sso_forced_login, path: window.location.pathname, search: window.location.search })
 const forcedId = forcedProviderId(domData().sso_forced_login)
@@ -147,6 +174,7 @@ onMounted(async () => {
   // Nobody signed in once the session had its chance: a forced identity provider takes over, once
   // the page rendered for it (lib/forcedSso)
   afterTheSessionSettles(restored, nextTick, leadToForcedSso)
+  if (leavingForSso.value) setTimeout(() => (leavingSlowly.value = true), 1500)
 
   getAvailableAuthProviders().then((data) => {
     authProviders.value = data
@@ -353,26 +381,13 @@ const attemptRefresh = async () => {
 // The sign-in page leads straight to the provider an admin forced (lib/forcedSso: not after a
 // sign-out just made, with ?noAUTO, a message of the server, a guest link or a reset)
 const leadToForcedSso = () => {
-  if (store.isLoggedIn()) return
-  let signedOut = false
-  try {
-    signedOut = sessionStorage.getItem(SIGNED_OUT_KEY) === '1'
-    sessionStorage.removeItem(SIGNED_OUT_KEY)
-  } catch (error) {
-    // No storage (private mode, blocked): the provider decides alone
-  }
-  const target = forcedSsoTarget({
-    url: domData().sso_forced_login,
-    path: window.location.pathname,
-    search: window.location.search,
-    signedOut,
-    flash: domError().length > 0 || domSuccess().length > 0,
-    shown: props.shown
-  })
+  const target = store.isLoggedIn() ? null : forcedSsoTarget({ ...forcedStart, shown: props.shown })
   if (target) {
     waitingForRedirect.value = true
     window.location.assign(target)
+    return
   }
+  stopLeaving()
 }
 
 const attemptLogout = async () => {
@@ -499,7 +514,14 @@ const switchToLogin = () => {
 </script>
 
 <template>
-  <div class="auth">
+  <!-- Bound for the forced provider: nothing, then a word if it is slow -->
+  <div class="auth auth-leaving" v-if="leavingForSso">
+    <template v-if="leavingSlowly">
+      <BrandMark :size="56" :logo-url="defaultLogo ? '' : logoUrl" />
+      <p class="auth-leaving-note" role="status">{{ $t('auth.leaving_for', { name: forcedProviderName || applicationName }) }}</p>
+    </template>
+  </div>
+  <div class="auth" v-else>
     <div class="auth-brand">
       <BrandMark :size="56" :logo-url="defaultLogo ? '' : logoUrl" />
       <component :is="isSignInStep ? 'h1' : 'p'" class="auth-title">{{ applicationName }}</component>
@@ -789,6 +811,19 @@ const switchToLogin = () => {
 </template>
 
 <style scoped lang="scss">
+.auth-leaving {
+  min-height: 60vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+}
+
+.auth-leaving-note {
+  margin: 0;
+  color: var(--ot-muted);
+}
+
 .provider-button {
   svg:not(.provider-chevron) {
     stroke: url(#gradient);
