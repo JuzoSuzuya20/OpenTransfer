@@ -112,7 +112,7 @@ class AccentColorTest extends TestCase
         $this->assertStringContainsString('src="https://files.example.test/build/email/brand-mark-orange.png"', $html);
         // Dark, with the light tone in the light version (tests/Feature/EmailSchemeTest.php)
         $this->assertStringContainsString('background:'.$orange['email']['fill'], $html);
-        $this->assertStringContainsString('.ot-b-fill { background-color: '.$orange['light']['accent-fill'].' !important; }', $html);
+        $this->assertStringContainsString('.ot-b-fill { background-color: '.\App\Support\BlueMindDarkTheme::toShow($orange['email']['fill']).' !important; }', $html);
         $this->assertStringNotContainsString('#6262ee', $html);
     }
 }

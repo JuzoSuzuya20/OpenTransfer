@@ -44,6 +44,8 @@ trait LocalizedEmail
             // Dark, with a light version for BlueMind; a template rewritten before goes without it
             'scheme' => $this->writtenBeforeTheLightVersion() ? 'dark' : 'dark-and-light',
         ];
+        // The colours BlueMind, in its dark theme, turns into the dark design
+        $this->brand['light'] = \App\Support\BlueMindDarkTheme::palette($this->brand['accent']);
     }
 
     /**

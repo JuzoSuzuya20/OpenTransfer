@@ -15,6 +15,10 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
   lightness of all of it, so the dark emails read light there; given the light version, in Edge or
   Chrome, it shows them dark. Each fixed colour of an email belongs to a role named by a class,
   which the light version recolours. A template an admin rewrote before goes without it
+- The colours of that light version are those BlueMind turns into the dark design, the main colour
+  included: its turning over, fitted on screenshots (CIELAB L* ← 100.17 − 0.883 × L*, hue kept), is
+  worked back for each (`App\Support\BlueMindDarkTheme`). The deep blue of the light theme came back
+  pink there; indigo now comes back indigo, emerald and orange a little softer, out of reach in sRGB
 
 ### Fixed
 

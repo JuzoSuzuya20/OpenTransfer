@@ -30,18 +30,24 @@ class EmailSchemeTest extends TestCase
 
     protected $seed = true;
 
-    /** The colours of the dark email, and of its light version, as in resources/js/style.scss */
+    /** The colours of the dark email (resources/js/style.scss), and the role of the light version */
     private const ROLES = [
-        'ot-b-page' => ['#161616', '#f6f6f6'],
-        'ot-b-card' => ['#1e1e1e', '#ffffff'],
-        'ot-b-field' => ['#242424', '#f6f6f6'],
-        'ot-c-head' => ['#ffffff', '#161616'],
-        'ot-c-text' => ['#cecece', '#3a3a3a'],
-        'ot-c-muted' => ['#929292', '#666666'],
-        'ot-l-line' => ['#353535', '#dddddd'],
-        'ot-l-field' => ['#3a3a3a', '#cecece'],
-        'ot-l-soft' => ['#2a2a2a', '#e5e5e5'],
+        'ot-b-page' => ['#161616', 'page'],
+        'ot-b-card' => ['#1e1e1e', 'card'],
+        'ot-b-field' => ['#242424', 'field'],
+        'ot-c-head' => ['#ffffff', 'head'],
+        'ot-c-text' => ['#cecece', 'text'],
+        'ot-c-muted' => ['#929292', 'muted'],
+        'ot-l-line' => ['#353535', 'line'],
+        'ot-l-field' => ['#3a3a3a', 'line_field'],
+        'ot-l-soft' => ['#2a2a2a', 'line_soft'],
     ];
+
+    /** The light version of an indigo instance: the colours BlueMind turns into the dark design */
+    private function palette(): array
+    {
+        return \App\Support\BlueMindDarkTheme::palette(\App\Support\Accents::email('indigo'));
+    }
 
     private const LIGHT_VERSION = "@supports not ((-moz-appearance: none) or (-moz-orient: inline)) {\n  @media (prefers-color-scheme: dark) {";
 
@@ -83,14 +89,16 @@ class EmailSchemeTest extends TestCase
         $this->assertMatchesRegularExpression('/<table[^>]*class="ot-b-card ot-l-line"[^>]*bgcolor="#1e1e1e"/', $html);
     }
 
-    public function test_the_light_version_gives_each_role_its_colour_of_the_light_theme(): void
+    public function test_the_light_version_gives_each_role_the_colour_bluemind_turns_into_the_dark_design(): void
     {
         $light = $this->lightVersion($this->sent(new passwordResetMail('token', $this->user())));
+        $palette = $this->palette();
 
-        foreach (self::ROLES as $class => [, $lightColour]) {
+        foreach (self::ROLES as $class => [, $role]) {
             $property = match ($class[3]) { 'b' => 'background-color', 'c' => 'color', 'l' => 'border-color' };
-            $this->assertStringContainsString(".{$class} { {$property}: {$lightColour} !important; }", $light, $class);
+            $this->assertStringContainsString(".{$class} { {$property}: {$palette[$role]} !important; }", $light, $class);
         }
+        $this->assertSame('#ffffff', $palette['page']);
     }
 
     public function test_every_fixed_colour_of_an_email_has_its_role(): void
@@ -129,16 +137,20 @@ class EmailSchemeTest extends TestCase
         $light = $this->lightVersion($html);
 
         $this->assertMatchesRegularExpression('/<td[^>]*class="ot-b-fill"[^>]*bgcolor="' . $indigo['email']['fill'] . '"/', $html);
-        $this->assertStringContainsString(".ot-b-fill { background-color: {$indigo['light']['accent-fill']} !important; }", $light);
-        $this->assertStringContainsString(".ot-c-accent { color: {$indigo['light']['accent-text']} !important; }", $light);
-        $this->assertStringContainsString(".ot-b-mark { background-color: {$indigo['light']['accent']} !important; }", $light);
+        $palette = $this->palette();
+        $this->assertStringContainsString(".ot-b-fill { background-color: {$palette['fill']} !important; }", $light);
+        $this->assertStringContainsString(".ot-c-accent { color: {$palette['accent']} !important; }", $light);
+        $this->assertStringContainsString(".ot-b-mark { background-color: {$palette['mark']} !important; }", $light);
+        // BlueMind turns the deep blue of the light theme of the application into pink: not that one
+        $this->assertStringNotContainsString($indigo['light']['accent-fill'], $light);
     }
 
     public function test_the_text_of_the_button_stays_white_on_the_accent(): void
     {
         $html = $this->sent(new passwordResetMail('token', $this->user()));
 
-        $this->assertMatchesRegularExpression('/<td[^>]*class="ot-b-fill"[^>]*>\s*<a [^>]*color:\s*#ffffff;/', $html);
+        $this->assertMatchesRegularExpression('/<td[^>]*class="ot-b-fill"[^>]*>\s*<a [^>]*class="ot-c-on-fill"[^>]*color:\s*#ffffff;/', $html);
+        $this->assertStringContainsString(".ot-c-on-fill { color: {$this->palette()['on_fill']} !important; }", $this->lightVersion($html));
     }
 
     // BlueMind makes a link of the name of the mail server: links in the text take the accent
@@ -149,7 +161,7 @@ class EmailSchemeTest extends TestCase
         $html = $this->sent(new smtpTestMail($this->user(), 'smtp.example.test'));
 
         $this->assertStringContainsString(".ot-content a { color: {$indigo['email']['text']}; }", $html);
-        $this->assertStringContainsString(".ot-content a { color: {$indigo['light']['accent-text']} !important; }", $this->lightVersion($html));
+        $this->assertStringContainsString(".ot-content a { color: {$this->palette()['accent']} !important; }", $this->lightVersion($html));
     }
 
     public function test_a_template_an_admin_rewrote_before_goes_without_the_light_version(): void

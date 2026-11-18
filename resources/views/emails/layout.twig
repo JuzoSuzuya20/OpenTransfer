@@ -49,23 +49,25 @@
     .ot-card-body { padding: 18px 16px !important; }
     .ot-content h2 { font-size: 22px !important; }
   }
-{% if not dark_only %}
+{% if not dark_only and brand.light is defined %}
   @supports not ((-moz-appearance: none) or (-moz-orient: inline)) {
   @media (prefers-color-scheme: dark) {
-    .ot-b-page { background-color: #f6f6f6 !important; }
-    .ot-b-card { background-color: #ffffff !important; }
-    .ot-b-field { background-color: #f6f6f6 !important; }
-    .ot-c-head { color: #161616 !important; }
-    .ot-c-text { color: #3a3a3a !important; }
-    .ot-c-muted { color: #666666 !important; }
-    .ot-l-line { border-color: #dddddd !important; }
-    .ot-l-field { border-color: #cecece !important; }
-    .ot-l-soft { border-color: #e5e5e5 !important; }
-    .ot-b-fill { background-color: {{ brand.accent.light.fill|default(brand.accent.fill) }} !important; }
-    .ot-b-mark { background-color: {{ brand.accent.light.mark|default(brand.accent.mark) }} !important; }
-    .ot-c-accent { color: {{ brand.accent.light.text|default(brand.accent.text) }} !important; }
-    .ot-content a { color: {{ brand.accent.light.text|default(brand.accent.text) }} !important; }
-    .ot-content h2 { color: #161616 !important; }
+    {#- The colours BlueMind turns into the dark design (App\Support\BlueMindDarkTheme) #}
+    .ot-b-page { background-color: {{ brand.light.page }} !important; }
+    .ot-b-card { background-color: {{ brand.light.card }} !important; }
+    .ot-b-field { background-color: {{ brand.light.field }} !important; }
+    .ot-c-head { color: {{ brand.light.head }} !important; }
+    .ot-c-text { color: {{ brand.light.text }} !important; }
+    .ot-c-muted { color: {{ brand.light.muted }} !important; }
+    .ot-l-line { border-color: {{ brand.light.line }} !important; }
+    .ot-l-field { border-color: {{ brand.light.line_field }} !important; }
+    .ot-l-soft { border-color: {{ brand.light.line_soft }} !important; }
+    .ot-b-fill { background-color: {{ brand.light.fill }} !important; }
+    .ot-b-mark { background-color: {{ brand.light.mark }} !important; }
+    .ot-c-accent { color: {{ brand.light.accent }} !important; }
+    .ot-c-on-fill { color: {{ brand.light.on_fill }} !important; }
+    .ot-content a { color: {{ brand.light.accent }} !important; }
+    .ot-content h2 { color: {{ brand.light.head }} !important; }
   }
   }
 {% endif %}
@@ -102,7 +104,7 @@
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0;">
                     <tr>
                       <td class="ot-b-fill" bgcolor="{{ p.fill }}" style="background:{{ p.fill }};border-radius:4px;">
-                        <a href="{{ block('action_url')|trim }}" style="display:inline-block;padding:14px 18px;color:#ffffff;text-decoration:none;font-size:13px;line-height:14px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;">{{ block('action_text')|trim }}</a>
+                        <a href="{{ block('action_url')|trim }}" class="ot-c-on-fill" style="display:inline-block;padding:14px 18px;color:#ffffff;text-decoration:none;font-size:13px;line-height:14px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;">{{ block('action_text')|trim }}</a>
                       </td>
                     </tr>
                   </table>

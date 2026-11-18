@@ -52,19 +52,11 @@ final class Accents
         return resource_path('images/brand/logo-' . (self::exists($id) ? $id : self::DEFAULT) . '.png');
     }
 
-    /**
-     * The tones of the emails: the dark ones (the "email" tones of accents.json), and the light ones
-     * of their light version, those of the light theme of the application; and the mark in that colour.
-     *
-     * @return array{fill: string, text: string, mark: string, light: array{fill: string, text: string, mark: string}, mark_file: string}
-     */
+    /** @return array{fill: string, text: string, mark: string, mark_file: string} the tones of the dark emails, and their mark */
     public static function email(string $id): array
     {
         $accent = self::all()[self::exists($id) ? $id : self::DEFAULT];
 
-        return $accent['email'] + [
-            'light' => ['fill' => $accent['light']['accent-fill'], 'text' => $accent['light']['accent-text'], 'mark' => $accent['light']['accent']],
-            'mark_file' => $id === self::DEFAULT || !self::exists($id) ? 'brand-mark.png' : "brand-mark-{$id}.png",
-        ];
+        return $accent['email'] + ['mark_file' => $id === self::DEFAULT || !self::exists($id) ? 'brand-mark.png' : "brand-mark-{$id}.png"];
     }
 }
