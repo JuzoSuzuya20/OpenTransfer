@@ -109,12 +109,20 @@ class KeycloakSsoTest extends TestCase
         $this->assertTrue((bool) $provider->fresh()->trust_email);
     }
 
+    // What Keycloak answers to the client credentials of the test, as its sources write it
+    // (services/…/ClientIdAndSecretAuthenticator.java, …/grants/ClientCredentialsGrantType.java):
+    // 401 unauthorized_client both to a wrong secret and, once it checked the secret, to a client
+    // without a service account. Only the description tells them apart.
+    private const KEYCLOAK_WRONG_SECRET = ['error' => 'unauthorized_client', 'error_description' => 'Invalid client or Invalid client credentials'];
+
+    private const KEYCLOAK_NO_SERVICE_ACCOUNT = ['error' => 'unauthorized_client', 'error_description' => 'Client not enabled to retrieve service account'];
+
     public function test_the_connection_test_finds_the_server_and_accepts_the_client(): void
     {
         Http::fake([
             'sso.entreprise.fr/realms/entreprise/.well-known/openid-configuration' => Http::response($this->discovery()),
-            // Without a service account the client is refused this grant, but it was recognised
-            'sso.entreprise.fr/realms/entreprise/protocol/openid-connect/token' => Http::response(['error' => 'unauthorized_client'], 400),
+            // Without a service account the client is refused this grant, but its secret was checked first
+            'sso.entreprise.fr/realms/entreprise/protocol/openid-connect/token' => Http::response(self::KEYCLOAK_NO_SERVICE_ACCOUNT, 401),
         ]);
 
         $this->checkConnection($this->config())
@@ -129,10 +137,47 @@ class KeycloakSsoTest extends TestCase
     {
         Http::fake([
             '*/.well-known/openid-configuration' => Http::response($this->discovery()),
-            '*/protocol/openid-connect/token' => Http::response(['error' => 'invalid_client'], 401),
+            '*/protocol/openid-connect/token' => Http::response(self::KEYCLOAK_WRONG_SECRET, 401),
         ]);
 
         $this->checkConnection($this->config())->assertOk()->assertJsonPath('data.discovery', 'ok')->assertJsonPath('data.client', 'invalid');
+    }
+
+    public function test_the_connection_test_tells_a_wrong_secret_of_any_openid_connect_provider(): void
+    {
+        Http::fake([
+            '*/.well-known/openid-configuration' => Http::response($this->discovery()),
+            '*/protocol/openid-connect/token' => Http::response(['error' => 'invalid_client'], 401),
+        ]);
+
+        $this->checkConnection($this->config())->assertOk()->assertJsonPath('data.client', 'invalid');
+    }
+
+    public function test_a_public_client_is_recognised(): void
+    {
+        Http::fake([
+            '*/.well-known/openid-configuration' => Http::response($this->discovery()),
+            '*/protocol/openid-connect/token' => Http::response(['error' => 'unauthorized_client', 'error_description' => 'Public client not allowed to retrieve service account'], 401),
+        ]);
+
+        $this->checkConnection($this->config())->assertOk()->assertJsonPath('data.client', 'ok');
+    }
+
+    // The test sends the client as the sign-in does (Laravel Socialite): in the body of the request
+    public function test_the_connection_test_sends_the_client_as_the_sign_in_does(): void
+    {
+        Http::fake([
+            '*/.well-known/openid-configuration' => Http::response($this->discovery()),
+            '*/protocol/openid-connect/token' => Http::response(self::KEYCLOAK_NO_SERVICE_ACCOUNT, 401),
+        ]);
+
+        $this->checkConnection($this->config(['client_secret' => 'a-secret']))->assertOk();
+
+        Http::assertSent(function ($request) {
+            return str_ends_with($request->url(), '/protocol/openid-connect/token')
+                && $request['client_id'] === 'opentransfer' && $request['client_secret'] === 'a-secret'
+                && $request['grant_type'] === 'client_credentials' && !$request->hasHeader('Authorization');
+        });
     }
 
     public function test_the_connection_test_tells_a_wrong_realm(): void

@@ -42,13 +42,18 @@ class OidcConnectionTest
         return $result;
     }
 
-    // A client credentials request: refused for lack of a service account, the client was still recognised
+    /**
+     * A client credentials request, the client in the body as the sign-in sends it (Laravel
+     * Socialite). Refused for lack of a service account, the client was still recognised. Keycloak
+     * answers 401 unauthorized_client both to a wrong secret ("Invalid client or Invalid client
+     * credentials") and, once it checked the secret, to a client without a service account ("Client
+     * not enabled to retrieve service account"): only the description tells them apart.
+     */
     private function checkClient(string $tokenEndpoint, string $clientId, string $clientSecret): string
     {
         try {
             $response = Http::timeout(5)->withoutRedirecting()->asForm()->acceptJson()
-                ->withBasicAuth($clientId, $clientSecret)
-                ->post($tokenEndpoint, ['grant_type' => 'client_credentials']);
+                ->post($tokenEndpoint, ['grant_type' => 'client_credentials', 'client_id' => $clientId, 'client_secret' => $clientSecret]);
         } catch (ConnectionException) {
             return 'unknown';
         }
@@ -58,10 +63,21 @@ class OidcConnectionTest
         }
 
         $error = $response->json('error');
-        if ($error === 'invalid_client' || $response->status() === 401) {
+        $description = (string) $response->json('error_description');
+        if ($error === 'invalid_client') {
+            return 'invalid';
+        }
+        // The client and its secret were checked, then refused this grant: Keycloak, or any provider
+        // that keeps 401 for credentials it does not know
+        if ($error === 'unauthorized_client') {
+            $refusedTheGrant = preg_match('/not (enabled|allowed) to retrieve service account/i', $description) === 1;
+
+            return $response->status() === 401 && !$refusedTheGrant ? 'invalid' : 'ok';
+        }
+        if ($response->status() === 401) {
             return 'invalid';
         }
 
-        return in_array($error, ['unauthorized_client', 'unsupported_grant_type', 'invalid_grant', 'invalid_scope'], true) ? 'ok' : 'unknown';
+        return in_array($error, ['unsupported_grant_type', 'invalid_grant', 'invalid_scope'], true) ? 'ok' : 'unknown';
     }
 }

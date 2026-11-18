@@ -25,6 +25,10 @@ published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` fol
 - The logo at the head of every email travels with it, as an inline image, instead of a link to the
   instance: webmails that hold back remote images until the reader allows them (BlueMind) showed a
   broken image. A logo of an admin over 200 KB, or not a PNG, JPEG, GIF or WebP, stays a link
+- The test of a Keycloak provider said the client ID or the secret was wrong for a right one:
+  Keycloak answers 401 unauthorized_client both to a wrong secret and, once it checked the secret,
+  to a client without a service account, which the test took for a wrong secret. Only the
+  description tells them apart. The test also sends the client as the sign-in does, in the body
 - The name of the mail server in the test email read white on light grey in BlueMind, which makes a
   link of a name of domain in the text: it sits in a box of its own, as the code of the
   verification emails, and the links in the text of an email take the accent. No colour is set on a
