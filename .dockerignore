@@ -7,6 +7,10 @@
 .env.*
 !.env.example
 
+# Caches des outils de la CI : Trivy y range sa base de failles (1,6 Go) avant la construction de
+# l'image publiée, depuis le même dossier (tests/js/dockerignore.test.mjs)
+.cache
+
 # Dépendances et artefacts reconstruits dans l'image
 node_modules
 vendor

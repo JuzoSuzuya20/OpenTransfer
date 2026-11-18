@@ -5,6 +5,16 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.9] — 2026-11-18
+
+### Fixed
+
+- The published image held the vulnerability database of Trivy, 1.6 GB of its 2.1 GB, in
+  `/var/www/html/.cache/trivy`: the CI scans an image with Trivy, which keeps its database in the
+  folder of the project, then builds the image it publishes from that folder. `.dockerignore` leaves
+  `.cache` out: the image weighs about 400 MB again. A server that pulled the versions before keeps
+  each of them on its disk until `docker image prune` removes them
+
 ## [1.5.8] — 2026-11-18
 
 ### Added
