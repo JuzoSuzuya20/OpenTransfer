@@ -6,9 +6,10 @@ use App\Models\User;
 
 /**
  * The accounts of the organisation sign in through its identity provider. An admin lists the
- * email domains concerned; their members cannot open a session with a password, a reset link,
- * a sign-up or a passkey alone. Admins keep their password, with a second factor, so that a
- * broken identity provider can still be repaired. Reverse share guests are not concerned.
+ * email domains concerned, or forces one provider for everyone (whatever the domain); members
+ * cannot open a session with a password, a reset link, a sign-up or a passkey alone. Admins keep
+ * their password, with a second factor, so that a broken identity provider can still be repaired.
+ * Reverse share guests are not concerned.
  */
 class SsoPolicy
 {
@@ -44,9 +45,13 @@ class SsoPolicy
         return self::parse($this->settings->get(self::SETTING_DOMAINS));
     }
 
-    // Exact domain only: sous.entreprise.fr is another domain, to be listed on its own
+    // Exact domain only: sous.entreprise.fr is another domain, to be listed on its own. A forced
+    // provider (still enabled) is the way in for every address: only admins get past it
     public function requiresSso(?string $email): bool
     {
+        if ($this->forcedLoginUrl() !== null) {
+            return true;
+        }
         $at = strrpos((string) $email, '@');
         if ($at === false) {
             return false;

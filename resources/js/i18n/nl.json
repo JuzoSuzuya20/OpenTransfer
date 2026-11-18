@@ -83,6 +83,7 @@
     "local_account": "E-mail en wachtwoord",
     "forgot_password_question": "Wachtwoord vergeten?",
     "sso_required": "Je organisatie meldt je aan met haar account: gebruik de knop hierboven.",
+    "forced_admins_only": "Alleen voor beheerders: andere accounts melden zich aan met {name}.",
     "sso_domain_note": "De accounts @{domain} melden zich aan met het account van de organisatie, hierboven. Alleen beheerders gebruiken dit formulier.",
     "login_message_default": "Log in om te beginnen.",
     "altcha": {
@@ -1142,8 +1143,8 @@
     "forced_disabled": "Deze provider is uitgeschakeld: de aanmeldpagina houdt haar formulier tot hij weer is ingeschakeld.",
     "forced_form_address": "Formulier van lokale accounts",
     "forced_invalid": "Deze identiteitsprovider bestaat niet meer.",
-    "forced_help": "Zoals de optie „forceren” van ITSM-NG: de aanmeldpagina leidt direct naar de pagina van de identiteitsprovider, zonder het formulier van OpenTransfer. Na een bewuste afmelding verschijnt het formulier één keer, zodat niemand meteen weer wordt aangemeld.",
-    "forced_help_admins": "Lokale accounts (beheerders) houden het formulier op het adres hiernaast: bewaar het, het is de noodtoegang als de identiteitsprovider uitvalt."
+    "forced_help": "Zoals de optie „forceren” van ITSM-NG: de aanmeldpagina leidt direct naar de pagina van de identiteitsprovider, zonder het formulier van OpenTransfer. De pagina toont alleen de knop van de provider, zonder het gewone formulier; na een bewuste afmelding stuurt ze niet door, zodat niemand meteen weer wordt aangemeld.",
+    "forced_help_admins": "Alleen beheerders komen binnen via het formulier op het adres hiernaast, met een tweede factor: andere accounts melden zich alleen nog via deze provider aan. Bewaar het adres, het is de noodtoegang als de identiteitsprovider uitvalt."
   },
   "emails": {
     "admin": {
@@ -1175,6 +1176,7 @@
     "authentication_failed": "Aanmelden is mislukt. Probeer het opnieuw.",
     "provider_failed": "De identiteitsprovider heeft het aanmelden niet afgerond. Probeer het opnieuw.",
     "provider_not_found": "Deze aanmeldmethode is niet beschikbaar.",
+    "provider_unreachable": "De identiteitsprovider antwoordt niet. Probeer het zo opnieuw; blijft het zo, meld het dan aan uw beheerder.",
     "account_disabled": "Dit account is uitgeschakeld.",
     "user_not_found": "Account niet gevonden.",
     "email_not_verified": "Je identiteitsprovider heeft je e-mailadres niet bevestigd. Vraag je beheerder het daar te bevestigen, of koppel dit account via je profiel.",

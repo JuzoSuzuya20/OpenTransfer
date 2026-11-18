@@ -63,6 +63,7 @@
     "local_account": "E-mail e palavra-passe",
     "forgot_password_question": "Esqueceu-se da palavra-passe?",
     "sso_required": "A sua organização liga-o com a conta dela: use o botão acima.",
+    "forced_admins_only": "Reservado aos administradores: as outras contas iniciam sessão com {name}.",
     "sso_domain_note": "As contas @{domain} entram com a conta da organização, acima. Só os administradores usam este formulário.",
     "create_account": "Criar conta",
     "create_account_description": "Preencha os seus dados para criar uma conta. Receberá um código de verificação por e-mail.",
@@ -1142,8 +1143,8 @@
     "forced_disabled": "Este fornecedor está desativado: a página de início de sessão mantém o formulário até voltar a ser ativado.",
     "forced_form_address": "Formulário das contas locais",
     "forced_invalid": "Este fornecedor de identidade já não existe.",
-    "forced_help": "Como a opção «forçar» do ITSM-NG: a página de início de sessão leva diretamente à página do fornecedor de identidade, sem o formulário do OpenTransfer. Depois de terminar sessão de propósito, o formulário aparece uma vez, para que ninguém volte a entrar de imediato.",
-    "forced_help_admins": "As contas locais (administradores) mantêm o formulário no endereço ao lado: guarde-o, é o acesso de emergência se o fornecedor de identidade falhar."
+    "forced_help": "Como a opção «forçar» do ITSM-NG: a página de início de sessão leva diretamente à página do fornecedor de identidade, sem o formulário do OpenTransfer. A página mostra apenas o botão do fornecedor, sem o formulário habitual; depois de terminar sessão de propósito não redireciona, para que ninguém volte a entrar de imediato.",
+    "forced_help_admins": "Só os administradores passam pelo formulário, no endereço ao lado, com um segundo fator: as outras contas só iniciam sessão por este fornecedor. Guarde o endereço, é o acesso de emergência se o fornecedor de identidade falhar."
   },
   "emails": {
     "admin": {
@@ -1175,6 +1176,7 @@
     "authentication_failed": "O início de sessão falhou. Tente novamente.",
     "provider_failed": "O fornecedor de identidade não concluiu o início de sessão. Tente novamente.",
     "provider_not_found": "Este método de início de sessão não está disponível.",
+    "provider_unreachable": "O fornecedor de identidade não responde. Tente de novo dentro de momentos; se continuar, avise o seu administrador.",
     "account_disabled": "Esta conta está desativada.",
     "user_not_found": "Conta não encontrada.",
     "email_not_verified": "O seu fornecedor de identidade não verificou o seu endereço de e-mail. Peça ao seu administrador que o verifique lá, ou ligue esta conta a partir do seu perfil.",

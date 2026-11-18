@@ -6,7 +6,7 @@ import { loginMessageFor } from '../lib/loginMessage'
 import { getApiUrl } from '../utils'
 import { useToast } from '../toasts'
 import { domData, domError, domSuccess } from '../domData'
-import { forcedSsoTarget, SIGNED_OUT_KEY } from '../lib/forcedSso'
+import { afterTheSessionSettles, forcedProviderId, forcedSsoOnly, forcedSsoTarget, SIGNED_OUT_KEY } from '../lib/forcedSso'
 import { attemptsNotice, attemptsMessage } from '../lib/attempts'
 import { KeyRound, Fingerprint, UserPlus, Mail, ArrowLeft, ShieldCheck, ChevronRight } from 'lucide-vue-next'
 import TwoFactorEnrolment from './TwoFactorEnrolment.vue'
@@ -75,6 +75,14 @@ const haveResetToken = ref(false)
 const resetToken = ref('')
 const waitingForRedirect = ref(false)
 const authProviders = ref([])
+// With a forced provider, its button alone: the form of local accounts at ?noAUTO (lib/forcedSso)
+const forcedOnly = forcedSsoOnly({ url: domData().sso_forced_login, path: window.location.pathname, search: window.location.search })
+const forcedId = forcedProviderId(domData().sso_forced_login)
+// The form of local accounts with a forced provider (?noAUTO): admins alone get through it
+const forcedProviderName = computed(() => authProviders.value.find((provider) => Number(provider.id) === forcedId)?.name ?? '')
+const shownProviders = computed(() =>
+  forcedOnly ? authProviders.value.filter((provider) => Number(provider.id) === forcedId) : authProviders.value
+)
 const reverseShareToken = ref('')
 
 // Reverse share invite by ID (for existing users)
@@ -136,8 +144,9 @@ onMounted(async () => {
   // Its answer, or four seconds without one, ends the wait of the app (store.restoringSession)
   const restored = attemptRefresh()
   settleWithin(restored, 4000, () => (store.restoringSession = false))
-  // Nobody signed in once the session had its chance: a forced identity provider takes over
-  restored.finally(leadToForcedSso)
+  // Nobody signed in once the session had its chance: a forced identity provider takes over, once
+  // the page rendered for it (lib/forcedSso)
+  afterTheSessionSettles(restored, nextTick, leadToForcedSso)
 
   getAvailableAuthProviders().then((data) => {
     authProviders.value = data
@@ -604,11 +613,11 @@ const switchToLogin = () => {
         <p class="auth-notice" v-if="hasInviteIdPending">{{ $t('auth.login_to_accept_invite') }}</p>
 
         <!-- The accounts of the organisation come first: most people sign in with them -->
-        <section class="ot-card auth-card" v-if="authProviders.length > 0 && !waitingForRedirect" aria-labelledby="h-sso">
+        <section class="ot-card auth-card" v-if="shownProviders.length > 0 && !waitingForRedirect" aria-labelledby="h-sso">
           <h2 class="ot-card-title" id="h-sso">{{ $t('auth.organisation_account') }}</h2>
           <button
             class="block secondary provider-button"
-            v-for="provider in authProviders"
+            v-for="provider in shownProviders"
             :key="provider.id"
             @click="attemptAuthProviderLogin(provider.id)"
           >
@@ -619,8 +628,11 @@ const switchToLogin = () => {
           </button>
         </section>
 
-        <form class="ot-card auth-card" aria-labelledby="h-local" @submit.prevent="attemptLogin">
+        <form class="ot-card auth-card" v-if="!forcedOnly" aria-labelledby="h-local" @submit.prevent="attemptLogin">
           <h2 class="ot-card-title" id="h-local">{{ $t('auth.local_account') }}</h2>
+          <p class="auth-sso-note" v-if="forcedId !== null && forcedProviderName" role="note">
+            {{ $t('auth.forced_admins_only', { name: forcedProviderName }) }}
+          </p>
           <div class="input-container">
             <label for="email">{{ $t('auth.email') }}</label>
             <input type="email" id="email" v-model="email" autocomplete="username" @keydown.enter.prevent="moveToPassword" aria-describedby="sso-domain-note" />
@@ -646,7 +658,7 @@ const switchToLogin = () => {
           <a href="" class="auth-link" @click.prevent="forgotPasswordMode = true">{{ $t('auth.forgot_password_question') }}</a>
         </form>
 
-        <p class="auth-register" v-if="selfRegistrationEnabled">
+        <p class="auth-register" v-if="selfRegistrationEnabled && forcedId === null">
           {{ $t('auth.no_account') }}
           <a href="" @click.prevent="switchToRegistration">{{ $t('auth.create_account') }}</a>
         </p>

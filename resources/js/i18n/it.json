@@ -83,6 +83,7 @@
     "local_account": "E-mail e password",
     "forgot_password_question": "Password dimenticata?",
     "sso_required": "La tua organizzazione ti fa accedere con il suo account: usa il pulsante qui sopra.",
+    "forced_admins_only": "Riservato agli amministratori: gli altri account accedono con {name}.",
     "sso_domain_note": "Gli account @{domain} accedono con l'account dell'organizzazione, qui sopra. Solo gli amministratori usano questo modulo.",
     "login_message_default": "Accedi per iniziare.",
     "altcha": {
@@ -1142,8 +1143,8 @@
     "forced_disabled": "Questo provider è disattivato: la pagina di accesso mantiene il suo modulo finché non viene riattivato.",
     "forced_form_address": "Modulo degli account locali",
     "forced_invalid": "Questo provider di identità non esiste più.",
-    "forced_help": "Come l'opzione «forza» di ITSM-NG: la pagina di accesso porta direttamente alla pagina del provider di identità, senza il modulo di OpenTransfer. Dopo una disconnessione voluta, il modulo compare una volta, perché nessuno venga riconnesso subito.",
-    "forced_help_admins": "Gli account locali (amministratori) mantengono il modulo all'indirizzo qui accanto: conservalo, è l'accesso di emergenza se il provider di identità non risponde."
+    "forced_help": "Come l'opzione «forza» di ITSM-NG: la pagina di accesso porta direttamente alla pagina del provider di identità, senza il modulo di OpenTransfer. La pagina mostra solo il pulsante del provider, senza il modulo consueto; dopo una disconnessione voluta non reindirizza, perché nessuno venga riconnesso subito.",
+    "forced_help_admins": "Solo gli amministratori passano dal modulo, all'indirizzo qui accanto, con un secondo fattore: gli altri account accedono soltanto con questo provider. Conservi l'indirizzo, è l'accesso di emergenza se il provider di identità non risponde."
   },
   "emails": {
     "admin": {
@@ -1175,6 +1176,7 @@
     "authentication_failed": "Accesso non riuscito. Riprova.",
     "provider_failed": "Il provider di identità non ha completato l’accesso. Riprova.",
     "provider_not_found": "Questo metodo di accesso non è disponibile.",
+    "provider_unreachable": "Il provider di identità non risponde. Riprovi tra un momento; se continua, avvisi il suo amministratore.",
     "account_disabled": "Questo account è disattivato.",
     "user_not_found": "Account non trovato.",
     "email_not_verified": "Il tuo provider di identità non ha verificato il tuo indirizzo e-mail. Chiedi al tuo amministratore di verificarlo lì, oppure collega questo account dal tuo profilo.",

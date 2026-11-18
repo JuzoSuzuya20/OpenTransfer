@@ -96,6 +96,22 @@ class ExternalAuthTest extends TestCase
             ->assertRedirect(TestingAuthProvider::AUTHORIZE_URL);
     }
 
+    // A Keycloak stopped: the sign-in page with a message, not a page 500, which a forced provider
+    // (Administration > SSO) would have shown to every visitor
+    public function test_a_provider_that_cannot_be_reached_sends_back_with_a_message(): void
+    {
+        $provider = $this->makeProvider();
+        TestingAuthProvider::$unreachable = true;
+
+        try {
+            $this->get("/auth/provider/{$provider->id}/login")
+                ->assertRedirect('/')
+                ->assertSessionHas('error', 'The identity provider cannot be reached. Please try again later.');
+        } finally {
+            TestingAuthProvider::$unreachable = false;
+        }
+    }
+
     public function test_a_disabled_provider_cannot_start_a_login(): void
     {
         $provider = $this->makeProvider(['enabled' => false]);

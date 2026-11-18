@@ -83,6 +83,7 @@
     "local_account": "Email and password",
     "forgot_password_question": "Forgot your password?",
     "sso_required": "Your organisation signs you in through its account: use the button above.",
+    "forced_admins_only": "For admins only: other accounts sign in with {name}.",
     "sso_domain_note": "The @{domain} accounts sign in with the account of the organisation, above. Only administrators use this form.",
     "login_message_default": "Login to your account to get started.",
     "altcha": {
@@ -1142,8 +1143,8 @@
     "forced_disabled": "This provider is disabled: the sign-in page keeps its form until it is enabled again.",
     "forced_form_address": "Form of local accounts",
     "forced_invalid": "This identity provider no longer exists.",
-    "forced_help": "Like the “force” option of ITSM-NG: the sign-in page leads straight to the page of the identity provider, without the OpenTransfer form. After signing out on purpose, the form shows once, so that nobody is signed straight back in.",
-    "forced_help_admins": "Local accounts (admins) keep the form at the address opposite: keep it, it is the way in if the identity provider fails."
+    "forced_help": "Like the “force” option of ITSM-NG: the sign-in page leads straight to the page of the identity provider, without the OpenTransfer form. The page shows the button of the provider alone, without the usual form; after signing out on purpose it does not lead on, so that nobody is signed straight back in.",
+    "forced_help_admins": "Only admins get through the form, at the address opposite, with a second factor: other accounts sign in through this provider alone. Keep the address, it is the way in if the identity provider fails."
   },
   "emails": {
     "admin": {
@@ -1175,6 +1176,7 @@
     "authentication_failed": "Sign-in failed. Try again.",
     "provider_failed": "The identity provider did not complete the sign-in. Try again.",
     "provider_not_found": "This sign-in method is not available.",
+    "provider_unreachable": "The identity provider does not answer. Try again in a moment; if it goes on, tell your administrator.",
     "account_disabled": "This account is disabled.",
     "user_not_found": "Account not found.",
     "email_not_verified": "Your identity provider has not verified your email address. Ask your administrator to verify it there, or link this account from your profile.",

@@ -83,6 +83,7 @@
     "local_account": "E-Mail und Passwort",
     "forgot_password_question": "Passwort vergessen?",
     "sso_required": "Ihre Organisation meldet Sie über ihr Konto an: Nutzen Sie die Schaltfläche oben.",
+    "forced_admins_only": "Nur für Administratoren: Andere Konten melden sich mit {name} an.",
     "sso_domain_note": "Die Konten @{domain} melden sich mit dem Konto der Organisation oben an. Nur Administratoren nutzen dieses Formular.",
     "login_message_default": "Melden Sie sich an, um zu beginnen.",
     "altcha": {
@@ -1142,8 +1143,8 @@
     "forced_disabled": "Dieser Anbieter ist deaktiviert: Die Anmeldeseite behält ihr Formular, bis er wieder aktiviert ist.",
     "forced_form_address": "Formular der lokalen Konten",
     "forced_invalid": "Dieser Identitätsanbieter existiert nicht mehr.",
-    "forced_help": "Wie die Option „Erzwingen“ von ITSM-NG: Die Anmeldeseite führt direkt zur Seite des Identitätsanbieters, ohne das Formular von OpenTransfer. Nach einer gewollten Abmeldung erscheint das Formular einmal, damit niemand sofort wieder angemeldet wird.",
-    "forced_help_admins": "Lokale Konten (Administratoren) behalten das Formular unter der nebenstehenden Adresse: Bewahren Sie sie auf, sie ist der Notzugang, falls der Identitätsanbieter ausfällt."
+    "forced_help": "Wie die Option „Erzwingen“ von ITSM-NG: Die Anmeldeseite führt direkt zur Seite des Identitätsanbieters, ohne das Formular von OpenTransfer. Die Seite zeigt nur die Schaltfläche des Anbieters, ohne das übliche Formular; nach einer gewollten Abmeldung leitet sie nicht weiter, damit niemand sofort wieder angemeldet wird.",
+    "forced_help_admins": "Nur Administratoren gelangen über das Formular unter der nebenstehenden Adresse hinein, mit einem zweiten Faktor: Alle anderen Konten melden sich nur noch über diesen Anbieter an. Bewahren Sie die Adresse auf, sie ist der Notzugang, falls der Identitätsanbieter ausfällt."
   },
   "emails": {
     "admin": {
@@ -1175,6 +1176,7 @@
     "authentication_failed": "Die Anmeldung ist fehlgeschlagen. Versuchen Sie es erneut.",
     "provider_failed": "Der Identitätsanbieter hat die Anmeldung nicht abgeschlossen. Versuchen Sie es erneut.",
     "provider_not_found": "Diese Anmeldemethode ist nicht verfügbar.",
+    "provider_unreachable": "Der Identitätsanbieter antwortet nicht. Versuchen Sie es gleich noch einmal; wenn es anhält, informieren Sie Ihren Administrator.",
     "account_disabled": "Dieses Konto ist deaktiviert.",
     "user_not_found": "Konto nicht gefunden.",
     "email_not_verified": "Ihr Identitätsanbieter hat Ihre E-Mail-Adresse nicht bestätigt. Bitten Sie Ihren Administrator, sie dort zu bestätigen, oder verknüpfen Sie dieses Konto in Ihrem Profil.",

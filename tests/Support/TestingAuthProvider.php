@@ -25,8 +25,15 @@ class TestingAuthProvider extends BaseAuthProvider
             : null;
     }
 
+    /** Whether the provider is down: its address cannot be reached, as a Keycloak stopped */
+    public static bool $unreachable = false;
+
     public function redirect()
     {
+        if (static::$unreachable) {
+            throw new \RuntimeException('cURL error 7: Failed to connect to idp.example.test port 443');
+        }
+
         return redirect()->away(self::AUTHORIZE_URL);
     }
 

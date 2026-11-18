@@ -71,9 +71,26 @@ class ExternalAuthController extends Controller
             return redirect('/')->with('error', 'Provider not found');
         }
 
-        // Instantiate the provider class and redirect to the provider's login page
-        $providerClass = $this->instantiateProviderClass($provider);
-        return $providerClass->redirect();
+        return $this->leadTo($provider);
+    }
+
+    /**
+     * To the page of the provider. One that cannot be reached (Keycloak stopped, its address
+     * wrong) sends back to the sign-in page with a message, not a page 500: with a forced provider
+     * (Administration > SSO), every visitor would get that page.
+     */
+    private function leadTo(AuthProvider $provider)
+    {
+        try {
+            return $this->instantiateProviderClass($provider)->redirect();
+        } catch (\Throwable $e) {
+            Log::warning('The identity provider cannot be reached', [
+                'provider' => $provider->uuid,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect('/')->with('error', 'The identity provider cannot be reached. Please try again later.');
+        }
     }
 
     /**
@@ -99,9 +116,7 @@ class ExternalAuthController extends Controller
         // Set session variables for the linking process
         $this->setLinkingSessionVariables($user->id);
 
-        // Instantiate the provider class and redirect to the provider's login page
-        $providerClass = $this->instantiateProviderClass($provider);
-        return $providerClass->redirect();
+        return $this->leadTo($provider);
     }
 
     /**

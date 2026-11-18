@@ -83,6 +83,7 @@
     "local_account": "Identifiant et mot de passe",
     "forgot_password_question": "Mot de passe oublié ?",
     "sso_required": "Votre organisation vous connecte par son compte : utilisez le bouton ci-dessus.",
+    "forced_admins_only": "Réservé aux administrateurs : les autres comptes se connectent avec {name}.",
     "sso_domain_note": "Les comptes @{domain} se connectent avec le compte de l'organisation, ci-dessus. Seuls les administrateurs utilisent ce formulaire.",
     "login_message_default": "Connectez-vous pour commencer.",
     "altcha": {
@@ -1142,8 +1143,8 @@
     "forced_disabled": "Ce fournisseur est désactivé : la page de connexion garde son formulaire tant qu'il ne l'est pas de nouveau.",
     "forced_form_address": "Formulaire des comptes locaux",
     "forced_invalid": "Ce fournisseur d'identité n'existe plus.",
-    "forced_help": "Comme l'option « forcer » d'ITSM-NG : la page de connexion mène directement à la page du fournisseur d'identité, sans le formulaire d'OpenTransfer. Après une déconnexion volontaire, le formulaire s'affiche une fois, pour que personne ne soit reconnecté aussitôt.",
-    "forced_help_admins": "Les comptes locaux (administrateurs) gardent le formulaire à l'adresse ci-contre : conservez-la, c'est l'accès de secours si le fournisseur d'identité tombe."
+    "forced_help": "Comme l'option « forcer » d'ITSM-NG : la page de connexion mène directement à la page du fournisseur d'identité, sans le formulaire d'OpenTransfer. La page n'affiche que le bouton du fournisseur, sans le formulaire classique ; après une déconnexion volontaire, elle ne redirige pas, pour que personne ne soit reconnecté aussitôt.",
+    "forced_help_admins": "Seuls les administrateurs passent par le formulaire, à l'adresse ci-contre, avec une double authentification : les autres comptes ne se connectent plus que par ce fournisseur. Conservez cette adresse, c'est l'accès de secours si le fournisseur d'identité tombe."
   },
   "emails": {
     "admin": {
@@ -1175,6 +1176,7 @@
     "authentication_failed": "La connexion a échoué. Réessayez.",
     "provider_failed": "Le fournisseur d'identité n'a pas terminé la connexion. Réessayez.",
     "provider_not_found": "Ce moyen de connexion n'est pas disponible.",
+    "provider_unreachable": "Le fournisseur d'identité ne répond pas. Réessayez dans un moment ; si cela continue, prévenez votre administrateur.",
     "account_disabled": "Ce compte est désactivé.",
     "user_not_found": "Compte introuvable.",
     "email_not_verified": "Votre fournisseur d'identité n'a pas vérifié votre adresse e-mail. Demandez à votre administrateur de la vérifier chez lui, ou liez ce compte depuis votre profil.",

@@ -5,6 +5,25 @@ a major version for a change that needs action on an existing instance (data, co
 version for a large update, a patch version for fixes. Each version is a `vX.Y.Z` tag, and the image is
 published as `ghcr.io/juzosuzuya20/opentransfer:X.Y.Z` and `:X.Y`; `:latest` follows `main`.
 
+## [1.5.7] — 2026-11-18
+
+### Changed
+
+- With a forced identity provider (Administration > SSO), the sign-in page shows its button alone,
+  without the usual form, also where it does not lead on (after a sign-out made on purpose, with a
+  message). The form of local accounts stays at `/?noAUTO`, for admins only, with a second factor:
+  everyone else signs in through the provider, whatever their address, as the members of a domain
+  that requires SSO (no password, no reset link, no sign-up, no passkey alone). A disabled provider
+  forces nothing, so that nobody is locked out
+
+### Fixed
+
+- The sign-in page did not lead to the forced provider: it decided as soon as the session had its
+  chance, before the page rendered for it, and still read it as not shown
+- An identity provider that cannot be reached (Keycloak stopped, its address wrong) sent to a page
+  500, which a forced provider would have shown to every visitor: the sign-in page comes back with a
+  message instead
+
 ## [1.5.6] — 2026-11-18
 
 ### Changed

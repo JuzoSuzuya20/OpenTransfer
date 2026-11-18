@@ -6,6 +6,7 @@ const KEYS = {
   'Authentication failed. Please try again.': 'flash.authentication_failed',
   'Authentication with the identity provider failed. Please try again.': 'flash.provider_failed',
   'Provider not found': 'flash.provider_not_found',
+  'The identity provider cannot be reached. Please try again later.': 'flash.provider_unreachable',
   'This account is disabled': 'flash.account_disabled',
   'User not found': 'flash.user_not_found',
   'Your identity provider has not verified your email address. Ask your administrator to verify it there, or link this account from your profile.': 'flash.email_not_verified',

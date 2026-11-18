@@ -83,6 +83,7 @@
     "local_account": "Correo y contraseña",
     "forgot_password_question": "¿Ha olvidado su contraseña?",
     "sso_required": "Su organización le identifica con su propia cuenta: use el botón de arriba.",
+    "forced_admins_only": "Solo para administradores: las demás cuentas inician sesión con {name}.",
     "sso_domain_note": "Las cuentas @{domain} inician sesión con la cuenta de la organización, arriba. Solo los administradores usan este formulario.",
     "login_message_default": "Inicie sesión para empezar.",
     "altcha": {
@@ -1142,8 +1143,8 @@
     "forced_disabled": "Este proveedor está desactivado: la página de inicio de sesión conserva su formulario hasta que vuelva a activarse.",
     "forced_form_address": "Formulario de las cuentas locales",
     "forced_invalid": "Este proveedor de identidad ya no existe.",
-    "forced_help": "Como la opción «forzar» de ITSM-NG: la página de inicio de sesión lleva directamente a la página del proveedor de identidad, sin el formulario de OpenTransfer. Tras cerrar sesión a propósito, el formulario aparece una vez, para que nadie vuelva a entrar al instante.",
-    "forced_help_admins": "Las cuentas locales (administradores) conservan el formulario en la dirección de al lado: guárdela, es el acceso de emergencia si el proveedor de identidad falla."
+    "forced_help": "Como la opción «forzar» de ITSM-NG: la página de inicio de sesión lleva directamente a la página del proveedor de identidad, sin el formulario de OpenTransfer. La página solo muestra el botón del proveedor, sin el formulario habitual; tras cerrar sesión a propósito no redirige, para que nadie vuelva a entrar al instante.",
+    "forced_help_admins": "Solo los administradores pasan por el formulario, en la dirección de al lado, con un segundo factor: las demás cuentas solo inician sesión con este proveedor. Guarde la dirección, es el acceso de emergencia si el proveedor de identidad falla."
   },
   "emails": {
     "admin": {
@@ -1175,6 +1176,7 @@
     "authentication_failed": "No se ha podido iniciar sesión. Inténtelo de nuevo.",
     "provider_failed": "El proveedor de identidad no ha completado el inicio de sesión. Inténtelo de nuevo.",
     "provider_not_found": "Este método de inicio de sesión no está disponible.",
+    "provider_unreachable": "El proveedor de identidad no responde. Inténtelo de nuevo en un momento; si continúa, avise a su administrador.",
     "account_disabled": "Esta cuenta está desactivada.",
     "user_not_found": "Cuenta no encontrada.",
     "email_not_verified": "Su proveedor de identidad no ha verificado su dirección de correo. Pida a su administrador que la verifique allí, o vincule esta cuenta desde su perfil.",
